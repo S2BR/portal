@@ -64,4 +64,6 @@ export interface CaptchaChallenge {
   driver?: string;
   site_key?: string;
   question?: string;
+  /** reCAPTCHA v3 only: the action to execute (the portal verifies it matches). */
+  action?: string;
 }
