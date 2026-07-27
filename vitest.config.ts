@@ -7,6 +7,13 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
+      // `server-only` / `client-only` throw outside their runtime; stub them.
+      "server-only": fileURLToPath(
+        new URL("./src/test/empty-module.ts", import.meta.url),
+      ),
+      "client-only": fileURLToPath(
+        new URL("./src/test/empty-module.ts", import.meta.url),
+      ),
     },
   },
   test: {
