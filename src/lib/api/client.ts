@@ -61,7 +61,18 @@ export async function portalFetch<T = unknown>(
     cache: "no-store",
   });
 
-  const data = (await response.json().catch(() => ({}))) as T;
+  // The portal API always speaks JSON. Read the body as text and parse it
+  // ourselves so a 2xx carrying a non-JSON payload is never mistaken for a
+  // successful API call — e.g. an HTML outage page, or a PORTAL_API_URL that
+  // (mis)points at the web app itself, which would otherwise let the auth
+  // handlers mint a session from an empty body. Such a response fails closed.
+  const raw = await response.text();
+  let data: T;
+  try {
+    data = (raw === "" ? {} : JSON.parse(raw)) as T;
+  } catch {
+    return { ok: false, status: response.status, data: {} as T };
+  }
 
   return { ok: response.ok, status: response.status, data };
 }

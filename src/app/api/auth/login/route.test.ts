@@ -121,6 +121,23 @@ describe("POST /api/auth/login", () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
+  it("does not authenticate on a 200 that isn't JSON (misconfigured API URL)", async () => {
+    // Regression: PORTAL_API_URL pointing at the web app itself returns a 200
+    // HTML page; that must never be treated as a successful login.
+    fetchMock.mockResolvedValue(
+      new Response("<!DOCTYPE html><html></html>", {
+        status: 200,
+        headers: { "content-type": "text/html" },
+      }),
+    );
+
+    const res = await POST(request({ email: "a@b.co", password: "secret" }));
+
+    expect(res.status).toBe(422);
+    expect((await res.json()).status).toBe("invalid");
+    expect(setSessionCookies).not.toHaveBeenCalled();
+  });
+
   it("forwards only non-empty fields to the portal", async () => {
     fetchMock.mockResolvedValue(portalResponse(200, tokenPair));
 

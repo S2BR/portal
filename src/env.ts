@@ -15,6 +15,18 @@ const schema = z.object({
   PORTAL_API_URL: z.url().default("https://portal.s2br.com/api/v1"),
   /** Secret used to sign/encrypt session cookies. Required in production. */
   SESSION_COOKIE_SECRET: z.string().min(32).optional(),
+  /**
+   * The portal's RS256 public key (PEM). The BFF verifies every access token's
+   * signature against this pinned key BEFORE establishing a session, so a
+   * forged, MITM'd, or misrouted response can never mint one. Newlines may be
+   * written as `\n` on a single line. Must match the portal PORTAL_API_URL
+   * points at; without it, sign-in fails closed.
+   */
+  PORTAL_JWT_PUBLIC_KEY: z.string().min(1).optional(),
+  /** Expected access-token issuer (the portal's APP_URL). Verified when set. */
+  PORTAL_JWT_ISSUER: z.string().min(1).optional(),
+  /** Expected access-token audience (the portal's JWT_AUDIENCE). */
+  PORTAL_JWT_AUDIENCE: z.string().min(1).default("s2br-app"),
 });
 
 const parsed = schema.safeParse(process.env);
