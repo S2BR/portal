@@ -18,8 +18,7 @@
       "subtitle": "Digite o código que enviamos para {email}.",
       "submit": "Verificar e-mail",
       "resend": "Reenviar código",
-      "resent": "Um novo código está a caminho.",
-      "expired": "Esse código é inválido ou expirou."
+      "resent": "Um novo código está a caminho."
     },
     "forgot": {
       "title": "Redefina sua senha",
@@ -27,8 +26,7 @@
       "submit": "Enviar código",
       "resetTitle": "Defina uma nova senha",
       "resetSubtitle": "Digite o código que enviamos para {email} e escolha uma nova senha.",
-      "resetSubmit": "Redefinir senha",
-      "invalidCode": "Esse código é inválido ou expirou."
+      "resetSubmit": "Redefinir senha"
     },
     "fields": {
       "name": "Nome completo",
@@ -60,11 +58,8 @@
       "code": "Digite o código de verificação.",
       "passwordPolicy": "Sua senha não atende aos requisitos.",
       "passwordMismatch": "As senhas não coincidem.",
-      "invalidCredentials": "Essas credenciais não correspondem aos nossos registros.",
       "rateLimited": "Muitas tentativas. Aguarde um momento e tente novamente.",
-      "generic": "Algo deu errado. Tente novamente.",
-      "captchaFailed": "A verificação humana falhou. Tente novamente.",
-      "invalidCode": "Esse código é inválido ou expirou."
+      "generic": "Algo deu errado. Tente novamente."
     },
     "captchaUnsupported": "A verificação não está disponível no momento. Tente novamente mais tarde."
   },
@@ -99,8 +94,7 @@
     "recoveryTitle": "Salve seus códigos de recuperação",
     "recoverySubtitle": "Guarde-os em local seguro. Cada um pode ser usado uma vez se você perder seu autenticador.",
     "done": "Eu os salvei",
-    "disablePrompt": "Digite sua senha para desativar a autenticação de dois fatores.",
-    "invalid": "Esse código ou senha está incorreto."
+    "disablePrompt": "Digite sua senha para desativar a autenticação de dois fatores."
   },
   "emailSettings": {
     "title": "Endereço de e-mail",
@@ -110,9 +104,7 @@
     "verifyTitle": "Verifique seu novo e-mail",
     "verifySubtitle": "Digite o código que enviamos para {email}.",
     "verifySubmit": "Confirmar",
-    "cancel": "Cancelar",
-    "wrongPassword": "Essa senha está incorreta.",
-    "invalidCode": "Esse código é inválido ou expirou."
+    "cancel": "Cancelar"
   },
   "theme": {
     "label": "Tema",

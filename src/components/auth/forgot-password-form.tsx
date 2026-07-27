@@ -78,12 +78,15 @@ export function ForgotPasswordForm({
           password_confirmation: confirm,
         }),
       });
-      const data = (await response.json()) as { status?: string };
+      const data = (await response.json()) as {
+        status?: string;
+        message?: string;
+      };
       if (data.status === "ok") {
         router.push("/login");
         return;
       }
-      setError(t("forgot.invalidCode"));
+      setError(data.message ?? t("errors.generic"));
     } catch {
       setError(t("errors.generic"));
     } finally {

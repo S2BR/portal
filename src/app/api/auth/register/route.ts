@@ -51,7 +51,10 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   // A captcha failure is validated before the rest — surface it distinctly.
   if (response.data.errors?.captcha_token) {
-    return NextResponse.json({ status: "captcha_failed" }, { status: 422 });
+    return NextResponse.json(
+      { status: "captcha_failed", message: response.data.message },
+      { status: 422 },
+    );
   }
 
   return NextResponse.json(

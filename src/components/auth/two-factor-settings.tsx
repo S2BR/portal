@@ -22,6 +22,7 @@ type Mode = "idle" | "enrolling" | "recovery" | "disabling";
 export function TwoFactorSettings() {
   const t = useTranslations("twoFactor");
   const fields = useTranslations("auth.fields");
+  const authErrors = useTranslations("auth.errors");
   const { user, refresh } = useCurrentUser();
 
   const [mode, setMode] = useState<Mode>("idle");
@@ -51,14 +52,15 @@ export function TwoFactorSettings() {
     setError(null);
     try {
       const response = await fetch("/api/auth/2fa/enroll", { method: "POST" });
-      if (!response.ok) {
-        setError(t("invalid"));
+      const data = (await response.json()) as {
+        secret?: string;
+        otpauthUrl?: string;
+        message?: string;
+      };
+      if (!response.ok || !data.secret || !data.otpauthUrl) {
+        setError(data.message ?? authErrors("generic"));
         return;
       }
-      const data = (await response.json()) as {
-        secret: string;
-        otpauthUrl: string;
-      };
       setSecret(data.secret);
       setOtpauthUrl(data.otpauthUrl);
       setMode("enrolling");
@@ -82,6 +84,7 @@ export function TwoFactorSettings() {
       const data = (await response.json()) as {
         status?: string;
         recoveryCodes?: string[];
+        message?: string;
       };
       if (data.status === "ok" && data.recoveryCodes) {
         setRecoveryCodes(data.recoveryCodes);
@@ -90,7 +93,7 @@ export function TwoFactorSettings() {
         setMode("recovery");
         await refresh();
       } else {
-        setError(t("invalid"));
+        setError(data.message ?? authErrors("generic"));
       }
     } catch {
       setError(t("invalid"));
@@ -109,12 +112,15 @@ export function TwoFactorSettings() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password }),
       });
-      const data = (await response.json()) as { status?: string };
+      const data = (await response.json()) as {
+        status?: string;
+        message?: string;
+      };
       if (data.status === "ok") {
         reset();
         await refresh();
       } else {
-        setError(t("invalid"));
+        setError(data.message ?? authErrors("generic"));
       }
     } catch {
       setError(t("invalid"));

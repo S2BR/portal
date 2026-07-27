@@ -79,13 +79,11 @@ export function RegisterForm({
         case "registered":
           router.push("/login");
           return;
-        case "captcha_failed":
-          setError(t("errors.captchaFailed"));
-          break;
         case "rate_limited":
           setError(t("errors.rateLimited"));
           break;
         default:
+          // captcha_failed and other errors carry the portal's localized message.
           setError(data.message ?? t("errors.generic"));
       }
       // Reached only on failure — the single-use challenge is spent, re-issue one.

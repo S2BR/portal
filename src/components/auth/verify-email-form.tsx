@@ -33,13 +33,16 @@ export function VerifyEmailForm({ email }: { email: string }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, code: codeValue.trim() }),
       });
-      const data = (await response.json()) as { status?: string };
+      const data = (await response.json()) as {
+        status?: string;
+        message?: string;
+      };
       if (data.status === "authenticated") {
         router.replace("/");
         router.refresh();
         return;
       }
-      setError(t("verify.expired"));
+      setError(data.message ?? t("errors.generic"));
     } catch {
       setError(t("errors.generic"));
     } finally {

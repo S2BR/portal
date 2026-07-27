@@ -1,6 +1,9 @@
 import "server-only";
 
+import { cookies } from "next/headers";
+
 import { env } from "@/env";
+import { isLocale, LOCALE_COOKIE, toApiLocale } from "@/i18n/config";
 
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
@@ -19,10 +22,22 @@ export interface PortalResponse<T> {
 }
 
 /**
+ * The portal-format locale (e.g. `fr_CA`) from the visitor's cookie, if set.
+ * Forwarded as `Accept-Language` so the portal localizes its response messages.
+ */
+async function requestApiLocale(): Promise<string | undefined> {
+  try {
+    const cookieLocale = (await cookies()).get(LOCALE_COOKIE)?.value;
+    return isLocale(cookieLocale) ? toApiLocale(cookieLocale) : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
  * Low-level call to the portal API. Server-only — never import from a client
  * component. Returns the status so callers can branch on the auth flow's
- * `status` discriminators (a 403 `two_factor_required` is a next step, not an
- * error); it does not throw on non-2xx responses.
+ * `status` discriminators; it does not throw on non-2xx responses.
  */
 export async function portalFetch<T = unknown>(
   request: PortalRequest,
@@ -34,8 +49,9 @@ export async function portalFetch<T = unknown>(
   if (request.token) {
     headers.Authorization = `Bearer ${request.token}`;
   }
-  if (request.locale) {
-    headers["Accept-Language"] = request.locale;
+  const acceptLanguage = request.locale ?? (await requestApiLocale());
+  if (acceptLanguage) {
+    headers["Accept-Language"] = acceptLanguage;
   }
 
   const response = await fetch(`${env.PORTAL_API_URL}${request.path}`, {

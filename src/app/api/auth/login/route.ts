@@ -64,7 +64,10 @@ export async function POST(request: Request): Promise<NextResponse> {
   // Captcha is validated before credentials, so a captcha failure must not be
   // reported as a credential failure.
   if (response.data.errors?.captcha_token) {
-    return NextResponse.json({ status: "captcha_failed" }, { status: 422 });
+    return NextResponse.json(
+      { status: "captcha_failed", message: response.data.message },
+      { status: 422 },
+    );
   }
 
   // A wrong second factor (emailed OTP or TOTP) is a code error, not a
@@ -73,7 +76,10 @@ export async function POST(request: Request): Promise<NextResponse> {
     response.data.errors?.login_otp ||
     response.data.errors?.two_factor_code
   ) {
-    return NextResponse.json({ status: "invalid_code" }, { status: 422 });
+    return NextResponse.json(
+      { status: "invalid_code", message: response.data.message },
+      { status: 422 },
+    );
   }
 
   return NextResponse.json(

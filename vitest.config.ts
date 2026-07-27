@@ -14,6 +14,9 @@ export default defineConfig({
       "client-only": fileURLToPath(
         new URL("./src/test/empty-module.ts", import.meta.url),
       ),
+      "next/headers": fileURLToPath(
+        new URL("./src/test/next-headers-stub.ts", import.meta.url),
+      ),
     },
   },
   test: {

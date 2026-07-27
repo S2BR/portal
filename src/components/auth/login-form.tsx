@@ -40,7 +40,10 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      const data = (await response.json()) as { status?: string };
+      const data = (await response.json()) as {
+        status?: string;
+        message?: string;
+      };
 
       switch (data.status) {
         case "authenticated":
@@ -55,17 +58,13 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
         case "email_unverified":
           router.push(`/verify-email?email=${encodeURIComponent(email)}`);
           break;
-        case "captcha_failed":
-          setError(t("errors.captchaFailed"));
-          break;
-        case "invalid_code":
-          setError(t("errors.invalidCode"));
-          break;
         case "rate_limited":
           setError(t("errors.rateLimited"));
           break;
         default:
-          setError(t("errors.invalidCredentials"));
+          // captcha_failed, invalid_code, and bad credentials all carry the
+          // portal's own (localized) message.
+          setError(data.message ?? t("errors.generic"));
       }
       return data.status ?? "invalid";
     } catch {

@@ -57,12 +57,15 @@ export function EmailSettings() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: newEmail, password }),
       });
-      const data = (await response.json()) as { status?: string };
+      const data = (await response.json()) as {
+        status?: string;
+        message?: string;
+      };
       if (data.status === "verification_required") {
         setPassword("");
         setMode("verifying");
       } else {
-        setError(t("wrongPassword"));
+        setError(data.message ?? authErrors("generic"));
       }
     } catch {
       setError(authErrors("generic"));
@@ -84,12 +87,15 @@ export function EmailSettings() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code: codeValue.trim() }),
       });
-      const data = (await response.json()) as { status?: string };
+      const data = (await response.json()) as {
+        status?: string;
+        message?: string;
+      };
       if (data.status === "ok") {
         reset();
         await refresh();
       } else {
-        setError(t("invalidCode"));
+        setError(data.message ?? authErrors("generic"));
       }
     } catch {
       setError(authErrors("generic"));

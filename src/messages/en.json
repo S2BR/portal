@@ -18,8 +18,7 @@
       "subtitle": "Enter the code we sent to {email}.",
       "submit": "Verify email",
       "resend": "Resend code",
-      "resent": "A new code is on its way.",
-      "expired": "That code is invalid or has expired."
+      "resent": "A new code is on its way."
     },
     "forgot": {
       "title": "Reset your password",
@@ -27,8 +26,7 @@
       "submit": "Send reset code",
       "resetTitle": "Set a new password",
       "resetSubtitle": "Enter the code we sent to {email} and choose a new password.",
-      "resetSubmit": "Reset password",
-      "invalidCode": "That code is invalid or has expired."
+      "resetSubmit": "Reset password"
     },
     "fields": {
       "name": "Full name",
@@ -60,11 +58,8 @@
       "code": "Enter the verification code.",
       "passwordPolicy": "Your password doesn't meet the requirements.",
       "passwordMismatch": "The passwords don't match.",
-      "invalidCredentials": "Those credentials don't match our records.",
       "rateLimited": "Too many attempts. Please wait a moment and try again.",
-      "generic": "Something went wrong. Please try again.",
-      "captchaFailed": "Human verification failed. Please try again.",
-      "invalidCode": "That code is invalid or has expired."
+      "generic": "Something went wrong. Please try again."
     },
     "captchaUnsupported": "Verification isn't available right now. Please try again later."
   },
@@ -99,8 +94,7 @@
     "recoveryTitle": "Save your recovery codes",
     "recoverySubtitle": "Store these somewhere safe. Each can be used once if you lose your authenticator.",
     "done": "I've saved them",
-    "disablePrompt": "Enter your password to turn off two-factor authentication.",
-    "invalid": "That code or password is incorrect."
+    "disablePrompt": "Enter your password to turn off two-factor authentication."
   },
   "emailSettings": {
     "title": "Email address",
@@ -110,9 +104,7 @@
     "verifyTitle": "Verify your new email",
     "verifySubtitle": "Enter the code we sent to {email}.",
     "verifySubmit": "Confirm",
-    "cancel": "Cancel",
-    "wrongPassword": "That password is incorrect.",
-    "invalidCode": "That code is invalid or has expired."
+    "cancel": "Cancel"
   },
   "theme": {
     "label": "Theme",

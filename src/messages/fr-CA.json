@@ -18,8 +18,7 @@
       "subtitle": "Entrez le code que nous avons envoyé à {email}.",
       "submit": "Vérifier le courriel",
       "resend": "Renvoyer le code",
-      "resent": "Un nouveau code est en route.",
-      "expired": "Ce code est invalide ou a expiré."
+      "resent": "Un nouveau code est en route."
     },
     "forgot": {
       "title": "Réinitialisez votre mot de passe",
@@ -27,8 +26,7 @@
       "submit": "Envoyer le code",
       "resetTitle": "Définir un nouveau mot de passe",
       "resetSubtitle": "Entrez le code que nous avons envoyé à {email} et choisissez un nouveau mot de passe.",
-      "resetSubmit": "Réinitialiser le mot de passe",
-      "invalidCode": "Ce code est invalide ou a expiré."
+      "resetSubmit": "Réinitialiser le mot de passe"
     },
     "fields": {
       "name": "Nom complet",
@@ -60,11 +58,8 @@
       "code": "Entrez le code de vérification.",
       "passwordPolicy": "Votre mot de passe ne respecte pas les exigences.",
       "passwordMismatch": "Les mots de passe ne correspondent pas.",
-      "invalidCredentials": "Ces identifiants ne correspondent pas à nos dossiers.",
       "rateLimited": "Trop de tentatives. Veuillez patienter un moment et réessayer.",
-      "generic": "Une erreur s'est produite. Veuillez réessayer.",
-      "captchaFailed": "La vérification humaine a échoué. Veuillez réessayer.",
-      "invalidCode": "Ce code est invalide ou a expiré."
+      "generic": "Une erreur s'est produite. Veuillez réessayer."
     },
     "captchaUnsupported": "La vérification n'est pas disponible pour le moment. Veuillez réessayer plus tard."
   },
@@ -99,8 +94,7 @@
     "recoveryTitle": "Enregistrez vos codes de récupération",
     "recoverySubtitle": "Conservez-les en lieu sûr. Chacun peut être utilisé une fois si vous perdez votre authentificateur.",
     "done": "Je les ai enregistrés",
-    "disablePrompt": "Entrez votre mot de passe pour désactiver l'authentification à deux facteurs.",
-    "invalid": "Ce code ou ce mot de passe est incorrect."
+    "disablePrompt": "Entrez votre mot de passe pour désactiver l'authentification à deux facteurs."
   },
   "emailSettings": {
     "title": "Adresse courriel",
@@ -110,9 +104,7 @@
     "verifyTitle": "Vérifiez votre nouveau courriel",
     "verifySubtitle": "Entrez le code que nous avons envoyé à {email}.",
     "verifySubmit": "Confirmer",
-    "cancel": "Annuler",
-    "wrongPassword": "Ce mot de passe est incorrect.",
-    "invalidCode": "Ce code est invalide ou a expiré."
+    "cancel": "Annuler"
   },
   "theme": {
     "label": "Thème",

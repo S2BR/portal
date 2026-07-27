@@ -18,8 +18,7 @@
       "subtitle": "Introduce el código que enviamos a {email}.",
       "submit": "Verificar correo",
       "resend": "Reenviar código",
-      "resent": "Un nuevo código está en camino.",
-      "expired": "Ese código no es válido o ha caducado."
+      "resent": "Un nuevo código está en camino."
     },
     "forgot": {
       "title": "Restablece tu contraseña",
@@ -27,8 +26,7 @@
       "submit": "Enviar código",
       "resetTitle": "Establece una nueva contraseña",
       "resetSubtitle": "Introduce el código que enviamos a {email} y elige una nueva contraseña.",
-      "resetSubmit": "Restablecer contraseña",
-      "invalidCode": "Ese código no es válido o ha caducado."
+      "resetSubmit": "Restablecer contraseña"
     },
     "fields": {
       "name": "Nombre completo",
@@ -60,11 +58,8 @@
       "code": "Introduce el código de verificación.",
       "passwordPolicy": "Tu contraseña no cumple los requisitos.",
       "passwordMismatch": "Las contraseñas no coinciden.",
-      "invalidCredentials": "Las credenciales no coinciden con nuestros registros.",
       "rateLimited": "Demasiados intentos. Espera un momento e inténtalo de nuevo.",
-      "generic": "Algo salió mal. Inténtalo de nuevo.",
-      "captchaFailed": "La verificación humana falló. Inténtalo de nuevo.",
-      "invalidCode": "Ese código no es válido o ha caducado."
+      "generic": "Algo salió mal. Inténtalo de nuevo."
     },
     "captchaUnsupported": "La verificación no está disponible en este momento. Inténtalo de nuevo más tarde."
   },
@@ -99,8 +94,7 @@
     "recoveryTitle": "Guarda tus códigos de recuperación",
     "recoverySubtitle": "Guárdalos en un lugar seguro. Cada uno se puede usar una vez si pierdes tu autenticador.",
     "done": "Los he guardado",
-    "disablePrompt": "Introduce tu contraseña para desactivar la autenticación de dos factores.",
-    "invalid": "Ese código o contraseña es incorrecto."
+    "disablePrompt": "Introduce tu contraseña para desactivar la autenticación de dos factores."
   },
   "emailSettings": {
     "title": "Dirección de correo",
@@ -110,9 +104,7 @@
     "verifyTitle": "Verifica tu nuevo correo",
     "verifySubtitle": "Introduce el código que enviamos a {email}.",
     "verifySubmit": "Confirmar",
-    "cancel": "Cancelar",
-    "wrongPassword": "Esa contraseña es incorrecta.",
-    "invalidCode": "Ese código no es válido o ha caducado."
+    "cancel": "Cancelar"
   },
   "theme": {
     "label": "Tema",
