@@ -71,7 +71,17 @@
     "welcome": "Bem-vindo de volta."
   },
   "nav": {
-    "signOut": "Sair"
+    "signOut": "Sair",
+    "profile": "Perfil"
+  },
+  "profile": {
+    "title": "Perfil",
+    "email": "E-mail",
+    "emailVerified": "E-mail verificado",
+    "emailNotVerified": "E-mail não verificado",
+    "twoFactorOn": "Dois fatores ativado",
+    "twoFactorOff": "Dois fatores desativado",
+    "memberSince": "Membro desde {date}"
   },
   "theme": {
     "label": "Tema",

@@ -71,7 +71,17 @@
     "welcome": "Bienvenido de nuevo."
   },
   "nav": {
-    "signOut": "Cerrar sesión"
+    "signOut": "Cerrar sesión",
+    "profile": "Perfil"
+  },
+  "profile": {
+    "title": "Perfil",
+    "email": "Correo electrónico",
+    "emailVerified": "Correo verificado",
+    "emailNotVerified": "Correo no verificado",
+    "twoFactorOn": "Doble factor activado",
+    "twoFactorOff": "Doble factor desactivado",
+    "memberSince": "Miembro desde {date}"
   },
   "theme": {
     "label": "Tema",

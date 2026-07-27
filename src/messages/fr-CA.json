@@ -71,7 +71,17 @@
     "welcome": "Bon retour."
   },
   "nav": {
-    "signOut": "Se déconnecter"
+    "signOut": "Se déconnecter",
+    "profile": "Profil"
+  },
+  "profile": {
+    "title": "Profil",
+    "email": "Courriel",
+    "emailVerified": "Courriel vérifié",
+    "emailNotVerified": "Courriel non vérifié",
+    "twoFactorOn": "Double authentification activée",
+    "twoFactorOff": "Double authentification désactivée",
+    "memberSince": "Membre depuis {date}"
   },
   "theme": {
     "label": "Thème",

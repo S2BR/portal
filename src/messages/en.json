@@ -71,7 +71,17 @@
     "welcome": "Welcome back."
   },
   "nav": {
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "profile": "Profile"
+  },
+  "profile": {
+    "title": "Profile",
+    "email": "Email",
+    "emailVerified": "Email verified",
+    "emailNotVerified": "Email not verified",
+    "twoFactorOn": "Two-factor on",
+    "twoFactorOff": "Two-factor off",
+    "memberSince": "Member since {date}"
   },
   "theme": {
     "label": "Theme",
