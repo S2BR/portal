@@ -83,4 +83,28 @@ describe("portalFetch", () => {
     expect(res.status).toBe(500);
     expect(res.data).toEqual({});
   });
+
+  it("fails closed on a 2xx whose body isn't JSON (misrouted HTML page)", async () => {
+    fetchMock.mockResolvedValue(
+      new Response("<!DOCTYPE html><html></html>", {
+        status: 200,
+        headers: { "content-type": "text/html" },
+      }),
+    );
+
+    const res = await portalFetch({ method: "POST", path: "/auth/login" });
+
+    // A 200 that isn't JSON must never read as a successful API call.
+    expect(res.ok).toBe(false);
+    expect(res.data).toEqual({});
+  });
+
+  it("treats an empty 2xx body as an ok, empty result", async () => {
+    fetchMock.mockResolvedValue(new Response("", { status: 200 }));
+
+    const res = await portalFetch({ path: "/x" });
+
+    expect(res.ok).toBe(true);
+    expect(res.data).toEqual({});
+  });
 });

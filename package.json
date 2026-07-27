@@ -18,9 +18,11 @@
   "dependencies": {
     "@hcaptcha/react-hcaptcha": "^2.0.2",
     "@marsidev/react-turnstile": "^1.5.3",
+    "@simplewebauthn/browser": "^13.3.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "input-otp": "^1.4.2",
+    "jose": "^6.2.4",
     "lucide-react": "^1.27.0",
     "next": "16.2.12",
     "next-intl": "^4.13.4",
