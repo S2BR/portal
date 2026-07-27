@@ -1,15 +1,11 @@
-import { getTranslations } from "next-intl/server";
-
+import { SignOutButton } from "@/components/auth/sign-out-button";
 import { Brand } from "@/components/brand";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Button } from "@/components/ui/button";
 
-export default async function AppLayout({
+export default function AppLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const t = await getTranslations("nav");
-
   return (
     <div className="flex min-h-full flex-col">
       <header className="border-b">
@@ -18,10 +14,7 @@ export default async function AppLayout({
           <div className="ml-auto flex items-center gap-2">
             <LocaleSwitcher />
             <ThemeToggle />
-            {/* Wired to the BFF logout handler with the auth flows. */}
-            <Button variant="outline" size="sm">
-              {t("signOut")}
-            </Button>
+            <SignOutButton />
           </div>
         </div>
       </header>

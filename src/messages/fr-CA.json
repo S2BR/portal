@@ -5,9 +5,31 @@
   "auth": {
     "signIn": {
       "title": "Se connecter",
-      "subtitle": "Connectez-vous à votre compte S2BR Portal.",
-      "comingSoon": "La connexion est en cours de développement — les parcours d'authentification arrivent bientôt."
-    }
+      "subtitle": "Connectez-vous à votre compte S2BR Portal."
+    },
+    "fields": {
+      "email": "Courriel",
+      "password": "Mot de passe",
+      "code": "Code de vérification"
+    },
+    "login": {
+      "submit": "Se connecter",
+      "otpTitle": "Vérifiez votre courriel",
+      "otpSubtitle": "Nous avons envoyé un code de vérification à {email}.",
+      "otpSubmit": "Vérifier",
+      "twoFactorTitle": "Authentification à deux facteurs",
+      "twoFactorSubtitle": "Entrez le code de votre application d'authentification.",
+      "back": "Retour à la connexion"
+    },
+    "errors": {
+      "email": "Entrez une adresse courriel valide.",
+      "password": "Entrez votre mot de passe.",
+      "code": "Entrez le code de vérification.",
+      "invalidCredentials": "Ces identifiants ne correspondent pas à nos dossiers.",
+      "rateLimited": "Trop de tentatives. Veuillez patienter un moment et réessayer.",
+      "generic": "Une erreur s'est produite. Veuillez réessayer."
+    },
+    "captchaRequired": "Une vérification humaine est requise pour vous connecter. Le widget intégré arrive bientôt; pour l'instant, gardez le captcha désactivé dans l'administration du portail."
   },
   "dashboard": {
     "title": "Tableau de bord",

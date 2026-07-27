@@ -5,9 +5,31 @@
   "auth": {
     "signIn": {
       "title": "Entrar",
-      "subtitle": "Entre na sua conta do S2BR Portal.",
-      "comingSoon": "O login está sendo construído — os fluxos de autenticação chegarão em seguida."
-    }
+      "subtitle": "Entre na sua conta do S2BR Portal."
+    },
+    "fields": {
+      "email": "E-mail",
+      "password": "Senha",
+      "code": "Código de verificação"
+    },
+    "login": {
+      "submit": "Entrar",
+      "otpTitle": "Verifique seu e-mail",
+      "otpSubtitle": "Enviamos um código de verificação para {email}.",
+      "otpSubmit": "Verificar",
+      "twoFactorTitle": "Autenticação de dois fatores",
+      "twoFactorSubtitle": "Digite o código do seu aplicativo autenticador.",
+      "back": "Voltar para entrar"
+    },
+    "errors": {
+      "email": "Digite um endereço de e-mail válido.",
+      "password": "Digite sua senha.",
+      "code": "Digite o código de verificação.",
+      "invalidCredentials": "Essas credenciais não correspondem aos nossos registros.",
+      "rateLimited": "Muitas tentativas. Aguarde um momento e tente novamente.",
+      "generic": "Algo deu errado. Tente novamente."
+    },
+    "captchaRequired": "É necessária verificação humana para entrar. O widget integrado chegará em breve; por enquanto, mantenha o captcha desativado no painel do portal."
   },
   "dashboard": {
     "title": "Painel",

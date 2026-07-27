@@ -1,28 +1,35 @@
 import Image from "next/image";
-import { getTranslations } from "next-intl/server";
 
+import { LoginForm } from "@/components/auth/login-form";
 import { Card, CardContent } from "@/components/ui/card";
+import { getAppConfig } from "@/lib/api/app-config";
 
-export default async function LoginPage() {
-  const t = await getTranslations("auth.signIn");
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string }>;
+}) {
+  const [config, params] = await Promise.all([getAppConfig(), searchParams]);
+  const nextPath =
+    typeof params.next === "string" && params.next.startsWith("/")
+      ? params.next
+      : "/";
 
   return (
     <Card className="w-full max-w-sm">
-      <CardContent className="flex flex-col items-center gap-4 py-8 text-center">
-        <Image
-          src="/s2br.svg"
-          alt="S2BR"
-          width={56}
-          height={56}
-          priority
-          unoptimized
-          className="rounded-xl"
-        />
-        <div className="space-y-1">
-          <h1 className="text-xl font-semibold tracking-tight">{t("title")}</h1>
-          <p className="text-muted-foreground text-sm">{t("subtitle")}</p>
+      <CardContent className="flex flex-col gap-6 py-8">
+        <div className="flex justify-center">
+          <Image
+            src="/s2br.svg"
+            alt="S2BR"
+            width={56}
+            height={56}
+            priority
+            unoptimized
+            className="rounded-xl"
+          />
         </div>
-        <p className="text-muted-foreground text-sm">{t("comingSoon")}</p>
+        <LoginForm captchaRequired={config.captcha.login} nextPath={nextPath} />
       </CardContent>
     </Card>
   );

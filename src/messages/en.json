@@ -5,9 +5,31 @@
   "auth": {
     "signIn": {
       "title": "Sign in",
-      "subtitle": "Sign in to your S2BR Portal account.",
-      "comingSoon": "Sign-in is being built — the authentication flows are coming next."
-    }
+      "subtitle": "Sign in to your S2BR Portal account."
+    },
+    "fields": {
+      "email": "Email",
+      "password": "Password",
+      "code": "Verification code"
+    },
+    "login": {
+      "submit": "Sign in",
+      "otpTitle": "Check your email",
+      "otpSubtitle": "We sent a verification code to {email}.",
+      "otpSubmit": "Verify",
+      "twoFactorTitle": "Two-factor authentication",
+      "twoFactorSubtitle": "Enter the code from your authenticator app.",
+      "back": "Back to sign in"
+    },
+    "errors": {
+      "email": "Enter a valid email address.",
+      "password": "Enter your password.",
+      "code": "Enter the verification code.",
+      "invalidCredentials": "Those credentials don't match our records.",
+      "rateLimited": "Too many attempts. Please wait a moment and try again.",
+      "generic": "Something went wrong. Please try again."
+    },
+    "captchaRequired": "Human verification is required to sign in. The inline widget is coming next — for now, keep captcha disabled in the portal admin."
   },
   "dashboard": {
     "title": "Dashboard",

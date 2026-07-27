@@ -5,9 +5,31 @@
   "auth": {
     "signIn": {
       "title": "Iniciar sesión",
-      "subtitle": "Inicia sesión en tu cuenta de S2BR Portal.",
-      "comingSoon": "El inicio de sesión se está construyendo: los flujos de autenticación llegarán a continuación."
-    }
+      "subtitle": "Inicia sesión en tu cuenta de S2BR Portal."
+    },
+    "fields": {
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "code": "Código de verificación"
+    },
+    "login": {
+      "submit": "Iniciar sesión",
+      "otpTitle": "Revisa tu correo",
+      "otpSubtitle": "Enviamos un código de verificación a {email}.",
+      "otpSubmit": "Verificar",
+      "twoFactorTitle": "Autenticación de dos factores",
+      "twoFactorSubtitle": "Introduce el código de tu aplicación de autenticación.",
+      "back": "Volver a iniciar sesión"
+    },
+    "errors": {
+      "email": "Introduce una dirección de correo válida.",
+      "password": "Introduce tu contraseña.",
+      "code": "Introduce el código de verificación.",
+      "invalidCredentials": "Las credenciales no coinciden con nuestros registros.",
+      "rateLimited": "Demasiados intentos. Espera un momento e inténtalo de nuevo.",
+      "generic": "Algo salió mal. Inténtalo de nuevo."
+    },
+    "captchaRequired": "Se requiere verificación humana para iniciar sesión. El widget integrado llegará pronto; por ahora, mantén el captcha desactivado en el panel del portal."
   },
   "dashboard": {
     "title": "Panel",
