@@ -16,15 +16,15 @@ function negotiateLocale(header: string | null): Locale {
   }
 
   for (const segment of header.split(",")) {
-    const tag = segment.split(";")[0]?.trim().replace("-", "_");
+    const tag = segment.split(";")[0]?.trim();
     if (!tag) {
       continue;
     }
     if (isLocale(tag)) {
       return tag;
     }
-    const language = tag.split("_")[0];
-    const match = locales.find((locale) => locale.split("_")[0] === language);
+    const language = tag.split("-")[0];
+    const match = locales.find((locale) => locale.split("-")[0] === language);
     if (match) {
       return match;
     }

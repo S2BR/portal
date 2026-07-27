@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import en from "@/messages/en.json";
 import es from "@/messages/es.json";
-import frCA from "@/messages/fr_CA.json";
-import ptBR from "@/messages/pt_BR.json";
+import frCA from "@/messages/fr-CA.json";
+import ptBR from "@/messages/pt-BR.json";
 
 import { locales } from "./config";
 
@@ -21,8 +21,8 @@ function flattenKeys(messages: Messages, prefix = ""): string[] {
 const catalogs: Record<string, Messages> = {
   en,
   es,
-  fr_CA: frCA,
-  pt_BR: ptBR,
+  "fr-CA": frCA,
+  "pt-BR": ptBR,
 };
 
 describe("i18n message catalogs", () => {
