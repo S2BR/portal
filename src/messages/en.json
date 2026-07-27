@@ -64,7 +64,7 @@
       "rateLimited": "Too many attempts. Please wait a moment and try again.",
       "generic": "Something went wrong. Please try again."
     },
-    "captchaRequired": "Human verification is required to continue. The inline widget is coming next — for now, keep captcha disabled in the portal admin."
+    "captchaUnsupported": "Verification isn't available right now. Please try again later."
   },
   "dashboard": {
     "title": "Dashboard",

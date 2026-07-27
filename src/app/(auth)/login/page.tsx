@@ -4,15 +4,13 @@ import { getTranslations } from "next-intl/server";
 
 import { LoginForm } from "@/components/auth/login-form";
 import { Card, CardContent } from "@/components/ui/card";
-import { getAppConfig } from "@/lib/api/app-config";
 
 export default async function LoginPage({
   searchParams,
 }: {
   searchParams: Promise<{ next?: string }>;
 }) {
-  const [config, params, t] = await Promise.all([
-    getAppConfig(),
+  const [params, t] = await Promise.all([
     searchParams,
     getTranslations("auth"),
   ]);
@@ -35,7 +33,7 @@ export default async function LoginPage({
             className="rounded-xl"
           />
         </div>
-        <LoginForm captchaRequired={config.captcha.login} nextPath={nextPath} />
+        <LoginForm nextPath={nextPath} />
         <div className="text-muted-foreground space-y-2 text-center text-sm">
           <p>
             <Link

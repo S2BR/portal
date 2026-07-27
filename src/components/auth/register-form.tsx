@@ -4,23 +4,26 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, type FormEvent } from "react";
 
+import { Captcha, useCaptcha } from "@/components/auth/captcha";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { AppConfig } from "@/lib/api/types";
 import { checkPassword } from "@/lib/auth/password";
 
-interface RegisterFormProps {
-  passwordPolicy: AppConfig["password"];
-  captchaRequired: boolean;
-}
-
 export function RegisterForm({
   passwordPolicy,
-  captchaRequired,
-}: RegisterFormProps) {
+}: {
+  passwordPolicy: AppConfig["password"];
+}) {
   const t = useTranslations("auth");
   const router = useRouter();
+  const {
+    challenge,
+    token: captchaToken,
+    setToken: setCaptchaToken,
+    refresh: refreshCaptcha,
+  } = useCaptcha("register");
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -59,6 +62,9 @@ export function RegisterForm({
           email,
           password,
           password_confirmation: confirm,
+          ...(challenge?.required && captchaToken
+            ? { captcha_token: captchaToken }
+            : {}),
         }),
       });
       const data = (await response.json()) as {
@@ -75,16 +81,21 @@ export function RegisterForm({
           return;
         case "rate_limited":
           setError(t("errors.rateLimited"));
-          return;
+          break;
         default:
           setError(data.message ?? t("errors.generic"));
       }
+      // Reached only on failure — the single-use challenge is spent, re-issue one.
+      void refreshCaptcha();
     } catch {
       setError(t("errors.generic"));
+      void refreshCaptcha();
     } finally {
       setPending(false);
     }
   }
+
+  const captchaBlocking = Boolean(challenge?.required) && !captchaToken;
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-4">
@@ -139,13 +150,9 @@ export function RegisterForm({
           onChange={(event) => setConfirm(event.target.value)}
         />
       </div>
-      {captchaRequired ? (
-        <p className="bg-muted text-muted-foreground rounded-md p-3 text-xs">
-          {t("captchaRequired")}
-        </p>
-      ) : null}
+      <Captcha challenge={challenge} onToken={setCaptchaToken} />
       {error ? <p className="text-destructive text-sm">{error}</p> : null}
-      <Button type="submit" disabled={pending || captchaRequired}>
+      <Button type="submit" disabled={pending || captchaBlocking}>
         {t("register.submit")}
       </Button>
     </form>

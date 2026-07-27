@@ -26,10 +26,7 @@ export default async function RegisterPage() {
             className="rounded-xl"
           />
         </div>
-        <RegisterForm
-          passwordPolicy={config.password}
-          captchaRequired={config.captcha.register}
-        />
+        <RegisterForm passwordPolicy={config.password} />
         <p className="text-muted-foreground text-center text-sm">
           {t("links.haveAccount")}{" "}
           <Link

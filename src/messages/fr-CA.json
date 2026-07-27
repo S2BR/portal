@@ -64,7 +64,7 @@
       "rateLimited": "Trop de tentatives. Veuillez patienter un moment et réessayer.",
       "generic": "Une erreur s'est produite. Veuillez réessayer."
     },
-    "captchaRequired": "Une vérification humaine est requise pour continuer. Le widget intégré arrive bientôt; pour l'instant, gardez le captcha désactivé dans l'administration du portail."
+    "captchaUnsupported": "La vérification n'est pas disponible pour le moment. Veuillez réessayer plus tard."
   },
   "dashboard": {
     "title": "Tableau de bord",

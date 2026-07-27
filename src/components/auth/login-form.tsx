@@ -4,20 +4,22 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, type FormEvent } from "react";
 
+import { Captcha, useCaptcha } from "@/components/auth/captcha";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 type Step = "credentials" | "login_otp_required" | "two_factor_required";
 
-interface LoginFormProps {
-  captchaRequired: boolean;
-  nextPath: string;
-}
-
-export function LoginForm({ captchaRequired, nextPath }: LoginFormProps) {
+export function LoginForm({ nextPath }: { nextPath: string }) {
   const t = useTranslations("auth");
   const router = useRouter();
+  const {
+    challenge,
+    token: captchaToken,
+    setToken: setCaptchaToken,
+    refresh: refreshCaptcha,
+  } = useCaptcha("login");
 
   const [step, setStep] = useState<Step>("credentials");
   const [email, setEmail] = useState("");
@@ -26,7 +28,7 @@ export function LoginForm({ captchaRequired, nextPath }: LoginFormProps) {
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
-  async function submit(payload: Record<string, string>) {
+  async function submit(payload: Record<string, string>): Promise<string> {
     setPending(true);
     setError(null);
     try {
@@ -41,29 +43,31 @@ export function LoginForm({ captchaRequired, nextPath }: LoginFormProps) {
         case "authenticated":
           router.replace(nextPath);
           router.refresh();
-          return;
+          break;
         case "login_otp_required":
         case "two_factor_required":
           setStep(data.status);
           setCode("");
-          return;
+          break;
         case "email_unverified":
           router.push(`/verify-email?email=${encodeURIComponent(email)}`);
-          return;
+          break;
         case "rate_limited":
           setError(t("errors.rateLimited"));
-          return;
+          break;
         default:
           setError(t("errors.invalidCredentials"));
       }
+      return data.status ?? "invalid";
     } catch {
       setError(t("errors.generic"));
+      return "error";
     } finally {
       setPending(false);
     }
   }
 
-  function onSubmitCredentials(event: FormEvent) {
+  async function onSubmitCredentials(event: FormEvent) {
     event.preventDefault();
     if (!email.includes("@")) {
       setError(t("errors.email"));
@@ -73,7 +77,21 @@ export function LoginForm({ captchaRequired, nextPath }: LoginFormProps) {
       setError(t("errors.password"));
       return;
     }
-    void submit({ email, password });
+    const status = await submit({
+      email,
+      password,
+      ...(challenge?.required && captchaToken
+        ? { captcha_token: captchaToken }
+        : {}),
+    });
+    // Challenges are single-use; a failed attempt burns it, so issue a fresh one.
+    if (
+      status === "invalid" ||
+      status === "rate_limited" ||
+      status === "error"
+    ) {
+      void refreshCaptcha();
+    }
   }
 
   function onSubmitCode(event: FormEvent) {
@@ -130,6 +148,8 @@ export function LoginForm({ captchaRequired, nextPath }: LoginFormProps) {
     );
   }
 
+  const captchaBlocking = Boolean(challenge?.required) && !captchaToken;
+
   return (
     <form onSubmit={onSubmitCredentials} className="flex flex-col gap-4">
       <div className="space-y-1 text-center">
@@ -159,13 +179,9 @@ export function LoginForm({ captchaRequired, nextPath }: LoginFormProps) {
           onChange={(event) => setPassword(event.target.value)}
         />
       </div>
-      {captchaRequired ? (
-        <p className="bg-muted text-muted-foreground rounded-md p-3 text-xs">
-          {t("captchaRequired")}
-        </p>
-      ) : null}
+      <Captcha challenge={challenge} onToken={setCaptchaToken} />
       {error ? <p className="text-destructive text-sm">{error}</p> : null}
-      <Button type="submit" disabled={pending || captchaRequired}>
+      <Button type="submit" disabled={pending || captchaBlocking}>
         {t("login.submit")}
       </Button>
     </form>

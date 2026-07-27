@@ -51,3 +51,17 @@ export interface ApiError {
   errors?: Record<string, string[]>;
   status?: string;
 }
+
+/**
+ * A captcha challenge for a web client. `required: false` means the flow needs
+ * no captcha. Otherwise the descriptor is provider-agnostic — `site_key` for
+ * token widgets (Turnstile/hCaptcha/reCAPTCHA), `question` for the math driver —
+ * bound to a single-use `challenge_id`. The client submits `"<challenge_id>~<answer>"`.
+ */
+export interface CaptchaChallenge {
+  required: boolean;
+  challenge_id?: string;
+  driver?: string;
+  site_key?: string;
+  question?: string;
+}

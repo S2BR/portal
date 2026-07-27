@@ -64,7 +64,7 @@
       "rateLimited": "Demasiados intentos. Espera un momento e inténtalo de nuevo.",
       "generic": "Algo salió mal. Inténtalo de nuevo."
     },
-    "captchaRequired": "Se requiere verificación humana para continuar. El widget integrado llegará pronto; por ahora, mantén el captcha desactivado en el panel del portal."
+    "captchaUnsupported": "La verificación no está disponible en este momento. Inténtalo de nuevo más tarde."
   },
   "dashboard": {
     "title": "Panel",
