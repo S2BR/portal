@@ -100,6 +100,18 @@
     "disablePrompt": "Enter your password to turn off two-factor authentication.",
     "invalid": "That code or password is incorrect."
   },
+  "emailSettings": {
+    "title": "Email address",
+    "change": "Change email",
+    "newEmail": "New email",
+    "submit": "Send verification code",
+    "verifyTitle": "Verify your new email",
+    "verifySubtitle": "Enter the code we sent to {email}.",
+    "verifySubmit": "Confirm",
+    "cancel": "Cancel",
+    "wrongPassword": "That password is incorrect.",
+    "invalidCode": "That code is invalid or has expired."
+  },
   "theme": {
     "label": "Theme",
     "light": "Light",

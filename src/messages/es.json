@@ -100,6 +100,18 @@
     "disablePrompt": "Introduce tu contraseña para desactivar la autenticación de dos factores.",
     "invalid": "Ese código o contraseña es incorrecto."
   },
+  "emailSettings": {
+    "title": "Dirección de correo",
+    "change": "Cambiar correo",
+    "newEmail": "Nuevo correo",
+    "submit": "Enviar código de verificación",
+    "verifyTitle": "Verifica tu nuevo correo",
+    "verifySubtitle": "Introduce el código que enviamos a {email}.",
+    "verifySubmit": "Confirmar",
+    "cancel": "Cancelar",
+    "wrongPassword": "Esa contraseña es incorrecta.",
+    "invalidCode": "Ese código no es válido o ha caducado."
+  },
   "theme": {
     "label": "Tema",
     "light": "Claro",

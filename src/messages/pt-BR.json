@@ -100,6 +100,18 @@
     "disablePrompt": "Digite sua senha para desativar a autenticação de dois fatores.",
     "invalid": "Esse código ou senha está incorreto."
   },
+  "emailSettings": {
+    "title": "Endereço de e-mail",
+    "change": "Alterar e-mail",
+    "newEmail": "Novo e-mail",
+    "submit": "Enviar código de verificação",
+    "verifyTitle": "Verifique seu novo e-mail",
+    "verifySubtitle": "Digite o código que enviamos para {email}.",
+    "verifySubmit": "Confirmar",
+    "cancel": "Cancelar",
+    "wrongPassword": "Essa senha está incorreta.",
+    "invalidCode": "Esse código é inválido ou expirou."
+  },
   "theme": {
     "label": "Tema",
     "light": "Claro",

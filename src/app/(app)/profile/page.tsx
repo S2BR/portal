@@ -3,6 +3,7 @@
 import { useFormatter, useTranslations } from "next-intl";
 
 import { useCurrentUser } from "@/components/auth/current-user";
+import { EmailSettings } from "@/components/auth/email-settings";
 import { TwoFactorSettings } from "@/components/auth/two-factor-settings";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -33,10 +34,6 @@ export default function ProfilePage() {
           <CardTitle>{user.name}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4 text-sm">
-          <div className="flex justify-between gap-4">
-            <span className="text-muted-foreground">{t("email")}</span>
-            <span className="truncate">{user.email}</span>
-          </div>
           <div className="flex flex-wrap gap-2">
             <Badge active={user.email_verified}>
               {user.email_verified ? t("emailVerified") : t("emailNotVerified")}
@@ -54,6 +51,7 @@ export default function ProfilePage() {
           </p>
         </CardContent>
       </Card>
+      <EmailSettings />
       <TwoFactorSettings />
     </div>
   );

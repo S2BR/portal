@@ -100,6 +100,18 @@
     "disablePrompt": "Entrez votre mot de passe pour désactiver l'authentification à deux facteurs.",
     "invalid": "Ce code ou ce mot de passe est incorrect."
   },
+  "emailSettings": {
+    "title": "Adresse courriel",
+    "change": "Changer de courriel",
+    "newEmail": "Nouveau courriel",
+    "submit": "Envoyer le code de vérification",
+    "verifyTitle": "Vérifiez votre nouveau courriel",
+    "verifySubtitle": "Entrez le code que nous avons envoyé à {email}.",
+    "verifySubmit": "Confirmer",
+    "cancel": "Annuler",
+    "wrongPassword": "Ce mot de passe est incorrect.",
+    "invalidCode": "Ce code est invalide ou a expiré."
+  },
   "theme": {
     "label": "Thème",
     "light": "Clair",
