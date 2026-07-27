@@ -4,22 +4,23 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, type FormEvent } from "react";
 
+import { OtpInput } from "@/components/auth/otp-input";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useOtpLength } from "@/lib/config/use-app-config";
 
 export function VerifyEmailForm({ email }: { email: string }) {
   const t = useTranslations("auth");
   const router = useRouter();
+  const otpLength = useOtpLength();
 
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
-  async function onSubmit(event: FormEvent) {
-    event.preventDefault();
-    if (!code.trim()) {
+  async function verify(codeValue: string) {
+    if (!codeValue.trim()) {
       setError(t("errors.code"));
       return;
     }
@@ -30,7 +31,7 @@ export function VerifyEmailForm({ email }: { email: string }) {
       const response = await fetch("/api/auth/verify-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, code: code.trim() }),
+        body: JSON.stringify({ email, code: codeValue.trim() }),
       });
       const data = (await response.json()) as { status?: string };
       if (data.status === "authenticated") {
@@ -44,6 +45,11 @@ export function VerifyEmailForm({ email }: { email: string }) {
     } finally {
       setPending(false);
     }
+  }
+
+  function onSubmit(event: FormEvent) {
+    event.preventDefault();
+    void verify(code);
   }
 
   async function resend() {
@@ -69,13 +75,14 @@ export function VerifyEmailForm({ email }: { email: string }) {
       </div>
       <div className="space-y-2">
         <Label htmlFor="code">{t("fields.code")}</Label>
-        <Input
+        <OtpInput
           id="code"
-          inputMode="numeric"
-          autoComplete="one-time-code"
+          length={otpLength}
           value={code}
-          onChange={(event) => setCode(event.target.value)}
+          onChange={setCode}
+          onComplete={(value) => void verify(value)}
           autoFocus
+          disabled={pending}
         />
       </div>
       {error ? <p className="text-destructive text-sm">{error}</p> : null}

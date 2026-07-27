@@ -4,10 +4,12 @@ import { useTranslations } from "next-intl";
 import { useState, type FormEvent } from "react";
 
 import { useCurrentUser } from "@/components/auth/current-user";
+import { OtpInput } from "@/components/auth/otp-input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useOtpLength } from "@/lib/config/use-app-config";
 
 type Mode = "idle" | "changing" | "verifying";
 
@@ -23,6 +25,7 @@ export function EmailSettings() {
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const otpLength = useOtpLength();
 
   if (!user) {
     return null;
@@ -68,9 +71,8 @@ export function EmailSettings() {
     }
   }
 
-  async function verifyChange(event: FormEvent) {
-    event.preventDefault();
-    if (!code.trim()) {
+  async function verifyCode(codeValue: string) {
+    if (!codeValue.trim()) {
       setError(authErrors("code"));
       return;
     }
@@ -80,7 +82,7 @@ export function EmailSettings() {
       const response = await fetch("/api/auth/email/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: code.trim() }),
+        body: JSON.stringify({ code: codeValue.trim() }),
       });
       const data = (await response.json()) as { status?: string };
       if (data.status === "ok") {
@@ -94,6 +96,11 @@ export function EmailSettings() {
     } finally {
       setPending(false);
     }
+  }
+
+  function verifyChange(event: FormEvent) {
+    event.preventDefault();
+    void verifyCode(code);
   }
 
   return (
@@ -110,13 +117,13 @@ export function EmailSettings() {
             </p>
             <div className="space-y-2">
               <Label htmlFor="email-code">{fields("code")}</Label>
-              <Input
+              <OtpInput
                 id="email-code"
-                inputMode="numeric"
-                autoComplete="one-time-code"
+                length={otpLength}
                 value={code}
-                onChange={(event) => setCode(event.target.value)}
+                onChange={setCode}
                 autoFocus
+                disabled={pending}
               />
             </div>
             {error ? <p className="text-destructive text-sm">{error}</p> : null}

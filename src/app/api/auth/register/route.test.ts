@@ -62,6 +62,20 @@ describe("POST /api/auth/register", () => {
     expect(body.errors?.password?.[0]).toBe("weak");
   });
 
+  it("reports a captcha failure distinctly", async () => {
+    fetchMock.mockResolvedValue(
+      portalResponse(422, {
+        message: "The given data was invalid.",
+        errors: { captcha_token: ["Human verification failed."] },
+      }),
+    );
+
+    const res = await POST(request(validBody));
+
+    expect(res.status).toBe(422);
+    expect((await res.json()).status).toBe("captcha_failed");
+  });
+
   it("rejects a malformed body without calling the portal", async () => {
     const res = await POST(request({ email: "a@b.co" }));
 

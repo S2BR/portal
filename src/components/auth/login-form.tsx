@@ -5,9 +5,11 @@ import { useTranslations } from "next-intl";
 import { useState, type FormEvent } from "react";
 
 import { Captcha, useCaptcha } from "@/components/auth/captcha";
+import { OtpInput } from "@/components/auth/otp-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useOtpLength } from "@/lib/config/use-app-config";
 
 type Step = "credentials" | "login_otp_required" | "two_factor_required";
 
@@ -20,6 +22,7 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
     setToken: setCaptchaToken,
     refresh: refreshCaptcha,
   } = useCaptcha("login");
+  const otpLength = useOtpLength();
 
   const [step, setStep] = useState<Step>("credentials");
   const [email, setEmail] = useState("");
@@ -51,6 +54,12 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
           break;
         case "email_unverified":
           router.push(`/verify-email?email=${encodeURIComponent(email)}`);
+          break;
+        case "captcha_failed":
+          setError(t("errors.captchaFailed"));
+          break;
+        case "invalid_code":
+          setError(t("errors.invalidCode"));
           break;
         case "rate_limited":
           setError(t("errors.rateLimited"));
@@ -87,6 +96,7 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
     // Challenges are single-use; a failed attempt burns it, so issue a fresh one.
     if (
       status === "invalid" ||
+      status === "captcha_failed" ||
       status === "rate_limited" ||
       status === "error"
     ) {
@@ -94,15 +104,19 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
     }
   }
 
-  function onSubmitCode(event: FormEvent) {
-    event.preventDefault();
-    if (!code.trim()) {
+  function submitCode(codeValue: string) {
+    if (!codeValue.trim()) {
       setError(t("errors.code"));
       return;
     }
     const field =
       step === "login_otp_required" ? "login_otp" : "two_factor_code";
-    void submit({ email, password, [field]: code.trim() });
+    void submit({ email, password, [field]: codeValue.trim() });
+  }
+
+  function onSubmitCode(event: FormEvent) {
+    event.preventDefault();
+    submitCode(code);
   }
 
   if (step !== "credentials") {
@@ -121,14 +135,26 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
         </div>
         <div className="space-y-2">
           <Label htmlFor="code">{t("fields.code")}</Label>
-          <Input
-            id="code"
-            inputMode="numeric"
-            autoComplete="one-time-code"
-            value={code}
-            onChange={(event) => setCode(event.target.value)}
-            autoFocus
-          />
+          {isOtp ? (
+            <OtpInput
+              id="code"
+              length={otpLength}
+              value={code}
+              onChange={setCode}
+              onComplete={submitCode}
+              autoFocus
+              disabled={pending}
+            />
+          ) : (
+            <Input
+              id="code"
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              value={code}
+              onChange={(event) => setCode(event.target.value)}
+              autoFocus
+            />
+          )}
         </div>
         {error ? <p className="text-destructive text-sm">{error}</p> : null}
         <Button type="submit" disabled={pending}>

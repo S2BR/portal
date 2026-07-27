@@ -4,11 +4,13 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, type FormEvent } from "react";
 
+import { OtpInput } from "@/components/auth/otp-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { AppConfig } from "@/lib/api/types";
 import { checkPassword } from "@/lib/auth/password";
+import { useOtpLength } from "@/lib/config/use-app-config";
 
 export function ForgotPasswordForm({
   passwordPolicy,
@@ -25,6 +27,7 @@ export function ForgotPasswordForm({
   const [confirm, setConfirm] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const otpLength = useOtpLength();
 
   async function onRequest(event: FormEvent) {
     event.preventDefault();
@@ -101,13 +104,13 @@ export function ForgotPasswordForm({
         </div>
         <div className="space-y-2">
           <Label htmlFor="code">{t("fields.code")}</Label>
-          <Input
+          <OtpInput
             id="code"
-            inputMode="numeric"
-            autoComplete="one-time-code"
+            length={otpLength}
             value={code}
-            onChange={(event) => setCode(event.target.value)}
+            onChange={setCode}
             autoFocus
+            disabled={pending}
           />
         </div>
         <div className="space-y-2">

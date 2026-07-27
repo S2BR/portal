@@ -62,7 +62,9 @@
       "passwordMismatch": "Les mots de passe ne correspondent pas.",
       "invalidCredentials": "Ces identifiants ne correspondent pas à nos dossiers.",
       "rateLimited": "Trop de tentatives. Veuillez patienter un moment et réessayer.",
-      "generic": "Une erreur s'est produite. Veuillez réessayer."
+      "generic": "Une erreur s'est produite. Veuillez réessayer.",
+      "captchaFailed": "La vérification humaine a échoué. Veuillez réessayer.",
+      "invalidCode": "Ce code est invalide ou a expiré."
     },
     "captchaUnsupported": "La vérification n'est pas disponible pour le moment. Veuillez réessayer plus tard."
   },

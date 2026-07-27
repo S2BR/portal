@@ -62,7 +62,9 @@
       "passwordMismatch": "As senhas não coincidem.",
       "invalidCredentials": "Essas credenciais não correspondem aos nossos registros.",
       "rateLimited": "Muitas tentativas. Aguarde um momento e tente novamente.",
-      "generic": "Algo deu errado. Tente novamente."
+      "generic": "Algo deu errado. Tente novamente.",
+      "captchaFailed": "A verificação humana falhou. Tente novamente.",
+      "invalidCode": "Esse código é inválido ou expirou."
     },
     "captchaUnsupported": "A verificação não está disponível no momento. Tente novamente mais tarde."
   },

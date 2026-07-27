@@ -79,6 +79,9 @@ export function RegisterForm({
         case "registered":
           router.push("/login");
           return;
+        case "captcha_failed":
+          setError(t("errors.captchaFailed"));
+          break;
         case "rate_limited":
           setError(t("errors.rateLimited"));
           break;

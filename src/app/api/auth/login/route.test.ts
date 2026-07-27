@@ -83,6 +83,36 @@ describe("POST /api/auth/login", () => {
     expect(body.errors?.email?.[0]).toBe("nope");
   });
 
+  it("reports a captcha failure distinctly, not as bad credentials", async () => {
+    fetchMock.mockResolvedValue(
+      portalResponse(422, {
+        message: "The given data was invalid.",
+        errors: { captcha_token: ["Human verification failed."] },
+      }),
+    );
+
+    const res = await POST(request({ email: "a@b.co", password: "secret" }));
+
+    expect(res.status).toBe(422);
+    expect((await res.json()).status).toBe("captcha_failed");
+  });
+
+  it("reports a wrong second-factor code as invalid_code", async () => {
+    fetchMock.mockResolvedValue(
+      portalResponse(422, {
+        message: "The given data was invalid.",
+        errors: { login_otp: ["The code is invalid or has expired."] },
+      }),
+    );
+
+    const res = await POST(
+      request({ email: "a@b.co", password: "secret", login_otp: "000000" }),
+    );
+
+    expect(res.status).toBe(422);
+    expect((await res.json()).status).toBe("invalid_code");
+  });
+
   it("rejects a malformed body without calling the portal", async () => {
     const res = await POST(request({ email: "not-an-email" }));
 
