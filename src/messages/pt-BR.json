@@ -21,6 +21,15 @@
       "resent": "Um novo código está a caminho.",
       "expired": "Esse código é inválido ou expirou."
     },
+    "forgot": {
+      "title": "Redefina sua senha",
+      "subtitle": "Digite seu e-mail e enviaremos um código de redefinição.",
+      "submit": "Enviar código",
+      "resetTitle": "Defina uma nova senha",
+      "resetSubtitle": "Digite o código que enviamos para {email} e escolha uma nova senha.",
+      "resetSubmit": "Redefinir senha",
+      "invalidCode": "Esse código é inválido ou expirou."
+    },
     "fields": {
       "name": "Nome completo",
       "email": "E-mail",
@@ -41,7 +50,8 @@
       "noAccount": "Não tem uma conta?",
       "createAccount": "Crie uma",
       "haveAccount": "Já tem uma conta?",
-      "signIn": "Entrar"
+      "signIn": "Entrar",
+      "forgotPassword": "Esqueceu sua senha?"
     },
     "errors": {
       "name": "Digite seu nome.",

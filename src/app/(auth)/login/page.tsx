@@ -36,15 +36,25 @@ export default async function LoginPage({
           />
         </div>
         <LoginForm captchaRequired={config.captcha.login} nextPath={nextPath} />
-        <p className="text-muted-foreground text-center text-sm">
-          {t("links.noAccount")}{" "}
-          <Link
-            href="/register"
-            className="text-foreground font-medium underline-offset-4 hover:underline"
-          >
-            {t("links.createAccount")}
-          </Link>
-        </p>
+        <div className="text-muted-foreground space-y-2 text-center text-sm">
+          <p>
+            <Link
+              href="/forgot-password"
+              className="underline-offset-4 hover:underline"
+            >
+              {t("links.forgotPassword")}
+            </Link>
+          </p>
+          <p>
+            {t("links.noAccount")}{" "}
+            <Link
+              href="/register"
+              className="text-foreground font-medium underline-offset-4 hover:underline"
+            >
+              {t("links.createAccount")}
+            </Link>
+          </p>
+        </div>
       </CardContent>
     </Card>
   );

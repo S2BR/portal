@@ -21,6 +21,15 @@
       "resent": "Un nuevo código está en camino.",
       "expired": "Ese código no es válido o ha caducado."
     },
+    "forgot": {
+      "title": "Restablece tu contraseña",
+      "subtitle": "Introduce tu correo y te enviaremos un código de restablecimiento.",
+      "submit": "Enviar código",
+      "resetTitle": "Establece una nueva contraseña",
+      "resetSubtitle": "Introduce el código que enviamos a {email} y elige una nueva contraseña.",
+      "resetSubmit": "Restablecer contraseña",
+      "invalidCode": "Ese código no es válido o ha caducado."
+    },
     "fields": {
       "name": "Nombre completo",
       "email": "Correo electrónico",
@@ -41,7 +50,8 @@
       "noAccount": "¿No tienes una cuenta?",
       "createAccount": "Crea una",
       "haveAccount": "¿Ya tienes una cuenta?",
-      "signIn": "Inicia sesión"
+      "signIn": "Inicia sesión",
+      "forgotPassword": "¿Olvidaste tu contraseña?"
     },
     "errors": {
       "name": "Introduce tu nombre.",

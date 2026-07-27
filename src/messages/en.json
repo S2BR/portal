@@ -21,6 +21,15 @@
       "resent": "A new code is on its way.",
       "expired": "That code is invalid or has expired."
     },
+    "forgot": {
+      "title": "Reset your password",
+      "subtitle": "Enter your email and we'll send a reset code.",
+      "submit": "Send reset code",
+      "resetTitle": "Set a new password",
+      "resetSubtitle": "Enter the code we sent to {email} and choose a new password.",
+      "resetSubmit": "Reset password",
+      "invalidCode": "That code is invalid or has expired."
+    },
     "fields": {
       "name": "Full name",
       "email": "Email",
@@ -41,7 +50,8 @@
       "noAccount": "Don't have an account?",
       "createAccount": "Create one",
       "haveAccount": "Already have an account?",
-      "signIn": "Sign in"
+      "signIn": "Sign in",
+      "forgotPassword": "Forgot your password?"
     },
     "errors": {
       "name": "Enter your name.",

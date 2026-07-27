@@ -21,6 +21,15 @@
       "resent": "Un nouveau code est en route.",
       "expired": "Ce code est invalide ou a expiré."
     },
+    "forgot": {
+      "title": "Réinitialisez votre mot de passe",
+      "subtitle": "Entrez votre courriel et nous vous enverrons un code de réinitialisation.",
+      "submit": "Envoyer le code",
+      "resetTitle": "Définir un nouveau mot de passe",
+      "resetSubtitle": "Entrez le code que nous avons envoyé à {email} et choisissez un nouveau mot de passe.",
+      "resetSubmit": "Réinitialiser le mot de passe",
+      "invalidCode": "Ce code est invalide ou a expiré."
+    },
     "fields": {
       "name": "Nom complet",
       "email": "Courriel",
@@ -41,7 +50,8 @@
       "noAccount": "Vous n'avez pas de compte?",
       "createAccount": "Créez-en un",
       "haveAccount": "Vous avez déjà un compte?",
-      "signIn": "Se connecter"
+      "signIn": "Se connecter",
+      "forgotPassword": "Mot de passe oublié?"
     },
     "errors": {
       "name": "Entrez votre nom.",
