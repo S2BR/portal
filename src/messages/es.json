@@ -1,0 +1,28 @@
+{
+  "brand": {
+    "name": "S2BR Portal"
+  },
+  "auth": {
+    "signIn": {
+      "title": "Iniciar sesión",
+      "subtitle": "Inicia sesión en tu cuenta de S2BR Portal.",
+      "comingSoon": "El inicio de sesión se está construyendo: los flujos de autenticación llegarán a continuación."
+    }
+  },
+  "dashboard": {
+    "title": "Panel",
+    "welcome": "Bienvenido de nuevo."
+  },
+  "nav": {
+    "signOut": "Cerrar sesión"
+  },
+  "theme": {
+    "label": "Tema",
+    "light": "Claro",
+    "dark": "Oscuro",
+    "system": "Sistema"
+  },
+  "locale": {
+    "label": "Idioma"
+  }
+}

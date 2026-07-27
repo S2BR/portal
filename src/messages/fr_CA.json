@@ -1,0 +1,28 @@
+{
+  "brand": {
+    "name": "S2BR Portal"
+  },
+  "auth": {
+    "signIn": {
+      "title": "Se connecter",
+      "subtitle": "Connectez-vous à votre compte S2BR Portal.",
+      "comingSoon": "La connexion est en cours de développement — les parcours d'authentification arrivent bientôt."
+    }
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "welcome": "Bon retour."
+  },
+  "nav": {
+    "signOut": "Se déconnecter"
+  },
+  "theme": {
+    "label": "Thème",
+    "light": "Clair",
+    "dark": "Sombre",
+    "system": "Système"
+  },
+  "locale": {
+    "label": "Langue"
+  }
+}

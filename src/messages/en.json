@@ -1,0 +1,28 @@
+{
+  "brand": {
+    "name": "S2BR Portal"
+  },
+  "auth": {
+    "signIn": {
+      "title": "Sign in",
+      "subtitle": "Sign in to your S2BR Portal account.",
+      "comingSoon": "Sign-in is being built — the authentication flows are coming next."
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back."
+  },
+  "nav": {
+    "signOut": "Sign out"
+  },
+  "theme": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "locale": {
+    "label": "Language"
+  }
+}
