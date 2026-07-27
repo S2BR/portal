@@ -7,9 +7,25 @@
       "title": "Entrar",
       "subtitle": "Entre na sua conta do S2BR Portal."
     },
+    "register": {
+      "title": "Crie sua conta",
+      "subtitle": "Junte-se ao S2BR Portal.",
+      "submit": "Criar conta",
+      "passwordHint": "Pelo menos {min} caracteres, com letras maiúsculas e minúsculas, um número e um símbolo."
+    },
+    "verify": {
+      "title": "Verifique seu e-mail",
+      "subtitle": "Digite o código que enviamos para {email}.",
+      "submit": "Verificar e-mail",
+      "resend": "Reenviar código",
+      "resent": "Um novo código está a caminho.",
+      "expired": "Esse código é inválido ou expirou."
+    },
     "fields": {
+      "name": "Nome completo",
       "email": "E-mail",
       "password": "Senha",
+      "confirmPassword": "Confirmar senha",
       "code": "Código de verificação"
     },
     "login": {
@@ -21,15 +37,24 @@
       "twoFactorSubtitle": "Digite o código do seu aplicativo autenticador.",
       "back": "Voltar para entrar"
     },
+    "links": {
+      "noAccount": "Não tem uma conta?",
+      "createAccount": "Crie uma",
+      "haveAccount": "Já tem uma conta?",
+      "signIn": "Entrar"
+    },
     "errors": {
+      "name": "Digite seu nome.",
       "email": "Digite um endereço de e-mail válido.",
       "password": "Digite sua senha.",
       "code": "Digite o código de verificação.",
+      "passwordPolicy": "Sua senha não atende aos requisitos.",
+      "passwordMismatch": "As senhas não coincidem.",
       "invalidCredentials": "Essas credenciais não correspondem aos nossos registros.",
       "rateLimited": "Muitas tentativas. Aguarde um momento e tente novamente.",
       "generic": "Algo deu errado. Tente novamente."
     },
-    "captchaRequired": "É necessária verificação humana para entrar. O widget integrado chegará em breve; por enquanto, mantenha o captcha desativado no painel do portal."
+    "captchaRequired": "É necessária verificação humana para continuar. O widget integrado chegará em breve; por enquanto, mantenha o captcha desativado no painel do portal."
   },
   "dashboard": {
     "title": "Painel",

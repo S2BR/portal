@@ -7,9 +7,25 @@
       "title": "Iniciar sesión",
       "subtitle": "Inicia sesión en tu cuenta de S2BR Portal."
     },
+    "register": {
+      "title": "Crea tu cuenta",
+      "subtitle": "Únete a S2BR Portal.",
+      "submit": "Crear cuenta",
+      "passwordHint": "Al menos {min} caracteres, con mayúsculas y minúsculas, un número y un símbolo."
+    },
+    "verify": {
+      "title": "Verifica tu correo",
+      "subtitle": "Introduce el código que enviamos a {email}.",
+      "submit": "Verificar correo",
+      "resend": "Reenviar código",
+      "resent": "Un nuevo código está en camino.",
+      "expired": "Ese código no es válido o ha caducado."
+    },
     "fields": {
+      "name": "Nombre completo",
       "email": "Correo electrónico",
       "password": "Contraseña",
+      "confirmPassword": "Confirmar contraseña",
       "code": "Código de verificación"
     },
     "login": {
@@ -21,15 +37,24 @@
       "twoFactorSubtitle": "Introduce el código de tu aplicación de autenticación.",
       "back": "Volver a iniciar sesión"
     },
+    "links": {
+      "noAccount": "¿No tienes una cuenta?",
+      "createAccount": "Crea una",
+      "haveAccount": "¿Ya tienes una cuenta?",
+      "signIn": "Inicia sesión"
+    },
     "errors": {
+      "name": "Introduce tu nombre.",
       "email": "Introduce una dirección de correo válida.",
       "password": "Introduce tu contraseña.",
       "code": "Introduce el código de verificación.",
+      "passwordPolicy": "Tu contraseña no cumple los requisitos.",
+      "passwordMismatch": "Las contraseñas no coinciden.",
       "invalidCredentials": "Las credenciales no coinciden con nuestros registros.",
       "rateLimited": "Demasiados intentos. Espera un momento e inténtalo de nuevo.",
       "generic": "Algo salió mal. Inténtalo de nuevo."
     },
-    "captchaRequired": "Se requiere verificación humana para iniciar sesión. El widget integrado llegará pronto; por ahora, mantén el captcha desactivado en el panel del portal."
+    "captchaRequired": "Se requiere verificación humana para continuar. El widget integrado llegará pronto; por ahora, mantén el captcha desactivado en el panel del portal."
   },
   "dashboard": {
     "title": "Panel",

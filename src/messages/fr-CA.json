@@ -7,9 +7,25 @@
       "title": "Se connecter",
       "subtitle": "Connectez-vous à votre compte S2BR Portal."
     },
+    "register": {
+      "title": "Créez votre compte",
+      "subtitle": "Rejoignez S2BR Portal.",
+      "submit": "Créer un compte",
+      "passwordHint": "Au moins {min} caractères, avec des majuscules et des minuscules, un chiffre et un symbole."
+    },
+    "verify": {
+      "title": "Vérifiez votre courriel",
+      "subtitle": "Entrez le code que nous avons envoyé à {email}.",
+      "submit": "Vérifier le courriel",
+      "resend": "Renvoyer le code",
+      "resent": "Un nouveau code est en route.",
+      "expired": "Ce code est invalide ou a expiré."
+    },
     "fields": {
+      "name": "Nom complet",
       "email": "Courriel",
       "password": "Mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
       "code": "Code de vérification"
     },
     "login": {
@@ -21,15 +37,24 @@
       "twoFactorSubtitle": "Entrez le code de votre application d'authentification.",
       "back": "Retour à la connexion"
     },
+    "links": {
+      "noAccount": "Vous n'avez pas de compte?",
+      "createAccount": "Créez-en un",
+      "haveAccount": "Vous avez déjà un compte?",
+      "signIn": "Se connecter"
+    },
     "errors": {
+      "name": "Entrez votre nom.",
       "email": "Entrez une adresse courriel valide.",
       "password": "Entrez votre mot de passe.",
       "code": "Entrez le code de vérification.",
+      "passwordPolicy": "Votre mot de passe ne respecte pas les exigences.",
+      "passwordMismatch": "Les mots de passe ne correspondent pas.",
       "invalidCredentials": "Ces identifiants ne correspondent pas à nos dossiers.",
       "rateLimited": "Trop de tentatives. Veuillez patienter un moment et réessayer.",
       "generic": "Une erreur s'est produite. Veuillez réessayer."
     },
-    "captchaRequired": "Une vérification humaine est requise pour vous connecter. Le widget intégré arrive bientôt; pour l'instant, gardez le captcha désactivé dans l'administration du portail."
+    "captchaRequired": "Une vérification humaine est requise pour continuer. Le widget intégré arrive bientôt; pour l'instant, gardez le captcha désactivé dans l'administration du portail."
   },
   "dashboard": {
     "title": "Tableau de bord",

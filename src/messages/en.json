@@ -7,9 +7,25 @@
       "title": "Sign in",
       "subtitle": "Sign in to your S2BR Portal account."
     },
+    "register": {
+      "title": "Create your account",
+      "subtitle": "Join S2BR Portal.",
+      "submit": "Create account",
+      "passwordHint": "At least {min} characters, with upper- and lower-case letters, a number, and a symbol."
+    },
+    "verify": {
+      "title": "Verify your email",
+      "subtitle": "Enter the code we sent to {email}.",
+      "submit": "Verify email",
+      "resend": "Resend code",
+      "resent": "A new code is on its way.",
+      "expired": "That code is invalid or has expired."
+    },
     "fields": {
+      "name": "Full name",
       "email": "Email",
       "password": "Password",
+      "confirmPassword": "Confirm password",
       "code": "Verification code"
     },
     "login": {
@@ -21,15 +37,24 @@
       "twoFactorSubtitle": "Enter the code from your authenticator app.",
       "back": "Back to sign in"
     },
+    "links": {
+      "noAccount": "Don't have an account?",
+      "createAccount": "Create one",
+      "haveAccount": "Already have an account?",
+      "signIn": "Sign in"
+    },
     "errors": {
+      "name": "Enter your name.",
       "email": "Enter a valid email address.",
       "password": "Enter your password.",
       "code": "Enter the verification code.",
+      "passwordPolicy": "Your password doesn't meet the requirements.",
+      "passwordMismatch": "The passwords don't match.",
       "invalidCredentials": "Those credentials don't match our records.",
       "rateLimited": "Too many attempts. Please wait a moment and try again.",
       "generic": "Something went wrong. Please try again."
     },
-    "captchaRequired": "Human verification is required to sign in. The inline widget is coming next — for now, keep captcha disabled in the portal admin."
+    "captchaRequired": "Human verification is required to continue. The inline widget is coming next — for now, keep captcha disabled in the portal admin."
   },
   "dashboard": {
     "title": "Dashboard",

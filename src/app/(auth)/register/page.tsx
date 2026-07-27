@@ -2,24 +2,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
-import { LoginForm } from "@/components/auth/login-form";
+import { RegisterForm } from "@/components/auth/register-form";
 import { Card, CardContent } from "@/components/ui/card";
 import { getAppConfig } from "@/lib/api/app-config";
 
-export default async function LoginPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ next?: string }>;
-}) {
-  const [config, params, t] = await Promise.all([
+export default async function RegisterPage() {
+  const [config, t] = await Promise.all([
     getAppConfig(),
-    searchParams,
     getTranslations("auth"),
   ]);
-  const nextPath =
-    typeof params.next === "string" && params.next.startsWith("/")
-      ? params.next
-      : "/";
 
   return (
     <Card className="w-full max-w-sm">
@@ -35,14 +26,17 @@ export default async function LoginPage({
             className="rounded-xl"
           />
         </div>
-        <LoginForm captchaRequired={config.captcha.login} nextPath={nextPath} />
+        <RegisterForm
+          passwordPolicy={config.password}
+          captchaRequired={config.captcha.register}
+        />
         <p className="text-muted-foreground text-center text-sm">
-          {t("links.noAccount")}{" "}
+          {t("links.haveAccount")}{" "}
           <Link
-            href="/register"
+            href="/login"
             className="text-foreground font-medium underline-offset-4 hover:underline"
           >
-            {t("links.createAccount")}
+            {t("links.signIn")}
           </Link>
         </p>
       </CardContent>
