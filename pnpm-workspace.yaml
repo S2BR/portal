@@ -1,0 +1,6 @@
+# This is NOT a monorepo workspace. pnpm 11 stores native build-script
+# approvals here. These two dependencies ship trusted post-install builds:
+# sharp = image optimization, unrs-resolver = ESLint's native resolver.
+allowBuilds:
+  sharp: true
+  unrs-resolver: true
