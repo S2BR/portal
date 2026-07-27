@@ -3,6 +3,7 @@
 import { useFormatter, useTranslations } from "next-intl";
 
 import { useCurrentUser } from "@/components/auth/current-user";
+import { TwoFactorSettings } from "@/components/auth/two-factor-settings";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
@@ -53,6 +54,7 @@ export default function ProfilePage() {
           </p>
         </CardContent>
       </Card>
+      <TwoFactorSettings />
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useState,
@@ -14,11 +15,13 @@ import type { AuthUser } from "@/lib/api/types";
 interface CurrentUserState {
   user: AuthUser | null;
   loading: boolean;
+  refresh: () => Promise<void>;
 }
 
 const CurrentUserContext = createContext<CurrentUserState>({
   user: null,
   loading: true,
+  refresh: async () => {},
 });
 
 export function useCurrentUser(): CurrentUserState {
@@ -26,46 +29,49 @@ export function useCurrentUser(): CurrentUserState {
 }
 
 /**
- * Loads the signed-in user once (through the BFF `/api/auth/me`, which refreshes
- * the token if needed) and shares it with the authenticated shell. If the
- * session is gone, it sends the user back to sign in.
+ * Loads the signed-in user through the BFF `/api/auth/me` (which refreshes the
+ * token if needed) and shares it with the authenticated shell. `refresh()`
+ * re-loads it after account changes. If the session is gone on first load, the
+ * user is sent back to sign in.
  */
 export function CurrentUserProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<CurrentUserState>({
-    user: null,
-    loading: true,
-  });
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  useEffect(() => {
-    let active = true;
-
-    fetch("/api/auth/me")
-      .then(async (response) => {
-        if (!active) {
-          return;
-        }
+  const load = useCallback(
+    async (redirectOnFailure: boolean) => {
+      try {
+        const response = await fetch("/api/auth/me");
         if (response.ok) {
           const data = (await response.json()) as { user: AuthUser };
-          setState({ user: data.user, loading: false });
+          setUser(data.user);
         } else {
-          setState({ user: null, loading: false });
-          router.replace("/login");
+          setUser(null);
+          if (redirectOnFailure) {
+            router.replace("/login");
+          }
         }
-      })
-      .catch(() => {
-        if (active) {
-          setState({ user: null, loading: false });
-        }
-      });
+      } catch {
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [router],
+  );
 
-    return () => {
-      active = false;
-    };
-  }, [router]);
+  useEffect(() => {
+    // One-off fetch on mount; setState only runs after the async response
+    // resolves, which this lint rule cannot see through.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void load(true);
+  }, [load]);
+
+  const refresh = useCallback(() => load(false), [load]);
 
   return (
-    <CurrentUserContext.Provider value={state}>
+    <CurrentUserContext.Provider value={{ user, loading, refresh }}>
       {children}
     </CurrentUserContext.Provider>
   );

@@ -83,6 +83,23 @@
     "twoFactorOff": "Double authentification désactivée",
     "memberSince": "Membre depuis {date}"
   },
+  "twoFactor": {
+    "title": "Authentification à deux facteurs",
+    "description": "Ajoutez une deuxième étape à la connexion avec une application d'authentification.",
+    "statusOn": "Activée",
+    "statusOff": "Désactivée",
+    "enable": "Activer",
+    "disable": "Désactiver",
+    "scan": "Numérisez ce code QR avec votre application d'authentification.",
+    "orEnter": "Ou entrez cette clé manuellement :",
+    "confirm": "Confirmer",
+    "cancel": "Annuler",
+    "recoveryTitle": "Enregistrez vos codes de récupération",
+    "recoverySubtitle": "Conservez-les en lieu sûr. Chacun peut être utilisé une fois si vous perdez votre authentificateur.",
+    "done": "Je les ai enregistrés",
+    "disablePrompt": "Entrez votre mot de passe pour désactiver l'authentification à deux facteurs.",
+    "invalid": "Ce code ou ce mot de passe est incorrect."
+  },
   "theme": {
     "label": "Thème",
     "light": "Clair",

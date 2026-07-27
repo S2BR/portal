@@ -83,6 +83,23 @@
     "twoFactorOff": "Two-factor off",
     "memberSince": "Member since {date}"
   },
+  "twoFactor": {
+    "title": "Two-factor authentication",
+    "description": "Add a second step to sign-in using an authenticator app.",
+    "statusOn": "Enabled",
+    "statusOff": "Disabled",
+    "enable": "Enable",
+    "disable": "Disable",
+    "scan": "Scan this QR code with your authenticator app.",
+    "orEnter": "Or enter this key manually:",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "recoveryTitle": "Save your recovery codes",
+    "recoverySubtitle": "Store these somewhere safe. Each can be used once if you lose your authenticator.",
+    "done": "I've saved them",
+    "disablePrompt": "Enter your password to turn off two-factor authentication.",
+    "invalid": "That code or password is incorrect."
+  },
   "theme": {
     "label": "Theme",
     "light": "Light",

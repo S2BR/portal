@@ -83,6 +83,23 @@
     "twoFactorOff": "Doble factor desactivado",
     "memberSince": "Miembro desde {date}"
   },
+  "twoFactor": {
+    "title": "Autenticación de dos factores",
+    "description": "Añade un segundo paso al inicio de sesión con una aplicación de autenticación.",
+    "statusOn": "Activada",
+    "statusOff": "Desactivada",
+    "enable": "Activar",
+    "disable": "Desactivar",
+    "scan": "Escanea este código QR con tu aplicación de autenticación.",
+    "orEnter": "O introduce esta clave manualmente:",
+    "confirm": "Confirmar",
+    "cancel": "Cancelar",
+    "recoveryTitle": "Guarda tus códigos de recuperación",
+    "recoverySubtitle": "Guárdalos en un lugar seguro. Cada uno se puede usar una vez si pierdes tu autenticador.",
+    "done": "Los he guardado",
+    "disablePrompt": "Introduce tu contraseña para desactivar la autenticación de dos factores.",
+    "invalid": "Ese código o contraseña es incorrecto."
+  },
   "theme": {
     "label": "Tema",
     "light": "Claro",
