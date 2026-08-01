@@ -6,6 +6,7 @@ import { useState, type FormEvent } from "react";
 
 import { Captcha, useCaptcha } from "@/components/auth/captcha";
 import { OtpInput } from "@/components/auth/otp-input";
+import { PasskeySignInButton } from "@/components/auth/passkey-sign-in-button";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -209,6 +210,7 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
       <Button type="submit" disabled={pending || captchaBlocking}>
         {t("login.submit")}
       </Button>
+      <PasskeySignInButton nextPath={nextPath} disabled={pending} />
     </form>
   );
 }

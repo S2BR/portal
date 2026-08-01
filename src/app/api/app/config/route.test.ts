@@ -13,6 +13,7 @@ const config: AppConfig = {
   require_login_otp: true,
   require_email_verification: true,
   captcha: { register: true, login: true },
+  passkeys: { enabled: true },
   password: { min: 10, mixed_case: true, numbers: true, symbols: true },
   otp: { length: 6, ttl: 900, resend_cooldown: 60 },
   hosted_auth: { register_url: "", login_url: "", forgot_url: "" },

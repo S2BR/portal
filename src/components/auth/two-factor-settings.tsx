@@ -33,6 +33,12 @@ export function TwoFactorSettings() {
   const [recoveryCodes, setRecoveryCodes] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  // FLAG: the api's /me no longer exposes two_factor_enabled, and there's no
+  // 2FA-status endpoint yet, so we can't show the persisted on/off state on load.
+  // This tracks it within the session; a lean GET /account/security/two-factor
+  // (→ { enabled }) on the api would let us hydrate it. Enroll returns 409 when
+  // already enabled, so the api still enforces correctness.
+  const [enabled, setEnabled] = useState(false);
 
   if (!user) {
     return null;
@@ -91,6 +97,7 @@ export function TwoFactorSettings() {
         setCode("");
         setPassword("");
         setMode("recovery");
+        setEnabled(true);
         await refresh();
       } else {
         setError(data.message ?? authErrors("generic"));
@@ -118,6 +125,7 @@ export function TwoFactorSettings() {
       };
       if (data.status === "ok") {
         reset();
+        setEnabled(false);
         await refresh();
       } else {
         setError(data.message ?? authErrors("generic"));
@@ -225,14 +233,14 @@ export function TwoFactorSettings() {
               <span
                 className={cn(
                   "rounded-full px-2 py-0.5 text-xs font-medium",
-                  user.two_factor_enabled
+                  enabled
                     ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400"
                     : "bg-muted text-muted-foreground",
                 )}
               >
-                {user.two_factor_enabled ? t("statusOn") : t("statusOff")}
+                {enabled ? t("statusOn") : t("statusOff")}
               </span>
-              {user.two_factor_enabled ? (
+              {enabled ? (
                 <Button
                   variant="outline"
                   size="sm"

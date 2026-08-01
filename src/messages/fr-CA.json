@@ -61,7 +61,12 @@
       "rateLimited": "Trop de tentatives. Veuillez patienter un moment et réessayer.",
       "generic": "Une erreur s'est produite. Veuillez réessayer."
     },
-    "captchaUnsupported": "La vérification n'est pas disponible pour le moment. Veuillez réessayer plus tard."
+    "captchaUnsupported": "La vérification n'est pas disponible pour le moment. Veuillez réessayer plus tard.",
+    "passkey": {
+      "or": "ou",
+      "signIn": "Se connecter avec une clé d'accès",
+      "signInError": "Nous n'avons pas pu vous connecter avec une clé d'accès. Veuillez réessayer."
+    }
   },
   "dashboard": {
     "title": "Tableau de bord",
@@ -105,6 +110,22 @@
     "verifySubtitle": "Entrez le code que nous avons envoyé à {email}.",
     "verifySubmit": "Confirmer",
     "cancel": "Annuler"
+  },
+  "passkeys": {
+    "title": "Clés d'accès",
+    "description": "Connectez-vous sans mot de passe grâce à la biométrie ou au NIP de votre appareil.",
+    "add": "Ajouter une clé d'accès",
+    "remove": "Supprimer",
+    "cancel": "Annuler",
+    "empty": "Vous n'avez pas encore ajouté de clé d'accès.",
+    "unsupported": "Ce navigateur ne prend pas en charge les clés d'accès.",
+    "defaultName": "Ma clé d'accès",
+    "addError": "Nous n'avons pas pu ajouter cette clé d'accès. Veuillez réessayer.",
+    "nameLabel": "Nom",
+    "namePlaceholder": "p. ex. Mon ordinateur portable",
+    "lastUsed": "Dernière utilisation le {date}",
+    "neverUsed": "Jamais utilisée",
+    "removePrompt": "Entrez votre mot de passe pour supprimer cette clé d'accès."
   },
   "theme": {
     "label": "Thème",

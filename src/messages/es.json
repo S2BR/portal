@@ -61,7 +61,12 @@
       "rateLimited": "Demasiados intentos. Espera un momento e inténtalo de nuevo.",
       "generic": "Algo salió mal. Inténtalo de nuevo."
     },
-    "captchaUnsupported": "La verificación no está disponible en este momento. Inténtalo de nuevo más tarde."
+    "captchaUnsupported": "La verificación no está disponible en este momento. Inténtalo de nuevo más tarde.",
+    "passkey": {
+      "or": "o",
+      "signIn": "Iniciar sesión con una llave de acceso",
+      "signInError": "No pudimos iniciar tu sesión con una llave de acceso. Inténtalo de nuevo."
+    }
   },
   "dashboard": {
     "title": "Panel",
@@ -105,6 +110,22 @@
     "verifySubtitle": "Introduce el código que enviamos a {email}.",
     "verifySubmit": "Confirmar",
     "cancel": "Cancelar"
+  },
+  "passkeys": {
+    "title": "Llaves de acceso",
+    "description": "Inicia sesión sin contraseña usando la biometría o el PIN de tu dispositivo.",
+    "add": "Añadir una llave de acceso",
+    "remove": "Eliminar",
+    "cancel": "Cancelar",
+    "empty": "Aún no has añadido ninguna llave de acceso.",
+    "unsupported": "Este navegador no admite llaves de acceso.",
+    "defaultName": "Mi llave de acceso",
+    "addError": "No pudimos añadir esa llave de acceso. Inténtalo de nuevo.",
+    "nameLabel": "Nombre",
+    "namePlaceholder": "p. ej. Mi portátil",
+    "lastUsed": "Usada por última vez el {date}",
+    "neverUsed": "Nunca usada",
+    "removePrompt": "Introduce tu contraseña para eliminar esta llave de acceso."
   },
   "theme": {
     "label": "Tema",

@@ -61,7 +61,12 @@
       "rateLimited": "Too many attempts. Please wait a moment and try again.",
       "generic": "Something went wrong. Please try again."
     },
-    "captchaUnsupported": "Verification isn't available right now. Please try again later."
+    "captchaUnsupported": "Verification isn't available right now. Please try again later.",
+    "passkey": {
+      "or": "or",
+      "signIn": "Sign in with a passkey",
+      "signInError": "We couldn't sign you in with a passkey. Please try again."
+    }
   },
   "dashboard": {
     "title": "Dashboard",
@@ -105,6 +110,22 @@
     "verifySubtitle": "Enter the code we sent to {email}.",
     "verifySubmit": "Confirm",
     "cancel": "Cancel"
+  },
+  "passkeys": {
+    "title": "Passkeys",
+    "description": "Sign in without a password using your device's biometrics or PIN.",
+    "add": "Add a passkey",
+    "remove": "Remove",
+    "cancel": "Cancel",
+    "empty": "You haven't added any passkeys yet.",
+    "unsupported": "This browser doesn't support passkeys.",
+    "defaultName": "My passkey",
+    "addError": "We couldn't add that passkey. Please try again.",
+    "nameLabel": "Name",
+    "namePlaceholder": "e.g. My laptop",
+    "lastUsed": "Last used {date}",
+    "neverUsed": "Never used",
+    "removePrompt": "Enter your password to remove this passkey."
   },
   "theme": {
     "label": "Theme",
