@@ -18,7 +18,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   const response = await callWithAuth<{ recovery_codes: string[] } & ApiError>({
     method: "POST",
-    path: "/auth/two-factor/confirm",
+    path: "/account/security/two-factor/confirm",
     body: parsed.data,
   });
 

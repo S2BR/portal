@@ -9,7 +9,7 @@ export async function POST(): Promise<NextResponse> {
     { secret: string; otpauth_url: string } & ApiError
   >({
     method: "POST",
-    path: "/auth/two-factor/enroll",
+    path: "/account/security/two-factor/enroll",
   });
 
   if (response.ok) {

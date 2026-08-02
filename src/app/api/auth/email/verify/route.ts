@@ -18,7 +18,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   const response = await callWithAuth<ApiError>({
     method: "POST",
-    path: "/auth/email/verify",
+    path: "/account/email/change/confirm",
     body: parsed.data,
   });
 

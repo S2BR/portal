@@ -15,7 +15,7 @@ export async function DELETE(request: Request): Promise<NextResponse> {
 
   const response = await callWithAuth<ApiError>({
     method: "DELETE",
-    path: "/auth/two-factor",
+    path: "/account/security/two-factor/disable",
     body: parsed.data,
   });
 

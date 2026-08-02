@@ -23,7 +23,7 @@ export async function DELETE(
 
   const response = await callWithAuth<ApiError>({
     method: "DELETE",
-    path: `/auth/passkeys/${id}`,
+    path: `/account/security/passkeys/${id}`,
     body: parsed.data,
   });
 

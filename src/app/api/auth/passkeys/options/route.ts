@@ -9,7 +9,7 @@ export async function POST(): Promise<NextResponse> {
     { challenge_id: string; options: unknown } & ApiError
   >({
     method: "POST",
-    path: "/auth/passkeys/options",
+    path: "/account/security/passkeys/options",
   });
 
   if (response.ok) {
