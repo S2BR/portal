@@ -9,6 +9,8 @@ const bodySchema = z.object({
   email: z.email(),
   password: z.string().min(1),
   password_confirmation: z.string().min(1),
+  // Required by the API (accept privacy policy + terms) and must be `true`.
+  accept_terms: z.literal(true),
   captcha_token: z.string().optional(),
 });
 

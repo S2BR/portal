@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { apiErrorText } from "@/lib/api/error-text";
 import { cn } from "@/lib/utils";
 
 type Mode = "idle" | "enrolling" | "recovery" | "disabling";
@@ -56,9 +57,10 @@ export function TwoFactorSettings() {
         secret?: string;
         otpauthUrl?: string;
         message?: string;
+        errors?: Record<string, string[]>;
       };
       if (!response.ok || !data.secret || !data.otpauthUrl) {
-        setError(data.message ?? authErrors("generic"));
+        setError(apiErrorText(data) ?? authErrors("generic"));
         return;
       }
       setSecret(data.secret);
@@ -85,6 +87,7 @@ export function TwoFactorSettings() {
         status?: string;
         recoveryCodes?: string[];
         message?: string;
+        errors?: Record<string, string[]>;
       };
       if (data.status === "ok" && data.recoveryCodes) {
         setRecoveryCodes(data.recoveryCodes);
@@ -93,7 +96,7 @@ export function TwoFactorSettings() {
         setMode("recovery");
         await refresh();
       } else {
-        setError(data.message ?? authErrors("generic"));
+        setError(apiErrorText(data) ?? authErrors("generic"));
       }
     } catch {
       setError(t("invalid"));
@@ -115,12 +118,13 @@ export function TwoFactorSettings() {
       const data = (await response.json()) as {
         status?: string;
         message?: string;
+        errors?: Record<string, string[]>;
       };
       if (data.status === "ok") {
         reset();
         await refresh();
       } else {
-        setError(data.message ?? authErrors("generic"));
+        setError(apiErrorText(data) ?? authErrors("generic"));
       }
     } catch {
       setError(t("invalid"));

@@ -8,6 +8,7 @@ import { Captcha, useCaptcha } from "@/components/auth/captcha";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { apiErrorText } from "@/lib/api/error-text";
 import type { AppConfig } from "@/lib/api/types";
 import { checkPassword } from "@/lib/auth/password";
 
@@ -29,6 +30,7 @@ export function RegisterForm({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+  const [acceptTerms, setAcceptTerms] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
@@ -50,6 +52,10 @@ export function RegisterForm({
       setError(t("errors.passwordMismatch"));
       return;
     }
+    if (!acceptTerms) {
+      setError(t("errors.acceptTerms"));
+      return;
+    }
 
     setPending(true);
     setError(null);
@@ -62,14 +68,19 @@ export function RegisterForm({
           email,
           password,
           password_confirmation: confirm,
+          accept_terms: acceptTerms,
           ...(challenge?.required && captchaToken
             ? { captcha_token: captchaToken }
             : {}),
         }),
       });
-      let data: { status?: string; message?: string };
+      let data: {
+        status?: string;
+        message?: string;
+        errors?: Record<string, string[]>;
+      };
       try {
-        data = (await response.json()) as { status?: string; message?: string };
+        data = (await response.json()) as typeof data;
       } catch {
         // The BFF itself returned a non-JSON body (e.g. a runtime error page) —
         // surface the status rather than masking it as a generic failure.
@@ -87,8 +98,9 @@ export function RegisterForm({
           setError(t("errors.rateLimited"));
           break;
         default:
-          // captcha_failed and other errors carry the portal's localized message.
-          setError(data.message ?? t("errors.generic"));
+          // captcha_failed and other errors carry the portal's own message +
+          // field-level errors — surface them verbatim, not a generic string.
+          setError(apiErrorText(data) ?? t("errors.generic"));
       }
       // Reached only on failure — the single-use challenge is spent, re-issue one.
       void refreshCaptcha();
@@ -154,6 +166,18 @@ export function RegisterForm({
           value={confirm}
           onChange={(event) => setConfirm(event.target.value)}
         />
+      </div>
+      <div className="flex items-start gap-2">
+        <input
+          id="accept-terms"
+          type="checkbox"
+          checked={acceptTerms}
+          onChange={(event) => setAcceptTerms(event.target.checked)}
+          className="border-input accent-primary mt-0.5 size-4 rounded border"
+        />
+        <Label htmlFor="accept-terms" className="text-sm font-normal">
+          {t("register.acceptTerms")}
+        </Label>
       </div>
       <Captcha challenge={challenge} onToken={setCaptchaToken} />
       {error ? <p className="text-destructive text-sm">{error}</p> : null}

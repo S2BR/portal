@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { apiErrorText } from "@/lib/api/error-text";
 
 /**
  * Delete (soft-delete) the signed-in account. Password-gated and behind an
@@ -48,11 +49,12 @@ export function DeleteAccountSettings() {
       const data = (await response.json()) as {
         status?: string;
         message?: string;
+        errors?: Record<string, string[]>;
       };
       if (data.status === "ok") {
         router.replace("/login");
       } else {
-        setError(data.message ?? authErrors("generic"));
+        setError(apiErrorText(data) ?? authErrors("generic"));
       }
     } catch {
       setError(authErrors("generic"));

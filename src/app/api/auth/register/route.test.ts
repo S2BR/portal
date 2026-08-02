@@ -25,6 +25,7 @@ const validBody = {
   email: "a@b.co",
   password: "Sup3rSecret!",
   password_confirmation: "Sup3rSecret!",
+  accept_terms: true,
 };
 
 afterEach(() => {
@@ -92,6 +93,13 @@ describe("POST /api/auth/register", () => {
 
     expect(res.status).toBe(422);
     expect((await res.json()).status).toBe("captcha_failed");
+  });
+
+  it("rejects registration when the terms are not accepted (API requires it)", async () => {
+    const res = await POST(request({ ...validBody, accept_terms: false }));
+
+    expect(res.status).toBe(422);
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 
   it("rejects a malformed body without calling the portal", async () => {
