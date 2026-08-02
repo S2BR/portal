@@ -58,6 +58,7 @@ export interface UserAttributes {
   name: string;
   email: string;
   timezone: string | null;
+  two_factor_enabled: boolean;
   created_at: string;
 }
 
