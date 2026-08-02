@@ -62,6 +62,24 @@ describe("POST /api/auth/register", () => {
     expect(body.errors?.password?.[0]).toBe("weak");
   });
 
+  it("surfaces a diagnostic (not a blank message) when the API returns non-JSON", async () => {
+    // e.g. an HTML 500 page, or a mispointed PORTAL_API_URL — the failure must
+    // not be masked as a message-less generic error.
+    fetchMock.mockResolvedValue(
+      new Response("<!DOCTYPE html><html>Bad Gateway</html>", {
+        status: 502,
+        headers: { "content-type": "text/html" },
+      }),
+    );
+
+    const res = await POST(request(validBody));
+    const body = (await res.json()) as { status: string; message?: string };
+
+    expect(res.status).toBe(422);
+    expect(body.status).toBe("invalid");
+    expect(body.message).toContain("502");
+  });
+
   it("reports a captcha failure distinctly", async () => {
     fetchMock.mockResolvedValue(
       portalResponse(422, {
