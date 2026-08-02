@@ -31,15 +31,12 @@ describe("GET /api/auth/passkeys", () => {
       ok: true,
       status: 200,
       data: {
-        data: [
+        passkeys: [
           {
-            type: "passkeys",
-            id: "1",
-            attributes: {
-              name: "Mine",
-              last_used_at: null,
-              created_at: "2026-01-01T00:00:00.000000Z",
-            },
+            id: 1,
+            name: "Mine",
+            last_used_at: null,
+            created_at: "2026-01-01T00:00:00.000000Z",
           },
         ],
       },
@@ -50,7 +47,7 @@ describe("GET /api/auth/passkeys", () => {
     expect(res.status).toBe(200);
     expect((await res.json()).passkeys).toEqual([
       {
-        id: "1",
+        id: 1,
         name: "Mine",
         last_used_at: null,
         created_at: "2026-01-01T00:00:00.000000Z",

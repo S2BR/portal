@@ -2,11 +2,11 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { callWithAuth } from "@/lib/api/authed";
-import { flattenCollection } from "@/lib/api/types";
-import type { ApiError, JsonApiCollection } from "@/lib/api/types";
+import type { ApiError } from "@/lib/api/types";
 
-/** The `passkeys` JSON:API resource attributes returned by the api. */
-interface PasskeyAttributes {
+/** A registered passkey as returned by the api. */
+interface Passkey {
+  id: number;
   name: string;
   last_used_at: string | null;
   created_at: string | null;
@@ -14,15 +14,13 @@ interface PasskeyAttributes {
 
 /** BFF: list the signed-in account's passkeys. */
 export async function GET(): Promise<NextResponse> {
-  const response = await callWithAuth<
-    JsonApiCollection<PasskeyAttributes> & ApiError
-  >({
+  const response = await callWithAuth<{ passkeys: Passkey[] } & ApiError>({
     method: "GET",
     path: "/account/security/passkeys",
   });
 
   if (response.ok) {
-    return NextResponse.json({ passkeys: flattenCollection(response.data) });
+    return NextResponse.json({ passkeys: response.data.passkeys });
   }
 
   return NextResponse.json(

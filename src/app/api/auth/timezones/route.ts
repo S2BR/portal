@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 
 import { callWithAuth } from "@/lib/api/authed";
-import { flattenCollection, type JsonApiCollection } from "@/lib/api/types";
 
 /** A selectable timezone: its IANA id, current UTC offset, and display label. */
 export interface Timezone {
@@ -10,14 +9,9 @@ export interface Timezone {
   label: string;
 }
 
-type TimezoneAttributes = Omit<Timezone, "id">;
-
-/**
- * BFF: the selectable IANA timezones for the account's timezone preference,
- * flattened from the api's JSON:API collection to `{ id, offset, label }`.
- */
+/** BFF: the selectable IANA timezones for the account's timezone preference. */
 export async function GET(): Promise<NextResponse> {
-  const response = await callWithAuth<JsonApiCollection<TimezoneAttributes>>({
+  const response = await callWithAuth<{ timezones: Timezone[] }>({
     path: "/timezones",
   });
 
@@ -25,5 +19,5 @@ export async function GET(): Promise<NextResponse> {
     return NextResponse.json({ timezones: [] }, { status: 502 });
   }
 
-  return NextResponse.json({ timezones: flattenCollection(response.data) });
+  return NextResponse.json({ timezones: response.data.timezones });
 }
