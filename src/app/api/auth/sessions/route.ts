@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 
 import { callWithAuth } from "@/lib/api/authed";
-import { flattenCollection, type JsonApiCollection } from "@/lib/api/types";
 
 /** One account session — a device / login lineage, keyed by refresh-token family id. */
 export interface Session {
@@ -13,11 +12,9 @@ export interface Session {
   current: boolean;
 }
 
-type SessionAttributes = Omit<Session, "id">;
-
-/** BFF: list the account's active sessions, flattened from the JSON:API collection. */
+/** BFF: list the account's active sessions. */
 export async function GET(): Promise<NextResponse> {
-  const response = await callWithAuth<JsonApiCollection<SessionAttributes>>({
+  const response = await callWithAuth<{ sessions: Session[] }>({
     path: "/account/security/sessions",
   });
 
@@ -25,7 +22,7 @@ export async function GET(): Promise<NextResponse> {
     return NextResponse.json({ sessions: [] }, { status: 502 });
   }
 
-  return NextResponse.json({ sessions: flattenCollection(response.data) });
+  return NextResponse.json({ sessions: response.data.sessions });
 }
 
 /** BFF: sign out every session except the current one ("sign out everywhere else"). */

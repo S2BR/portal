@@ -11,19 +11,16 @@ afterEach(() => {
 });
 
 describe("GET /api/auth/timezones", () => {
-  it("flattens the JSON:API collection", async () => {
+  it("returns the timezones", async () => {
     vi.mocked(callWithAuth).mockResolvedValue({
       ok: true,
       status: 200,
       data: {
-        data: [
+        timezones: [
           {
-            type: "timezones",
             id: "America/Sao_Paulo",
-            attributes: {
-              offset: "-03:00",
-              label: "-03:00 · America / Sao Paulo",
-            },
+            offset: "-03:00",
+            label: "-03:00 · America / Sao Paulo",
           },
         ],
       },

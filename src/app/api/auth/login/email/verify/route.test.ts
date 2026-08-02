@@ -25,22 +25,17 @@ function portalResponse(status: number, body: unknown): Response {
 }
 
 const signInBody = {
-  data: {
-    type: "users",
-    id: "1",
-    attributes: {
-      name: "Ada",
-      email: "a@b.co",
-      timezone: null,
-      two_factor_enabled: false,
-      created_at: "2026-01-01T00:00:00.000000Z",
-    },
-  },
-  meta: {
-    access_token: "a",
-    refresh_token: "r",
-    token_type: "Bearer",
-    expires_in: 900,
+  access_token: "a",
+  refresh_token: "r",
+  token_type: "Bearer",
+  expires_in: 900,
+  user: {
+    id: 1,
+    name: "Ada",
+    email: "a@b.co",
+    timezone: null,
+    two_factor_enabled: false,
+    created_at: "2026-01-01T00:00:00.000000Z",
   },
 };
 

@@ -1,35 +1,4 @@
-/** Types mirroring the api contract: JSON:API resources plus the auth envelopes. */
-
-/** A JSON:API resource object — identity (`type` + string `id`) plus typed attributes. */
-export interface JsonApiResource<A> {
-  type: string;
-  id: string;
-  attributes: A;
-}
-
-/** A single-resource JSON:API document. */
-export interface JsonApiDocument<A> {
-  data: JsonApiResource<A>;
-}
-
-/** A JSON:API resource-collection document. */
-export interface JsonApiCollection<A> {
-  data: JsonApiResource<A>[];
-}
-
-/** Flatten a resource object to `{ id, ...attributes }` for app use. */
-export function flattenResource<A>(
-  resource: JsonApiResource<A>,
-): { id: string } & A {
-  return { id: resource.id, ...resource.attributes };
-}
-
-/** Flatten every resource in a collection document. */
-export function flattenCollection<A>(
-  collection: JsonApiCollection<A>,
-): ({ id: string } & A)[] {
-  return collection.data.map(flattenResource);
-}
+/** Types mirroring the api contract: plain JSON resources plus the auth envelopes. */
 
 export interface AppConfig {
   auth_mode: string;
@@ -53,17 +22,15 @@ export interface AppConfig {
   config_url: string | null;
 }
 
-/** The `users` resource attributes returned by the api. */
-export interface UserAttributes {
+/** The authenticated user returned by the api (`{ user: … }`). */
+export interface AuthUser {
+  id: number;
   name: string;
   email: string;
   timezone: string | null;
   two_factor_enabled: boolean;
   created_at: string;
 }
-
-/** The authenticated user, flattened (`id` + attributes) for app use. */
-export type AuthUser = { id: string } & UserAttributes;
 
 export interface TokenPair {
   access_token: string;
@@ -72,17 +39,15 @@ export interface TokenPair {
   expires_in: number;
 }
 
-/** A sign-in success: the user as JSON:API `data`, the token pair in `meta`. */
-export interface SignInResponse {
-  data: JsonApiResource<UserAttributes>;
-  meta: TokenPair;
+/** A sign-in success: the token pair at the top level, with the user nested. */
+export interface SignInResponse extends TokenPair {
+  user: AuthUser;
 }
 
 /**
- * The api's plain error envelope: `message` always, `errors` on 422 validation
+ * The api's error envelope: `message` always, `errors` on 422 validation
  * failures, and a `status` discriminator on some 403 responses (e.g.
- * `two_factor_required`, `account_suspended`, `email_unverified`). Errors are
- * deliberately not JSON:API — only success bodies are.
+ * `two_factor_required`, `account_suspended`, `email_unverified`).
  */
 export interface ApiError {
   message: string;

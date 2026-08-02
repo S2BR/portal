@@ -40,7 +40,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   // Sign-in success is a JSON:API document: user in `data`, tokens in `meta`.
   if (response.ok) {
-    await setSessionCookies(response.data.meta);
+    await setSessionCookies(response.data);
     return NextResponse.json({ status: "authenticated" });
   }
 

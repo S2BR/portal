@@ -11,22 +11,19 @@ afterEach(() => {
 });
 
 describe("GET /api/auth/sessions", () => {
-  it("flattens the JSON:API session collection", async () => {
+  it("returns the sessions", async () => {
     vi.mocked(callWithAuth).mockResolvedValue({
       ok: true,
       status: 200,
       data: {
-        data: [
+        sessions: [
           {
-            type: "sessions",
             id: "fam-1",
-            attributes: {
-              device_name: "Firefox on macOS",
-              ip_address: "203.0.113.4",
-              last_used_at: "2026-01-01T00:00:00Z",
-              started_at: "2025-12-01T00:00:00Z",
-              current: true,
-            },
+            device_name: "Firefox on macOS",
+            ip_address: "203.0.113.4",
+            last_used_at: "2026-01-01T00:00:00Z",
+            started_at: "2025-12-01T00:00:00Z",
+            current: true,
           },
         ],
       },

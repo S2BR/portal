@@ -1,17 +1,12 @@
 import "server-only";
 
 import { callWithAuth } from "./authed";
-import {
-  flattenResource,
-  type AuthUser,
-  type JsonApiDocument,
-  type UserAttributes,
-} from "./types";
+import type { AuthUser } from "./types";
 
 /** The authenticated user, or `null` when there is no valid session. */
 export async function getCurrentUser(): Promise<AuthUser | null> {
-  const response = await callWithAuth<JsonApiDocument<UserAttributes>>({
+  const response = await callWithAuth<{ user: AuthUser }>({
     path: "/account",
   });
-  return response.ok ? flattenResource(response.data.data) : null;
+  return response.ok ? response.data.user : null;
 }

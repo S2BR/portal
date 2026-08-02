@@ -27,7 +27,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   });
 
   if (response.ok) {
-    await setSessionCookies(response.data.meta);
+    await setSessionCookies(response.data);
     return NextResponse.json({ status: "authenticated" });
   }
 
