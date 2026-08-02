@@ -85,6 +85,25 @@
     "twoFactorOff": "Two-factor off",
     "memberSince": "Member since {date}"
   },
+  "profileSettings": {
+    "title": "Profile details",
+    "edit": "Edit",
+    "save": "Save changes",
+    "cancel": "Cancel",
+    "timezone": "Timezone",
+    "deviceDefault": "Device default"
+  },
+  "sessions": {
+    "title": "Active sessions",
+    "empty": "No active sessions.",
+    "current": "This device",
+    "unknownDevice": "Unknown device",
+    "unknownIp": "Unknown location",
+    "lastActive": "Last active {when}",
+    "signOut": "Sign out",
+    "signOutOthers": "Sign out everywhere else",
+    "error": "Something went wrong. Please try again."
+  },
   "twoFactor": {
     "title": "Two-factor authentication",
     "description": "Add a second step to sign-in using an authenticator app.",

@@ -85,6 +85,25 @@
     "twoFactorOff": "Doble factor desactivado",
     "memberSince": "Miembro desde {date}"
   },
+  "profileSettings": {
+    "title": "Datos del perfil",
+    "edit": "Editar",
+    "save": "Guardar cambios",
+    "cancel": "Cancelar",
+    "timezone": "Zona horaria",
+    "deviceDefault": "Predeterminada del dispositivo"
+  },
+  "sessions": {
+    "title": "Sesiones activas",
+    "empty": "No hay sesiones activas.",
+    "current": "Este dispositivo",
+    "unknownDevice": "Dispositivo desconocido",
+    "unknownIp": "Ubicación desconocida",
+    "lastActive": "Última actividad {when}",
+    "signOut": "Cerrar sesión",
+    "signOutOthers": "Cerrar sesión en los demás dispositivos",
+    "error": "Algo salió mal. Inténtalo de nuevo."
+  },
   "twoFactor": {
     "title": "Autenticación de dos factores",
     "description": "Añade un segundo paso al inicio de sesión con una aplicación de autenticación.",

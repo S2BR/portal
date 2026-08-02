@@ -1,0 +1,46 @@
+import { NextResponse } from "next/server";
+import { z } from "zod";
+
+import { callWithAuth } from "@/lib/api/authed";
+import type { ApiError } from "@/lib/api/types";
+
+const bodySchema = z
+  .object({
+    name: z.string().trim().min(1).max(255).optional(),
+    // `null` clears the preference (fall back to the device zone); a string sets it.
+    timezone: z.string().min(1).nullable().optional(),
+  })
+  .refine((value) => value.name !== undefined || value.timezone !== undefined, {
+    message: "empty",
+  });
+
+/**
+ * BFF: update the signed-in account's low-sensitivity profile fields — the
+ * display name and the timezone preference. A partial PATCH: only the fields
+ * sent are applied. Email and password have their own re-authenticated flows.
+ */
+export async function PATCH(request: Request): Promise<NextResponse> {
+  const parsed = bodySchema.safeParse(await request.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json({ status: "invalid" }, { status: 422 });
+  }
+
+  const response = await callWithAuth<ApiError>({
+    method: "PATCH",
+    path: "/account",
+    body: parsed.data,
+  });
+
+  if (response.ok) {
+    return NextResponse.json({ status: "ok" });
+  }
+
+  return NextResponse.json(
+    {
+      status: "invalid",
+      message: response.data.message,
+      errors: response.data.errors,
+    },
+    { status: 422 },
+  );
+}

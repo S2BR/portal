@@ -26,12 +26,25 @@ function portalResponse(status: number, body: unknown): Response {
   });
 }
 
-const tokenPair = {
-  access_token: "a",
-  refresh_token: "r",
-  token_type: "Bearer",
-  expires_in: 900,
-  user: { id: 1 },
+// A sign-in success body: the user as JSON:API `data`, the token pair in `meta`.
+const signInBody = {
+  data: {
+    type: "users",
+    id: "1",
+    attributes: {
+      name: "Ada",
+      email: "a@b.co",
+      timezone: null,
+      two_factor_enabled: false,
+      created_at: "2026-01-01T00:00:00.000000Z",
+    },
+  },
+  meta: {
+    access_token: "a",
+    refresh_token: "r",
+    token_type: "Bearer",
+    expires_in: 900,
+  },
 };
 
 const validBody = {
@@ -46,7 +59,7 @@ afterEach(() => {
 
 describe("POST /api/auth/passkeys/login", () => {
   it("stores the session and returns authenticated on a valid assertion", async () => {
-    fetchMock.mockResolvedValue(portalResponse(200, tokenPair));
+    fetchMock.mockResolvedValue(portalResponse(200, signInBody));
 
     const res = await POST(request(validBody));
 

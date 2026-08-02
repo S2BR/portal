@@ -85,6 +85,25 @@
     "twoFactorOff": "Double authentification désactivée",
     "memberSince": "Membre depuis {date}"
   },
+  "profileSettings": {
+    "title": "Renseignements du profil",
+    "edit": "Modifier",
+    "save": "Enregistrer les modifications",
+    "cancel": "Annuler",
+    "timezone": "Fuseau horaire",
+    "deviceDefault": "Valeur par défaut de l'appareil"
+  },
+  "sessions": {
+    "title": "Sessions actives",
+    "empty": "Aucune session active.",
+    "current": "Cet appareil",
+    "unknownDevice": "Appareil inconnu",
+    "unknownIp": "Emplacement inconnu",
+    "lastActive": "Dernière activité {when}",
+    "signOut": "Se déconnecter",
+    "signOutOthers": "Se déconnecter partout ailleurs",
+    "error": "Une erreur s'est produite. Veuillez réessayer."
+  },
   "twoFactor": {
     "title": "Authentification à deux facteurs",
     "description": "Ajoutez une deuxième étape à la connexion avec une application d'authentification.",

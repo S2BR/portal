@@ -30,13 +30,32 @@ describe("GET /api/auth/passkeys", () => {
     vi.mocked(callWithAuth).mockResolvedValue({
       ok: true,
       status: 200,
-      data: { data: [{ id: 1, name: "Mine" }] },
+      data: {
+        data: [
+          {
+            type: "passkeys",
+            id: "1",
+            attributes: {
+              name: "Mine",
+              last_used_at: null,
+              created_at: "2026-01-01T00:00:00.000000Z",
+            },
+          },
+        ],
+      },
     });
 
     const res = await GET();
 
     expect(res.status).toBe(200);
-    expect((await res.json()).passkeys).toEqual([{ id: 1, name: "Mine" }]);
+    expect((await res.json()).passkeys).toEqual([
+      {
+        id: "1",
+        name: "Mine",
+        last_used_at: null,
+        created_at: "2026-01-01T00:00:00.000000Z",
+      },
+    ]);
   });
 });
 
