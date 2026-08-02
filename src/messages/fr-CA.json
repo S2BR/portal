@@ -130,6 +130,16 @@
     "verifySubmit": "Confirmer",
     "cancel": "Annuler"
   },
+  "passwordSettings": {
+    "title": "Mot de passe",
+    "hint": "Modifiez le mot de passe de votre compte.",
+    "change": "Modifier le mot de passe",
+    "currentPassword": "Mot de passe actuel",
+    "newPassword": "Nouveau mot de passe",
+    "submit": "Mettre à jour le mot de passe",
+    "cancel": "Annuler",
+    "success": "Mot de passe mis à jour. Vous avez été déconnecté des autres appareils."
+  },
   "passkeys": {
     "title": "Clés d'accès",
     "description": "Connectez-vous sans mot de passe grâce à la biométrie ou au NIP de votre appareil.",
@@ -145,6 +155,13 @@
     "lastUsed": "Dernière utilisation le {date}",
     "neverUsed": "Jamais utilisée",
     "removePrompt": "Entrez votre mot de passe pour supprimer cette clé d'accès."
+  },
+  "deleteAccount": {
+    "title": "Supprimer le compte",
+    "description": "Fermez votre compte de façon permanente. Vous serez déconnecté sur tous les appareils.",
+    "delete": "Supprimer le compte",
+    "confirm": "Supprimer mon compte",
+    "cancel": "Annuler"
   },
   "theme": {
     "label": "Thème",

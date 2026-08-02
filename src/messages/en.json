@@ -130,6 +130,16 @@
     "verifySubmit": "Confirm",
     "cancel": "Cancel"
   },
+  "passwordSettings": {
+    "title": "Password",
+    "hint": "Change your account password.",
+    "change": "Change password",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "submit": "Update password",
+    "cancel": "Cancel",
+    "success": "Password updated. Other devices have been signed out."
+  },
   "passkeys": {
     "title": "Passkeys",
     "description": "Sign in without a password using your device's biometrics or PIN.",
@@ -145,6 +155,13 @@
     "lastUsed": "Last used {date}",
     "neverUsed": "Never used",
     "removePrompt": "Enter your password to remove this passkey."
+  },
+  "deleteAccount": {
+    "title": "Delete account",
+    "description": "Permanently close your account. You'll be signed out on every device.",
+    "delete": "Delete account",
+    "confirm": "Delete my account",
+    "cancel": "Cancel"
   },
   "theme": {
     "label": "Theme",

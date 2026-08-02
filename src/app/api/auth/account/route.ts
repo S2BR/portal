@@ -3,6 +3,7 @@ import { z } from "zod";
 
 import { callWithAuth } from "@/lib/api/authed";
 import type { ApiError } from "@/lib/api/types";
+import { clearSessionCookies } from "@/lib/auth/session";
 
 const bodySchema = z
   .object({
@@ -41,6 +42,36 @@ export async function PATCH(request: Request): Promise<NextResponse> {
       message: response.data.message,
       errors: response.data.errors,
     },
+    { status: 422 },
+  );
+}
+
+const deleteSchema = z.object({ password: z.string().min(1) });
+
+/**
+ * BFF: delete (soft-delete) the signed-in account. Password-gated by the api;
+ * on success the account can no longer sign in and every session is revoked, so
+ * the local session cookies are cleared too.
+ */
+export async function DELETE(request: Request): Promise<NextResponse> {
+  const parsed = deleteSchema.safeParse(await request.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json({ status: "invalid" }, { status: 422 });
+  }
+
+  const response = await callWithAuth<ApiError>({
+    method: "DELETE",
+    path: "/account",
+    body: parsed.data,
+  });
+
+  if (response.ok) {
+    await clearSessionCookies();
+    return NextResponse.json({ status: "ok" });
+  }
+
+  return NextResponse.json(
+    { status: "invalid", message: response.data.message },
     { status: 422 },
   );
 }

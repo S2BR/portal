@@ -130,6 +130,16 @@
     "verifySubmit": "Confirmar",
     "cancel": "Cancelar"
   },
+  "passwordSettings": {
+    "title": "Senha",
+    "hint": "Altere a senha da sua conta.",
+    "change": "Alterar senha",
+    "currentPassword": "Senha atual",
+    "newPassword": "Nova senha",
+    "submit": "Atualizar senha",
+    "cancel": "Cancelar",
+    "success": "Senha atualizada. As sessões nos outros dispositivos foram encerradas."
+  },
   "passkeys": {
     "title": "Chaves de acesso",
     "description": "Entre sem senha usando a biometria ou o PIN do seu dispositivo.",
@@ -145,6 +155,13 @@
     "lastUsed": "Usada pela última vez em {date}",
     "neverUsed": "Nunca usada",
     "removePrompt": "Digite sua senha para remover esta chave de acesso."
+  },
+  "deleteAccount": {
+    "title": "Excluir conta",
+    "description": "Encerre sua conta permanentemente. Você será desconectado em todos os dispositivos.",
+    "delete": "Excluir conta",
+    "confirm": "Excluir minha conta",
+    "cancel": "Cancelar"
   },
   "theme": {
     "label": "Tema",
