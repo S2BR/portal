@@ -74,6 +74,20 @@
       "mixedCase": "Upper and lowercase letters",
       "number": "A number",
       "symbol": "A symbol"
+    },
+    "emailCode": {
+      "button": "Sign in with an email code",
+      "requestTitle": "Sign in with email",
+      "requestSubtitle": "We’ll email you a one-time sign-in code.",
+      "sendButton": "Email me a code",
+      "verifyTitle": "Enter your code",
+      "verifySubtitle": "We sent a sign-in code to {email}.",
+      "twoFactorLabel": "Authenticator code",
+      "twoFactorHint": "Only if you have two-factor authentication enabled.",
+      "verifyButton": "Sign in",
+      "resend": "Send a new code",
+      "back": "Back",
+      "twoFactorRequired": "Two-factor authentication is required. Request a new code and enter it with your authenticator code."
     }
   },
   "dashboard": {
@@ -126,7 +140,9 @@
     "recoveryTitle": "Save your recovery codes",
     "recoverySubtitle": "Store these somewhere safe. Each can be used once if you lose your authenticator.",
     "done": "I've saved them",
-    "disablePrompt": "Enter your password to turn off two-factor authentication."
+    "disablePrompt": "Enter your password to turn off two-factor authentication.",
+    "regenerate": "Regenerate recovery codes",
+    "regeneratePrompt": "Enter your password to generate a new set of recovery codes. Your existing codes will stop working."
   },
   "emailSettings": {
     "title": "Email address",

@@ -18,7 +18,7 @@ import { Label } from "@/components/ui/label";
 import { apiErrorText } from "@/lib/api/error-text";
 import { cn } from "@/lib/utils";
 
-type Mode = "idle" | "enrolling" | "recovery" | "disabling";
+type Mode = "idle" | "enrolling" | "recovery" | "disabling" | "regenerating";
 
 export function TwoFactorSettings() {
   const t = useTranslations("twoFactor");
@@ -95,6 +95,36 @@ export function TwoFactorSettings() {
         setPassword("");
         setMode("recovery");
         await refresh();
+      } else {
+        setError(apiErrorText(data) ?? authErrors("generic"));
+      }
+    } catch {
+      setError(t("invalid"));
+    } finally {
+      setPending(false);
+    }
+  }
+
+  async function confirmRegenerate(event: FormEvent) {
+    event.preventDefault();
+    setPending(true);
+    setError(null);
+    try {
+      const response = await fetch("/api/auth/2fa/recovery-codes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+      const data = (await response.json()) as {
+        status?: string;
+        recoveryCodes?: string[];
+        message?: string;
+        errors?: Record<string, string[]>;
+      };
+      if (data.status === "ok" && data.recoveryCodes) {
+        setRecoveryCodes(data.recoveryCodes);
+        setPassword("");
+        setMode("recovery");
       } else {
         setError(apiErrorText(data) ?? authErrors("generic"));
       }
@@ -199,6 +229,32 @@ export function TwoFactorSettings() {
               </Button>
             </div>
           </form>
+        ) : mode === "regenerating" ? (
+          <form onSubmit={confirmRegenerate} className="space-y-4">
+            <p className="text-sm">{t("regeneratePrompt")}</p>
+            <div className="space-y-2">
+              <Label htmlFor="tfa-regenerate-password">
+                {fields("password")}
+              </Label>
+              <Input
+                id="tfa-regenerate-password"
+                type="password"
+                autoComplete="current-password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                autoFocus
+              />
+            </div>
+            {error ? <p className="text-destructive text-sm">{error}</p> : null}
+            <div className="flex gap-2">
+              <Button type="submit" disabled={pending}>
+                {t("regenerate")}
+              </Button>
+              <Button type="button" variant="ghost" onClick={reset}>
+                {t("cancel")}
+              </Button>
+            </div>
+          </form>
         ) : mode === "disabling" ? (
           <form onSubmit={confirmDisable} className="space-y-4">
             <p className="text-sm">{t("disablePrompt")}</p>
@@ -237,17 +293,30 @@ export function TwoFactorSettings() {
                 {user.two_factor_enabled ? t("statusOn") : t("statusOff")}
               </span>
               {user.two_factor_enabled ? (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setPassword("");
-                    setError(null);
-                    setMode("disabling");
-                  }}
-                >
-                  {t("disable")}
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setPassword("");
+                      setError(null);
+                      setMode("regenerating");
+                    }}
+                  >
+                    {t("regenerate")}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setPassword("");
+                      setError(null);
+                      setMode("disabling");
+                    }}
+                  >
+                    {t("disable")}
+                  </Button>
+                </div>
               ) : (
                 <Button size="sm" onClick={startEnroll} disabled={pending}>
                   {t("enable")}

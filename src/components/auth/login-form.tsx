@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useState, type FormEvent } from "react";
 
 import { Captcha, useCaptcha } from "@/components/auth/captcha";
+import { EmailCodeSignIn } from "@/components/auth/email-code-sign-in";
 import { PasskeySignInButton } from "@/components/auth/passkey-sign-in-button";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,6 +24,7 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
     refresh: refreshCaptcha,
   } = useCaptcha("login");
 
+  const [method, setMethod] = useState<"password" | "email_code">("password");
   const [step, setStep] = useState<Step>("credentials");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -115,6 +117,19 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
     submitCode(code);
   }
 
+  if (method === "email_code") {
+    return (
+      <EmailCodeSignIn
+        nextPath={nextPath}
+        initialEmail={email}
+        onBack={() => {
+          setError(null);
+          setMethod("password");
+        }}
+      />
+    );
+  }
+
   if (step !== "credentials") {
     return (
       <form onSubmit={onSubmitCode} className="flex flex-col gap-4">
@@ -192,6 +207,17 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
         {t("login.submit")}
       </Button>
       <PasskeySignInButton nextPath={nextPath} disabled={pending} />
+      <Button
+        type="button"
+        variant="ghost"
+        disabled={pending}
+        onClick={() => {
+          setError(null);
+          setMethod("email_code");
+        }}
+      >
+        {t("emailCode.button")}
+      </Button>
     </form>
   );
 }

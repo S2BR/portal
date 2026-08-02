@@ -74,6 +74,20 @@
       "mixedCase": "Mayúsculas y minúsculas",
       "number": "Un número",
       "symbol": "Un símbolo"
+    },
+    "emailCode": {
+      "button": "Iniciar sesión con un código por correo",
+      "requestTitle": "Iniciar sesión con correo",
+      "requestSubtitle": "Te enviaremos un código de un solo uso por correo.",
+      "sendButton": "Enviarme un código",
+      "verifyTitle": "Ingresa tu código",
+      "verifySubtitle": "Enviamos un código de acceso a {email}.",
+      "twoFactorLabel": "Código del autenticador",
+      "twoFactorHint": "Solo si tienes la autenticación de dos factores activada.",
+      "verifyButton": "Iniciar sesión",
+      "resend": "Enviar un código nuevo",
+      "back": "Atrás",
+      "twoFactorRequired": "Se requiere autenticación de dos factores. Solicita un código nuevo e ingrésalo junto con el código de tu autenticador."
     }
   },
   "dashboard": {
@@ -126,7 +140,9 @@
     "recoveryTitle": "Guarda tus códigos de recuperación",
     "recoverySubtitle": "Guárdalos en un lugar seguro. Cada uno se puede usar una vez si pierdes tu autenticador.",
     "done": "Los he guardado",
-    "disablePrompt": "Introduce tu contraseña para desactivar la autenticación de dos factores."
+    "disablePrompt": "Introduce tu contraseña para desactivar la autenticación de dos factores.",
+    "regenerate": "Regenerar códigos de recuperación",
+    "regeneratePrompt": "Ingresa tu contraseña para generar un nuevo conjunto de códigos de recuperación. Tus códigos actuales dejarán de funcionar."
   },
   "emailSettings": {
     "title": "Dirección de correo",
