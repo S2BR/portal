@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useState, type FormEvent } from "react";
 
+import { PasswordRequirements } from "@/components/auth/password-requirements";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -110,6 +111,12 @@ export function PasswordSettings() {
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
               />
+              {config ? (
+                <PasswordRequirements
+                  password={password}
+                  policy={config.password}
+                />
+              ) : null}
             </div>
             <div className="space-y-2">
               <Label htmlFor="confirm-password">

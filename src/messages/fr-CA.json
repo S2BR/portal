@@ -11,8 +11,8 @@
       "title": "Créez votre compte",
       "subtitle": "Rejoignez S2BR Portal.",
       "submit": "Créer un compte",
-      "passwordHint": "Au moins {min} caractères, avec des majuscules et des minuscules, un chiffre et un symbole.",
-      "acceptTerms": "J’accepte les conditions d’utilisation et la politique de confidentialité."
+      "acceptTerms": "J’accepte les conditions d’utilisation et la politique de confidentialité.",
+      "passwordHint": "Au moins {min} caractères, avec des majuscules et des minuscules, un chiffre et un symbole."
     },
     "verify": {
       "title": "Vérifiez votre courriel",
@@ -68,6 +68,13 @@
       "or": "ou",
       "signIn": "Se connecter avec une clé d'accès",
       "signInError": "Nous n'avons pas pu vous connecter avec une clé d'accès. Veuillez réessayer."
+    },
+    "passwordRules": {
+      "title": "Le mot de passe doit contenir :",
+      "length": "Au moins {min} caractères",
+      "mixedCase": "Des majuscules et des minuscules",
+      "number": "Un chiffre",
+      "symbol": "Un symbole"
     }
   },
   "dashboard": {

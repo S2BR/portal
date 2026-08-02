@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { checkPassword } from "./password";
+import { checkPassword, passwordRequirements } from "./password";
 
 const strictPolicy = {
   min: 10,
@@ -39,5 +39,52 @@ describe("checkPassword", () => {
         symbols: false,
       }),
     ).toBeNull();
+  });
+});
+
+describe("passwordRequirements", () => {
+  it("returns each active rule with its met state as the user types", () => {
+    const requirements = passwordRequirements("Ab1", strictPolicy);
+
+    expect(requirements.map((requirement) => requirement.rule)).toEqual([
+      "min",
+      "mixed_case",
+      "numbers",
+      "symbols",
+    ]);
+    expect(
+      requirements.find((requirement) => requirement.rule === "min")?.met,
+    ).toBe(false);
+    expect(
+      requirements.find((requirement) => requirement.rule === "mixed_case")
+        ?.met,
+    ).toBe(true);
+    expect(
+      requirements.find((requirement) => requirement.rule === "numbers")?.met,
+    ).toBe(true);
+    expect(
+      requirements.find((requirement) => requirement.rule === "symbols")?.met,
+    ).toBe(false);
+  });
+
+  it("omits rules the policy does not enable", () => {
+    const requirements = passwordRequirements("anything", {
+      min: 8,
+      mixed_case: false,
+      numbers: false,
+      symbols: false,
+    });
+
+    expect(requirements.map((requirement) => requirement.rule)).toEqual([
+      "min",
+    ]);
+  });
+
+  it("marks every requirement met for a compliant password", () => {
+    expect(
+      passwordRequirements("Sup3rSecret!", strictPolicy).every(
+        (requirement) => requirement.met,
+      ),
+    ).toBe(true);
   });
 });

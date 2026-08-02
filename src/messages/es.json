@@ -11,8 +11,8 @@
       "title": "Crea tu cuenta",
       "subtitle": "Únete a S2BR Portal.",
       "submit": "Crear cuenta",
-      "passwordHint": "Al menos {min} caracteres, con mayúsculas y minúsculas, un número y un símbolo.",
-      "acceptTerms": "Acepto los Términos de Servicio y la Política de Privacidad."
+      "acceptTerms": "Acepto los Términos de Servicio y la Política de Privacidad.",
+      "passwordHint": "Al menos {min} caracteres, con mayúsculas y minúsculas, un número y un símbolo."
     },
     "verify": {
       "title": "Verifica tu correo",
@@ -68,6 +68,13 @@
       "or": "o",
       "signIn": "Iniciar sesión con una llave de acceso",
       "signInError": "No pudimos iniciar tu sesión con una llave de acceso. Inténtalo de nuevo."
+    },
+    "passwordRules": {
+      "title": "La contraseña debe incluir:",
+      "length": "Al menos {min} caracteres",
+      "mixedCase": "Mayúsculas y minúsculas",
+      "number": "Un número",
+      "symbol": "Un símbolo"
     }
   },
   "dashboard": {
