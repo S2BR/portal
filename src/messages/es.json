@@ -11,7 +11,8 @@
       "title": "Crea tu cuenta",
       "subtitle": "Únete a S2BR Portal.",
       "submit": "Crear cuenta",
-      "passwordHint": "Al menos {min} caracteres, con mayúsculas y minúsculas, un número y un símbolo."
+      "passwordHint": "Al menos {min} caracteres, con mayúsculas y minúsculas, un número y un símbolo.",
+      "acceptTerms": "Acepto los Términos de Servicio y la Política de Privacidad."
     },
     "verify": {
       "title": "Verifica tu correo",
@@ -59,7 +60,8 @@
       "passwordPolicy": "Tu contraseña no cumple los requisitos.",
       "passwordMismatch": "Las contraseñas no coinciden.",
       "rateLimited": "Demasiados intentos. Espera un momento e inténtalo de nuevo.",
-      "generic": "Algo salió mal. Inténtalo de nuevo."
+      "generic": "Algo salió mal. Inténtalo de nuevo.",
+      "acceptTerms": "Acepta los términos para continuar."
     },
     "captchaUnsupported": "La verificación no está disponible en este momento. Inténtalo de nuevo más tarde.",
     "passkey": {

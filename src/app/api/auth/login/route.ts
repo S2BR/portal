@@ -8,7 +8,6 @@ import { setSessionCookies } from "@/lib/auth/session";
 const bodySchema = z.object({
   email: z.email(),
   password: z.string().min(1),
-  login_otp: z.string().optional(),
   two_factor_code: z.string().optional(),
   captcha_token: z.string().optional(),
 });
@@ -16,9 +15,9 @@ const bodySchema = z.object({
 /**
  * BFF login handler. Forwards credentials to the portal, and on success stores
  * the token pair in httpOnly cookies (the browser never sees a token). Portal
- * step responses (403 `login_otp_required` / `two_factor_required` /
- * `email_unverified`) are relayed as a 200 with a `status` the client branches
- * on; validation/credential failures collapse to a generic 422.
+ * step responses (403 `two_factor_required` / `email_unverified`) are relayed as
+ * a 200 with a `status` the client branches on; validation/credential failures
+ * collapse to a generic 422.
  */
 export async function POST(request: Request): Promise<NextResponse> {
   const parsed = bodySchema.safeParse(await request.json().catch(() => null));
@@ -48,9 +47,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   const step = response.data.status;
   if (
     response.status === 403 &&
-    (step === "login_otp_required" ||
-      step === "two_factor_required" ||
-      step === "email_unverified")
+    (step === "two_factor_required" || step === "email_unverified")
   ) {
     return NextResponse.json({ status: step, email: parsed.data.email });
   }
@@ -71,12 +68,9 @@ export async function POST(request: Request): Promise<NextResponse> {
     );
   }
 
-  // A wrong second factor (emailed OTP or TOTP) is a code error, not a
-  // credential error — keep the user on the code step with the right message.
-  if (
-    response.data.errors?.login_otp ||
-    response.data.errors?.two_factor_code
-  ) {
+  // A wrong second factor (TOTP) is a code error, not a credential error —
+  // keep the user on the code step with the right message.
+  if (response.data.errors?.two_factor_code) {
     return NextResponse.json(
       { status: "invalid_code", message: response.data.message },
       { status: 422 },

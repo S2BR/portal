@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { apiErrorText } from "@/lib/api/error-text";
 import {
   browserSupportsWebAuthn,
   getPasskeyAssertion,
@@ -74,6 +75,7 @@ export function PasskeySignInButton({
       const verifyData = (await verifyResponse.json()) as {
         status?: string;
         message?: string;
+        errors?: Record<string, string[]>;
       };
 
       if (verifyData.status === "authenticated") {
@@ -82,7 +84,7 @@ export function PasskeySignInButton({
       } else if (verifyData.status === "rate_limited") {
         setError(t("errors.rateLimited"));
       } else {
-        setError(verifyData.message ?? t("passkey.signInError"));
+        setError(apiErrorText(verifyData) ?? t("passkey.signInError"));
       }
     } catch (caught) {
       // A dismissed or timed-out prompt is not an error worth surfacing.

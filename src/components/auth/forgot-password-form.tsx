@@ -8,6 +8,7 @@ import { OtpInput } from "@/components/auth/otp-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { apiErrorText } from "@/lib/api/error-text";
 import type { AppConfig } from "@/lib/api/types";
 import { checkPassword } from "@/lib/auth/password";
 import { useOtpLength } from "@/lib/config/use-app-config";
@@ -81,12 +82,13 @@ export function ForgotPasswordForm({
       const data = (await response.json()) as {
         status?: string;
         message?: string;
+        errors?: Record<string, string[]>;
       };
       if (data.status === "ok") {
         router.push("/login");
         return;
       }
-      setError(data.message ?? t("errors.generic"));
+      setError(apiErrorText(data) ?? t("errors.generic"));
     } catch {
       setError(t("errors.generic"));
     } finally {

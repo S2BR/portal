@@ -5,14 +5,13 @@ import { useTranslations } from "next-intl";
 import { useState, type FormEvent } from "react";
 
 import { Captcha, useCaptcha } from "@/components/auth/captcha";
-import { OtpInput } from "@/components/auth/otp-input";
 import { PasskeySignInButton } from "@/components/auth/passkey-sign-in-button";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useOtpLength } from "@/lib/config/use-app-config";
+import { apiErrorText } from "@/lib/api/error-text";
 
-type Step = "credentials" | "login_otp_required" | "two_factor_required";
+type Step = "credentials" | "two_factor_required";
 
 export function LoginForm({ nextPath }: { nextPath: string }) {
   const t = useTranslations("auth");
@@ -23,7 +22,6 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
     setToken: setCaptchaToken,
     refresh: refreshCaptcha,
   } = useCaptcha("login");
-  const otpLength = useOtpLength();
 
   const [step, setStep] = useState<Step>("credentials");
   const [email, setEmail] = useState("");
@@ -44,6 +42,7 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
       const data = (await response.json()) as {
         status?: string;
         message?: string;
+        errors?: Record<string, string[]>;
       };
 
       switch (data.status) {
@@ -51,7 +50,6 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
           router.replace(nextPath);
           router.refresh();
           break;
-        case "login_otp_required":
         case "two_factor_required":
           setStep(data.status);
           setCode("");
@@ -65,7 +63,7 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
         default:
           // captcha_failed, invalid_code, and bad credentials all carry the
           // portal's own (localized) message.
-          setError(data.message ?? t("errors.generic"));
+          setError(apiErrorText(data) ?? t("errors.generic"));
       }
       return data.status ?? "invalid";
     } catch {
@@ -109,9 +107,7 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
       setError(t("errors.code"));
       return;
     }
-    const field =
-      step === "login_otp_required" ? "login_otp" : "two_factor_code";
-    void submit({ email, password, [field]: codeValue.trim() });
+    void submit({ email, password, two_factor_code: codeValue.trim() });
   }
 
   function onSubmitCode(event: FormEvent) {
@@ -120,41 +116,26 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
   }
 
   if (step !== "credentials") {
-    const isOtp = step === "login_otp_required";
     return (
       <form onSubmit={onSubmitCode} className="flex flex-col gap-4">
         <div className="space-y-1 text-center">
           <h1 className="text-xl font-semibold tracking-tight">
-            {isOtp ? t("login.otpTitle") : t("login.twoFactorTitle")}
+            {t("login.twoFactorTitle")}
           </h1>
           <p className="text-muted-foreground text-sm">
-            {isOtp
-              ? t("login.otpSubtitle", { email })
-              : t("login.twoFactorSubtitle")}
+            {t("login.twoFactorSubtitle")}
           </p>
         </div>
         <div className="space-y-2">
           <Label htmlFor="code">{t("fields.code")}</Label>
-          {isOtp ? (
-            <OtpInput
-              id="code"
-              length={otpLength}
-              value={code}
-              onChange={setCode}
-              onComplete={submitCode}
-              autoFocus
-              disabled={pending}
-            />
-          ) : (
-            <Input
-              id="code"
-              inputMode="numeric"
-              autoComplete="one-time-code"
-              value={code}
-              onChange={(event) => setCode(event.target.value)}
-              autoFocus
-            />
-          )}
+          <Input
+            id="code"
+            inputMode="numeric"
+            autoComplete="one-time-code"
+            value={code}
+            onChange={(event) => setCode(event.target.value)}
+            autoFocus
+          />
         </div>
         {error ? <p className="text-destructive text-sm">{error}</p> : null}
         <Button type="submit" disabled={pending}>

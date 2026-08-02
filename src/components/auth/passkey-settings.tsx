@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { apiErrorText } from "@/lib/api/error-text";
 import {
   browserSupportsWebAuthn,
   createPasskeyCredential,
@@ -117,13 +118,14 @@ export function PasskeySettings() {
       const storeData = (await storeResponse.json()) as {
         status?: string;
         message?: string;
+        errors?: Record<string, string[]>;
       };
 
       if (storeData.status === "ok") {
         reset();
         await load();
       } else {
-        setError(storeData.message ?? authErrors("generic"));
+        setError(apiErrorText(storeData) ?? authErrors("generic"));
       }
     } catch (caught) {
       if (!isPasskeyCancellation(caught)) {
@@ -154,13 +156,14 @@ export function PasskeySettings() {
       const data = (await response.json()) as {
         status?: string;
         message?: string;
+        errors?: Record<string, string[]>;
       };
 
       if (data.status === "ok") {
         reset();
         await load();
       } else {
-        setError(data.message ?? authErrors("generic"));
+        setError(apiErrorText(data) ?? authErrors("generic"));
       }
     } catch {
       setError(authErrors("generic"));

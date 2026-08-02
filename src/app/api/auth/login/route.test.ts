@@ -65,16 +65,16 @@ describe("POST /api/auth/login", () => {
     );
   });
 
-  it("relays a 403 login_otp_required as a next step (no session set)", async () => {
+  it("relays a 403 two_factor_required as a next step (no session set)", async () => {
     fetchMock.mockResolvedValue(
-      portalResponse(403, { status: "login_otp_required", message: "otp" }),
+      portalResponse(403, { status: "two_factor_required", message: "2fa" }),
     );
 
     const res = await POST(request({ email: "a@b.co", password: "secret" }));
 
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({
-      status: "login_otp_required",
+      status: "two_factor_required",
       email: "a@b.co",
     });
     expect(setSessionCookies).not.toHaveBeenCalled();
@@ -114,12 +114,16 @@ describe("POST /api/auth/login", () => {
     fetchMock.mockResolvedValue(
       portalResponse(422, {
         message: "The given data was invalid.",
-        errors: { login_otp: ["The code is invalid or has expired."] },
+        errors: { two_factor_code: ["The code is invalid or has expired."] },
       }),
     );
 
     const res = await POST(
-      request({ email: "a@b.co", password: "secret", login_otp: "000000" }),
+      request({
+        email: "a@b.co",
+        password: "secret",
+        two_factor_code: "000000",
+      }),
     );
 
     expect(res.status).toBe(422);
@@ -158,8 +162,8 @@ describe("POST /api/auth/login", () => {
       request({
         email: "a@b.co",
         password: "secret",
-        login_otp: "",
         two_factor_code: "123456",
+        captcha_token: "",
       }),
     );
 

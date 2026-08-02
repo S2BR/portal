@@ -7,6 +7,7 @@ import { useState, type FormEvent } from "react";
 import { OtpInput } from "@/components/auth/otp-input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { apiErrorText } from "@/lib/api/error-text";
 import { useOtpLength } from "@/lib/config/use-app-config";
 
 export function VerifyEmailForm({ email }: { email: string }) {
@@ -36,13 +37,14 @@ export function VerifyEmailForm({ email }: { email: string }) {
       const data = (await response.json()) as {
         status?: string;
         message?: string;
+        errors?: Record<string, string[]>;
       };
       if (data.status === "authenticated") {
         router.replace("/");
         router.refresh();
         return;
       }
-      setError(data.message ?? t("errors.generic"));
+      setError(apiErrorText(data) ?? t("errors.generic"));
     } catch {
       setError(t("errors.generic"));
     } finally {

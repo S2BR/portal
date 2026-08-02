@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { apiErrorText } from "@/lib/api/error-text";
 import { checkPassword } from "@/lib/auth/password";
 import { useAppConfig } from "@/lib/config/use-app-config";
 
@@ -66,12 +67,13 @@ export function PasswordSettings() {
       const data = (await response.json()) as {
         status?: string;
         message?: string;
+        errors?: Record<string, string[]>;
       };
       if (data.status === "ok") {
         reset();
         setDone(true);
       } else {
-        setError(data.message ?? authErrors("generic"));
+        setError(apiErrorText(data) ?? authErrors("generic"));
       }
     } catch {
       setError(authErrors("generic"));

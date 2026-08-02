@@ -11,7 +11,8 @@
       "title": "Create your account",
       "subtitle": "Join S2BR Portal.",
       "submit": "Create account",
-      "passwordHint": "At least {min} characters, with upper- and lower-case letters, a number, and a symbol."
+      "passwordHint": "At least {min} characters, with upper- and lower-case letters, a number, and a symbol.",
+      "acceptTerms": "I agree to the Terms of Service and Privacy Policy."
     },
     "verify": {
       "title": "Verify your email",
@@ -59,7 +60,8 @@
       "passwordPolicy": "Your password doesn't meet the requirements.",
       "passwordMismatch": "The passwords don't match.",
       "rateLimited": "Too many attempts. Please wait a moment and try again.",
-      "generic": "Something went wrong. Please try again."
+      "generic": "Something went wrong. Please try again.",
+      "acceptTerms": "Please accept the terms to continue."
     },
     "captchaUnsupported": "Verification isn't available right now. Please try again later.",
     "passkey": {
