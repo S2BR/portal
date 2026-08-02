@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { portalFetch } from "./client";
+import { portalErrorMessage, portalFetch } from "./client";
 import type { ApiError } from "./types";
 
 const fetchMock = vi.fn();
@@ -82,6 +82,7 @@ describe("portalFetch", () => {
 
     expect(res.status).toBe(500);
     expect(res.data).toEqual({});
+    expect(res.nonJson).toBe("boom");
   });
 
   it("fails closed on a 2xx whose body isn't JSON (misrouted HTML page)", async () => {
@@ -97,6 +98,7 @@ describe("portalFetch", () => {
     // A 200 that isn't JSON must never read as a successful API call.
     expect(res.ok).toBe(false);
     expect(res.data).toEqual({});
+    expect(res.nonJson).toContain("<!DOCTYPE html>");
   });
 
   it("treats an empty 2xx body as an ok, empty result", async () => {
@@ -106,5 +108,35 @@ describe("portalFetch", () => {
 
     expect(res.ok).toBe(true);
     expect(res.data).toEqual({});
+  });
+});
+
+describe("portalErrorMessage", () => {
+  it("prefers the API's own message when present", () => {
+    const message = portalErrorMessage({
+      ok: false,
+      status: 422,
+      data: { message: "The email has already been taken." },
+    });
+
+    expect(message).toBe("The email has already been taken.");
+  });
+
+  it("names a non-JSON body with its status", () => {
+    const message = portalErrorMessage({
+      ok: false,
+      status: 502,
+      data: {},
+      nonJson: "<!DOCTYPE html>",
+    });
+
+    expect(message).toContain("non-JSON");
+    expect(message).toContain("502");
+  });
+
+  it("names the status when the API sent no message", () => {
+    const message = portalErrorMessage({ ok: false, status: 500, data: {} });
+
+    expect(message).toContain("500");
   });
 });

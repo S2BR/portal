@@ -67,10 +67,14 @@ export function RegisterForm({
             : {}),
         }),
       });
-      const data = (await response.json()) as {
-        status?: string;
-        message?: string;
-      };
+      let data: { status?: string; message?: string };
+      try {
+        data = (await response.json()) as { status?: string; message?: string };
+      } catch {
+        // The BFF itself returned a non-JSON body (e.g. a runtime error page) —
+        // surface the status rather than masking it as a generic failure.
+        data = { message: `Request failed (HTTP ${response.status}).` };
+      }
 
       switch (data.status) {
         case "verification_required":

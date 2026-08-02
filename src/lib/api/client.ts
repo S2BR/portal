@@ -19,6 +19,13 @@ export interface PortalResponse<T> {
   ok: boolean;
   status: number;
   data: T;
+  /**
+   * Set only when the API response body was not valid JSON (a failed-closed
+   * call — e.g. an HTML outage page or a mispointed `PORTAL_API_URL`). Holds a
+   * short snippet of the raw body so callers can surface a real diagnostic
+   * instead of masking it as a generic error.
+   */
+  nonJson?: string;
 }
 
 /**
@@ -71,8 +78,37 @@ export async function portalFetch<T = unknown>(
   try {
     data = (raw === "" ? {} : JSON.parse(raw)) as T;
   } catch {
-    return { ok: false, status: response.status, data: {} as T };
+    // Surface the fail-closed event in server logs (e.g. Vercel functions) — a
+    // non-JSON body almost always means an upstream outage or a mispointed
+    // PORTAL_API_URL, and is otherwise invisible.
+    console.error(
+      `[portalFetch] non-JSON response from ${request.method ?? "GET"} ${request.path} (HTTP ${response.status}): ${raw.slice(0, 200)}`,
+    );
+    return {
+      ok: false,
+      status: response.status,
+      data: {} as T,
+      nonJson: raw.slice(0, 300),
+    };
   }
 
   return { ok: response.ok, status: response.status, data };
+}
+
+/**
+ * The best human-facing error text for a failed portal call: the API's own
+ * (localized) message when it sent one, otherwise an honest diagnostic naming
+ * the HTTP status — and flagging a non-JSON body — so a failure is never masked
+ * as a bare generic error.
+ */
+export function portalErrorMessage(
+  response: PortalResponse<{ message?: string }>,
+): string {
+  if (response.data.message) {
+    return response.data.message;
+  }
+  if (response.nonJson !== undefined) {
+    return `The API returned a non-JSON response (HTTP ${response.status}).`;
+  }
+  return `The API returned an unexpected error (HTTP ${response.status}).`;
 }

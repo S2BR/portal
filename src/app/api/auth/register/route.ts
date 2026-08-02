@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { portalFetch } from "@/lib/api/client";
+import { portalErrorMessage, portalFetch } from "@/lib/api/client";
 import type { ApiError } from "@/lib/api/types";
 
 const bodySchema = z.object({
@@ -60,7 +60,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   return NextResponse.json(
     {
       status: "invalid",
-      message: response.data.message,
+      message: portalErrorMessage(response),
       errors: response.data.errors,
     },
     { status: 422 },
