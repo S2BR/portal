@@ -11,8 +11,7 @@
       "title": "Crie sua conta",
       "subtitle": "Junte-se ao S2BR Portal.",
       "submit": "Criar conta",
-      "acceptTerms": "Concordo com os Termos de Serviço e a Política de Privacidade.",
-      "passwordHint": "Pelo menos {min} caracteres, com letras maiúsculas e minúsculas, um número e um símbolo."
+      "acceptTerms": "Concordo com os Termos de Serviço e a Política de Privacidade."
     },
     "verify": {
       "title": "Verifique seu e-mail",
