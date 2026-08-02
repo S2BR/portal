@@ -29,3 +29,39 @@ export function checkPassword(
   }
   return null;
 }
+
+export interface PasswordRequirement {
+  rule: PasswordRule;
+  met: boolean;
+}
+
+/**
+ * The policy's active rules paired with whether the given password meets each,
+ * for a live checklist as the user types. Only the rules the policy enables are
+ * returned (plus length whenever a minimum is set). Same predicates as
+ * {@link checkPassword}, so the checklist and the submit-time gate never drift.
+ */
+export function passwordRequirements(
+  password: string,
+  policy: AppConfig["password"],
+): PasswordRequirement[] {
+  const requirements: PasswordRequirement[] = [];
+
+  if (policy.min > 0) {
+    requirements.push({ rule: "min", met: password.length >= policy.min });
+  }
+  if (policy.mixed_case) {
+    requirements.push({
+      rule: "mixed_case",
+      met: /[a-z]/.test(password) && /[A-Z]/.test(password),
+    });
+  }
+  if (policy.numbers) {
+    requirements.push({ rule: "numbers", met: /\d/.test(password) });
+  }
+  if (policy.symbols) {
+    requirements.push({ rule: "symbols", met: /[^A-Za-z0-9]/.test(password) });
+  }
+
+  return requirements;
+}

@@ -11,8 +11,8 @@
       "title": "Create your account",
       "subtitle": "Join S2BR Portal.",
       "submit": "Create account",
-      "passwordHint": "At least {min} characters, with upper- and lower-case letters, a number, and a symbol.",
-      "acceptTerms": "I agree to the Terms of Service and Privacy Policy."
+      "acceptTerms": "I agree to the Terms of Service and Privacy Policy.",
+      "passwordHint": "At least {min} characters, with upper- and lower-case letters, a number, and a symbol."
     },
     "verify": {
       "title": "Verify your email",
@@ -68,6 +68,13 @@
       "or": "or",
       "signIn": "Sign in with a passkey",
       "signInError": "We couldn't sign you in with a passkey. Please try again."
+    },
+    "passwordRules": {
+      "title": "Password must include:",
+      "length": "At least {min} characters",
+      "mixedCase": "Upper and lowercase letters",
+      "number": "A number",
+      "symbol": "A symbol"
     }
   },
   "dashboard": {
