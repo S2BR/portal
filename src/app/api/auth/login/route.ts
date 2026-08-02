@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { portalFetch } from "@/lib/api/client";
-import type { ApiError, TokenResponse } from "@/lib/api/types";
+import type { ApiError, SignInResponse } from "@/lib/api/types";
 import { setSessionCookies } from "@/lib/auth/session";
 
 const bodySchema = z.object({
@@ -33,14 +33,15 @@ export async function POST(request: Request): Promise<NextResponse> {
     ),
   );
 
-  const response = await portalFetch<TokenResponse & ApiError>({
+  const response = await portalFetch<SignInResponse & Partial<ApiError>>({
     method: "POST",
     path: "/auth/login",
     body: payload,
   });
 
+  // Sign-in success is a JSON:API document: user in `data`, tokens in `meta`.
   if (response.ok) {
-    await setSessionCookies(response.data);
+    await setSessionCookies(response.data.meta);
     return NextResponse.json({ status: "authenticated" });
   }
 

@@ -6,8 +6,16 @@ import type { ApiError } from "@/lib/api/types";
 
 const bodySchema = z.object({ password: z.string().min(1) });
 
-/** BFF: disable 2FA (password re-auth required). */
-export async function DELETE(request: Request): Promise<NextResponse> {
+/** BFF: remove a passkey (password-gated at the portal). */
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> },
+): Promise<NextResponse> {
+  const { id } = await params;
+  if (!/^\d+$/.test(id)) {
+    return NextResponse.json({ status: "invalid" }, { status: 422 });
+  }
+
   const parsed = bodySchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) {
     return NextResponse.json({ status: "invalid" }, { status: 422 });
@@ -15,7 +23,7 @@ export async function DELETE(request: Request): Promise<NextResponse> {
 
   const response = await callWithAuth<ApiError>({
     method: "DELETE",
-    path: "/account/security/two-factor/disable",
+    path: `/account/security/passkeys/${id}`,
     body: parsed.data,
   });
 
@@ -25,6 +33,6 @@ export async function DELETE(request: Request): Promise<NextResponse> {
 
   return NextResponse.json(
     { status: "invalid", message: response.data.message },
-    { status: 422 },
+    { status: response.status === 404 ? 404 : 422 },
   );
 }

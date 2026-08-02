@@ -13,6 +13,8 @@ const FALLBACK_CONFIG: AppConfig = {
   require_login_otp: false,
   require_email_verification: true,
   captcha: { register: true, login: true },
+  // Offline we can't run a passkey ceremony anyway, so don't advertise it.
+  passkeys: { enabled: false },
   password: { min: 10, mixed_case: true, numbers: true, symbols: true },
   otp: { length: 6, ttl: 900, resend_cooldown: 60 },
   hosted_auth: { register_url: "", login_url: "", forgot_url: "" },

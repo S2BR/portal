@@ -61,7 +61,12 @@
       "rateLimited": "Muitas tentativas. Aguarde um momento e tente novamente.",
       "generic": "Algo deu errado. Tente novamente."
     },
-    "captchaUnsupported": "A verificação não está disponível no momento. Tente novamente mais tarde."
+    "captchaUnsupported": "A verificação não está disponível no momento. Tente novamente mais tarde.",
+    "passkey": {
+      "or": "ou",
+      "signIn": "Entrar com uma chave de acesso",
+      "signInError": "Não foi possível entrar com uma chave de acesso. Tente novamente."
+    }
   },
   "dashboard": {
     "title": "Painel",
@@ -79,6 +84,25 @@
     "twoFactorOn": "Dois fatores ativado",
     "twoFactorOff": "Dois fatores desativado",
     "memberSince": "Membro desde {date}"
+  },
+  "profileSettings": {
+    "title": "Dados do perfil",
+    "edit": "Editar",
+    "save": "Salvar alterações",
+    "cancel": "Cancelar",
+    "timezone": "Fuso horário",
+    "deviceDefault": "Padrão do dispositivo"
+  },
+  "sessions": {
+    "title": "Sessões ativas",
+    "empty": "Nenhuma sessão ativa.",
+    "current": "Este dispositivo",
+    "unknownDevice": "Dispositivo desconhecido",
+    "unknownIp": "Local desconhecido",
+    "lastActive": "Última atividade {when}",
+    "signOut": "Sair",
+    "signOutOthers": "Sair de todos os outros dispositivos",
+    "error": "Algo deu errado. Tente novamente."
   },
   "twoFactor": {
     "title": "Autenticação de dois fatores",
@@ -105,6 +129,22 @@
     "verifySubtitle": "Digite o código que enviamos para {email}.",
     "verifySubmit": "Confirmar",
     "cancel": "Cancelar"
+  },
+  "passkeys": {
+    "title": "Chaves de acesso",
+    "description": "Entre sem senha usando a biometria ou o PIN do seu dispositivo.",
+    "add": "Adicionar uma chave de acesso",
+    "remove": "Remover",
+    "cancel": "Cancelar",
+    "empty": "Você ainda não adicionou nenhuma chave de acesso.",
+    "unsupported": "Este navegador não é compatível com chaves de acesso.",
+    "defaultName": "Minha chave de acesso",
+    "addError": "Não foi possível adicionar essa chave de acesso. Tente novamente.",
+    "nameLabel": "Nome",
+    "namePlaceholder": "ex.: Meu notebook",
+    "lastUsed": "Usada pela última vez em {date}",
+    "neverUsed": "Nunca usada",
+    "removePrompt": "Digite sua senha para remover esta chave de acesso."
   },
   "theme": {
     "label": "Tema",

@@ -8,13 +8,16 @@ import { callWithAuth } from "@/lib/api/authed";
 
 import { GET } from "./route";
 
-const user = {
-  id: 1,
-  name: "Ada",
-  email: "ada@example.com",
-  email_verified: true,
-  two_factor_enabled: false,
-  created_at: "2026-01-01T00:00:00.000000Z",
+const userResource = {
+  type: "users",
+  id: "1",
+  attributes: {
+    name: "Ada",
+    email: "ada@example.com",
+    timezone: null,
+    two_factor_enabled: false,
+    created_at: "2026-01-01T00:00:00.000000Z",
+  },
 };
 
 afterEach(() => {
@@ -26,14 +29,14 @@ describe("GET /api/auth/me", () => {
     vi.mocked(callWithAuth).mockResolvedValue({
       ok: true,
       status: 200,
-      data: { user },
+      data: { data: userResource },
     });
 
     const res = await GET();
-    const body = (await res.json()) as { user: typeof user };
+    const body = (await res.json()) as { user: { id: string; name: string } };
 
     expect(res.status).toBe(200);
-    expect(body.user.name).toBe("Ada");
+    expect(body.user).toMatchObject({ id: "1", name: "Ada" });
   });
 
   it("returns 401 with a null user when unauthenticated", async () => {

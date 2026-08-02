@@ -3,24 +3,24 @@ import { NextResponse } from "next/server";
 import { callWithAuth } from "@/lib/api/authed";
 import type { ApiError } from "@/lib/api/types";
 
-/** BFF: begin 2FA enrollment — returns the TOTP secret + otpauth URL for a QR. */
+/** BFF: begin passkey registration — returns creation options + a single-use challenge id. */
 export async function POST(): Promise<NextResponse> {
   const response = await callWithAuth<
-    { secret: string; otpauth_url: string } & ApiError
+    { challenge_id: string; options: unknown } & ApiError
   >({
     method: "POST",
-    path: "/account/security/two-factor/enroll",
+    path: "/account/security/passkeys/options",
   });
 
   if (response.ok) {
     return NextResponse.json({
-      secret: response.data.secret,
-      otpauthUrl: response.data.otpauth_url,
+      challenge_id: response.data.challenge_id,
+      options: response.data.options,
     });
   }
 
   return NextResponse.json(
     { status: "error", message: response.data.message },
-    { status: response.status === 409 ? 409 : 400 },
+    { status: 400 },
   );
 }
