@@ -11,8 +11,7 @@
       "title": "Create your account",
       "subtitle": "Join S2BR Portal.",
       "submit": "Create account",
-      "acceptTerms": "I agree to the Terms of Service and Privacy Policy.",
-      "passwordHint": "At least {min} characters, with upper- and lower-case letters, a number, and a symbol."
+      "acceptTerms": "I agree to the Terms of Service and Privacy Policy."
     },
     "verify": {
       "title": "Verify your email",

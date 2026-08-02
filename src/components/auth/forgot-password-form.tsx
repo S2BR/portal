@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useState, type FormEvent } from "react";
 
 import { OtpInput } from "@/components/auth/otp-input";
+import { PasswordRequirements } from "@/components/auth/password-requirements";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -127,9 +128,7 @@ export function ForgotPasswordForm({
             value={password}
             onChange={(event) => setPassword(event.target.value)}
           />
-          <p className="text-muted-foreground text-xs">
-            {t("register.passwordHint", { min: passwordPolicy.min })}
-          </p>
+          <PasswordRequirements password={password} policy={passwordPolicy} />
         </div>
         <div className="space-y-2">
           <Label htmlFor="confirm">{t("fields.confirmPassword")}</Label>
