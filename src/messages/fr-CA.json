@@ -74,6 +74,20 @@
       "mixedCase": "Des majuscules et des minuscules",
       "number": "Un chiffre",
       "symbol": "Un symbole"
+    },
+    "emailCode": {
+      "button": "Se connecter avec un code par courriel",
+      "requestTitle": "Se connecter par courriel",
+      "requestSubtitle": "Nous vous enverrons un code de connexion à usage unique par courriel.",
+      "sendButton": "M’envoyer un code",
+      "verifyTitle": "Entrez votre code",
+      "verifySubtitle": "Nous avons envoyé un code de connexion à {email}.",
+      "twoFactorLabel": "Code de l’authentificateur",
+      "twoFactorHint": "Seulement si vous avez activé l’authentification à deux facteurs.",
+      "verifyButton": "Se connecter",
+      "resend": "Envoyer un nouveau code",
+      "back": "Retour",
+      "twoFactorRequired": "L’authentification à deux facteurs est requise. Demandez un nouveau code et saisissez-le avec le code de votre authentificateur."
     }
   },
   "dashboard": {
@@ -126,7 +140,9 @@
     "recoveryTitle": "Enregistrez vos codes de récupération",
     "recoverySubtitle": "Conservez-les en lieu sûr. Chacun peut être utilisé une fois si vous perdez votre authentificateur.",
     "done": "Je les ai enregistrés",
-    "disablePrompt": "Entrez votre mot de passe pour désactiver l'authentification à deux facteurs."
+    "disablePrompt": "Entrez votre mot de passe pour désactiver l'authentification à deux facteurs.",
+    "regenerate": "Régénérer les codes de récupération",
+    "regeneratePrompt": "Entrez votre mot de passe pour générer un nouvel ensemble de codes de récupération. Vos codes actuels cesseront de fonctionner."
   },
   "emailSettings": {
     "title": "Adresse courriel",
