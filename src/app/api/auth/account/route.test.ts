@@ -1,14 +1,24 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@/lib/api/authed", () => ({ callWithAuth: vi.fn() }));
+vi.mock("@/lib/auth/session", () => ({ clearSessionCookies: vi.fn() }));
 
 import { callWithAuth } from "@/lib/api/authed";
+import { clearSessionCookies } from "@/lib/auth/session";
 
-import { PATCH } from "./route";
+import { DELETE, PATCH } from "./route";
 
 function request(body: unknown): Request {
   return new Request("http://localhost/api/auth/account", {
     method: "PATCH",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(body),
+  });
+}
+
+function deleteRequest(body: unknown): Request {
+  return new Request("http://localhost/api/auth/account", {
+    method: "DELETE",
     headers: { "content-type": "application/json" },
     body: JSON.stringify(body),
   });
@@ -71,6 +81,48 @@ describe("PATCH /api/auth/account", () => {
 
   it("rejects an empty patch without calling the portal", async () => {
     const res = await PATCH(request({}));
+
+    expect(res.status).toBe(422);
+    expect(callWithAuth).not.toHaveBeenCalled();
+  });
+});
+
+describe("DELETE /api/auth/account", () => {
+  it("deletes the account and clears the session on success", async () => {
+    vi.mocked(callWithAuth).mockResolvedValue({
+      ok: true,
+      status: 200,
+      data: {},
+    });
+
+    const res = await DELETE(deleteRequest({ password: "secret" }));
+
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({ status: "ok" });
+    expect(callWithAuth).toHaveBeenCalledWith({
+      method: "DELETE",
+      path: "/account",
+      body: { password: "secret" },
+    });
+    expect(clearSessionCookies).toHaveBeenCalledOnce();
+  });
+
+  it("keeps the session on a wrong password", async () => {
+    vi.mocked(callWithAuth).mockResolvedValue({
+      ok: false,
+      status: 422,
+      data: { message: "The password is incorrect." },
+    });
+
+    const res = await DELETE(deleteRequest({ password: "wrong" }));
+
+    expect(res.status).toBe(422);
+    expect((await res.json()).status).toBe("invalid");
+    expect(clearSessionCookies).not.toHaveBeenCalled();
+  });
+
+  it("rejects a missing password without calling the portal", async () => {
+    const res = await DELETE(deleteRequest({}));
 
     expect(res.status).toBe(422);
     expect(callWithAuth).not.toHaveBeenCalled();

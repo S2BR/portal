@@ -3,8 +3,10 @@
 import { useFormatter, useTranslations } from "next-intl";
 
 import { useCurrentUser } from "@/components/auth/current-user";
+import { DeleteAccountSettings } from "@/components/auth/delete-account-settings";
 import { EmailSettings } from "@/components/auth/email-settings";
 import { PasskeySettings } from "@/components/auth/passkey-settings";
+import { PasswordSettings } from "@/components/auth/password-settings";
 import { ProfileSettings } from "@/components/auth/profile-settings";
 import { SessionSettings } from "@/components/auth/session-settings";
 import { TwoFactorSettings } from "@/components/auth/two-factor-settings";
@@ -41,9 +43,11 @@ export default function ProfilePage() {
       </div>
       <ProfileSettings />
       <EmailSettings />
+      <PasswordSettings />
       <TwoFactorSettings />
       <PasskeySettings />
       <SessionSettings />
+      <DeleteAccountSettings />
     </div>
   );
 }
