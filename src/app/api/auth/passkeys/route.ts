@@ -31,7 +31,7 @@ export async function GET(): Promise<NextResponse> {
 
 const storeSchema = z.object({
   name: z.string().min(1),
-  password: z.string().min(1),
+  verification_token: z.string().min(1),
   challenge_id: z.string().min(1),
   // The browser's attestation (RegistrationResponseJSON) — forwarded verbatim.
   credential: z.record(z.string(), z.unknown()),

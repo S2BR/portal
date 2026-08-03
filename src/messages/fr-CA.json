@@ -195,5 +195,14 @@
   },
   "locale": {
     "label": "Langue"
+  },
+  "verify": {
+    "title": "Confirmez votre identité",
+    "description": "Vérifiez votre identité pour continuer.",
+    "usePasskey": "Utiliser une clé d'accès",
+    "or": "ou",
+    "confirm": "Confirmer",
+    "cancel": "Annuler",
+    "passkeyError": "Nous n'avons pas pu vérifier votre clé d'accès. Veuillez réessayer."
   }
 }

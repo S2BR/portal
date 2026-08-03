@@ -26,7 +26,9 @@ describe("POST /api/auth/2fa/confirm", () => {
       data: { recovery_codes: ["aaaa-1111", "bbbb-2222"] },
     });
 
-    const res = await POST(request({ code: "123456", password: "secret" }));
+    const res = await POST(
+      request({ code: "123456", verification_token: "tok" }),
+    );
     const body = (await res.json()) as { recoveryCodes: string[] };
 
     expect(res.status).toBe(200);
@@ -40,7 +42,9 @@ describe("POST /api/auth/2fa/confirm", () => {
       data: { message: "bad" },
     });
 
-    const res = await POST(request({ code: "000000", password: "secret" }));
+    const res = await POST(
+      request({ code: "000000", verification_token: "tok" }),
+    );
 
     expect(res.status).toBe(422);
     expect((await res.json()).status).toBe("invalid");

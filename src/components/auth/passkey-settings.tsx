@@ -3,6 +3,7 @@
 import { useFormatter, useTranslations } from "next-intl";
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 
+import { VerifyDialog } from "@/components/auth/verify-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -22,17 +23,18 @@ import {
 } from "@/lib/auth/passkeys";
 import { useAppConfig } from "@/lib/config/use-app-config";
 
-type Mode = "idle" | "adding" | "removing";
+type Mode = "idle" | "adding";
+type PasswordAction = "add" | "remove";
 
 /**
- * Passkey management on the profile: list the account's passkeys, add one (name
- * + password re-auth, then the browser ceremony), and remove one (password
- * re-auth). Adding and removing are password-gated at the portal — a stolen
- * token alone must not be able to plant or strip a credential.
+ * Passkey management on the profile: list the account's passkeys, add one (name,
+ * then a password confirmation, then the browser ceremony), and remove one
+ * (password confirmation). Adding and removing are password-gated at the portal —
+ * a stolen token alone must not be able to plant or strip a credential. The
+ * password itself is collected in the shared confirmation dialog.
  */
 export function PasskeySettings() {
   const t = useTranslations("passkeys");
-  const fields = useTranslations("auth.fields");
   const authErrors = useTranslations("auth.errors");
   const config = useAppConfig();
   const format = useFormatter();
@@ -41,10 +43,10 @@ export function PasskeySettings() {
   const [passkeys, setPasskeys] = useState<PasskeySummary[] | null>(null);
   const [mode, setMode] = useState<Mode>("idle");
   const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
   const [removingId, setRemovingId] = useState<number | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [pending, setPending] = useState(false);
+  const [passwordAction, setPasswordAction] = useState<PasswordAction | null>(
+    null,
+  );
 
   useEffect(() => {
     // Client-only capability check — it can't run during SSR (no `window`).
@@ -73,19 +75,17 @@ export function PasskeySettings() {
   function reset() {
     setMode("idle");
     setName("");
-    setPassword("");
     setRemovingId(null);
-    setError(null);
   }
 
-  async function addPasskey(event: FormEvent) {
+  function startAdd(event: FormEvent) {
     event.preventDefault();
-    if (!password) {
-      setError(authErrors("password"));
-      return;
-    }
-    setPending(true);
-    setError(null);
+    setPasswordAction("add");
+  }
+
+  // Runs from the verify dialog: with the token in hand, run the WebAuthn creation
+  // ceremony, then store the credential. A user-cancelled ceremony closes quietly.
+  async function addPasskey(token: string): Promise<string | null> {
     try {
       const optionsResponse = await fetch("/api/auth/passkeys/options", {
         method: "POST",
@@ -99,8 +99,7 @@ export function PasskeySettings() {
         !optionsData.options ||
         !optionsData.challenge_id
       ) {
-        setError(authErrors("generic"));
-        return;
+        return authErrors("generic");
       }
 
       const credential = await createPasskeyCredential(optionsData.options);
@@ -110,7 +109,7 @@ export function PasskeySettings() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: name.trim() || t("defaultName"),
-          password,
+          verification_token: token,
           challenge_id: optionsData.challenge_id,
           credential,
         }),
@@ -124,52 +123,47 @@ export function PasskeySettings() {
       if (storeData.status === "ok") {
         reset();
         await load();
-      } else {
-        setError(apiErrorText(storeData) ?? authErrors("generic"));
+        return null;
       }
+      return apiErrorText(storeData) ?? authErrors("generic");
     } catch (caught) {
-      if (!isPasskeyCancellation(caught)) {
-        setError(t("addError"));
+      if (isPasskeyCancellation(caught)) {
+        return null;
       }
-    } finally {
-      setPending(false);
+      return t("addError");
     }
   }
 
-  async function removePasskey(event: FormEvent) {
-    event.preventDefault();
+  async function removePasskey(token: string): Promise<string | null> {
     if (removingId === null) {
-      return;
+      return null;
     }
-    if (!password) {
-      setError(authErrors("password"));
-      return;
+    const response = await fetch(`/api/auth/passkeys/${removingId}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ verification_token: token }),
+    });
+    const data = (await response.json()) as {
+      status?: string;
+      message?: string;
+      errors?: Record<string, string[]>;
+    };
+    if (data.status === "ok") {
+      reset();
+      await load();
+      return null;
     }
-    setPending(true);
-    setError(null);
-    try {
-      const response = await fetch(`/api/auth/passkeys/${removingId}`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
-      });
-      const data = (await response.json()) as {
-        status?: string;
-        message?: string;
-        errors?: Record<string, string[]>;
-      };
+    return apiErrorText(data) ?? authErrors("generic");
+  }
 
-      if (data.status === "ok") {
-        reset();
-        await load();
-      } else {
-        setError(apiErrorText(data) ?? authErrors("generic"));
-      }
-    } catch {
-      setError(authErrors("generic"));
-    } finally {
-      setPending(false);
+  function confirmVerified(token: string): Promise<string | null> {
+    if (passwordAction === "add") {
+      return addPasskey(token);
     }
+    if (passwordAction === "remove") {
+      return removePasskey(token);
+    }
+    return Promise.resolve(null);
   }
 
   return (
@@ -181,34 +175,8 @@ export function PasskeySettings() {
       <CardContent className="space-y-4">
         {!supported ? (
           <p className="text-muted-foreground text-sm">{t("unsupported")}</p>
-        ) : mode === "removing" ? (
-          <form onSubmit={removePasskey} className="space-y-4">
-            <p className="text-sm">{t("removePrompt")}</p>
-            <div className="space-y-2">
-              <Label htmlFor="passkey-remove-password">
-                {fields("password")}
-              </Label>
-              <Input
-                id="passkey-remove-password"
-                type="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                autoFocus
-              />
-            </div>
-            {error ? <p className="text-destructive text-sm">{error}</p> : null}
-            <div className="flex gap-2">
-              <Button type="submit" variant="destructive" disabled={pending}>
-                {t("remove")}
-              </Button>
-              <Button type="button" variant="ghost" onClick={reset}>
-                {t("cancel")}
-              </Button>
-            </div>
-          </form>
         ) : mode === "adding" ? (
-          <form onSubmit={addPasskey} className="space-y-4">
+          <form onSubmit={startAdd} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="passkey-name">{t("nameLabel")}</Label>
               <Input
@@ -219,21 +187,8 @@ export function PasskeySettings() {
                 autoFocus
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="passkey-password">{fields("password")}</Label>
-              <Input
-                id="passkey-password"
-                type="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-              />
-            </div>
-            {error ? <p className="text-destructive text-sm">{error}</p> : null}
             <div className="flex gap-2">
-              <Button type="submit" disabled={pending}>
-                {t("add")}
-              </Button>
+              <Button type="submit">{t("add")}</Button>
               <Button type="button" variant="ghost" onClick={reset}>
                 {t("cancel")}
               </Button>
@@ -276,9 +231,7 @@ export function PasskeySettings() {
                       size="sm"
                       onClick={() => {
                         setRemovingId(passkey.id);
-                        setPassword("");
-                        setError(null);
-                        setMode("removing");
+                        setPasswordAction("remove");
                       }}
                     >
                       {t("remove")}
@@ -292,8 +245,6 @@ export function PasskeySettings() {
               size="sm"
               onClick={() => {
                 setName("");
-                setPassword("");
-                setError(null);
                 setMode("adding");
               }}
             >
@@ -302,6 +253,27 @@ export function PasskeySettings() {
           </div>
         )}
       </CardContent>
+      <VerifyDialog
+        open={passwordAction !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setPasswordAction(null);
+            setRemovingId(null);
+          }
+        }}
+        action={passwordAction === "remove" ? "passkey.remove" : "passkey.add"}
+        params={
+          passwordAction === "remove"
+            ? { passkey_id: removingId !== null ? String(removingId) : "" }
+            : { name: name.trim() || t("defaultName") }
+        }
+        onVerified={confirmVerified}
+        description={
+          passwordAction === "remove" ? t("removePrompt") : undefined
+        }
+        confirmLabel={passwordAction === "remove" ? t("remove") : t("add")}
+        destructive={passwordAction === "remove"}
+      />
     </Card>
   );
 }

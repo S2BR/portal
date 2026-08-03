@@ -26,7 +26,7 @@ describe("DELETE /api/auth/2fa", () => {
       data: {},
     });
 
-    const res = await DELETE(request({ password: "secret" }));
+    const res = await DELETE(request({ verification_token: "tok" }));
 
     expect(res.status).toBe(200);
     expect((await res.json()).status).toBe("ok");
@@ -39,7 +39,7 @@ describe("DELETE /api/auth/2fa", () => {
       data: { message: "The password is incorrect." },
     });
 
-    const res = await DELETE(request({ password: "wrong" }));
+    const res = await DELETE(request({ verification_token: "bad" }));
 
     expect(res.status).toBe(422);
     expect((await res.json()).status).toBe("invalid");

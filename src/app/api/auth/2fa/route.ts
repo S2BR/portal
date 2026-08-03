@@ -4,7 +4,7 @@ import { z } from "zod";
 import { callWithAuth } from "@/lib/api/authed";
 import type { ApiError } from "@/lib/api/types";
 
-const bodySchema = z.object({ password: z.string().min(1) });
+const bodySchema = z.object({ verification_token: z.string().min(1) });
 
 /** BFF: disable 2FA (password re-auth required). */
 export async function DELETE(request: Request): Promise<NextResponse> {
