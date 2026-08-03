@@ -1,10 +1,25 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
+vi.mock("next/headers", () => ({
+  cookies: vi.fn().mockResolvedValue({
+    get: vi.fn().mockReturnValue(undefined),
+    delete: vi.fn(),
+    set: vi.fn(),
+  }),
+}));
+vi.mock("@/lib/auth/accounts", () => ({
+  captureActiveAccount: vi.fn().mockResolvedValue(null),
+}));
 vi.mock("@/lib/auth/session", () => ({
   setSessionCookies: vi.fn(),
+  addToVault: vi.fn(),
+  removeFromVault: vi.fn(),
 }));
 
-import { setSessionCookies } from "@/lib/auth/session";
+import { cookies } from "next/headers";
+
+import { captureActiveAccount } from "@/lib/auth/accounts";
+import { addToVault, setSessionCookies } from "@/lib/auth/session";
 
 import { POST } from "./route";
 
@@ -48,6 +63,31 @@ afterEach(() => {
 });
 
 describe("POST /api/auth/login", () => {
+  it("vaults the previous account when adding another (add mode)", async () => {
+    fetchMock.mockResolvedValue(portalResponse(200, signInBody));
+    // Simulate the "add another account" flag being set, with a live prior account.
+    vi.mocked(cookies).mockResolvedValue({
+      get: vi.fn().mockReturnValue({ value: "1" }),
+      delete: vi.fn(),
+      set: vi.fn(),
+    } as unknown as Awaited<ReturnType<typeof cookies>>);
+    const previous = {
+      id: 9,
+      name: "Prev",
+      email: "p@b.co",
+      refresh_token: "rp",
+    };
+    vi.mocked(captureActiveAccount).mockResolvedValue(previous);
+
+    const res = await POST(request({ email: "a@b.co", password: "secret" }));
+
+    expect(res.status).toBe(200);
+    expect(addToVault).toHaveBeenCalledWith(previous);
+    expect(setSessionCookies).toHaveBeenCalledWith(
+      expect.objectContaining({ access_token: "a" }),
+    );
+  });
+
   it("stores the session and returns authenticated on success", async () => {
     fetchMock.mockResolvedValue(portalResponse(200, signInBody));
 

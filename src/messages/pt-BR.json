@@ -106,7 +106,9 @@
   },
   "nav": {
     "signOut": "Sair",
-    "profile": "Perfil"
+    "profile": "Perfil",
+    "addAccount": "Adicionar outra conta",
+    "signOutAll": "Sair de todas as contas"
   },
   "profile": {
     "title": "Perfil",

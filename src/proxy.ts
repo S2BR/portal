@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-import { REFRESH_COOKIE } from "@/lib/auth/cookies";
+import { ADD_COOKIE, REFRESH_COOKIE } from "@/lib/auth/cookies";
 
 /** The only routes reachable without a session. Everything else is gated. */
 const PUBLIC_PATHS = [
@@ -26,6 +26,9 @@ export function proxy(request: NextRequest): NextResponse {
   const { pathname } = request.nextUrl;
   const hasSession = request.cookies.has(REFRESH_COOKIE);
   const publicPath = isPublicPath(pathname);
+  // "Add another account" lets a signed-in user reach /login to add a second session.
+  const addingAccount =
+    request.cookies.has(ADD_COOKIE) && pathname.startsWith("/login");
 
   // Unauthenticated visitor hitting a protected route → send them to sign-in,
   // remembering where they were headed.
@@ -37,8 +40,9 @@ export function proxy(request: NextRequest): NextResponse {
     return NextResponse.redirect(url);
   }
 
-  // Already-authenticated visitor hitting an auth page → send them home.
-  if (hasSession && publicPath) {
+  // Already-authenticated visitor hitting an auth page → send them home, unless
+  // they're deliberately adding another account.
+  if (hasSession && publicPath && !addingAccount) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 

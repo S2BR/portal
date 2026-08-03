@@ -3,15 +3,40 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 vi.mock("@/lib/auth/session", () => ({
   getAccessToken: vi.fn().mockResolvedValue("access"),
   getRefreshToken: vi.fn().mockResolvedValue("refresh"),
+  readAccounts: vi.fn().mockResolvedValue([]),
+  writeAccounts: vi.fn(),
   clearSessionCookies: vi.fn(),
+  clearAccounts: vi.fn(),
+}));
+vi.mock("@/lib/auth/accounts", () => ({
+  activateRefreshToken: vi.fn(),
+  revokeVaultedAccount: vi.fn(),
 }));
 
-import { clearSessionCookies } from "@/lib/auth/session";
+import {
+  activateRefreshToken,
+  revokeVaultedAccount,
+} from "@/lib/auth/accounts";
+import {
+  clearAccounts,
+  clearSessionCookies,
+  readAccounts,
+} from "@/lib/auth/session";
 
 import { POST } from "./route";
 
 const fetchMock = vi.fn();
 vi.stubGlobal("fetch", fetchMock);
+
+function request(scope?: "current" | "all"): Request {
+  return new Request("http://localhost/api/auth/logout", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(scope ? { scope } : {}),
+  });
+}
+
+const account = { id: 2, name: "B", email: "b@x.co", refresh_token: "rb" };
 
 afterEach(() => {
   fetchMock.mockReset();
@@ -19,22 +44,37 @@ afterEach(() => {
 });
 
 describe("POST /api/auth/logout", () => {
-  it("revokes on the portal and clears the session cookies", async () => {
+  it("signs out fully when no other accounts remain", async () => {
     fetchMock.mockResolvedValue(new Response("{}", { status: 200 }));
+    vi.mocked(readAccounts).mockResolvedValue([]);
 
-    const res = await POST();
+    const res = await POST(request("current"));
 
-    expect(res.status).toBe(200);
-    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect((await res.json()).status).toBe("signed_out");
     expect(clearSessionCookies).toHaveBeenCalledTimes(1);
   });
 
-  it("clears cookies even when the portal call fails", async () => {
-    fetchMock.mockRejectedValue(new Error("network"));
+  it("drops to the next account when one is still signed in", async () => {
+    fetchMock.mockResolvedValue(new Response("{}", { status: 200 }));
+    vi.mocked(readAccounts).mockResolvedValue([account]);
+    vi.mocked(activateRefreshToken).mockResolvedValue(true);
 
-    const res = await POST();
+    const res = await POST(request("current"));
 
-    expect(res.status).toBe(200);
+    expect((await res.json()).status).toBe("switched");
+    expect(activateRefreshToken).toHaveBeenCalledWith("rb");
+    expect(clearSessionCookies).not.toHaveBeenCalled();
+  });
+
+  it("scope=all revokes every account and clears everything", async () => {
+    fetchMock.mockResolvedValue(new Response("{}", { status: 200 }));
+    vi.mocked(readAccounts).mockResolvedValue([account]);
+
+    const res = await POST(request("all"));
+
+    expect((await res.json()).status).toBe("signed_out");
+    expect(revokeVaultedAccount).toHaveBeenCalledWith("rb");
+    expect(clearAccounts).toHaveBeenCalledTimes(1);
     expect(clearSessionCookies).toHaveBeenCalledTimes(1);
   });
 });
