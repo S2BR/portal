@@ -46,7 +46,7 @@ export async function PATCH(request: Request): Promise<NextResponse> {
   );
 }
 
-const deleteSchema = z.object({ password: z.string().min(1) });
+const deleteSchema = z.object({ verification_token: z.string().min(1) });
 
 /**
  * BFF: delete (soft-delete) the signed-in account. Password-gated by the api;

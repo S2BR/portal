@@ -5,7 +5,7 @@ import { callWithAuth } from "@/lib/api/authed";
 import type { ApiError } from "@/lib/api/types";
 
 const bodySchema = z.object({
-  current_password: z.string().min(1),
+  verification_token: z.string().min(1),
   password: z.string().min(1),
   password_confirmation: z.string().min(1),
 });

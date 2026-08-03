@@ -4,7 +4,7 @@ import { z } from "zod";
 import { callWithAuth } from "@/lib/api/authed";
 import type { ApiError } from "@/lib/api/types";
 
-const bodySchema = z.object({ password: z.string().min(1) });
+const bodySchema = z.object({ verification_token: z.string().min(1) });
 
 /** BFF: remove a passkey (password-gated at the portal). */
 export async function DELETE(

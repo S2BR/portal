@@ -15,7 +15,7 @@ function request(body: unknown): Request {
 }
 
 const valid = {
-  current_password: "old-secret",
+  verification_token: "tok",
   password: "new-secret-123",
   password_confirmation: "new-secret-123",
 };

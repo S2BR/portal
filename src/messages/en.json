@@ -195,5 +195,14 @@
   },
   "locale": {
     "label": "Language"
+  },
+  "verify": {
+    "title": "Confirm it's you",
+    "description": "Verify your identity to continue.",
+    "usePasskey": "Use a passkey",
+    "or": "or",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "passkeyError": "We couldn't verify your passkey. Please try again."
   }
 }

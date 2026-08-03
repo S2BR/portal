@@ -6,7 +6,7 @@ import type { ApiError } from "@/lib/api/types";
 
 const bodySchema = z.object({
   code: z.string().min(1),
-  password: z.string().min(1),
+  verification_token: z.string().min(1),
 });
 
 /** BFF: confirm 2FA enrollment with a TOTP code + password; returns recovery codes. */

@@ -95,14 +95,14 @@ describe("DELETE /api/auth/account", () => {
       data: {},
     });
 
-    const res = await DELETE(deleteRequest({ password: "secret" }));
+    const res = await DELETE(deleteRequest({ verification_token: "tok" }));
 
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({ status: "ok" });
     expect(callWithAuth).toHaveBeenCalledWith({
       method: "DELETE",
       path: "/account",
-      body: { password: "secret" },
+      body: { verification_token: "tok" },
     });
     expect(clearSessionCookies).toHaveBeenCalledOnce();
   });
@@ -114,7 +114,7 @@ describe("DELETE /api/auth/account", () => {
       data: { message: "The password is incorrect." },
     });
 
-    const res = await DELETE(deleteRequest({ password: "wrong" }));
+    const res = await DELETE(deleteRequest({ verification_token: "bad" }));
 
     expect(res.status).toBe(422);
     expect((await res.json()).status).toBe("invalid");

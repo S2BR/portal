@@ -26,7 +26,7 @@ describe("POST /api/auth/2fa/recovery-codes", () => {
       data: { recovery_codes: ["aaaa-bbbb", "cccc-dddd"] },
     });
 
-    const res = await POST(request({ password: "secret" }));
+    const res = await POST(request({ verification_token: "tok" }));
 
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({
@@ -42,7 +42,7 @@ describe("POST /api/auth/2fa/recovery-codes", () => {
       data: { status: "two_factor_not_enabled" },
     });
 
-    const res = await POST(request({ password: "secret" }));
+    const res = await POST(request({ verification_token: "tok" }));
 
     expect(res.status).toBe(409);
     expect((await res.json()).status).toBe("two_factor_not_enabled");
@@ -55,7 +55,7 @@ describe("POST /api/auth/2fa/recovery-codes", () => {
       data: { message: "The password is incorrect." },
     });
 
-    const res = await POST(request({ password: "wrong" }));
+    const res = await POST(request({ verification_token: "bad" }));
 
     expect(res.status).toBe(422);
     expect((await res.json()).status).toBe("invalid");

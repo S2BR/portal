@@ -16,7 +16,7 @@ function postRequest(body: unknown): Request {
 
 const validStore = {
   name: "My key",
-  password: "secret",
+  verification_token: "tok",
   challenge_id: "c",
   credential: { id: "x", type: "public-key" },
 };

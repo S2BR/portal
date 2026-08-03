@@ -195,5 +195,14 @@
   },
   "locale": {
     "label": "Idioma"
+  },
+  "verify": {
+    "title": "Confirme que é você",
+    "description": "Verifique sua identidade para continuar.",
+    "usePasskey": "Usar uma chave de acesso",
+    "or": "ou",
+    "confirm": "Confirmar",
+    "cancel": "Cancelar",
+    "passkeyError": "Não foi possível verificar sua chave de acesso. Tente novamente."
   }
 }

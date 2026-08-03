@@ -5,6 +5,7 @@ import { useState, type FormEvent } from "react";
 
 import { useCurrentUser } from "@/components/auth/current-user";
 import { OtpInput } from "@/components/auth/otp-input";
+import { VerifyDialog } from "@/components/auth/verify-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -22,10 +23,10 @@ export function EmailSettings() {
 
   const [mode, setMode] = useState<Mode>("idle");
   const [newEmail, setNewEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const otpLength = useOtpLength();
 
   if (!user) {
@@ -35,45 +36,38 @@ export function EmailSettings() {
   function reset() {
     setMode("idle");
     setNewEmail("");
-    setPassword("");
     setCode("");
     setError(null);
   }
 
-  async function requestChange(event: FormEvent) {
+  function startChange(event: FormEvent) {
     event.preventDefault();
     if (!newEmail.includes("@")) {
       setError(authErrors("email"));
       return;
     }
-    if (!password) {
-      setError(authErrors("password"));
-      return;
-    }
-    setPending(true);
     setError(null);
-    try {
-      const response = await fetch("/api/auth/email/change", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: newEmail, password }),
-      });
-      const data = (await response.json()) as {
-        status?: string;
-        message?: string;
-        errors?: Record<string, string[]>;
-      };
-      if (data.status === "verification_required") {
-        setPassword("");
-        setMode("verifying");
-      } else {
-        setError(apiErrorText(data) ?? authErrors("generic"));
-      }
-    } catch {
-      setError(authErrors("generic"));
-    } finally {
-      setPending(false);
+    setConfirmOpen(true);
+  }
+
+  // Runs from the verify dialog with the freshly minted token. A `verification_required`
+  // reply advances us to the code step; anything else is surfaced inline in the dialog.
+  async function requestChange(token: string): Promise<string | null> {
+    const response = await fetch("/api/auth/email/change", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: newEmail, verification_token: token }),
+    });
+    const data = (await response.json()) as {
+      status?: string;
+      message?: string;
+      errors?: Record<string, string[]>;
+    };
+    if (data.status === "verification_required") {
+      setMode("verifying");
+      return null;
     }
+    return apiErrorText(data) ?? authErrors("generic");
   }
 
   async function verifyCode(codeValue: string) {
@@ -146,7 +140,7 @@ export function EmailSettings() {
             </div>
           </form>
         ) : mode === "changing" ? (
-          <form onSubmit={requestChange} className="space-y-4">
+          <form onSubmit={startChange} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="new-email">{t("newEmail")}</Label>
               <Input
@@ -158,21 +152,9 @@ export function EmailSettings() {
                 autoFocus
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="email-password">{fields("password")}</Label>
-              <Input
-                id="email-password"
-                type="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-              />
-            </div>
             {error ? <p className="text-destructive text-sm">{error}</p> : null}
             <div className="flex gap-2">
-              <Button type="submit" disabled={pending}>
-                {t("submit")}
-              </Button>
+              <Button type="submit">{t("submit")}</Button>
               <Button type="button" variant="ghost" onClick={reset}>
                 {t("cancel")}
               </Button>
@@ -186,7 +168,6 @@ export function EmailSettings() {
               size="sm"
               onClick={() => {
                 setNewEmail("");
-                setPassword("");
                 setError(null);
                 setMode("changing");
               }}
@@ -196,6 +177,14 @@ export function EmailSettings() {
           </div>
         )}
       </CardContent>
+      <VerifyDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        action="email.change"
+        params={{ email: newEmail }}
+        onVerified={requestChange}
+        confirmLabel={t("submit")}
+      />
     </Card>
   );
 }

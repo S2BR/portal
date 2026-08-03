@@ -27,7 +27,7 @@ describe("POST /api/auth/email/change", () => {
     });
 
     const res = await POST(
-      request({ email: "new@example.com", password: "x" }),
+      request({ email: "new@example.com", verification_token: "tok" }),
     );
 
     expect(res.status).toBe(200);
@@ -45,7 +45,7 @@ describe("POST /api/auth/email/change", () => {
     });
 
     const res = await POST(
-      request({ email: "new@example.com", password: "x" }),
+      request({ email: "new@example.com", verification_token: "tok" }),
     );
 
     expect(res.status).toBe(422);

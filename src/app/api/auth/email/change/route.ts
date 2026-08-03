@@ -6,7 +6,7 @@ import type { ApiError } from "@/lib/api/types";
 
 const bodySchema = z.object({
   email: z.email(),
-  password: z.string().min(1),
+  verification_token: z.string().min(1),
 });
 
 /**

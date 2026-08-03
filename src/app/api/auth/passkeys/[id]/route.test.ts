@@ -30,7 +30,10 @@ describe("DELETE /api/auth/passkeys/[id]", () => {
       data: {},
     });
 
-    const res = await DELETE(request({ password: "secret" }), params("1"));
+    const res = await DELETE(
+      request({ verification_token: "tok" }),
+      params("1"),
+    );
 
     expect(res.status).toBe(200);
     expect((await res.json()).status).toBe("ok");
@@ -43,13 +46,19 @@ describe("DELETE /api/auth/passkeys/[id]", () => {
       data: { message: "not found" },
     });
 
-    const res = await DELETE(request({ password: "secret" }), params("999"));
+    const res = await DELETE(
+      request({ verification_token: "tok" }),
+      params("999"),
+    );
 
     expect(res.status).toBe(404);
   });
 
   it("rejects a non-numeric id without calling the portal", async () => {
-    const res = await DELETE(request({ password: "secret" }), params("abc"));
+    const res = await DELETE(
+      request({ verification_token: "tok" }),
+      params("abc"),
+    );
 
     expect(res.status).toBe(422);
     expect(callWithAuth).not.toHaveBeenCalled();

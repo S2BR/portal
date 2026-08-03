@@ -5,6 +5,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { useState, type FormEvent } from "react";
 
 import { useCurrentUser } from "@/components/auth/current-user";
+import { VerifyDialog } from "@/components/auth/verify-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,7 +19,8 @@ import { Label } from "@/components/ui/label";
 import { apiErrorText } from "@/lib/api/error-text";
 import { cn } from "@/lib/utils";
 
-type Mode = "idle" | "enrolling" | "recovery" | "disabling" | "regenerating";
+type Mode = "idle" | "enrolling" | "recovery";
+type PasswordAction = "enroll" | "disable" | "regenerate";
 
 export function TwoFactorSettings() {
   const t = useTranslations("twoFactor");
@@ -30,10 +32,12 @@ export function TwoFactorSettings() {
   const [secret, setSecret] = useState("");
   const [otpauthUrl, setOtpauthUrl] = useState("");
   const [code, setCode] = useState("");
-  const [password, setPassword] = useState("");
   const [recoveryCodes, setRecoveryCodes] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const [passwordAction, setPasswordAction] = useState<PasswordAction | null>(
+    null,
+  );
 
   if (!user) {
     return null;
@@ -44,7 +48,6 @@ export function TwoFactorSettings() {
     setSecret("");
     setOtpauthUrl("");
     setCode("");
-    setPassword("");
     setError(null);
   }
 
@@ -67,100 +70,96 @@ export function TwoFactorSettings() {
       setOtpauthUrl(data.otpauthUrl);
       setMode("enrolling");
     } catch {
-      setError(t("invalid"));
+      setError(authErrors("generic"));
     } finally {
       setPending(false);
     }
   }
 
-  async function confirmEnroll(event: FormEvent) {
+  function startConfirmEnroll(event: FormEvent) {
     event.preventDefault();
-    setPending(true);
-    setError(null);
-    try {
-      const response = await fetch("/api/auth/2fa/confirm", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: code.trim(), password }),
-      });
-      const data = (await response.json()) as {
-        status?: string;
-        recoveryCodes?: string[];
-        message?: string;
-        errors?: Record<string, string[]>;
-      };
-      if (data.status === "ok" && data.recoveryCodes) {
-        setRecoveryCodes(data.recoveryCodes);
-        setCode("");
-        setPassword("");
-        setMode("recovery");
-        await refresh();
-      } else {
-        setError(apiErrorText(data) ?? authErrors("generic"));
-      }
-    } catch {
-      setError(t("invalid"));
-    } finally {
-      setPending(false);
+    if (!code.trim()) {
+      setError(authErrors("code"));
+      return;
     }
+    setError(null);
+    setPasswordAction("enroll");
   }
 
-  async function confirmRegenerate(event: FormEvent) {
-    event.preventDefault();
-    setPending(true);
-    setError(null);
-    try {
-      const response = await fetch("/api/auth/2fa/recovery-codes", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
-      });
-      const data = (await response.json()) as {
-        status?: string;
-        recoveryCodes?: string[];
-        message?: string;
-        errors?: Record<string, string[]>;
-      };
-      if (data.status === "ok" && data.recoveryCodes) {
-        setRecoveryCodes(data.recoveryCodes);
-        setPassword("");
-        setMode("recovery");
-      } else {
-        setError(apiErrorText(data) ?? authErrors("generic"));
-      }
-    } catch {
-      setError(t("invalid"));
-    } finally {
-      setPending(false);
+  // The three step-up-gated actions, each run from the shared dialog with the freshly
+  // minted verification token. Return an error string to keep it open.
+  async function confirmEnroll(token: string): Promise<string | null> {
+    const response = await fetch("/api/auth/2fa/confirm", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code: code.trim(), verification_token: token }),
+    });
+    const data = (await response.json()) as {
+      status?: string;
+      recoveryCodes?: string[];
+      message?: string;
+      errors?: Record<string, string[]>;
+    };
+    if (data.status === "ok" && data.recoveryCodes) {
+      setRecoveryCodes(data.recoveryCodes);
+      setCode("");
+      setMode("recovery");
+      await refresh();
+      return null;
     }
+    return apiErrorText(data) ?? authErrors("generic");
   }
 
-  async function confirmDisable(event: FormEvent) {
-    event.preventDefault();
-    setPending(true);
-    setError(null);
-    try {
-      const response = await fetch("/api/auth/2fa", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
-      });
-      const data = (await response.json()) as {
-        status?: string;
-        message?: string;
-        errors?: Record<string, string[]>;
-      };
-      if (data.status === "ok") {
-        reset();
-        await refresh();
-      } else {
-        setError(apiErrorText(data) ?? authErrors("generic"));
-      }
-    } catch {
-      setError(t("invalid"));
-    } finally {
-      setPending(false);
+  async function confirmRegenerate(token: string): Promise<string | null> {
+    const response = await fetch("/api/auth/2fa/recovery-codes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ verification_token: token }),
+    });
+    const data = (await response.json()) as {
+      status?: string;
+      recoveryCodes?: string[];
+      message?: string;
+      errors?: Record<string, string[]>;
+    };
+    if (data.status === "ok" && data.recoveryCodes) {
+      setRecoveryCodes(data.recoveryCodes);
+      setMode("recovery");
+      return null;
     }
+    return apiErrorText(data) ?? authErrors("generic");
+  }
+
+  async function confirmDisable(token: string): Promise<string | null> {
+    const response = await fetch("/api/auth/2fa", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ verification_token: token }),
+    });
+    const data = (await response.json()) as {
+      status?: string;
+      message?: string;
+      errors?: Record<string, string[]>;
+    };
+    if (data.status === "ok") {
+      reset();
+      await refresh();
+      return null;
+    }
+    return apiErrorText(data) ?? authErrors("generic");
+  }
+
+  function confirmVerified(token: string): Promise<string | null> {
+    if (passwordAction === "enroll") {
+      return confirmEnroll(token);
+    }
+    if (passwordAction === "regenerate") {
+      return confirmRegenerate(token);
+    }
+    if (passwordAction === "disable") {
+      return confirmDisable(token);
+    }
+    return Promise.resolve(null);
   }
 
   return (
@@ -186,7 +185,7 @@ export function TwoFactorSettings() {
             <Button onClick={reset}>{t("done")}</Button>
           </div>
         ) : mode === "enrolling" ? (
-          <form onSubmit={confirmEnroll} className="space-y-4">
+          <form onSubmit={startConfirmEnroll} className="space-y-4">
             <p className="text-sm">{t("scan")}</p>
             <div className="flex justify-center">
               <div className="rounded-md bg-white p-3">
@@ -209,71 +208,9 @@ export function TwoFactorSettings() {
                 onChange={(event) => setCode(event.target.value)}
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="tfa-password">{fields("password")}</Label>
-              <Input
-                id="tfa-password"
-                type="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-              />
-            </div>
             {error ? <p className="text-destructive text-sm">{error}</p> : null}
             <div className="flex gap-2">
-              <Button type="submit" disabled={pending}>
-                {t("confirm")}
-              </Button>
-              <Button type="button" variant="ghost" onClick={reset}>
-                {t("cancel")}
-              </Button>
-            </div>
-          </form>
-        ) : mode === "regenerating" ? (
-          <form onSubmit={confirmRegenerate} className="space-y-4">
-            <p className="text-sm">{t("regeneratePrompt")}</p>
-            <div className="space-y-2">
-              <Label htmlFor="tfa-regenerate-password">
-                {fields("password")}
-              </Label>
-              <Input
-                id="tfa-regenerate-password"
-                type="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                autoFocus
-              />
-            </div>
-            {error ? <p className="text-destructive text-sm">{error}</p> : null}
-            <div className="flex gap-2">
-              <Button type="submit" disabled={pending}>
-                {t("regenerate")}
-              </Button>
-              <Button type="button" variant="ghost" onClick={reset}>
-                {t("cancel")}
-              </Button>
-            </div>
-          </form>
-        ) : mode === "disabling" ? (
-          <form onSubmit={confirmDisable} className="space-y-4">
-            <p className="text-sm">{t("disablePrompt")}</p>
-            <div className="space-y-2">
-              <Label htmlFor="tfa-disable-password">{fields("password")}</Label>
-              <Input
-                id="tfa-disable-password"
-                type="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                autoFocus
-              />
-            </div>
-            {error ? <p className="text-destructive text-sm">{error}</p> : null}
-            <div className="flex gap-2">
-              <Button type="submit" variant="destructive" disabled={pending}>
-                {t("disable")}
-              </Button>
+              <Button type="submit">{t("confirm")}</Button>
               <Button type="button" variant="ghost" onClick={reset}>
                 {t("cancel")}
               </Button>
@@ -297,22 +234,14 @@ export function TwoFactorSettings() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => {
-                      setPassword("");
-                      setError(null);
-                      setMode("regenerating");
-                    }}
+                    onClick={() => setPasswordAction("regenerate")}
                   >
                     {t("regenerate")}
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => {
-                      setPassword("");
-                      setError(null);
-                      setMode("disabling");
-                    }}
+                    onClick={() => setPasswordAction("disable")}
                   >
                     {t("disable")}
                   </Button>
@@ -327,6 +256,38 @@ export function TwoFactorSettings() {
           </div>
         )}
       </CardContent>
+      <VerifyDialog
+        open={passwordAction !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setPasswordAction(null);
+          }
+        }}
+        action={
+          passwordAction === "disable"
+            ? "two_factor.disable"
+            : passwordAction === "regenerate"
+              ? "two_factor.recovery"
+              : "two_factor.enable"
+        }
+        params={passwordAction === "enroll" ? { code: code.trim() } : undefined}
+        onVerified={confirmVerified}
+        description={
+          passwordAction === "disable"
+            ? t("disablePrompt")
+            : passwordAction === "regenerate"
+              ? t("regeneratePrompt")
+              : undefined
+        }
+        confirmLabel={
+          passwordAction === "disable"
+            ? t("disable")
+            : passwordAction === "regenerate"
+              ? t("regenerate")
+              : t("confirm")
+        }
+        destructive={passwordAction === "disable"}
+      />
     </Card>
   );
 }
