@@ -123,7 +123,9 @@
     "save": "Enregistrer les modifications",
     "cancel": "Annuler",
     "timezone": "Fuseau horaire",
-    "deviceDefault": "Valeur par défaut de l'appareil"
+    "deviceDefault": "Valeur par défaut de l'appareil",
+    "searchTimezone": "Rechercher des fuseaux horaires…",
+    "noTimezone": "Aucun fuseau horaire trouvé."
   },
   "sessions": {
     "title": "Sessions actives",

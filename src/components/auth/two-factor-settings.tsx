@@ -6,6 +6,7 @@ import { useState, type FormEvent } from "react";
 
 import { useCurrentUser } from "@/components/auth/current-user";
 import { VerifyDialog } from "@/components/auth/verify-dialog";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -17,7 +18,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { apiErrorText } from "@/lib/api/error-text";
-import { cn } from "@/lib/utils";
 
 type Mode = "idle" | "enrolling" | "recovery";
 type PasswordAction = "enroll" | "disable" | "regenerate";
@@ -219,16 +219,9 @@ export function TwoFactorSettings() {
         ) : (
           <div className="space-y-3">
             <div className="flex items-center justify-between gap-4">
-              <span
-                className={cn(
-                  "rounded-full px-2 py-0.5 text-xs font-medium",
-                  user.two_factor_enabled
-                    ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400"
-                    : "bg-muted text-muted-foreground",
-                )}
-              >
+              <Badge variant={user.two_factor_enabled ? "green" : "gold"}>
                 {user.two_factor_enabled ? t("statusOn") : t("statusOff")}
-              </span>
+              </Badge>
               {user.two_factor_enabled ? (
                 <div className="flex gap-2">
                   <Button

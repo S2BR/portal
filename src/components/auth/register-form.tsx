@@ -118,7 +118,7 @@ export function RegisterForm({
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-4">
       <div className="space-y-1 text-center">
-        <h1 className="text-xl font-semibold tracking-tight">
+        <h1 className="text-2xl font-semibold tracking-tight">
           {t("register.title")}
         </h1>
         <p className="text-muted-foreground text-sm">
