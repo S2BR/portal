@@ -55,4 +55,40 @@ describe("POST /api/auth/login/email", () => {
     expect(res.status).toBe(422);
     expect(fetchMock).not.toHaveBeenCalled();
   });
+
+  it("forwards the captcha token", async () => {
+    fetchMock.mockResolvedValue(portalResponse(200, { retry_after: 60 }));
+
+    await POST(request({ email: "a@b.co", captcha_token: "id~ans" }));
+
+    const [, init] = fetchMock.mock.calls[0]!;
+    const body = JSON.parse((init as RequestInit).body as string);
+    expect(body).toEqual({ email: "a@b.co", captcha_token: "id~ans" });
+  });
+
+  it("drops a blank captcha token so the API never validates it", async () => {
+    fetchMock.mockResolvedValue(portalResponse(200, { retry_after: 60 }));
+
+    await POST(request({ email: "a@b.co", captcha_token: "" }));
+
+    const [, init] = fetchMock.mock.calls[0]!;
+    const body = JSON.parse((init as RequestInit).body as string);
+    expect(body).toEqual({ email: "a@b.co" });
+  });
+
+  it("surfaces a captcha failure distinctly", async () => {
+    fetchMock.mockResolvedValue(
+      portalResponse(422, {
+        message: "Captcha verification failed.",
+        errors: { captcha_token: ["Captcha verification failed."] },
+      }),
+    );
+
+    const res = await POST(
+      request({ email: "a@b.co", captcha_token: "id~bad" }),
+    );
+
+    expect(res.status).toBe(422);
+    expect((await res.json()).status).toBe("captcha_failed");
+  });
 });
