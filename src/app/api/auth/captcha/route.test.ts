@@ -43,10 +43,9 @@ describe("GET /api/auth/captcha", () => {
       challenge_id: "abc",
       driver: "turnstile",
     });
+    // Assert the path + query, not the host — the API host is env-configurable.
     const [url] = fetchMock.mock.calls[0]!;
-    expect(url).toBe(
-      "https://portal.s2br.com/api/v1/auth/captcha?context=login",
-    );
+    expect(url).toContain("/auth/captcha?context=login");
   });
 
   it("relays the challenge for the passwordless email-login context", async () => {
@@ -63,9 +62,7 @@ describe("GET /api/auth/captcha", () => {
     expect(res.status).toBe(200);
     expect(await res.json()).toMatchObject({ required: true, driver: "math" });
     const [url] = fetchMock.mock.calls[0]!;
-    expect(url).toBe(
-      "https://portal.s2br.com/api/v1/auth/captcha?context=email_login",
-    );
+    expect(url).toContain("/auth/captcha?context=email_login");
   });
 
   it("reports not required for an unknown context without calling the portal", async () => {
