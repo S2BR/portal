@@ -13,7 +13,6 @@ const bodySchema = z
     token: z.string().optional(),
     expires: z.number().int().optional(),
     signature: z.string().optional(),
-    two_factor_code: z.string().optional(),
   })
   .refine((value) => Boolean(value.code) || Boolean(value.token), {
     message: "code_or_token_required",
@@ -22,8 +21,8 @@ const bodySchema = z
 /**
  * BFF: complete a passwordless sign-in with the emailed code (or a magic-link
  * token). On success the token pair is stored in httpOnly cookies. A 2FA-enabled
- * account returns `two_factor_required` first — the client re-submits with a
- * `two_factor_code`.
+ * account returns `two_factor_required` with a single-use `pending_token`; the client
+ * completes at `/api/auth/login/email/two-factor` with that token + the 2FA code.
  */
 export async function POST(request: Request): Promise<NextResponse> {
   const parsed = bodySchema.safeParse(await request.json().catch(() => null));
@@ -38,7 +37,9 @@ export async function POST(request: Request): Promise<NextResponse> {
     ),
   );
 
-  const response = await portalFetch<SignInResponse & Partial<ApiError>>({
+  const response = await portalFetch<
+    SignInResponse & { pending_token?: string } & Partial<ApiError>
+  >({
     method: "POST",
     path: "/auth/login/email/verify",
     body: payload,
@@ -55,7 +56,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   ) {
     return NextResponse.json({
       status: "two_factor_required",
-      email: parsed.data.email,
+      pending_token: response.data.pending_token,
     });
   }
 

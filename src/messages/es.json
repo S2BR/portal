@@ -83,11 +83,12 @@
       "verifyTitle": "Ingresa tu código",
       "verifySubtitle": "Enviamos un código de acceso a {email}.",
       "twoFactorLabel": "Código del autenticador",
-      "twoFactorHint": "Solo si tienes la autenticación de dos factores activada.",
       "verifyButton": "Iniciar sesión",
       "resend": "Enviar un código nuevo",
       "back": "Atrás",
-      "twoFactorRequired": "Se requiere autenticación de dos factores. Solicita un código nuevo e ingrésalo junto con el código de tu autenticador."
+      "twoFactorTitle": "Ingresa el código de tu autenticador",
+      "twoFactorSubtitle": "Tu cuenta tiene verificación en dos pasos. Ingresa el código actual de tu aplicación de autenticación.",
+      "resendIn": "Envía un nuevo código en {seconds}s"
     }
   },
   "dashboard": {

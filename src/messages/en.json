@@ -83,11 +83,12 @@
       "verifyTitle": "Enter your code",
       "verifySubtitle": "We sent a sign-in code to {email}.",
       "twoFactorLabel": "Authenticator code",
-      "twoFactorHint": "Only if you have two-factor authentication enabled.",
       "verifyButton": "Sign in",
       "resend": "Send a new code",
       "back": "Back",
-      "twoFactorRequired": "Two-factor authentication is required. Request a new code and enter it with your authenticator code."
+      "twoFactorTitle": "Enter your authenticator code",
+      "twoFactorSubtitle": "Your account has two-factor authentication. Enter the current code from your authenticator app.",
+      "resendIn": "Send a new code in {seconds}s"
     }
   },
   "dashboard": {

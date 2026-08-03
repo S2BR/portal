@@ -57,9 +57,12 @@ describe("POST /api/auth/login/email/verify", () => {
     );
   });
 
-  it("relays a 403 two_factor_required as a next step (no session)", async () => {
+  it("relays a 403 two_factor_required with the pending token (no session)", async () => {
     fetchMock.mockResolvedValue(
-      portalResponse(403, { status: "two_factor_required", message: "2fa" }),
+      portalResponse(403, {
+        status: "two_factor_required",
+        pending_token: "pt-123",
+      }),
     );
 
     const res = await POST(request({ email: "a@b.co", code: "123456" }));
@@ -67,7 +70,7 @@ describe("POST /api/auth/login/email/verify", () => {
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({
       status: "two_factor_required",
-      email: "a@b.co",
+      pending_token: "pt-123",
     });
     expect(setSessionCookies).not.toHaveBeenCalled();
   });
