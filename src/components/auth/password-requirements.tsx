@@ -41,16 +41,14 @@ export function PasswordRequirements({
           key={rule}
           className={cn(
             "flex items-center gap-2 text-xs transition-colors",
-            met
-              ? "text-green-600 dark:text-green-500"
-              : "text-muted-foreground",
+            met ? "text-primary" : "text-muted-foreground",
           )}
         >
           <span
             className={cn(
               "flex size-4 shrink-0 items-center justify-center rounded-full border transition-colors",
               met
-                ? "border-green-600 bg-green-600 text-white dark:border-green-500 dark:bg-green-500"
+                ? "border-primary bg-primary text-primary-foreground"
                 : "border-muted-foreground/40",
             )}
           >

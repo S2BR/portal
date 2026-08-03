@@ -34,7 +34,7 @@ export function UserMenu() {
   if (loading) {
     return (
       <span
-        className="bg-muted h-9 w-24 animate-pulse rounded-md"
+        className="bg-muted h-11 w-28 animate-pulse rounded-lg"
         aria-hidden
       />
     );
@@ -47,7 +47,7 @@ export function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-2">
+        <Button variant="outline" className="gap-2">
           <User className="size-4" />
           <span className="max-w-32 truncate">{user.name}</span>
         </Button>

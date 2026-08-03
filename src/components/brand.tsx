@@ -13,13 +13,15 @@ export function Brand() {
       <Image
         src="/s2br.svg"
         alt="S2BR"
-        width={28}
-        height={28}
+        width={30}
+        height={30}
         priority
         unoptimized
-        className="rounded-md"
+        className="rounded-lg"
       />
-      <span className="text-sm font-semibold tracking-tight">{t("name")}</span>
+      <span className="font-heading text-base font-semibold tracking-tight">
+        {t("name")}
+      </span>
     </Link>
   );
 }

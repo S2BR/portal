@@ -4,6 +4,7 @@ import { useFormatter, useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 
 import type { Session } from "@/app/api/auth/sessions/route";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -102,9 +103,7 @@ export function SessionSettings() {
                       {session.device_name ?? t("unknownDevice")}
                     </span>
                     {session.current ? (
-                      <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-400">
-                        {t("current")}
-                      </span>
+                      <Badge variant="green">{t("current")}</Badge>
                     ) : null}
                   </p>
                   <p className="text-muted-foreground text-xs">

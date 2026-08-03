@@ -134,7 +134,7 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
     return (
       <form onSubmit={onSubmitCode} className="flex flex-col gap-4">
         <div className="space-y-1 text-center">
-          <h1 className="text-xl font-semibold tracking-tight">
+          <h1 className="text-2xl font-semibold tracking-tight">
             {t("login.twoFactorTitle")}
           </h1>
           <p className="text-muted-foreground text-sm">
@@ -175,7 +175,7 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
   return (
     <form onSubmit={onSubmitCredentials} className="flex flex-col gap-4">
       <div className="space-y-1 text-center">
-        <h1 className="text-xl font-semibold tracking-tight">
+        <h1 className="text-2xl font-semibold tracking-tight">
           {t("signIn.title")}
         </h1>
         <p className="text-muted-foreground text-sm">{t("signIn.subtitle")}</p>

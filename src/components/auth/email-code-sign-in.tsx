@@ -236,7 +236,7 @@ export function EmailCodeSignIn({
     return (
       <form onSubmit={onRequest} className="flex flex-col gap-4">
         <div className="space-y-1 text-center">
-          <h1 className="text-xl font-semibold tracking-tight">
+          <h1 className="text-2xl font-semibold tracking-tight">
             {t("emailCode.requestTitle")}
           </h1>
           <p className="text-muted-foreground text-sm">
@@ -278,7 +278,7 @@ export function EmailCodeSignIn({
     return (
       <div className="flex flex-col gap-4">
         <div className="space-y-1 text-center">
-          <h1 className="text-xl font-semibold tracking-tight">
+          <h1 className="text-2xl font-semibold tracking-tight">
             {t("emailCode.linkSentTitle")}
           </h1>
           <p className="text-muted-foreground text-sm">
@@ -301,7 +301,7 @@ export function EmailCodeSignIn({
   return (
     <form onSubmit={onVerify} className="flex flex-col gap-4">
       <div className="space-y-1 text-center">
-        <h1 className="text-xl font-semibold tracking-tight">
+        <h1 className="text-2xl font-semibold tracking-tight">
           {awaitingTwoFactor
             ? t("emailCode.twoFactorTitle")
             : t("emailCode.verifyTitle")}

@@ -141,7 +141,7 @@ export function MagicLinkSignIn({
     return (
       <form onSubmit={submitTwoFactor} className="flex flex-col gap-4">
         <div className="space-y-1 text-center">
-          <h1 className="text-xl font-semibold tracking-tight">
+          <h1 className="text-2xl font-semibold tracking-tight">
             {t("emailCode.twoFactorTitle")}
           </h1>
           <p className="text-muted-foreground text-sm">
@@ -171,7 +171,7 @@ export function MagicLinkSignIn({
   return (
     <div className="flex flex-col gap-4 text-center">
       <div className="space-y-1">
-        <h1 className="text-xl font-semibold tracking-tight">
+        <h1 className="text-2xl font-semibold tracking-tight">
           {t("magicLink.invalidTitle")}
         </h1>
         <p className="text-muted-foreground text-sm">

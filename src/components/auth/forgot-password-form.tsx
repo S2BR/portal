@@ -101,7 +101,7 @@ export function ForgotPasswordForm({
     return (
       <form onSubmit={onReset} className="flex flex-col gap-4">
         <div className="space-y-1 text-center">
-          <h1 className="text-xl font-semibold tracking-tight">
+          <h1 className="text-2xl font-semibold tracking-tight">
             {t("forgot.resetTitle")}
           </h1>
           <p className="text-muted-foreground text-sm">
@@ -151,7 +151,7 @@ export function ForgotPasswordForm({
   return (
     <form onSubmit={onRequest} className="flex flex-col gap-4">
       <div className="space-y-1 text-center">
-        <h1 className="text-xl font-semibold tracking-tight">
+        <h1 className="text-2xl font-semibold tracking-tight">
           {t("forgot.title")}
         </h1>
         <p className="text-muted-foreground text-sm">{t("forgot.subtitle")}</p>

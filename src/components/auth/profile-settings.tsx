@@ -7,6 +7,7 @@ import type { Timezone } from "@/app/api/auth/timezones/route";
 import { useCurrentUser } from "@/components/auth/current-user";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Combobox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { apiErrorText } from "@/lib/api/error-text";
@@ -119,19 +120,21 @@ export function ProfileSettings() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="profile-timezone">{t("timezone")}</Label>
-              <select
+              <Combobox
                 id="profile-timezone"
                 value={timezone}
-                onChange={(event) => setTimezone(event.target.value)}
-                className="border-input focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 h-8 w-full rounded-lg border bg-transparent px-2.5 py-1 text-sm transition-colors outline-none focus-visible:ring-3"
-              >
-                <option value="">{t("deviceDefault")}</option>
-                {timezones.map((zone) => (
-                  <option key={zone.id} value={zone.id}>
-                    {zone.label}
-                  </option>
-                ))}
-              </select>
+                onChange={setTimezone}
+                options={[
+                  { value: "", label: t("deviceDefault") },
+                  ...timezones.map((zone) => ({
+                    value: zone.id,
+                    label: zone.label,
+                  })),
+                ]}
+                placeholder={t("deviceDefault")}
+                searchPlaceholder={t("searchTimezone")}
+                emptyText={t("noTimezone")}
+              />
             </div>
             {error ? <p className="text-destructive text-sm">{error}</p> : null}
             <div className="flex gap-2">

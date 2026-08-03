@@ -123,7 +123,9 @@
     "save": "Save changes",
     "cancel": "Cancel",
     "timezone": "Timezone",
-    "deviceDefault": "Device default"
+    "deviceDefault": "Device default",
+    "searchTimezone": "Search timezones…",
+    "noTimezone": "No timezone found."
   },
   "sessions": {
     "title": "Active sessions",

@@ -10,8 +10,8 @@ export default function AppLayout({
   return (
     <CurrentUserProvider>
       <div className="flex min-h-full flex-col">
-        <header className="border-b">
-          <div className="mx-auto flex h-14 w-full max-w-6xl items-center gap-4 px-4">
+        <header className="bg-background/80 sticky top-0 z-10 border-b backdrop-blur">
+          <div className="mx-auto flex h-16 w-full max-w-6xl items-center gap-4 px-4 sm:px-6">
             <Brand />
             <div className="ml-auto flex items-center gap-2">
               <LocaleSwitcher />
@@ -20,7 +20,7 @@ export default function AppLayout({
             </div>
           </div>
         </header>
-        <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
+        <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-10 sm:px-6">
           {children}
         </main>
       </div>
