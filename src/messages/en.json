@@ -88,7 +88,16 @@
       "back": "Back",
       "twoFactorTitle": "Enter your authenticator code",
       "twoFactorSubtitle": "Your account has two-factor authentication. Enter the current code from your authenticator app.",
-      "resendIn": "Send a new code in {seconds}s"
+      "resendIn": "Send a new code in {seconds}s",
+      "sendLinkButton": "Email me a sign-in link",
+      "linkSentTitle": "Check your email",
+      "linkSentSubtitle": "We sent a sign-in link to {email}. Open it on this device to continue."
+    },
+    "magicLink": {
+      "verifying": "Signing you in…",
+      "invalidTitle": "This sign-in link didn’t work",
+      "invalidSubtitle": "It may have expired or already been used. Request a new one to sign in.",
+      "backToLogin": "Back to sign in"
     }
   },
   "dashboard": {

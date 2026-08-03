@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { apiErrorText } from "@/lib/api/error-text";
 import { useOtpLength } from "@/lib/config/use-app-config";
 
-type Step = "request" | "verify";
+type Step = "request" | "verify" | "linkSent";
 
 /**
  * Passwordless sign-in with an emailed one-time code. The emailed code is verified on its own
@@ -50,14 +50,18 @@ export function EmailCodeSignIn({
     return () => clearTimeout(timer);
   }, [cooldown]);
 
-  async function requestCode(): Promise<boolean> {
+  async function requestCode(
+    delivery: "code" | "link" = "code",
+  ): Promise<boolean> {
     setPending(true);
     setError(null);
     try {
       const response = await fetch("/api/auth/login/email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify(
+          delivery === "link" ? { email, delivery: "link" } : { email },
+        ),
       });
       const data = (await response.json()) as {
         status?: string;
@@ -91,11 +95,22 @@ export function EmailCodeSignIn({
       setError(t("errors.email"));
       return;
     }
-    if (await requestCode()) {
+    if (await requestCode("code")) {
       setCode("");
       setTwoFactorCode("");
       setPendingToken(null);
       setStep("verify");
+    }
+  }
+
+  // Email a magic sign-in link instead of a typed code; it lands on /magic-link.
+  async function onRequestLink() {
+    if (!email.includes("@")) {
+      setError(t("errors.email"));
+      return;
+    }
+    if (await requestCode("link")) {
+      setStep("linkSent");
     }
   }
 
@@ -213,10 +228,40 @@ export function EmailCodeSignIn({
         <Button type="submit" disabled={pending}>
           {t("emailCode.sendButton")}
         </Button>
+        <Button
+          type="button"
+          variant="outline"
+          disabled={pending}
+          onClick={() => void onRequestLink()}
+        >
+          {t("emailCode.sendLinkButton")}
+        </Button>
         <Button type="button" variant="ghost" onClick={onBack}>
           {t("emailCode.back")}
         </Button>
       </form>
+    );
+  }
+
+  if (step === "linkSent") {
+    return (
+      <div className="flex flex-col gap-4">
+        <div className="space-y-1 text-center">
+          <h1 className="text-xl font-semibold tracking-tight">
+            {t("emailCode.linkSentTitle")}
+          </h1>
+          <p className="text-muted-foreground text-sm">
+            {t("emailCode.linkSentSubtitle", { email })}
+          </p>
+        </div>
+        <Button
+          type="button"
+          variant="ghost"
+          onClick={() => setStep("request")}
+        >
+          {t("emailCode.back")}
+        </Button>
+      </div>
     );
   }
 

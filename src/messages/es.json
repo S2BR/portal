@@ -88,7 +88,16 @@
       "back": "Atrás",
       "twoFactorTitle": "Ingresa el código de tu autenticador",
       "twoFactorSubtitle": "Tu cuenta tiene verificación en dos pasos. Ingresa el código actual de tu aplicación de autenticación.",
-      "resendIn": "Envía un nuevo código en {seconds}s"
+      "resendIn": "Envía un nuevo código en {seconds}s",
+      "sendLinkButton": "Envíame un enlace de acceso",
+      "linkSentTitle": "Revisa tu correo",
+      "linkSentSubtitle": "Enviamos un enlace de acceso a {email}. Ábrelo en este dispositivo para continuar."
+    },
+    "magicLink": {
+      "verifying": "Iniciando sesión…",
+      "invalidTitle": "Este enlace de acceso no funcionó",
+      "invalidSubtitle": "Puede haber expirado o ya haberse usado. Solicita uno nuevo para iniciar sesión.",
+      "backToLogin": "Volver al inicio de sesión"
     }
   },
   "dashboard": {

@@ -88,7 +88,16 @@
       "back": "Retour",
       "twoFactorTitle": "Entrez le code de votre authentificateur",
       "twoFactorSubtitle": "Votre compte utilise l'authentification à deux facteurs. Entrez le code actuel de votre application d'authentification.",
-      "resendIn": "Renvoyer un code dans {seconds}s"
+      "resendIn": "Renvoyer un code dans {seconds}s",
+      "sendLinkButton": "Envoyez-moi un lien de connexion",
+      "linkSentTitle": "Vérifiez votre courriel",
+      "linkSentSubtitle": "Nous avons envoyé un lien de connexion à {email}. Ouvrez-le sur cet appareil pour continuer."
+    },
+    "magicLink": {
+      "verifying": "Connexion en cours…",
+      "invalidTitle": "Ce lien de connexion n’a pas fonctionné",
+      "invalidSubtitle": "Il a peut-être expiré ou déjà été utilisé. Demandez-en un nouveau pour vous connecter.",
+      "backToLogin": "Retour à la connexion"
     }
   },
   "dashboard": {
