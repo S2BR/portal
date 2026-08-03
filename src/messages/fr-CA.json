@@ -83,11 +83,11 @@
       "verifyTitle": "Entrez votre code",
       "verifySubtitle": "Nous avons envoyé un code de connexion à {email}.",
       "twoFactorLabel": "Code de l’authentificateur",
-      "twoFactorHint": "Seulement si vous avez activé l’authentification à deux facteurs.",
       "verifyButton": "Se connecter",
       "resend": "Envoyer un nouveau code",
       "back": "Retour",
-      "twoFactorRequired": "L’authentification à deux facteurs est requise. Demandez un nouveau code et saisissez-le avec le code de votre authentificateur."
+      "twoFactorTitle": "Entrez le code de votre authentificateur",
+      "twoFactorSubtitle": "Votre compte utilise l'authentification à deux facteurs. Entrez le code actuel de votre application d'authentification."
     }
   },
   "dashboard": {

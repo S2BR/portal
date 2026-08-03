@@ -83,11 +83,11 @@
       "verifyTitle": "Digite seu código",
       "verifySubtitle": "Enviamos um código de acesso para {email}.",
       "twoFactorLabel": "Código do autenticador",
-      "twoFactorHint": "Somente se você tiver a autenticação de dois fatores ativada.",
       "verifyButton": "Entrar",
       "resend": "Enviar um novo código",
       "back": "Voltar",
-      "twoFactorRequired": "É necessária a autenticação de dois fatores. Solicite um novo código e digite-o com o código do seu autenticador."
+      "twoFactorTitle": "Digite o código do seu autenticador",
+      "twoFactorSubtitle": "Sua conta tem verificação em duas etapas. Digite o código atual do seu aplicativo autenticador."
     }
   },
   "dashboard": {
