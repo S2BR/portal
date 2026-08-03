@@ -7,6 +7,8 @@ import type { ApiError } from "@/lib/api/types";
 const bodySchema = z.object({
   email: z.email(),
   delivery: z.enum(["code", "link"]).optional(),
+  // Captcha answer "<challenge_id>~<answer>" — required only when the email-login gate is on.
+  captcha_token: z.string().optional(),
 });
 
 /**
@@ -20,12 +22,19 @@ export async function POST(request: Request): Promise<NextResponse> {
     return NextResponse.json({ status: "invalid" }, { status: 422 });
   }
 
+  // Drop empty/absent optionals so the API never validates a blank captcha token.
+  const payload = Object.fromEntries(
+    Object.entries(parsed.data).filter(
+      ([, value]) => value !== undefined && value !== "",
+    ),
+  );
+
   const response = await portalFetch<
     { retry_after?: number } & Partial<ApiError>
   >({
     method: "POST",
     path: "/auth/login/email",
-    body: parsed.data,
+    body: payload,
   });
 
   if (response.ok) {
@@ -40,6 +49,15 @@ export async function POST(request: Request): Promise<NextResponse> {
     return NextResponse.json(
       { status: "rate_limited", message: response.data.message },
       { status: 429 },
+    );
+  }
+
+  // Captcha is validated before the account lookup — surface it distinctly so the client
+  // can refresh the challenge and keep the user on the request step.
+  if (response.data.errors?.captcha_token) {
+    return NextResponse.json(
+      { status: "captcha_failed", message: response.data.message },
+      { status: 422 },
     );
   }
 

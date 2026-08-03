@@ -11,7 +11,11 @@ import type { CaptchaChallenge } from "@/lib/api/types";
  */
 export async function GET(request: Request): Promise<NextResponse> {
   const context = new URL(request.url).searchParams.get("context");
-  if (context !== "login" && context !== "register") {
+  if (
+    context !== "login" &&
+    context !== "register" &&
+    context !== "email_login"
+  ) {
     return NextResponse.json({ required: false });
   }
 

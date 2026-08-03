@@ -49,6 +49,25 @@ describe("GET /api/auth/captcha", () => {
     );
   });
 
+  it("relays the challenge for the passwordless email-login context", async () => {
+    fetchMock.mockResolvedValue(
+      portalResponse(200, {
+        required: true,
+        challenge_id: "x",
+        driver: "math",
+      }),
+    );
+
+    const res = await GET(request("email_login"));
+
+    expect(res.status).toBe(200);
+    expect(await res.json()).toMatchObject({ required: true, driver: "math" });
+    const [url] = fetchMock.mock.calls[0]!;
+    expect(url).toBe(
+      "https://portal.s2br.com/api/v1/auth/captcha?context=email_login",
+    );
+  });
+
   it("reports not required for an unknown context without calling the portal", async () => {
     const res = await GET(request("bogus"));
 

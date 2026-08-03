@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, type FormEvent } from "react";
 
+import { Captcha, useCaptcha } from "@/components/auth/captcha";
 import { OtpInput } from "@/components/auth/otp-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,6 +32,12 @@ export function EmailCodeSignIn({
   const t = useTranslations("auth");
   const router = useRouter();
   const otpLength = useOtpLength();
+  const {
+    challenge,
+    token: captchaToken,
+    setToken: setCaptchaToken,
+    refresh: refreshCaptcha,
+  } = useCaptcha("email_login");
 
   const [step, setStep] = useState<Step>("request");
   const [email, setEmail] = useState(initialEmail);
@@ -59,13 +66,18 @@ export function EmailCodeSignIn({
       const response = await fetch("/api/auth/login/email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(
-          delivery === "link" ? { email, delivery: "link" } : { email },
-        ),
+        body: JSON.stringify({
+          email,
+          ...(delivery === "link" ? { delivery: "link" } : {}),
+          ...(challenge?.required && captchaToken
+            ? { captcha_token: captchaToken }
+            : {}),
+        }),
       });
       const data = (await response.json()) as {
         status?: string;
         retry_after?: number | null;
+        message?: string;
       };
       if (data.status === "code_sent") {
         // Drive the resend countdown from the server's cooldown, so a too-soon resend is
@@ -77,9 +89,12 @@ export function EmailCodeSignIn({
       }
       if (data.status === "rate_limited") {
         setError(t("errors.rateLimited"));
-        return false;
+      } else {
+        // captcha_failed carries the API's own (localized) message.
+        setError(apiErrorText(data) ?? t("errors.generic"));
       }
-      setError(t("errors.generic"));
+      // Challenges are single-use; a failed attempt burns it, so issue a fresh one.
+      void refreshCaptcha();
       return false;
     } catch {
       setError(t("errors.generic"));
@@ -202,6 +217,21 @@ export function EmailCodeSignIn({
     void (pendingToken ? submitTwoFactor() : submitCode());
   }
 
+  // A resend hits the same captcha-gated endpoint, but there's no widget on the code screen —
+  // so when a captcha is required, send the user back to the request step to solve a fresh one.
+  function onResend() {
+    if (challenge?.required) {
+      void refreshCaptcha();
+      setCode("");
+      setStep("request");
+      return;
+    }
+    void requestCode("code");
+  }
+
+  // With the captcha gate on, the send buttons wait for a solved challenge.
+  const captchaBlocking = Boolean(challenge?.required) && !captchaToken;
+
   if (step === "request") {
     return (
       <form onSubmit={onRequest} className="flex flex-col gap-4">
@@ -224,14 +254,15 @@ export function EmailCodeSignIn({
             autoFocus
           />
         </div>
+        <Captcha challenge={challenge} onToken={setCaptchaToken} />
         {error ? <p className="text-destructive text-sm">{error}</p> : null}
-        <Button type="submit" disabled={pending}>
+        <Button type="submit" disabled={pending || captchaBlocking}>
           {t("emailCode.sendButton")}
         </Button>
         <Button
           type="button"
           variant="outline"
-          disabled={pending}
+          disabled={pending || captchaBlocking}
           onClick={() => void onRequestLink()}
         >
           {t("emailCode.sendLinkButton")}
@@ -321,7 +352,7 @@ export function EmailCodeSignIn({
           type="button"
           variant="ghost"
           disabled={pending || cooldown > 0}
-          onClick={() => void requestCode()}
+          onClick={onResend}
         >
           {cooldown > 0
             ? t("emailCode.resendIn", { seconds: cooldown })
