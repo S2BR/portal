@@ -1,16 +1,9 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { captureActiveAccount } from "@/lib/auth/accounts";
+import { establishSession } from "@/lib/auth/accounts";
 import { portalFetch } from "@/lib/api/client";
 import type { ApiError, SignInResponse } from "@/lib/api/types";
-import { ADD_COOKIE } from "@/lib/auth/cookies";
-import {
-  addToVault,
-  removeFromVault,
-  setSessionCookies,
-} from "@/lib/auth/session";
 
 const bodySchema = z.object({
   email: z.email(),
@@ -46,22 +39,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   });
 
   if (response.ok) {
-    const store = await cookies();
-    const adding = store.get(ADD_COOKIE)?.value === "1";
-
-    // "Add another account": vault the currently-active account before we replace the
-    // session, so both remain signed in. A normal login just replaces, as before.
-    if (adding) {
-      const previous = await captureActiveAccount();
-      if (previous && previous.id !== response.data.user.id) {
-        await addToVault(previous);
-      }
-      store.delete(ADD_COOKIE);
-    }
-
-    await setSessionCookies(response.data);
-    // The active account is never also in the vault (e.g. re-logging a vaulted one).
-    await removeFromVault(response.data.user.id);
+    await establishSession(response.data, response.data.user.id);
     return NextResponse.json({ status: "authenticated" });
   }
 

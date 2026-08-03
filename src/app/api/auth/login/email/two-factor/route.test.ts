@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("@/lib/auth/session", () => ({ setSessionCookies: vi.fn() }));
+vi.mock("@/lib/auth/accounts", () => ({ establishSession: vi.fn() }));
 
-import { setSessionCookies } from "@/lib/auth/session";
+import { establishSession } from "@/lib/auth/accounts";
 
 import { POST } from "./route";
 
@@ -46,7 +46,7 @@ describe("POST /api/auth/login/email/two-factor", () => {
 
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({ status: "authenticated" });
-    expect(setSessionCookies).toHaveBeenCalledOnce();
+    expect(establishSession).toHaveBeenCalledOnce();
   });
 
   it("surfaces a bad 2FA code without a session", async () => {
@@ -58,7 +58,7 @@ describe("POST /api/auth/login/email/two-factor", () => {
 
     expect(res.status).toBe(422);
     expect((await res.json()).status).toBe("invalid");
-    expect(setSessionCookies).not.toHaveBeenCalled();
+    expect(establishSession).not.toHaveBeenCalled();
   });
 
   it("rejects a malformed body without calling the portal", async () => {

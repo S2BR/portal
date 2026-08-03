@@ -1,14 +1,47 @@
 import "server-only";
 
+import { cookies } from "next/headers";
+
 import { callWithAuth } from "@/lib/api/authed";
 import { portalFetch } from "@/lib/api/client";
 import type { AuthUser, TokenPair } from "@/lib/api/types";
 
+import { ADD_COOKIE } from "./cookies";
 import {
+  addToVault,
   getRefreshToken,
+  removeFromVault,
   setSessionCookies,
   type VaultAccount,
 } from "./session";
+
+/**
+ * Make `tokens` the active session — the single entry point every sign-in path uses, so
+ * the switcher invariants always hold. In "add another account" mode the previously-active
+ * account is moved to the vault first (and the add flag cleared); the newly-active account
+ * is always removed from the vault, so an account is never both active and vaulted.
+ */
+export async function establishSession(
+  tokens: TokenPair,
+  newAccountId?: number,
+): Promise<void> {
+  const store = await cookies();
+  const adding = store.get(ADD_COOKIE)?.value === "1";
+
+  if (adding) {
+    const previous = await captureActiveAccount();
+    if (previous && previous.id !== newAccountId) {
+      await addToVault(previous);
+    }
+    store.delete(ADD_COOKIE);
+  }
+
+  await setSessionCookies(tokens);
+
+  if (newAccountId !== undefined) {
+    await removeFromVault(newAccountId);
+  }
+}
 
 /**
  * Refresh a vaulted (or promoted) refresh token and make that account the active
