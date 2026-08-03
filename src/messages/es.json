@@ -87,7 +87,8 @@
       "resend": "Enviar un código nuevo",
       "back": "Atrás",
       "twoFactorTitle": "Ingresa el código de tu autenticador",
-      "twoFactorSubtitle": "Tu cuenta tiene verificación en dos pasos. Ingresa el código actual de tu aplicación de autenticación."
+      "twoFactorSubtitle": "Tu cuenta tiene verificación en dos pasos. Ingresa el código actual de tu aplicación de autenticación.",
+      "resendIn": "Envía un nuevo código en {seconds}s"
     }
   },
   "dashboard": {

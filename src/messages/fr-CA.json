@@ -87,7 +87,8 @@
       "resend": "Envoyer un nouveau code",
       "back": "Retour",
       "twoFactorTitle": "Entrez le code de votre authentificateur",
-      "twoFactorSubtitle": "Votre compte utilise l'authentification à deux facteurs. Entrez le code actuel de votre application d'authentification."
+      "twoFactorSubtitle": "Votre compte utilise l'authentification à deux facteurs. Entrez le code actuel de votre application d'authentification.",
+      "resendIn": "Renvoyer un code dans {seconds}s"
     }
   },
   "dashboard": {

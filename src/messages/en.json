@@ -87,7 +87,8 @@
       "resend": "Send a new code",
       "back": "Back",
       "twoFactorTitle": "Enter your authenticator code",
-      "twoFactorSubtitle": "Your account has two-factor authentication. Enter the current code from your authenticator app."
+      "twoFactorSubtitle": "Your account has two-factor authentication. Enter the current code from your authenticator app.",
+      "resendIn": "Send a new code in {seconds}s"
     }
   },
   "dashboard": {

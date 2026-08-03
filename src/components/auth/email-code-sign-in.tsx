@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 
 import { OtpInput } from "@/components/auth/otp-input";
 import { Button } from "@/components/ui/button";
@@ -37,8 +37,18 @@ export function EmailCodeSignIn({
   const [code, setCode] = useState("");
   const [twoFactorCode, setTwoFactorCode] = useState("");
   const [pendingToken, setPendingToken] = useState<string | null>(null);
+  const [cooldown, setCooldown] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+
+  // Tick the resend cooldown down to zero (one timeout re-armed each second).
+  useEffect(() => {
+    if (cooldown <= 0) {
+      return;
+    }
+    const timer = setTimeout(() => setCooldown((seconds) => seconds - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [cooldown]);
 
   async function requestCode(): Promise<boolean> {
     setPending(true);
@@ -49,8 +59,16 @@ export function EmailCodeSignIn({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
-      const data = (await response.json()) as { status?: string };
+      const data = (await response.json()) as {
+        status?: string;
+        retry_after?: number | null;
+      };
       if (data.status === "code_sent") {
+        // Drive the resend countdown from the server's cooldown, so a too-soon resend is
+        // shown as a wait rather than silently doing nothing.
+        if (typeof data.retry_after === "number" && data.retry_after > 0) {
+          setCooldown(data.retry_after);
+        }
         return true;
       }
       if (data.status === "rate_limited") {
@@ -257,10 +275,12 @@ export function EmailCodeSignIn({
         <Button
           type="button"
           variant="ghost"
-          disabled={pending}
+          disabled={pending || cooldown > 0}
           onClick={() => void requestCode()}
         >
-          {t("emailCode.resend")}
+          {cooldown > 0
+            ? t("emailCode.resendIn", { seconds: cooldown })
+            : t("emailCode.resend")}
         </Button>
       )}
       <Button type="button" variant="ghost" onClick={onBack}>
