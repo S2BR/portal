@@ -106,7 +106,9 @@
   },
   "nav": {
     "signOut": "Sign out",
-    "profile": "Profile"
+    "profile": "Profile",
+    "addAccount": "Add another account",
+    "signOutAll": "Sign out of all accounts"
   },
   "profile": {
     "title": "Profile",

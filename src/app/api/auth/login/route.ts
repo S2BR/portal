@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
+import { establishSession } from "@/lib/auth/accounts";
 import { portalFetch } from "@/lib/api/client";
 import type { ApiError, SignInResponse } from "@/lib/api/types";
-import { setSessionCookies } from "@/lib/auth/session";
 
 const bodySchema = z.object({
   email: z.email(),
@@ -38,9 +38,8 @@ export async function POST(request: Request): Promise<NextResponse> {
     body: payload,
   });
 
-  // Sign-in success is a JSON:API document: user in `data`, tokens in `meta`.
   if (response.ok) {
-    await setSessionCookies(response.data);
+    await establishSession(response.data, response.data.user.id);
     return NextResponse.json({ status: "authenticated" });
   }
 

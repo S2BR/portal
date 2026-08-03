@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { portalErrorMessage, portalFetch } from "@/lib/api/client";
 import type { ApiError, SignInResponse } from "@/lib/api/types";
-import { setSessionCookies } from "@/lib/auth/session";
+import { establishSession } from "@/lib/auth/accounts";
 
 const bodySchema = z.object({
   pending_token: z.string().min(1),
@@ -29,7 +29,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   });
 
   if (response.ok) {
-    await setSessionCookies(response.data);
+    await establishSession(response.data, response.data.user.id);
     return NextResponse.json({ status: "authenticated" });
   }
 

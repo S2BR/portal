@@ -1,10 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("@/lib/auth/session", () => ({
-  setSessionCookies: vi.fn(),
-}));
+vi.mock("@/lib/auth/accounts", () => ({ establishSession: vi.fn() }));
 
-import { setSessionCookies } from "@/lib/auth/session";
+import { establishSession } from "@/lib/auth/accounts";
 
 import { POST } from "./route";
 
@@ -60,8 +58,9 @@ describe("POST /api/auth/passkeys/login", () => {
 
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({ status: "authenticated" });
-    expect(setSessionCookies).toHaveBeenCalledWith(
+    expect(establishSession).toHaveBeenCalledWith(
       expect.objectContaining({ access_token: "a", refresh_token: "r" }),
+      expect.any(Number),
     );
   });
 
@@ -72,7 +71,7 @@ describe("POST /api/auth/passkeys/login", () => {
 
     expect(res.status).toBe(422);
     expect((await res.json()).status).toBe("invalid");
-    expect(setSessionCookies).not.toHaveBeenCalled();
+    expect(establishSession).not.toHaveBeenCalled();
   });
 
   it("relays rate limiting", async () => {
@@ -103,6 +102,6 @@ describe("POST /api/auth/passkeys/login", () => {
 
     expect(res.status).toBe(422);
     expect((await res.json()).status).toBe("invalid");
-    expect(setSessionCookies).not.toHaveBeenCalled();
+    expect(establishSession).not.toHaveBeenCalled();
   });
 });

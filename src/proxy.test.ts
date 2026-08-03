@@ -1,13 +1,18 @@
 import { NextRequest } from "next/server";
 import { describe, expect, it } from "vitest";
 
-import { REFRESH_COOKIE } from "@/lib/auth/cookies";
+import { ADD_COOKIE, REFRESH_COOKIE } from "@/lib/auth/cookies";
 import { proxy } from "./proxy";
 
-function requestFor(pathname: string, options: { session?: boolean } = {}) {
-  const headers = options.session
-    ? { cookie: `${REFRESH_COOKIE}=token` }
-    : undefined;
+function requestFor(
+  pathname: string,
+  options: { session?: boolean; adding?: boolean } = {},
+) {
+  const parts = [
+    options.session ? `${REFRESH_COOKIE}=token` : null,
+    options.adding ? `${ADD_COOKIE}=1` : null,
+  ].filter(Boolean);
+  const headers = parts.length ? { cookie: parts.join("; ") } : undefined;
   return new NextRequest(new URL(pathname, "http://localhost"), { headers });
 }
 
@@ -42,5 +47,12 @@ describe("proxy auth gate", () => {
     const location = response.headers.get("location");
     expect(location).not.toBeNull();
     expect(new URL(location as string).pathname).toBe("/");
+  });
+
+  it("lets a signed-in visitor reach /login while adding another account", () => {
+    const response = proxy(
+      requestFor("/login", { session: true, adding: true }),
+    );
+    expect(response.headers.get("location")).toBeNull();
   });
 });
