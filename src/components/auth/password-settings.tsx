@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useState, type FormEvent } from "react";
+import { toast } from "sonner";
 
 import { PasswordRequirements } from "@/components/auth/password-requirements";
 import { VerifyDialog } from "@/components/auth/verify-dialog";
@@ -71,6 +72,7 @@ export function PasswordSettings() {
     if (data.status === "ok") {
       reset();
       setDone(true);
+      toast.success(t("success"));
       return null;
     }
     return apiErrorText(data) ?? authErrors("generic");

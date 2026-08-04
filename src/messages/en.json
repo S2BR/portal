@@ -103,8 +103,39 @@
     }
   },
   "dashboard": {
-    "title": "Dashboard",
-    "welcome": "Welcome back."
+    "greeting": {
+      "morning": "Good morning, {name}",
+      "afternoon": "Good afternoon, {name}",
+      "evening": "Good evening, {name}"
+    },
+    "subtitle": "Here's a quick look at your account.",
+    "setup": {
+      "title": "Finish setting up your account",
+      "progress": "{done} of {total} complete",
+      "avatar": "Add a profile photo",
+      "twoFactor": "Turn on two-factor authentication",
+      "passkey": "Add a passkey",
+      "action": "Set up",
+      "doneTitle": "You're all set",
+      "doneSubtitle": "Your account is fully configured — nice work."
+    },
+    "status": {
+      "twoFactor": "Two-factor",
+      "on": "On",
+      "off": "Off",
+      "passkeys": "Passkeys",
+      "sessions": "Active sessions",
+      "memberSince": "Member since"
+    },
+    "modules": {
+      "title": "Coming soon",
+      "subtitle": "New spaces are on the way.",
+      "business": "Business",
+      "businessDesc": "Manage your business profile, listings, and team.",
+      "community": "Community",
+      "communityDesc": "Connect with operators and members near you.",
+      "soon": "Soon"
+    }
   },
   "nav": {
     "signOut": "Sign out",
@@ -161,7 +192,9 @@
     "lastActive": "Last active {when}",
     "signOut": "Sign out",
     "signOutOthers": "Sign out everywhere else",
-    "error": "Something went wrong. Please try again."
+    "error": "Something went wrong. Please try again.",
+    "revoked": "Signed out of that device",
+    "revokedOthers": "Signed out of the other devices"
   },
   "twoFactor": {
     "title": "Two-factor authentication",
@@ -179,7 +212,10 @@
     "done": "I've saved them",
     "disablePrompt": "Enter your password to turn off two-factor authentication.",
     "regenerate": "Regenerate recovery codes",
-    "regeneratePrompt": "Enter your password to generate a new set of recovery codes. Your existing codes will stop working."
+    "regeneratePrompt": "Enter your password to generate a new set of recovery codes. Your existing codes will stop working.",
+    "enabledToast": "Two-factor authentication is on",
+    "disabledToast": "Two-factor authentication is off",
+    "codesRegenerated": "New recovery codes generated"
   },
   "emailSettings": {
     "title": "Email address",
@@ -211,6 +247,8 @@
     "unsupported": "This browser doesn't support passkeys.",
     "defaultName": "My passkey",
     "addError": "We couldn't add that passkey. Please try again.",
+    "addedToast": "Passkey added",
+    "removedToast": "Passkey removed",
     "nameLabel": "Name",
     "namePlaceholder": "e.g. My laptop",
     "lastUsed": "Last used {date}",

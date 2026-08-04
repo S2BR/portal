@@ -2,6 +2,7 @@
 
 import { useFormatter, useTranslations } from "next-intl";
 import { useCallback, useEffect, useState, type FormEvent } from "react";
+import { toast } from "sonner";
 
 import { VerifyDialog } from "@/components/auth/verify-dialog";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { apiErrorText } from "@/lib/api/error-text";
@@ -123,6 +125,7 @@ export function PasskeySettings() {
       if (storeData.status === "ok") {
         reset();
         await load();
+        toast.success(t("addedToast"));
         return null;
       }
       return apiErrorText(storeData) ?? authErrors("generic");
@@ -138,7 +141,8 @@ export function PasskeySettings() {
     if (removingId === null) {
       return null;
     }
-    const response = await fetch(`/api/auth/passkeys/${removingId}`, {
+    const targetId = removingId;
+    const response = await fetch(`/api/auth/passkeys/${targetId}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ verification_token: token }),
@@ -149,8 +153,12 @@ export function PasskeySettings() {
       errors?: Record<string, string[]>;
     };
     if (data.status === "ok") {
+      // The step-up dialog already gated this, so drop the row locally instead of refetching.
+      setPasskeys(
+        (prev) => prev?.filter((passkey) => passkey.id !== targetId) ?? prev,
+      );
       reset();
-      await load();
+      toast.success(t("removedToast"));
       return null;
     }
     return apiErrorText(data) ?? authErrors("generic");
@@ -197,10 +205,7 @@ export function PasskeySettings() {
         ) : (
           <div className="space-y-4">
             {passkeys === null ? (
-              <div
-                className="bg-muted h-10 w-full animate-pulse rounded-md"
-                aria-hidden
-              />
+              <Skeleton className="h-10 w-full" />
             ) : passkeys.length === 0 ? (
               <p className="text-muted-foreground text-sm">{t("empty")}</p>
             ) : (

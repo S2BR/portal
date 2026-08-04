@@ -17,6 +17,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface AccountSummary {
   id: number;
@@ -108,12 +109,7 @@ export function UserMenu() {
   }
 
   if (loading) {
-    return (
-      <span
-        className="bg-muted h-11 w-28 animate-pulse rounded-lg"
-        aria-hidden
-      />
-    );
+    return <Skeleton className="h-11 w-28 rounded-lg" />;
   }
 
   if (!user) {
@@ -127,7 +123,7 @@ export function UserMenu() {
           <UserAvatar
             name={user.name}
             src={user.avatar}
-            className="-ml-1 size-7"
+            className="-ms-1 size-7"
           />
           <span className="max-w-32 truncate">{user.name}</span>
         </Button>

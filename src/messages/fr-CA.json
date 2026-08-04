@@ -103,8 +103,39 @@
     }
   },
   "dashboard": {
-    "title": "Tableau de bord",
-    "welcome": "Bon retour."
+    "greeting": {
+      "morning": "Bonjour, {name}",
+      "afternoon": "Bon après-midi, {name}",
+      "evening": "Bonsoir, {name}"
+    },
+    "subtitle": "Un aperçu rapide de votre compte.",
+    "setup": {
+      "title": "Terminez la configuration de votre compte",
+      "progress": "{done} sur {total} terminé",
+      "avatar": "Ajoutez une photo de profil",
+      "twoFactor": "Activez l’authentification à deux facteurs",
+      "passkey": "Ajoutez une clé d’accès",
+      "action": "Configurer",
+      "doneTitle": "Tout est prêt",
+      "doneSubtitle": "Votre compte est entièrement configuré — beau travail."
+    },
+    "status": {
+      "twoFactor": "Deux facteurs",
+      "on": "Activé",
+      "off": "Désactivé",
+      "passkeys": "Clés d’accès",
+      "sessions": "Sessions actives",
+      "memberSince": "Membre depuis"
+    },
+    "modules": {
+      "title": "Bientôt disponible",
+      "subtitle": "De nouveaux espaces arrivent.",
+      "business": "Entreprise",
+      "businessDesc": "Gérez le profil de votre entreprise, vos annonces et votre équipe.",
+      "community": "Communauté",
+      "communityDesc": "Connectez-vous avec des exploitants et des membres près de chez vous.",
+      "soon": "Bientôt"
+    }
   },
   "nav": {
     "signOut": "Se déconnecter",
@@ -161,7 +192,9 @@
     "lastActive": "Dernière activité {when}",
     "signOut": "Se déconnecter",
     "signOutOthers": "Se déconnecter partout ailleurs",
-    "error": "Une erreur s'est produite. Veuillez réessayer."
+    "error": "Une erreur s'est produite. Veuillez réessayer.",
+    "revoked": "Déconnecté de cet appareil",
+    "revokedOthers": "Déconnecté des autres appareils"
   },
   "twoFactor": {
     "title": "Authentification à deux facteurs",
@@ -179,7 +212,10 @@
     "done": "Je les ai enregistrés",
     "disablePrompt": "Entrez votre mot de passe pour désactiver l'authentification à deux facteurs.",
     "regenerate": "Régénérer les codes de récupération",
-    "regeneratePrompt": "Entrez votre mot de passe pour générer un nouvel ensemble de codes de récupération. Vos codes actuels cesseront de fonctionner."
+    "regeneratePrompt": "Entrez votre mot de passe pour générer un nouvel ensemble de codes de récupération. Vos codes actuels cesseront de fonctionner.",
+    "enabledToast": "L’authentification à deux facteurs est activée",
+    "disabledToast": "L’authentification à deux facteurs est désactivée",
+    "codesRegenerated": "Nouveaux codes de récupération générés"
   },
   "emailSettings": {
     "title": "Adresse courriel",
@@ -211,6 +247,8 @@
     "unsupported": "Ce navigateur ne prend pas en charge les clés d'accès.",
     "defaultName": "Ma clé d'accès",
     "addError": "Nous n'avons pas pu ajouter cette clé d'accès. Veuillez réessayer.",
+    "addedToast": "Clé d’accès ajoutée",
+    "removedToast": "Clé d’accès retirée",
     "nameLabel": "Nom",
     "namePlaceholder": "p. ex. Mon ordinateur portable",
     "lastUsed": "Dernière utilisation le {date}",

@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { QRCodeSVG } from "qrcode.react";
 import { useState, type FormEvent } from "react";
+import { toast } from "sonner";
 
 import { useCurrentUser } from "@/components/auth/current-user";
 import { VerifyDialog } from "@/components/auth/verify-dialog";
@@ -105,6 +106,7 @@ export function TwoFactorSettings() {
       setCode("");
       setMode("recovery");
       await refresh();
+      toast.success(t("enabledToast"));
       return null;
     }
     return apiErrorText(data) ?? authErrors("generic");
@@ -125,6 +127,7 @@ export function TwoFactorSettings() {
     if (data.status === "ok" && data.recoveryCodes) {
       setRecoveryCodes(data.recoveryCodes);
       setMode("recovery");
+      toast.success(t("codesRegenerated"));
       return null;
     }
     return apiErrorText(data) ?? authErrors("generic");
@@ -144,6 +147,7 @@ export function TwoFactorSettings() {
     if (data.status === "ok") {
       reset();
       await refresh();
+      toast.success(t("disabledToast"));
       return null;
     }
     return apiErrorText(data) ?? authErrors("generic");

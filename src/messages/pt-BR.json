@@ -103,8 +103,39 @@
     }
   },
   "dashboard": {
-    "title": "Painel",
-    "welcome": "Bem-vindo de volta."
+    "greeting": {
+      "morning": "Bom dia, {name}",
+      "afternoon": "Boa tarde, {name}",
+      "evening": "Boa noite, {name}"
+    },
+    "subtitle": "Uma visão rápida da sua conta.",
+    "setup": {
+      "title": "Termine de configurar sua conta",
+      "progress": "{done} de {total} concluído",
+      "avatar": "Adicione uma foto de perfil",
+      "twoFactor": "Ative a autenticação de dois fatores",
+      "passkey": "Adicione uma chave de acesso",
+      "action": "Configurar",
+      "doneTitle": "Tudo pronto",
+      "doneSubtitle": "Sua conta está totalmente configurada — bom trabalho."
+    },
+    "status": {
+      "twoFactor": "Dois fatores",
+      "on": "Ativado",
+      "off": "Desativado",
+      "passkeys": "Chaves de acesso",
+      "sessions": "Sessões ativas",
+      "memberSince": "Membro desde"
+    },
+    "modules": {
+      "title": "Em breve",
+      "subtitle": "Novos espaços estão a caminho.",
+      "business": "Negócios",
+      "businessDesc": "Gerencie o perfil da sua empresa, seus anúncios e sua equipe.",
+      "community": "Comunidade",
+      "communityDesc": "Conecte-se com operadores e membros perto de você.",
+      "soon": "Em breve"
+    }
   },
   "nav": {
     "signOut": "Sair",
@@ -161,7 +192,9 @@
     "lastActive": "Última atividade {when}",
     "signOut": "Sair",
     "signOutOthers": "Sair de todos os outros dispositivos",
-    "error": "Algo deu errado. Tente novamente."
+    "error": "Algo deu errado. Tente novamente.",
+    "revoked": "Sessão encerrada nesse dispositivo",
+    "revokedOthers": "Sessão encerrada nos outros dispositivos"
   },
   "twoFactor": {
     "title": "Autenticação de dois fatores",
@@ -179,7 +212,10 @@
     "done": "Eu os salvei",
     "disablePrompt": "Digite sua senha para desativar a autenticação de dois fatores.",
     "regenerate": "Gerar novos códigos de recuperação",
-    "regeneratePrompt": "Digite sua senha para gerar um novo conjunto de códigos de recuperação. Seus códigos atuais deixarão de funcionar."
+    "regeneratePrompt": "Digite sua senha para gerar um novo conjunto de códigos de recuperação. Seus códigos atuais deixarão de funcionar.",
+    "enabledToast": "A autenticação de dois fatores está ativada",
+    "disabledToast": "A autenticação de dois fatores está desativada",
+    "codesRegenerated": "Novos códigos de recuperação gerados"
   },
   "emailSettings": {
     "title": "Endereço de e-mail",
@@ -211,6 +247,8 @@
     "unsupported": "Este navegador não é compatível com chaves de acesso.",
     "defaultName": "Minha chave de acesso",
     "addError": "Não foi possível adicionar essa chave de acesso. Tente novamente.",
+    "addedToast": "Chave de acesso adicionada",
+    "removedToast": "Chave de acesso removida",
     "nameLabel": "Nome",
     "namePlaceholder": "ex.: Meu notebook",
     "lastUsed": "Usada pela última vez em {date}",

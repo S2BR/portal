@@ -30,3 +30,16 @@ export function isLocale(value: unknown): value is Locale {
 export function toApiLocale(locale: Locale): string {
   return locale.replace("-", "_");
 }
+
+/**
+ * Right-to-left locales. None of the current set are RTL, but the layout, primitives, and
+ * logical CSS are all direction-driven — add an RTL locale here (e.g. `ar`, `he`, `fa`) and
+ * the whole UI mirrors with no further changes. A dev-only toggle can force RTL meanwhile.
+ */
+export const rtlLocales: readonly string[] = [];
+
+export type Direction = "ltr" | "rtl";
+
+export function getDirection(locale: string): Direction {
+  return rtlLocales.includes(locale) ? "rtl" : "ltr";
+}

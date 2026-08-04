@@ -42,7 +42,7 @@ export function ThemeToggle() {
             {label}
             {theme === value ? (
               <span
-                className="bg-primary ml-auto size-2 shrink-0 rounded-full"
+                className="bg-primary ms-auto size-2 shrink-0 rounded-full"
                 aria-hidden
               />
             ) : null}

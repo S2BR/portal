@@ -2,11 +2,13 @@
 
 import { useFormatter, useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 import type { Session } from "@/app/api/auth/sessions/route";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useNow } from "@/lib/use-now";
 
 /**
@@ -22,7 +24,6 @@ export function SessionSettings() {
 
   const [sessions, setSessions] = useState<Session[] | null>(null);
   const [pending, setPending] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -42,37 +43,47 @@ export function SessionSettings() {
   }, [load]);
 
   async function revoke(family: string) {
+    const snapshot = sessions;
     setPending(family);
-    setError(null);
+    // Optimistic: drop the row now; roll back if the request fails.
+    setSessions(
+      (prev) => prev?.filter((session) => session.id !== family) ?? prev,
+    );
     try {
       const response = await fetch(
         `/api/auth/sessions/${encodeURIComponent(family)}`,
         { method: "DELETE" },
       );
       if (!response.ok) {
-        setError(t("error"));
+        setSessions(snapshot);
+        toast.error(t("error"));
         return;
       }
-      await load();
+      toast.success(t("revoked"));
     } catch {
-      setError(t("error"));
+      setSessions(snapshot);
+      toast.error(t("error"));
     } finally {
       setPending(null);
     }
   }
 
   async function revokeOthers() {
+    const snapshot = sessions;
     setPending("others");
-    setError(null);
+    // Optimistic: keep only the current session.
+    setSessions((prev) => prev?.filter((session) => session.current) ?? prev);
     try {
       const response = await fetch("/api/auth/sessions", { method: "DELETE" });
       if (!response.ok) {
-        setError(t("error"));
+        setSessions(snapshot);
+        toast.error(t("error"));
         return;
       }
-      await load();
+      toast.success(t("revokedOthers"));
     } catch {
-      setError(t("error"));
+      setSessions(snapshot);
+      toast.error(t("error"));
     } finally {
       setPending(null);
     }
@@ -87,10 +98,10 @@ export function SessionSettings() {
       </CardHeader>
       <CardContent className="space-y-4">
         {sessions === null ? (
-          <div
-            className="bg-muted h-16 w-full animate-pulse rounded-lg"
-            aria-hidden
-          />
+          <div className="space-y-2">
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-12 w-full" />
+          </div>
         ) : sessions.length === 0 ? (
           <p className="text-muted-foreground text-sm">{t("empty")}</p>
         ) : (
@@ -135,7 +146,6 @@ export function SessionSettings() {
             ))}
           </ul>
         )}
-        {error ? <p className="text-destructive text-sm">{error}</p> : null}
         {hasOthers ? (
           <Button
             variant="destructive"
