@@ -176,17 +176,16 @@ export function RegisterForm({
           onCheckedChange={(checked) => setAcceptTerms(checked === true)}
           className="mt-0.5"
         />
-        <Label
-          htmlFor="accept-terms"
-          className="text-sm leading-snug font-normal"
-        >
+        {/* A plain <label>, not the shadcn Label: that one is `flex`, which would turn each
+            segment of this sentence into a column. Here it stays inline, wrapping normally. */}
+        <label htmlFor="accept-terms" className="text-sm leading-snug">
           {t.rich("register.acceptTerms", {
             terms: (chunks) => <NewTabLink href="/terms">{chunks}</NewTabLink>,
             privacy: (chunks) => (
               <NewTabLink href="/privacy">{chunks}</NewTabLink>
             ),
           })}
-        </Label>
+        </label>
       </div>
       <Captcha challenge={challenge} onToken={setCaptchaToken} />
       {error ? <p className="text-destructive text-sm">{error}</p> : null}
