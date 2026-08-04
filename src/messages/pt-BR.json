@@ -103,8 +103,39 @@
     }
   },
   "dashboard": {
-    "title": "Painel",
-    "welcome": "Bem-vindo de volta."
+    "greeting": {
+      "morning": "Bom dia, {name}",
+      "afternoon": "Boa tarde, {name}",
+      "evening": "Boa noite, {name}"
+    },
+    "subtitle": "Uma visão rápida da sua conta.",
+    "setup": {
+      "title": "Termine de configurar sua conta",
+      "progress": "{done} de {total} concluído",
+      "avatar": "Adicione uma foto de perfil",
+      "twoFactor": "Ative a autenticação de dois fatores",
+      "passkey": "Adicione uma chave de acesso",
+      "action": "Configurar",
+      "doneTitle": "Tudo pronto",
+      "doneSubtitle": "Sua conta está totalmente configurada — bom trabalho."
+    },
+    "status": {
+      "twoFactor": "Dois fatores",
+      "on": "Ativado",
+      "off": "Desativado",
+      "passkeys": "Chaves de acesso",
+      "sessions": "Sessões ativas",
+      "memberSince": "Membro desde"
+    },
+    "modules": {
+      "title": "Em breve",
+      "subtitle": "Novos espaços estão a caminho.",
+      "business": "Negócios",
+      "businessDesc": "Gerencie o perfil da sua empresa, seus anúncios e sua equipe.",
+      "community": "Comunidade",
+      "communityDesc": "Conecte-se com operadores e membros perto de você.",
+      "soon": "Em breve"
+    }
   },
   "nav": {
     "signOut": "Sair",

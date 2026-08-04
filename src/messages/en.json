@@ -103,8 +103,39 @@
     }
   },
   "dashboard": {
-    "title": "Dashboard",
-    "welcome": "Welcome back."
+    "greeting": {
+      "morning": "Good morning, {name}",
+      "afternoon": "Good afternoon, {name}",
+      "evening": "Good evening, {name}"
+    },
+    "subtitle": "Here's a quick look at your account.",
+    "setup": {
+      "title": "Finish setting up your account",
+      "progress": "{done} of {total} complete",
+      "avatar": "Add a profile photo",
+      "twoFactor": "Turn on two-factor authentication",
+      "passkey": "Add a passkey",
+      "action": "Set up",
+      "doneTitle": "You're all set",
+      "doneSubtitle": "Your account is fully configured — nice work."
+    },
+    "status": {
+      "twoFactor": "Two-factor",
+      "on": "On",
+      "off": "Off",
+      "passkeys": "Passkeys",
+      "sessions": "Active sessions",
+      "memberSince": "Member since"
+    },
+    "modules": {
+      "title": "Coming soon",
+      "subtitle": "New spaces are on the way.",
+      "business": "Business",
+      "businessDesc": "Manage your business profile, listings, and team.",
+      "community": "Community",
+      "communityDesc": "Connect with operators and members near you.",
+      "soon": "Soon"
+    }
   },
   "nav": {
     "signOut": "Sign out",
