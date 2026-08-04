@@ -17,7 +17,7 @@ export function Brand() {
         height={48}
         priority
         unoptimized
-        className="size-12 rounded-xl"
+        className="size-12 rounded-md"
       />
       <span className="font-heading text-lg font-semibold tracking-tight">
         {t("name")}
