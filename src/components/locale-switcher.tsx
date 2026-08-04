@@ -1,6 +1,5 @@
 "use client";
 
-import { CheckIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -68,12 +67,12 @@ export function LocaleSwitcher() {
           <DropdownMenuItem key={option} onClick={() => selectLocale(option)}>
             <LocaleFlag locale={option} />
             <span className="whitespace-nowrap">{localeNames[option]}</span>
-            <CheckIcon
-              className={cn(
-                "ml-auto size-4",
-                option === activeLocale ? "opacity-100" : "opacity-0",
-              )}
-            />
+            {option === activeLocale ? (
+              <span
+                className="bg-primary ml-auto size-2 shrink-0 rounded-full"
+                aria-hidden
+              />
+            ) : null}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>
