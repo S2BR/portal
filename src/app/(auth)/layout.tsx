@@ -19,15 +19,15 @@ export default async function AuthLayout({
         {/* Ambient drift — slow, abstract movement. Respects prefers-reduced-motion (see globals.css). */}
         <div
           aria-hidden
-          className="auth-blob-1 pointer-events-none absolute -end-24 -top-24 size-96 rounded-full bg-white/10 blur-3xl"
+          className="auth-blob-1 pointer-events-none absolute -end-24 -top-24 size-96 rounded-full bg-white/25 blur-3xl"
         />
         <div
           aria-hidden
-          className="auth-blob-2 bg-brand-gold/20 pointer-events-none absolute -start-16 -bottom-32 size-[28rem] rounded-full blur-3xl"
+          className="auth-blob-2 bg-brand-gold/40 pointer-events-none absolute -start-16 -bottom-32 size-[28rem] rounded-full blur-3xl"
         />
         <div
           aria-hidden
-          className="auth-blob-3 pointer-events-none absolute start-1/4 top-1/3 size-72 rounded-full bg-white/5 blur-3xl"
+          className="auth-blob-3 bg-brand-green-deep/40 pointer-events-none absolute start-1/4 top-1/3 size-72 rounded-full blur-3xl"
         />
 
         <div className="relative flex items-center gap-4">
