@@ -140,3 +140,50 @@
     @apply font-sans;
   }
 }
+
+/*
+ * Ambient drift for the auth brand panel's blurred blobs — slow, abstract, oscillating movement
+ * (`alternate` so it eases back and forth with no jump). Each blob gets its own long duration so
+ * the motion never looks synchronized. Only runs when the user hasn't asked to reduce motion.
+ */
+@keyframes auth-drift-1 {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(8%, 6%, 0) scale(1.18);
+  }
+}
+@keyframes auth-drift-2 {
+  from {
+    transform: translate3d(0, 0, 0) scale(1.12);
+  }
+  to {
+    transform: translate3d(-7%, -9%, 0) scale(0.94);
+  }
+}
+@keyframes auth-drift-3 {
+  from {
+    transform: translate3d(-5%, 3%, 0) scale(0.95);
+  }
+  to {
+    transform: translate3d(6%, -6%, 0) scale(1.22);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .auth-blob-1,
+  .auth-blob-2,
+  .auth-blob-3 {
+    will-change: transform;
+  }
+  .auth-blob-1 {
+    animation: auth-drift-1 22s ease-in-out infinite alternate;
+  }
+  .auth-blob-2 {
+    animation: auth-drift-2 28s ease-in-out infinite alternate;
+  }
+  .auth-blob-3 {
+    animation: auth-drift-3 34s ease-in-out infinite alternate;
+  }
+}

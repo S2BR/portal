@@ -16,26 +16,31 @@ export default async function AuthLayout({
     <div className="grid min-h-svh lg:grid-cols-2">
       {/* Brand panel — large screens only. Carries the S2BR identity + value proposition. */}
       <aside className="from-brand-green-deep via-brand-green to-brand-green-deep relative hidden overflow-hidden bg-gradient-to-br lg:flex lg:flex-col lg:justify-between lg:p-12">
+        {/* Ambient drift — slow, abstract movement. Respects prefers-reduced-motion (see globals.css). */}
         <div
           aria-hidden
-          className="pointer-events-none absolute -end-24 -top-24 size-96 rounded-full bg-white/10 blur-3xl"
+          className="auth-blob-1 pointer-events-none absolute -end-24 -top-24 size-96 rounded-full bg-white/10 blur-3xl"
         />
         <div
           aria-hidden
-          className="bg-brand-gold/20 pointer-events-none absolute -start-16 -bottom-32 size-[28rem] rounded-full blur-3xl"
+          className="auth-blob-2 bg-brand-gold/20 pointer-events-none absolute -start-16 -bottom-32 size-[28rem] rounded-full blur-3xl"
+        />
+        <div
+          aria-hidden
+          className="auth-blob-3 pointer-events-none absolute start-1/4 top-1/3 size-72 rounded-full bg-white/5 blur-3xl"
         />
 
-        <div className="relative flex items-center gap-3">
+        <div className="relative flex items-center gap-4">
           <Image
             src="/s2br.svg"
             alt=""
-            width={44}
-            height={44}
+            width={112}
+            height={112}
             priority
             unoptimized
-            className="size-11 rounded-xl bg-white/95 p-1.5"
+            className="size-28 rounded-3xl bg-white/95 p-4"
           />
-          <span className="text-lg font-semibold text-white">
+          <span className="text-3xl font-semibold text-white">
             {brand("name")}
           </span>
         </div>
