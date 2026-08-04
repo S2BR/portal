@@ -210,7 +210,10 @@
     "done": "I've saved them",
     "disablePrompt": "Enter your password to turn off two-factor authentication.",
     "regenerate": "Regenerate recovery codes",
-    "regeneratePrompt": "Enter your password to generate a new set of recovery codes. Your existing codes will stop working."
+    "regeneratePrompt": "Enter your password to generate a new set of recovery codes. Your existing codes will stop working.",
+    "enabledToast": "Two-factor authentication is on",
+    "disabledToast": "Two-factor authentication is off",
+    "codesRegenerated": "New recovery codes generated"
   },
   "emailSettings": {
     "title": "Email address",

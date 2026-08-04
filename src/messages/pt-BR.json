@@ -210,7 +210,10 @@
     "done": "Eu os salvei",
     "disablePrompt": "Digite sua senha para desativar a autenticação de dois fatores.",
     "regenerate": "Gerar novos códigos de recuperação",
-    "regeneratePrompt": "Digite sua senha para gerar um novo conjunto de códigos de recuperação. Seus códigos atuais deixarão de funcionar."
+    "regeneratePrompt": "Digite sua senha para gerar um novo conjunto de códigos de recuperação. Seus códigos atuais deixarão de funcionar.",
+    "enabledToast": "A autenticação de dois fatores está ativada",
+    "disabledToast": "A autenticação de dois fatores está desativada",
+    "codesRegenerated": "Novos códigos de recuperação gerados"
   },
   "emailSettings": {
     "title": "Endereço de e-mail",

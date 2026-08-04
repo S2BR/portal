@@ -210,7 +210,10 @@
     "done": "Los he guardado",
     "disablePrompt": "Introduce tu contraseña para desactivar la autenticación de dos factores.",
     "regenerate": "Regenerar códigos de recuperación",
-    "regeneratePrompt": "Ingresa tu contraseña para generar un nuevo conjunto de códigos de recuperación. Tus códigos actuales dejarán de funcionar."
+    "regeneratePrompt": "Ingresa tu contraseña para generar un nuevo conjunto de códigos de recuperación. Tus códigos actuales dejarán de funcionar.",
+    "enabledToast": "La autenticación de dos factores está activada",
+    "disabledToast": "La autenticación de dos factores está desactivada",
+    "codesRegenerated": "Se generaron nuevos códigos de recuperación"
   },
   "emailSettings": {
     "title": "Dirección de correo",

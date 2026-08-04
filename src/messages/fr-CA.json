@@ -210,7 +210,10 @@
     "done": "Je les ai enregistrés",
     "disablePrompt": "Entrez votre mot de passe pour désactiver l'authentification à deux facteurs.",
     "regenerate": "Régénérer les codes de récupération",
-    "regeneratePrompt": "Entrez votre mot de passe pour générer un nouvel ensemble de codes de récupération. Vos codes actuels cesseront de fonctionner."
+    "regeneratePrompt": "Entrez votre mot de passe pour générer un nouvel ensemble de codes de récupération. Vos codes actuels cesseront de fonctionner.",
+    "enabledToast": "L’authentification à deux facteurs est activée",
+    "disabledToast": "L’authentification à deux facteurs est désactivée",
+    "codesRegenerated": "Nouveaux codes de récupération générés"
   },
   "emailSettings": {
     "title": "Adresse courriel",
