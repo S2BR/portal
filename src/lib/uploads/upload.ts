@@ -13,6 +13,11 @@ export interface UploadOutcome<T> {
 
 export interface UploadOptions {
   onProgress?: (percent: number) => void;
+  /**
+   * Coarse stage of the upload: `uploading` while the file streams to S3, `finalizing` during
+   * the confirm round-trip (when progress is already at 100% but there's still work to do).
+   */
+  onPhase?: (phase: "uploading" | "finalizing") => void;
   signal?: AbortSignal;
 }
 
@@ -36,12 +41,14 @@ export async function uploadFile<T = unknown>(
   }
   const signed = (await urlResponse.json()) as SignedUpload;
 
+  options.onPhase?.("uploading");
   try {
     await putToS3(signed, file, options);
   } catch {
     return { ok: false, error: "s3" };
   }
 
+  options.onPhase?.("finalizing");
   const attachResponse = await fetch(`/api/uploads/${type}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
