@@ -11,7 +11,7 @@ export default function AppLayout({
   return (
     <CurrentUserProvider>
       <div className="flex min-h-full flex-col">
-        <header className="bg-background/80 sticky top-0 z-10 border-b backdrop-blur">
+        <header className="bg-background/55 sticky top-0 z-10 border-b shadow-sm backdrop-blur-xl">
           <div className="mx-auto flex h-16 w-full max-w-6xl items-center gap-4 px-4 sm:px-6">
             <Brand />
             <div className="ms-auto flex items-center gap-2">
