@@ -1,9 +1,10 @@
 import "server-only";
 
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 
 import { env } from "@/env";
 import { isLocale, LOCALE_COOKIE, toApiLocale } from "@/i18n/config";
+import { deviceNameFromUserAgent } from "@/lib/device-name";
 
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
@@ -42,6 +43,26 @@ async function requestApiLocale(): Promise<string | undefined> {
 }
 
 /**
+ * The visitor's browser User-Agent (and a friendly device name derived from it), forwarded
+ * so the API records the real client on sessions + security events — otherwise it only ever
+ * sees the BFF runtime's UA (e.g. "node"). Best-effort: empty outside a request scope.
+ */
+async function clientDeviceHeaders(): Promise<Record<string, string>> {
+  try {
+    const userAgent = (await headers()).get("user-agent");
+    if (!userAgent) {
+      return {};
+    }
+    return {
+      "User-Agent": userAgent,
+      "X-Device-Name": deviceNameFromUserAgent(userAgent),
+    };
+  } catch {
+    return {};
+  }
+}
+
+/**
  * Low-level call to the portal API. Server-only — never import from a client
  * component. Returns the status so callers can branch on the auth flow's
  * `status` discriminators; it does not throw on non-2xx responses.
@@ -49,21 +70,22 @@ async function requestApiLocale(): Promise<string | undefined> {
 export async function portalFetch<T = unknown>(
   request: PortalRequest,
 ): Promise<PortalResponse<T>> {
-  const headers: Record<string, string> = { Accept: "application/json" };
+  const requestHeaders: Record<string, string> = { Accept: "application/json" };
   if (request.body !== undefined) {
-    headers["Content-Type"] = "application/json";
+    requestHeaders["Content-Type"] = "application/json";
   }
   if (request.token) {
-    headers.Authorization = `Bearer ${request.token}`;
+    requestHeaders.Authorization = `Bearer ${request.token}`;
   }
   const acceptLanguage = request.locale ?? (await requestApiLocale());
   if (acceptLanguage) {
-    headers["Accept-Language"] = acceptLanguage;
+    requestHeaders["Accept-Language"] = acceptLanguage;
   }
+  Object.assign(requestHeaders, await clientDeviceHeaders());
 
   const response = await fetch(`${env.PORTAL_API_URL}${request.path}`, {
     method: request.method ?? "GET",
-    headers,
+    headers: requestHeaders,
     body: request.body !== undefined ? JSON.stringify(request.body) : undefined,
     cache: "no-store",
   });
