@@ -13,8 +13,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export function ThemeToggle() {
-  const { setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const t = useTranslations("theme");
+
+  const options = [
+    { value: "light", Icon: Sun, label: t("light") },
+    { value: "dark", Icon: Moon, label: t("dark") },
+    { value: "system", Icon: Monitor, label: t("system") },
+  ];
 
   return (
     <DropdownMenu>
@@ -29,19 +35,19 @@ export function ThemeToggle() {
           <Moon className="absolute size-4 scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme("light")}>
-          <Sun className="size-4" />
-          {t("light")}
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
-          <Moon className="size-4" />
-          {t("dark")}
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
-          <Monitor className="size-4" />
-          {t("system")}
-        </DropdownMenuItem>
+      <DropdownMenuContent align="end" className="min-w-40">
+        {options.map(({ value, Icon, label }) => (
+          <DropdownMenuItem key={value} onClick={() => setTheme(value)}>
+            <Icon className="size-4" />
+            {label}
+            {theme === value ? (
+              <span
+                className="bg-primary ml-auto size-2 shrink-0 rounded-full"
+                aria-hidden
+              />
+            ) : null}
+          </DropdownMenuItem>
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
   );
