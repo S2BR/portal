@@ -26,6 +26,12 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // The legal pages read markdown from src/content at request time — make sure the standalone
+  // build (Vercel) traces and bundles those files.
+  outputFileTracingIncludes: {
+    "/terms": ["./src/content/legal/**"],
+    "/privacy": ["./src/content/legal/**"],
+  },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

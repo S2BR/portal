@@ -11,7 +11,7 @@
       "title": "Crea tu cuenta",
       "subtitle": "Únete a S2BR Portal.",
       "submit": "Crear cuenta",
-      "acceptTerms": "Acepto los Términos de Servicio y la Política de Privacidad."
+      "acceptTerms": "Acepto los <terms>Términos de Servicio</terms> y la <privacy>Política de Privacidad</privacy>."
     },
     "verify": {
       "title": "Verifica tu correo",
@@ -101,6 +101,12 @@
       "invalidSubtitle": "Puede haber expirado o ya haberse usado. Solicita uno nuevo para iniciar sesión.",
       "backToLogin": "Volver al inicio de sesión"
     }
+  },
+  "legal": {
+    "terms": "Términos de Servicio",
+    "privacy": "Política de Privacidad",
+    "backToApp": "Volver a S2BR",
+    "fallbackNotice": "Este documento está disponible actualmente solo en inglés."
   },
   "dashboard": {
     "greeting": {

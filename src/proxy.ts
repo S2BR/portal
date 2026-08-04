@@ -18,12 +18,27 @@ function isPublicPath(pathname: string): boolean {
   );
 }
 
+/** Routes reachable in ANY auth state — never gated, never redirected away (e.g. legal pages). */
+const OPEN_PATHS = ["/terms", "/privacy"];
+
+function isOpenPath(pathname: string): boolean {
+  return OPEN_PATHS.some(
+    (path) => pathname === path || pathname.startsWith(`${path}/`),
+  );
+}
+
 /**
  * Auth gate (Next.js "proxy", formerly "middleware"). Runs on every request
  * except API routes, Next internals, and static assets (see `config.matcher`).
  */
 export function proxy(request: NextRequest): NextResponse {
   const { pathname } = request.nextUrl;
+
+  // Legal pages are readable in any state — skip both the auth gate and the authed→home bounce.
+  if (isOpenPath(pathname)) {
+    return NextResponse.next();
+  }
+
   const hasSession = request.cookies.has(REFRESH_COOKIE);
   const publicPath = isPublicPath(pathname);
   // "Add another account" lets a signed-in user walk the whole auth flow (login OR
