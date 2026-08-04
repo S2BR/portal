@@ -8,10 +8,11 @@ import { readAccounts } from "@/lib/auth/session";
  * exposes the refresh tokens, only display info.
  */
 export async function GET(): Promise<NextResponse> {
-  const others = (await readAccounts()).map(({ id, name, email }) => ({
+  const others = (await readAccounts()).map(({ id, name, email, avatar }) => ({
     id,
     name,
     email,
+    avatar: avatar ?? null,
   }));
 
   return NextResponse.json({ others });

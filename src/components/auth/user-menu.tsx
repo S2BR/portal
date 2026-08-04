@@ -22,6 +22,7 @@ interface AccountSummary {
   id: number;
   name: string;
   email: string;
+  avatar: string | null;
 }
 
 export function UserMenu() {
@@ -57,7 +58,12 @@ export function UserMenu() {
         body: JSON.stringify({
           id,
           current: user
-            ? { id: user.id, name: user.name, email: user.email }
+            ? {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                avatar: user.avatar,
+              }
             : undefined,
         }),
       });
@@ -153,7 +159,11 @@ export function UserMenu() {
                 disabled={pending}
                 onClick={() => switchTo(account.id)}
               >
-                <UserAvatar name={account.name} className="size-9 shrink-0" />
+                <UserAvatar
+                  name={account.name}
+                  src={account.avatar}
+                  className="size-9 shrink-0"
+                />
                 <span className="min-w-0">
                   <span className="block truncate font-medium">
                     {account.name}

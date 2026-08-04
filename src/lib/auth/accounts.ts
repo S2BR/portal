@@ -79,8 +79,8 @@ export async function captureActiveAccount(): Promise<VaultAccount | null> {
     return null;
   }
 
-  const { id, name, email } = me.data.user;
-  return { id, name, email, refresh_token: refreshToken };
+  const { id, name, email, avatar } = me.data.user;
+  return { id, name, email, avatar, refresh_token: refreshToken };
 }
 
 /**
