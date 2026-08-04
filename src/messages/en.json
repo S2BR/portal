@@ -121,6 +121,17 @@
     "twoFactorOff": "Two-factor off",
     "memberSince": "Member since {date}"
   },
+  "avatarSettings": {
+    "title": "Avatar",
+    "hint": "A picture helps people recognize your account.",
+    "upload": "Upload a picture",
+    "replace": "Replace",
+    "remove": "Remove",
+    "uploading": "Uploading… {percent}%",
+    "tooLarge": "That image is too large (max 2 MB).",
+    "invalidType": "Please choose a JPEG, PNG, or WebP image.",
+    "error": "The upload failed. Please try again."
+  },
   "profileSettings": {
     "title": "Profile details",
     "edit": "Edit",

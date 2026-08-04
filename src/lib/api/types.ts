@@ -28,6 +28,8 @@ export interface AuthUser {
   name: string;
   email: string;
   timezone: string | null;
+  // A short-lived presigned URL for the avatar image, or null.
+  avatar: string | null;
   two_factor_enabled: boolean;
   created_at: string;
 }

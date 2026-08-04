@@ -121,6 +121,17 @@
     "twoFactorOff": "Doble factor desactivado",
     "memberSince": "Miembro desde {date}"
   },
+  "avatarSettings": {
+    "title": "Foto de perfil",
+    "hint": "Una foto ayuda a que reconozcan tu cuenta.",
+    "upload": "Subir una foto",
+    "replace": "Reemplazar",
+    "remove": "Quitar",
+    "uploading": "Subiendo… {percent} %",
+    "tooLarge": "Esa imagen es demasiado grande (máx. 2 MB).",
+    "invalidType": "Elige una imagen JPEG, PNG o WebP.",
+    "error": "No se pudo subir. Inténtalo de nuevo."
+  },
   "profileSettings": {
     "title": "Datos del perfil",
     "edit": "Editar",
