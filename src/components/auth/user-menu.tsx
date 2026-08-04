@@ -51,7 +51,14 @@ export function UserMenu() {
       const response = await fetch("/api/auth/accounts/switch", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id }),
+        // Pass the current account so the server can vault it without an API call (which would
+        // needlessly rotate — and could drop — the session we're switching away from).
+        body: JSON.stringify({
+          id,
+          current: user
+            ? { id: user.id, name: user.name, email: user.email }
+            : undefined,
+        }),
       });
       if (response.ok) {
         await refresh();
