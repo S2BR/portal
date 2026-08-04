@@ -7,6 +7,7 @@ import type { Session } from "@/app/api/auth/sessions/route";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useNow } from "@/lib/use-now";
 
 /**
  * List the account's active sessions (one per device / login lineage) and let
@@ -16,6 +17,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 export function SessionSettings() {
   const t = useTranslations("sessions");
   const format = useFormatter();
+  // Ticks every 30s (paused while the tab is hidden) so "last active …" updates live.
+  const now = useNow();
 
   const [sessions, setSessions] = useState<Session[] | null>(null);
   const [pending, setPending] = useState<string | null>(null);
@@ -112,6 +115,7 @@ export function SessionSettings() {
                       ? ` · ${t("lastActive", {
                           when: format.relativeTime(
                             new Date(session.last_used_at),
+                            now,
                           ),
                         })}`
                       : ""}
