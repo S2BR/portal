@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, LogOut, User, UserPlus, Users } from "lucide-react";
+import { LogOut, User, UserPlus, Users } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -115,9 +115,8 @@ export function UserMenu() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-72">
-        <DropdownMenuLabel className="flex items-start gap-2 font-normal">
-          <Check className="text-primary mt-0.5 size-4 shrink-0" aria-hidden />
-          <span className="min-w-0">
+        <DropdownMenuLabel className="flex items-center gap-2 font-normal">
+          <span className="min-w-0 flex-1">
             <span className="text-foreground block truncate font-medium">
               {user.name}
             </span>
@@ -125,6 +124,11 @@ export function UserMenu() {
               {user.email}
             </span>
           </span>
+          {/* Green dot marks the active account (mirrors the app's switcher). */}
+          <span
+            className="bg-primary size-2 shrink-0 rounded-full"
+            aria-hidden
+          />
         </DropdownMenuLabel>
 
         {others.length > 0 ? (
