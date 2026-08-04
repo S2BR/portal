@@ -128,6 +128,8 @@
     "replace": "Reemplazar",
     "remove": "Quitar",
     "dropHint": "o arrastra una imagen aquí",
+    "constraints": "JPEG, PNG o WebP · hasta {max}",
+    "saving": "Guardando…",
     "uploading": "Subiendo… {percent} %",
     "tooLarge": "Esa imagen es demasiado grande (máx. 2 MB).",
     "invalidType": "Elige una imagen JPEG, PNG o WebP.",

@@ -92,12 +92,16 @@ describe("uploadFile", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     const progress: number[] = [];
+    const phases: string[] = [];
     const result = await uploadFile("avatar", imageFile(), {
       onProgress: (percent) => progress.push(percent),
+      onPhase: (phase) => phases.push(phase),
     });
 
     expect(result).toEqual({ ok: true, data: { user: { id: 1 } } });
     expect(progress).toEqual([50, 100]);
+    // Phase advances to finalizing only after the PUT completes.
+    expect(phases).toEqual(["uploading", "finalizing"]);
 
     // The PUT went straight to the presigned S3 url.
     expect(MockXhr.last?.method).toBe("PUT");
