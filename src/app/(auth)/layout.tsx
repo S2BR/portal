@@ -12,7 +12,7 @@ export default async function AuthLayout({
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       {/* Brand panel — large screens only. Carries the S2BR identity + value proposition. */}
-      <aside className="from-brand-green-deep via-brand-green to-brand-green-deep relative hidden overflow-hidden bg-gradient-to-br shadow-[inset_-16px_0_28px_-16px_rgba(0,0,0,0.4)] lg:flex lg:flex-col lg:justify-center lg:p-12">
+      <aside className="relative hidden overflow-hidden bg-gradient-to-br from-[var(--auth-panel-from)] via-[var(--auth-panel-via)] to-[var(--auth-panel-to)] shadow-[inset_-16px_0_28px_-16px_rgba(0,0,0,0.4)] lg:flex lg:flex-col lg:justify-center lg:p-12">
         {/* Ambient drift — slow, abstract movement. Respects prefers-reduced-motion (see globals.css). */}
         <div
           aria-hidden
