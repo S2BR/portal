@@ -1,8 +1,9 @@
 "use client";
 
+import { ExternalLink } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useState, type FormEvent } from "react";
+import { useState, type FormEvent, type ReactNode } from "react";
 
 import { Captcha, useCaptcha } from "@/components/auth/captcha";
 import { PasswordRequirements } from "@/components/auth/password-requirements";
@@ -175,8 +176,16 @@ export function RegisterForm({
           onCheckedChange={(checked) => setAcceptTerms(checked === true)}
           className="mt-0.5"
         />
-        <Label htmlFor="accept-terms" className="text-sm font-normal">
-          {t("register.acceptTerms")}
+        <Label
+          htmlFor="accept-terms"
+          className="text-sm leading-snug font-normal"
+        >
+          {t.rich("register.acceptTerms", {
+            terms: (chunks) => <NewTabLink href="/terms">{chunks}</NewTabLink>,
+            privacy: (chunks) => (
+              <NewTabLink href="/privacy">{chunks}</NewTabLink>
+            ),
+          })}
         </Label>
       </div>
       <Captcha challenge={challenge} onToken={setCaptchaToken} />
@@ -185,5 +194,24 @@ export function RegisterForm({
         {t("register.submit")}
       </Button>
     </form>
+  );
+}
+
+/**
+ * An inline link that opens in a new tab (so the half-filled form isn't lost), with an
+ * external-link glyph to signal it. Safe inside the checkbox's <label>: clicking an interactive
+ * descendant doesn't toggle the checkbox (per the HTML label activation rules).
+ */
+function NewTabLink({ href, children }: { href: string; children: ReactNode }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-foreground inline-flex items-center gap-0.5 font-medium underline underline-offset-4 hover:no-underline"
+    >
+      {children}
+      <ExternalLink className="size-3" aria-hidden />
+    </a>
   );
 }

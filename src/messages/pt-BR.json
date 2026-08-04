@@ -13,7 +13,7 @@
       "title": "Crie sua conta",
       "subtitle": "Junte-se ao S2BR.",
       "submit": "Criar conta",
-      "acceptTerms": "Concordo com os Termos de Serviço e a Política de Privacidade."
+      "acceptTerms": "Concordo com os <terms>Termos de Serviço</terms> e a <privacy>Política de Privacidade</privacy>."
     },
     "verify": {
       "title": "Verifique seu e-mail",
@@ -103,6 +103,12 @@
       "invalidSubtitle": "Ele pode ter expirado ou já ter sido usado. Solicite um novo para entrar.",
       "backToLogin": "Voltar ao login"
     }
+  },
+  "legal": {
+    "terms": "Termos de Serviço",
+    "privacy": "Política de Privacidade",
+    "backToApp": "Voltar para o S2BR",
+    "fallbackNotice": "Este documento está disponível apenas em inglês no momento."
   },
   "dashboard": {
     "greeting": {
