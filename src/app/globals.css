@@ -151,23 +151,23 @@
     transform: translate3d(0, 0, 0) scale(1);
   }
   to {
-    transform: translate3d(24%, 18%, 0) scale(1.4);
+    transform: translate3d(38%, 26%, 0) scale(1.45);
   }
 }
 @keyframes auth-drift-2 {
   from {
-    transform: translate3d(0, 0, 0) scale(1.25);
+    transform: translate3d(0, 0, 0) scale(1.3);
   }
   to {
-    transform: translate3d(-22%, -20%, 0) scale(0.8);
+    transform: translate3d(-36%, -30%, 0) scale(0.75);
   }
 }
 @keyframes auth-drift-3 {
   from {
-    transform: translate3d(-14%, 10%, 0) scale(0.85);
+    transform: translate3d(-24%, 16%, 0) scale(0.8);
   }
   to {
-    transform: translate3d(20%, -16%, 0) scale(1.45);
+    transform: translate3d(30%, -24%, 0) scale(1.5);
   }
 }
 
@@ -178,12 +178,12 @@
     will-change: transform;
   }
   .auth-blob-1 {
-    animation: auth-drift-1 15s ease-in-out infinite alternate;
+    animation: auth-drift-1 8s ease-in-out infinite alternate;
   }
   .auth-blob-2 {
-    animation: auth-drift-2 19s ease-in-out infinite alternate;
+    animation: auth-drift-2 10s ease-in-out infinite alternate;
   }
   .auth-blob-3 {
-    animation: auth-drift-3 23s ease-in-out infinite alternate;
+    animation: auth-drift-3 12s ease-in-out infinite alternate;
   }
 }
