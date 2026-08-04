@@ -7,10 +7,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 export default async function AuthLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const [t, brand] = await Promise.all([
-    getTranslations("auth"),
-    getTranslations("brand"),
-  ]);
+  const t = await getTranslations("auth");
 
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
@@ -30,19 +27,16 @@ export default async function AuthLayout({
           className="auth-blob-3 bg-brand-green-deep/30 pointer-events-none absolute start-1/4 top-1/3 size-72 rounded-full blur-3xl"
         />
 
-        <div className="relative flex items-center gap-4">
+        <div className="relative">
           <Image
             src="/s2br.svg"
-            alt=""
+            alt="S2BR"
             width={112}
             height={112}
             priority
             unoptimized
-            className="size-28 rounded-3xl bg-white/95 p-4"
+            className="size-28 rounded-3xl bg-white/95 p-2"
           />
-          <span className="text-3xl font-semibold text-white">
-            {brand("name")}
-          </span>
         </div>
 
         <div className="relative max-w-md space-y-4">
