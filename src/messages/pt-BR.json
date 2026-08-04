@@ -127,6 +127,7 @@
     "upload": "Enviar uma foto",
     "replace": "Substituir",
     "remove": "Remover",
+    "dropHint": "ou arraste uma imagem aqui",
     "uploading": "Enviando… {percent}%",
     "tooLarge": "Essa imagem é muito grande (máx. 2 MB).",
     "invalidType": "Escolha uma imagem JPEG, PNG ou WebP.",

@@ -127,6 +127,7 @@
     "upload": "Téléverser une photo",
     "replace": "Remplacer",
     "remove": "Retirer",
+    "dropHint": "ou glissez une image ici",
     "uploading": "Téléversement… {percent} %",
     "tooLarge": "Cette image est trop volumineuse (max. 2 Mo).",
     "invalidType": "Choisissez une image JPEG, PNG ou WebP.",
