@@ -43,6 +43,20 @@ describe("POST /api/auth/accounts/switch", () => {
     expect(writeAccounts).toHaveBeenCalledWith([{ ...A, refresh_token: "ra" }]);
   });
 
+  it("vaults the current account's avatar so the switcher can render it", async () => {
+    vi.mocked(readAccounts).mockResolvedValue([B]);
+    vi.mocked(getRefreshToken).mockResolvedValue("ra");
+    vi.mocked(activateRefreshToken).mockResolvedValue(true);
+
+    const current = { ...A, avatar: "https://cdn.test/1.jpg" };
+    const res = await POST(request({ id: 2, current }));
+
+    expect(res.status).toBe(200);
+    expect(writeAccounts).toHaveBeenCalledWith([
+      { ...current, refresh_token: "ra" },
+    ]);
+  });
+
   it("404s for an account not in the vault", async () => {
     vi.mocked(readAccounts).mockResolvedValue([B]);
 

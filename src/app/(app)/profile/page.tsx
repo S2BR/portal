@@ -2,6 +2,7 @@
 
 import { useFormatter, useTranslations } from "next-intl";
 
+import { AvatarSettings } from "@/components/auth/avatar-settings";
 import { useCurrentUser } from "@/components/auth/current-user";
 import { DeleteAccountSettings } from "@/components/auth/delete-account-settings";
 import { EmailSettings } from "@/components/auth/email-settings";
@@ -43,6 +44,7 @@ export default function ProfilePage() {
           })}
         </p>
       </div>
+      <AvatarSettings />
       <ProfileSettings />
       <EmailSettings />
       <PasswordSettings />

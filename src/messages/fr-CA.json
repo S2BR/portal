@@ -121,6 +121,18 @@
     "twoFactorOff": "Double authentification désactivée",
     "memberSince": "Membre depuis {date}"
   },
+  "avatarSettings": {
+    "title": "Photo de profil",
+    "hint": "Une photo aide les autres à reconnaître votre compte.",
+    "upload": "Téléverser une photo",
+    "replace": "Remplacer",
+    "remove": "Retirer",
+    "dropHint": "ou glissez une image ici",
+    "uploading": "Téléversement… {percent} %",
+    "tooLarge": "Cette image est trop volumineuse (max. 2 Mo).",
+    "invalidType": "Choisissez une image JPEG, PNG ou WebP.",
+    "error": "Le téléversement a échoué. Veuillez réessayer."
+  },
   "profileSettings": {
     "title": "Renseignements du profil",
     "edit": "Modifier",

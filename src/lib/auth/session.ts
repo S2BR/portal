@@ -17,6 +17,12 @@ export interface VaultAccount {
   name: string;
   email: string;
   refresh_token: string;
+  /**
+   * The account's avatar, captured while it was active — a short-lived presigned url, so it
+   * may expire before the next switch (the switcher then falls back to initials). Refreshed
+   * whenever the account is made active again.
+   */
+  avatar?: string | null;
 }
 
 function cookieOptions(maxAge: number) {

@@ -13,7 +13,12 @@ const bodySchema = z.object({
   // The account being switched away from, supplied by the client (it already knows the
   // signed-in user). Display info only — the token comes from the cookie, server-side.
   current: z
-    .object({ id: z.number().int(), name: z.string(), email: z.string() })
+    .object({
+      id: z.number().int(),
+      name: z.string(),
+      email: z.string(),
+      avatar: z.string().nullable().optional(),
+    })
     .optional(),
 });
 
