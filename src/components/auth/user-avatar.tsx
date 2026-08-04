@@ -25,8 +25,9 @@ export function UserAvatar({
       <AvatarFallback
         className={cn(
           // `text-background!` wins over a parent's `focus:**:text-accent-foreground`
-          // (e.g. a DropdownMenuItem) so the initials stay readable on hover.
-          "bg-foreground text-background! text-xs font-bold",
+          // (e.g. a DropdownMenuItem) so the initials stay readable on hover. `leading-none`
+          // makes the uppercase initials sit optically centered (not slightly high).
+          "bg-foreground text-background! text-xs leading-none font-extrabold select-none",
           fallbackClassName,
         )}
       >
