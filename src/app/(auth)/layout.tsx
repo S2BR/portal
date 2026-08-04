@@ -13,7 +13,7 @@ export default async function AuthLayout({
   ]);
 
   return (
-    <div className="grid min-h-full lg:grid-cols-2">
+    <div className="grid min-h-svh lg:grid-cols-2">
       {/* Brand panel — large screens only. Carries the S2BR identity + value proposition. */}
       <aside className="from-brand-green-deep via-brand-green to-brand-green-deep relative hidden overflow-hidden bg-gradient-to-br lg:flex lg:flex-col lg:justify-between lg:p-12">
         <div
