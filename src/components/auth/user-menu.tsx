@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useState, useTransition } from "react";
 
 import { useCurrentUser } from "@/components/auth/current-user";
+import { UserAvatar } from "@/components/auth/user-avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -117,12 +118,13 @@ export function UserMenu() {
     <DropdownMenu onOpenChange={onOpenChange}>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" className="gap-2">
-          <User className="size-4" />
+          <UserAvatar name={user.name} className="-ml-1 size-7" />
           <span className="max-w-32 truncate">{user.name}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-72">
-        <DropdownMenuLabel className="flex items-center gap-2 font-normal">
+        <DropdownMenuLabel className="flex items-center gap-2.5 font-normal">
+          <UserAvatar name={user.name} className="size-9" />
           <span className="min-w-0 flex-1">
             <span className="text-foreground block truncate font-medium">
               {user.name}
@@ -147,7 +149,7 @@ export function UserMenu() {
                 disabled={pending}
                 onClick={() => switchTo(account.id)}
               >
-                <User className="size-4 shrink-0" />
+                <UserAvatar name={account.name} className="size-9 shrink-0" />
                 <span className="min-w-0">
                   <span className="block truncate font-medium">
                     {account.name}
