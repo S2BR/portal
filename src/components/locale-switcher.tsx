@@ -63,11 +63,11 @@ export function LocaleSwitcher() {
           <LocaleFlag locale={activeLocale} />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="min-w-56">
         {locales.map((option) => (
           <DropdownMenuItem key={option} onClick={() => selectLocale(option)}>
             <LocaleFlag locale={option} />
-            <span>{localeNames[option]}</span>
+            <span className="whitespace-nowrap">{localeNames[option]}</span>
             <CheckIcon
               className={cn(
                 "ml-auto size-4",
