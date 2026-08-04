@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { apiErrorText } from "@/lib/api/error-text";
 import {
@@ -232,9 +232,9 @@ export function VerifyDialog({
 
           <div className="space-y-2">
             <Label htmlFor="verify-password">{fields("password")}</Label>
-            <Input
+            <PasswordInput
               id="verify-password"
-              type="password"
+
               autoComplete="current-password"
               autoFocus
               value={password}

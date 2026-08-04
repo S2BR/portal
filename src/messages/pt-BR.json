@@ -35,6 +35,8 @@
       "confirmPassword": "Confirmar senha",
       "code": "Código de verificação"
     },
+    "showPassword": "Mostrar senha",
+    "hidePassword": "Ocultar senha",
     "login": {
       "submit": "Entrar",
       "otpTitle": "Verifique seu e-mail",

@@ -7,7 +7,7 @@ import { PasswordRequirements } from "@/components/auth/password-requirements";
 import { VerifyDialog } from "@/components/auth/verify-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { apiErrorText } from "@/lib/api/error-text";
 import { checkPassword } from "@/lib/auth/password";
@@ -86,9 +86,9 @@ export function PasswordSettings() {
           <form onSubmit={startChange} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="new-password">{t("newPassword")}</Label>
-              <Input
+              <PasswordInput
                 id="new-password"
-                type="password"
+
                 autoComplete="new-password"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
@@ -105,9 +105,9 @@ export function PasswordSettings() {
               <Label htmlFor="confirm-password">
                 {fields("confirmPassword")}
               </Label>
-              <Input
+              <PasswordInput
                 id="confirm-password"
-                type="password"
+
                 autoComplete="new-password"
                 value={confirm}
                 onChange={(event) => setConfirm(event.target.value)}

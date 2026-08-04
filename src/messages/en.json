@@ -35,6 +35,8 @@
       "confirmPassword": "Confirm password",
       "code": "Verification code"
     },
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
     "login": {
       "submit": "Sign in",
       "otpTitle": "Check your email",
