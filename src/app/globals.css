@@ -59,6 +59,12 @@
   --brand-gold: oklch(0.9 0.19 103);
   --brand-gold-deep: oklch(0.7 0.14 95);
 
+  /* Auth brand-panel gradient stops. Fixed brand green in light; a deep, near-black green in
+     dark (see .dark) so the panel calms down next to a dark form side but keeps its identity. */
+  --auth-panel-from: var(--brand-green-deep);
+  --auth-panel-via: var(--brand-green);
+  --auth-panel-to: var(--brand-green-deep);
+
   --background: oklch(1 0 0);
   --foreground: oklch(0.17 0.006 152);
   --card: oklch(1 0 0);
@@ -96,6 +102,10 @@
 
 .dark {
   --background: oklch(0.165 0.005 152);
+  /* Deep, almost-black green — calmer in a dark UI, still clearly the brand panel. */
+  --auth-panel-from: oklch(0.3 0.08 152);
+  --auth-panel-via: oklch(0.24 0.065 152);
+  --auth-panel-to: oklch(0.18 0.05 152);
   --foreground: oklch(0.985 0.002 152);
   --card: oklch(0.212 0.006 152);
   --card-foreground: oklch(0.985 0.002 152);
@@ -138,5 +148,52 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+/*
+ * Ambient drift for the auth brand panel's blurred blobs — slow, abstract, oscillating movement
+ * (`alternate` so it eases back and forth with no jump). Each blob gets its own long duration so
+ * the motion never looks synchronized. Only runs when the user hasn't asked to reduce motion.
+ */
+@keyframes auth-drift-1 {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(38%, 26%, 0) scale(1.45);
+  }
+}
+@keyframes auth-drift-2 {
+  from {
+    transform: translate3d(0, 0, 0) scale(1.3);
+  }
+  to {
+    transform: translate3d(-36%, -30%, 0) scale(0.75);
+  }
+}
+@keyframes auth-drift-3 {
+  from {
+    transform: translate3d(-24%, 16%, 0) scale(0.8);
+  }
+  to {
+    transform: translate3d(30%, -24%, 0) scale(1.5);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .auth-blob-1,
+  .auth-blob-2,
+  .auth-blob-3 {
+    will-change: transform;
+  }
+  .auth-blob-1 {
+    animation: auth-drift-1 8s ease-in-out infinite alternate;
+  }
+  .auth-blob-2 {
+    animation: auth-drift-2 10s ease-in-out infinite alternate;
+  }
+  .auth-blob-3 {
+    animation: auth-drift-3 12s ease-in-out infinite alternate;
   }
 }
