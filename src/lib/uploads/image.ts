@@ -7,6 +7,14 @@ export interface NormalizeOptions {
   quality?: number;
 }
 
+/** A crop rectangle in the source image's natural pixels. */
+export interface PixelCrop {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
 const DEFAULTS: Required<NormalizeOptions> = {
   maxSize: 512,
   type: "image/webp",
@@ -25,14 +33,8 @@ export async function normalizeImage(
 ): Promise<File> {
   const { maxSize, type, quality } = { ...DEFAULTS, ...options };
 
-  if (typeof createImageBitmap !== "function") {
-    return file;
-  }
-
-  let bitmap: ImageBitmap;
-  try {
-    bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
-  } catch {
+  const bitmap = await loadBitmap(file);
+  if (!bitmap) {
     return file;
   }
 
@@ -41,26 +43,93 @@ export async function normalizeImage(
     const width = Math.max(1, Math.round(bitmap.width * scale));
     const height = Math.max(1, Math.round(bitmap.height * scale));
 
-    const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
-    const context = canvas.getContext("2d");
-    if (!context) {
-      return file;
-    }
-    context.drawImage(bitmap, 0, 0, width, height);
-
-    const blob = await new Promise<Blob | null>((resolve) => {
-      canvas.toBlob(resolve, type, quality);
-    });
-    if (!blob) {
-      return file;
-    }
-
-    return new File([blob], renameFor(file.name, type), { type });
+    const blob = await encode(
+      width,
+      height,
+      (context) => context.drawImage(bitmap, 0, 0, width, height),
+      type,
+      quality,
+    );
+    return blob ? new File([blob], renameFor(file.name, type), { type }) : file;
   } finally {
     bitmap.close();
   }
+}
+
+/**
+ * Crop a square region out of the source and re-encode it (same EXIF-stripping, downscaling
+ * path as {@link normalizeImage}). `crop` is in the source's natural pixels. Falls back to the
+ * original file if the browser can't decode it here.
+ */
+export async function cropImage(
+  file: File,
+  crop: PixelCrop,
+  options: NormalizeOptions = {},
+): Promise<File> {
+  const { maxSize, type, quality } = { ...DEFAULTS, ...options };
+
+  const bitmap = await loadBitmap(file);
+  if (!bitmap) {
+    return file;
+  }
+
+  try {
+    const out = Math.max(1, Math.min(maxSize, Math.round(crop.width)));
+    const blob = await encode(
+      out,
+      out,
+      (context) =>
+        context.drawImage(
+          bitmap,
+          crop.x,
+          crop.y,
+          crop.width,
+          crop.height,
+          0,
+          0,
+          out,
+          out,
+        ),
+      type,
+      quality,
+    );
+    return blob ? new File([blob], renameFor(file.name, type), { type }) : file;
+  } finally {
+    bitmap.close();
+  }
+}
+
+/** Decode a file to a bitmap with EXIF orientation baked in; null if unsupported here. */
+async function loadBitmap(file: File): Promise<ImageBitmap | null> {
+  if (typeof createImageBitmap !== "function") {
+    return null;
+  }
+  try {
+    return await createImageBitmap(file, { imageOrientation: "from-image" });
+  } catch {
+    return null;
+  }
+}
+
+/** Draw onto an offscreen canvas of the given size and encode it to a blob; null if canvas is unavailable. */
+async function encode(
+  width: number,
+  height: number,
+  draw: (context: CanvasRenderingContext2D) => void,
+  type: string,
+  quality: number,
+): Promise<Blob | null> {
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const context = canvas.getContext("2d");
+  if (!context) {
+    return null;
+  }
+  draw(context);
+  return new Promise((resolve) => {
+    canvas.toBlob(resolve, type, quality);
+  });
 }
 
 /** Swap the extension to match the re-encoded type (e.g. `photo.heic` → `photo.webp`). */

@@ -8,7 +8,9 @@ import {
   type ChangeEvent,
   type DragEvent,
 } from "react";
+import { toast } from "sonner";
 
+import { AvatarCropDialog } from "@/components/auth/avatar-crop-dialog";
 import { useCurrentUser } from "@/components/auth/current-user";
 import { UserAvatar } from "@/components/auth/user-avatar";
 import { Button } from "@/components/ui/button";
@@ -20,34 +22,40 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { normalizeImage } from "@/lib/uploads/image";
 import { uploadFile } from "@/lib/uploads/upload";
 import { cn } from "@/lib/utils";
 
 const ACCEPTED = ["image/jpeg", "image/png", "image/webp"];
 const MAX_BYTES = 2 * 1024 * 1024;
+const UNDO_MS = 5000;
 
 type Phase = "idle" | "uploading" | "finalizing";
 
 /**
- * Upload / replace / remove the account avatar. The picked image is downscaled and re-encoded
- * in the browser (which strips EXIF, including GPS location) and shown immediately as an
- * optimistic preview while it streams straight to S3 with a progress bar. On success the
- * current-user context refreshes so the header menu updates too.
+ * Upload / replace / remove the account avatar. Picking a file opens a square crop dialog; the
+ * cropped image is re-encoded in the browser (stripping EXIF, incl. GPS) and shown as an
+ * optimistic preview while it streams straight to S3. Removal is deferred with an undo toast.
  */
 export function AvatarSettings() {
   const t = useTranslations("avatarSettings");
   const { user, refresh } = useCurrentUser();
   const inputRef = useRef<HTMLInputElement>(null);
+
   const previewRef = useRef<string | null>(null);
+  const cropUrlRef = useRef<string | null>(null);
+  const removeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const removePending = useRef(false);
+
   const [preview, setPreviewState] = useState<string | null>(null);
+  const [cropFile, setCropFile] = useState<File | null>(null);
+  const [cropSrc, setCropSrc] = useState<string | null>(null);
+  const [removed, setRemoved] = useState(false);
   const [phase, setPhase] = useState<Phase>("idle");
   const [progress, setProgress] = useState(0);
   const [pending, setPending] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Revoke the previous object URL whenever the preview changes or the component unmounts.
   const setPreview = (url: string | null) => {
     if (previewRef.current) {
       URL.revokeObjectURL(previewRef.current);
@@ -55,10 +63,33 @@ export function AvatarSettings() {
     previewRef.current = url;
     setPreviewState(url);
   };
+
+  const closeCrop = () => {
+    if (cropUrlRef.current) {
+      URL.revokeObjectURL(cropUrlRef.current);
+      cropUrlRef.current = null;
+    }
+    setCropSrc(null);
+    setCropFile(null);
+  };
+
+  // On unmount: revoke object URLs, and flush a still-pending removal so the intent isn't lost.
   useEffect(
     () => () => {
       if (previewRef.current) {
         URL.revokeObjectURL(previewRef.current);
+      }
+      if (cropUrlRef.current) {
+        URL.revokeObjectURL(cropUrlRef.current);
+      }
+      if (removeTimer.current) {
+        clearTimeout(removeTimer.current);
+      }
+      if (removePending.current) {
+        void fetch("/api/uploads/avatar", {
+          method: "DELETE",
+          keepalive: true,
+        });
       }
     },
     [],
@@ -70,20 +101,29 @@ export function AvatarSettings() {
     return null;
   }
 
-  /** Validate → normalize → optimistic preview → direct-to-S3 upload. Shared by picker + drop. */
-  async function handleFile(original: File) {
+  /** Validate a picked file, then open the crop dialog. Shared by the picker and drag-drop. */
+  function pickFile(file: File) {
+    cancelRemove();
     setError(null);
-    if (!ACCEPTED.includes(original.type)) {
+    if (!ACCEPTED.includes(file.type)) {
       setError(t("invalidType"));
       return;
     }
-    if (original.size > MAX_BYTES) {
+    if (file.size > MAX_BYTES) {
       setError(t("tooLarge"));
       return;
     }
+    const url = URL.createObjectURL(file);
+    cropUrlRef.current = url;
+    setCropSrc(url);
+    setCropFile(file);
+  }
 
-    const prepared = await normalizeImage(original);
+  /** Upload the cropped, re-encoded file with an optimistic preview + toasts. */
+  async function runUpload(prepared: File) {
+    closeCrop();
     setPreview(URL.createObjectURL(prepared));
+    setRemoved(false);
     setPhase("uploading");
     setProgress(0);
 
@@ -95,18 +135,18 @@ export function AvatarSettings() {
     setPhase("idle");
     if (result.ok) {
       await refresh();
-      // Keep the local preview shown — it's the same image, so there's no reload flash.
+      toast.success(t("savedToast"));
     } else {
       setPreview(null);
-      setError(t("error"));
+      toast.error(t("error"));
     }
   }
 
   function onFileChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
-    event.target.value = ""; // let the same file be re-picked after an error
+    event.target.value = ""; // let the same file be re-picked after cancel/error
     if (file) {
-      void handleFile(file);
+      pickFile(file);
     }
   }
 
@@ -118,7 +158,6 @@ export function AvatarSettings() {
   }
 
   function onDragLeave(event: DragEvent<HTMLDivElement>) {
-    // Ignore leaves onto children — only clear when the pointer truly exits the zone.
     if (event.currentTarget.contains(event.relatedTarget as Node | null)) {
       return;
     }
@@ -133,29 +172,57 @@ export function AvatarSettings() {
     }
     const file = event.dataTransfer.files?.[0];
     if (file) {
-      void handleFile(file);
+      pickFile(file);
     }
   }
 
-  async function remove() {
-    setPending(true);
+  /** Optimistically hide the avatar and defer the delete, giving the user an undo window. */
+  function requestRemove() {
     setError(null);
+    setPreview(null);
+    setRemoved(true);
+    removePending.current = true;
+    if (removeTimer.current) {
+      clearTimeout(removeTimer.current);
+    }
+    removeTimer.current = setTimeout(() => void commitRemove(), UNDO_MS);
+    toast(t("removedToast"), {
+      duration: UNDO_MS,
+      action: { label: t("undo"), onClick: cancelRemove },
+    });
+  }
+
+  function cancelRemove() {
+    if (removeTimer.current) {
+      clearTimeout(removeTimer.current);
+      removeTimer.current = null;
+    }
+    removePending.current = false;
+    setRemoved(false);
+  }
+
+  async function commitRemove() {
+    removeTimer.current = null;
+    removePending.current = false;
+    setPending(true);
     try {
       const response = await fetch("/api/uploads/avatar", { method: "DELETE" });
       if (response.ok) {
-        setPreview(null);
         await refresh();
+        setRemoved(false);
       } else {
-        setError(t("error"));
+        setRemoved(false);
+        toast.error(t("error"));
       }
     } catch {
-      setError(t("error"));
+      setRemoved(false);
+      toast.error(t("error"));
     } finally {
       setPending(false);
     }
   }
 
-  const shownAvatar = preview ?? user.avatar;
+  const shownAvatar = removed ? null : (preview ?? user.avatar);
   const maxLabel = `${Math.round(MAX_BYTES / 1024 / 1024)} MB`;
 
   return (
@@ -203,9 +270,8 @@ export function AvatarSettings() {
                   variant="ghost"
                   size="sm"
                   disabled={busy}
-                  onClick={remove}
+                  onClick={requestRemove}
                 >
-                  {pending ? <Spinner /> : null}
                   {t("remove")}
                 </Button>
               ) : null}
@@ -239,6 +305,13 @@ export function AvatarSettings() {
           </p>
         ) : null}
       </CardContent>
+
+      <AvatarCropDialog
+        src={cropSrc}
+        file={cropFile}
+        onCancel={closeCrop}
+        onCropped={runUpload}
+      />
     </Card>
   );
 }
