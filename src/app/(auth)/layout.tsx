@@ -35,7 +35,7 @@ export default async function AuthLayout({
             height={112}
             priority
             unoptimized
-            className="size-28 rounded-3xl bg-white/95 p-2"
+            className="size-28 drop-shadow-[0_6px_16px_rgba(0,0,0,0.45)]"
           />
           <div className="space-y-4">
             <p className="font-heading text-4xl leading-tight font-semibold text-balance text-white">
