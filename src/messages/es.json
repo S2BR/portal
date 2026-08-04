@@ -1,15 +1,17 @@
 {
   "brand": {
-    "name": "S2BR Portal"
+    "name": "S2BR"
   },
   "auth": {
+    "tagline": "Hecho para dueños de negocios y operadores comunitarios.",
+    "taglineSub": "Gestiona tu presencia, tu comunidad y tu equipo, todo en un solo lugar.",
     "signIn": {
       "title": "Iniciar sesión",
-      "subtitle": "Inicia sesión en tu cuenta de S2BR Portal."
+      "subtitle": "Inicia sesión en tu cuenta de S2BR."
     },
     "register": {
       "title": "Crea tu cuenta",
-      "subtitle": "Únete a S2BR Portal.",
+      "subtitle": "Únete a S2BR.",
       "submit": "Crear cuenta",
       "acceptTerms": "Acepto los Términos de Servicio y la Política de Privacidad."
     },

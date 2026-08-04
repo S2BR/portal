@@ -24,8 +24,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "S2BR Portal",
-  description: "S2BR Portal — for business owners and community operators.",
+  title: "S2BR",
+  description: "S2BR — for business owners and community operators.",
   icons: { icon: "/s2br.svg" },
 };
 
