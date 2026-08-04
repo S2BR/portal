@@ -192,7 +192,9 @@
     "lastActive": "Última atividade {when}",
     "signOut": "Sair",
     "signOutOthers": "Sair de todos os outros dispositivos",
-    "error": "Algo deu errado. Tente novamente."
+    "error": "Algo deu errado. Tente novamente.",
+    "revoked": "Sessão encerrada nesse dispositivo",
+    "revokedOthers": "Sessão encerrada nos outros dispositivos"
   },
   "twoFactor": {
     "title": "Autenticação de dois fatores",
@@ -245,6 +247,8 @@
     "unsupported": "Este navegador não é compatível com chaves de acesso.",
     "defaultName": "Minha chave de acesso",
     "addError": "Não foi possível adicionar essa chave de acesso. Tente novamente.",
+    "addedToast": "Chave de acesso adicionada",
+    "removedToast": "Chave de acesso removida",
     "nameLabel": "Nome",
     "namePlaceholder": "ex.: Meu notebook",
     "lastUsed": "Usada pela última vez em {date}",

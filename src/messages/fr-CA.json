@@ -192,7 +192,9 @@
     "lastActive": "Dernière activité {when}",
     "signOut": "Se déconnecter",
     "signOutOthers": "Se déconnecter partout ailleurs",
-    "error": "Une erreur s'est produite. Veuillez réessayer."
+    "error": "Une erreur s'est produite. Veuillez réessayer.",
+    "revoked": "Déconnecté de cet appareil",
+    "revokedOthers": "Déconnecté des autres appareils"
   },
   "twoFactor": {
     "title": "Authentification à deux facteurs",
@@ -245,6 +247,8 @@
     "unsupported": "Ce navigateur ne prend pas en charge les clés d'accès.",
     "defaultName": "Ma clé d'accès",
     "addError": "Nous n'avons pas pu ajouter cette clé d'accès. Veuillez réessayer.",
+    "addedToast": "Clé d’accès ajoutée",
+    "removedToast": "Clé d’accès retirée",
     "nameLabel": "Nom",
     "namePlaceholder": "p. ex. Mon ordinateur portable",
     "lastUsed": "Dernière utilisation le {date}",

@@ -192,7 +192,9 @@
     "lastActive": "Última actividad {when}",
     "signOut": "Cerrar sesión",
     "signOutOthers": "Cerrar sesión en los demás dispositivos",
-    "error": "Algo salió mal. Inténtalo de nuevo."
+    "error": "Algo salió mal. Inténtalo de nuevo.",
+    "revoked": "Se cerró la sesión de ese dispositivo",
+    "revokedOthers": "Se cerró la sesión en los demás dispositivos"
   },
   "twoFactor": {
     "title": "Autenticación de dos factores",
@@ -245,6 +247,8 @@
     "unsupported": "Este navegador no admite llaves de acceso.",
     "defaultName": "Mi llave de acceso",
     "addError": "No pudimos añadir esa llave de acceso. Inténtalo de nuevo.",
+    "addedToast": "Llave de acceso añadida",
+    "removedToast": "Llave de acceso eliminada",
     "nameLabel": "Nombre",
     "namePlaceholder": "p. ej. Mi portátil",
     "lastUsed": "Usada por última vez el {date}",

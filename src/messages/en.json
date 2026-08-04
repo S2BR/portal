@@ -192,7 +192,9 @@
     "lastActive": "Last active {when}",
     "signOut": "Sign out",
     "signOutOthers": "Sign out everywhere else",
-    "error": "Something went wrong. Please try again."
+    "error": "Something went wrong. Please try again.",
+    "revoked": "Signed out of that device",
+    "revokedOthers": "Signed out of the other devices"
   },
   "twoFactor": {
     "title": "Two-factor authentication",
@@ -245,6 +247,8 @@
     "unsupported": "This browser doesn't support passkeys.",
     "defaultName": "My passkey",
     "addError": "We couldn't add that passkey. Please try again.",
+    "addedToast": "Passkey added",
+    "removedToast": "Passkey removed",
     "nameLabel": "Name",
     "namePlaceholder": "e.g. My laptop",
     "lastUsed": "Last used {date}",
