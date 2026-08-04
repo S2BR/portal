@@ -96,7 +96,7 @@ export default function DashboardPage() {
       <section className="from-primary/12 via-card to-card relative overflow-hidden rounded-2xl border bg-gradient-to-br p-6 sm:p-8">
         <Sparkles
           aria-hidden
-          className="text-primary/15 pointer-events-none absolute -top-6 -end-6 size-32"
+          className="text-primary/15 pointer-events-none absolute -end-6 -top-6 size-32"
         />
         <div className="relative flex items-center gap-4">
           <UserAvatar
@@ -165,7 +165,7 @@ export default function DashboardPage() {
                     <Button asChild variant="ghost" size="sm">
                       <Link href="/profile">
                         {t("setup.action")}
-                        <ChevronRight className="size-4" />
+                        <ChevronRight className="size-4 rtl:rotate-180" />
                       </Link>
                     </Button>
                   )}

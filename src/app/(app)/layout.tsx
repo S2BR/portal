@@ -1,6 +1,7 @@
 import { CurrentUserProvider } from "@/components/auth/current-user";
 import { UserMenu } from "@/components/auth/user-menu";
 import { Brand } from "@/components/brand";
+import { DirectionToggle } from "@/components/dev/direction-toggle";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
 
@@ -13,7 +14,8 @@ export default function AppLayout({
         <header className="bg-background/80 sticky top-0 z-10 border-b backdrop-blur">
           <div className="mx-auto flex h-16 w-full max-w-6xl items-center gap-4 px-4 sm:px-6">
             <Brand />
-            <div className="ml-auto flex items-center gap-2">
+            <div className="ms-auto flex items-center gap-2">
+              <DirectionToggle />
               <LocaleSwitcher />
               <ThemeToggle />
               <UserMenu />

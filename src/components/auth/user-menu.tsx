@@ -123,7 +123,7 @@ export function UserMenu() {
           <UserAvatar
             name={user.name}
             src={user.avatar}
-            className="-ml-1 size-7"
+            className="-ms-1 size-7"
           />
           <span className="max-w-32 truncate">{user.name}</span>
         </Button>
