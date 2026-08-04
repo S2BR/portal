@@ -1,7 +1,8 @@
 "use client";
 
-import { Check, Globe } from "lucide-react";
+import { CheckIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
@@ -13,18 +14,39 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { setLocale } from "@/i18n/actions";
-import { localeNames, locales, type Locale } from "@/i18n/config";
+import { isLocale, localeNames, locales, type Locale } from "@/i18n/config";
 import { cn } from "@/lib/utils";
 
+/** The round flag for a locale, from /public/images/flags/<locale>.png. */
+function LocaleFlag({
+  locale,
+  className,
+}: {
+  locale: Locale;
+  className?: string;
+}) {
+  return (
+    <Image
+      src={`/images/flags/${locale}.png`}
+      alt=""
+      width={20}
+      height={20}
+      unoptimized
+      className={cn("size-5 shrink-0 rounded-full object-cover", className)}
+    />
+  );
+}
+
 export function LocaleSwitcher() {
-  const activeLocale = useLocale();
+  const locale = useLocale();
+  const activeLocale = isLocale(locale) ? locale : locales[0];
   const t = useTranslations("locale");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  function selectLocale(locale: Locale) {
+  function selectLocale(next: Locale) {
     startTransition(async () => {
-      await setLocale(locale);
+      await setLocale(next);
       router.refresh();
     });
   }
@@ -38,19 +60,20 @@ export function LocaleSwitcher() {
           aria-label={t("label")}
           disabled={isPending}
         >
-          <Globe className="size-4" />
+          <LocaleFlag locale={activeLocale} />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {locales.map((locale) => (
-          <DropdownMenuItem key={locale} onClick={() => selectLocale(locale)}>
-            <Check
+        {locales.map((option) => (
+          <DropdownMenuItem key={option} onClick={() => selectLocale(option)}>
+            <LocaleFlag locale={option} />
+            <span>{localeNames[option]}</span>
+            <CheckIcon
               className={cn(
-                "size-4",
-                locale === activeLocale ? "opacity-100" : "opacity-0",
+                "ml-auto size-4",
+                option === activeLocale ? "opacity-100" : "opacity-0",
               )}
             />
-            {localeNames[locale]}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>
