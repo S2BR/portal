@@ -12,6 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { apiErrorText } from "@/lib/api/error-text";
@@ -197,10 +198,7 @@ export function PasskeySettings() {
         ) : (
           <div className="space-y-4">
             {passkeys === null ? (
-              <div
-                className="bg-muted h-10 w-full animate-pulse rounded-md"
-                aria-hidden
-              />
+              <Skeleton className="h-10 w-full" />
             ) : passkeys.length === 0 ? (
               <p className="text-muted-foreground text-sm">{t("empty")}</p>
             ) : (

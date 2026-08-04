@@ -11,6 +11,7 @@ import { PasswordSettings } from "@/components/auth/password-settings";
 import { ProfileSettings } from "@/components/auth/profile-settings";
 import { SessionSettings } from "@/components/auth/session-settings";
 import { TwoFactorSettings } from "@/components/auth/two-factor-settings";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ProfilePage() {
   const { user, loading } = useCurrentUser();
@@ -19,10 +20,15 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div
-        className="bg-muted mx-auto h-48 w-full max-w-xl animate-pulse rounded-2xl"
-        aria-hidden
-      />
+      <div className="mx-auto max-w-xl space-y-8">
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-40" />
+          <Skeleton className="h-4 w-56" />
+        </div>
+        {Array.from({ length: 3 }).map((_, index) => (
+          <Skeleton key={index} className="h-40 w-full rounded-xl" />
+        ))}
+      </div>
     );
   }
 

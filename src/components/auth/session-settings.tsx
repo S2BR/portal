@@ -7,6 +7,7 @@ import type { Session } from "@/app/api/auth/sessions/route";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useNow } from "@/lib/use-now";
 
 /**
@@ -87,10 +88,10 @@ export function SessionSettings() {
       </CardHeader>
       <CardContent className="space-y-4">
         {sessions === null ? (
-          <div
-            className="bg-muted h-16 w-full animate-pulse rounded-lg"
-            aria-hidden
-          />
+          <div className="space-y-2">
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-12 w-full" />
+          </div>
         ) : sessions.length === 0 ? (
           <p className="text-muted-foreground text-sm">{t("empty")}</p>
         ) : (
