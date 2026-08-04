@@ -12,7 +12,7 @@ export default async function AuthLayout({
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       {/* Brand panel — large screens only. Carries the S2BR identity + value proposition. */}
-      <aside className="from-brand-green-deep via-brand-green to-brand-green-deep relative hidden overflow-hidden bg-gradient-to-br shadow-[inset_-16px_0_28px_-16px_rgba(0,0,0,0.4)] lg:flex lg:flex-col lg:justify-between lg:p-12">
+      <aside className="from-brand-green-deep via-brand-green to-brand-green-deep relative hidden overflow-hidden bg-gradient-to-br shadow-[inset_-16px_0_28px_-16px_rgba(0,0,0,0.4)] lg:flex lg:flex-col lg:justify-center lg:p-12">
         {/* Ambient drift — slow, abstract movement. Respects prefers-reduced-motion (see globals.css). */}
         <div
           aria-hidden
@@ -27,7 +27,7 @@ export default async function AuthLayout({
           className="auth-blob-3 bg-brand-green-deep/30 pointer-events-none absolute start-1/4 top-1/3 size-72 rounded-full blur-3xl"
         />
 
-        <div className="relative">
+        <div className="relative max-w-md space-y-8">
           <Image
             src="/s2br.svg"
             alt="S2BR"
@@ -37,16 +37,13 @@ export default async function AuthLayout({
             unoptimized
             className="size-28 rounded-3xl bg-white/95 p-2"
           />
+          <div className="space-y-4">
+            <p className="font-heading text-4xl leading-tight font-semibold text-balance text-white">
+              {t("tagline")}
+            </p>
+            <p className="text-lg text-white/75">{t("taglineSub")}</p>
+          </div>
         </div>
-
-        <div className="relative max-w-md space-y-4">
-          <p className="font-heading text-4xl leading-tight font-semibold text-balance text-white">
-            {t("tagline")}
-          </p>
-          <p className="text-lg text-white/75">{t("taglineSub")}</p>
-        </div>
-
-        <div className="relative h-6" />
       </aside>
 
       {/* Form panel */}
