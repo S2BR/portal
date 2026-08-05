@@ -54,6 +54,7 @@ export interface BusinessOpeningHour {
 }
 
 export interface BusinessAddress {
+  id: number;
   address_1: string;
   address_2: string | null;
   apartment_suite: string | null;
@@ -64,6 +65,7 @@ export interface BusinessAddress {
   latitude: number | null;
   longitude: number | null;
   notes: string | null;
+  is_main: boolean;
 }
 
 export interface BusinessColors {
@@ -86,7 +88,7 @@ export interface Business {
   contacts?: BusinessContact[];
   socials?: BusinessSocial[];
   opening_hours?: BusinessOpeningHour[];
-  address?: BusinessAddress | null;
+  addresses?: BusinessAddress[];
   is_claimed: boolean;
   claimed_at: string | null;
   created_at: string | null;

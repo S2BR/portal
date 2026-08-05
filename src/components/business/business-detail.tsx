@@ -27,6 +27,8 @@ import {
   SOCIAL_NETWORKS,
   socialLabel,
 } from "@/components/business/business-constants";
+import type { PlaceAddress } from "@/app/api/addresses/place/[id]/route";
+import { AddressAutocomplete } from "@/components/business/address-autocomplete";
 import { BusinessTypeField } from "@/components/business/business-type-field";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -58,7 +60,8 @@ import { apiErrorText } from "@/lib/api/error-text";
 type ContactRow = { type: BusinessContactType; value: string; name: string };
 type SocialRow = { platform: BusinessSocialNetwork; handle: string };
 type HourRow = { open: string; close: string; closed: boolean };
-type AddressForm = {
+type AddressEntry = {
+  key: string; // stable client key for the list
   address_1: string;
   address_2: string;
   apartment_suite: string;
@@ -69,6 +72,7 @@ type AddressForm = {
   latitude: string;
   longitude: string;
   notes: string;
+  isMain: boolean;
 };
 type EditState = {
   name: string;
@@ -80,21 +84,25 @@ type EditState = {
   contacts: ContactRow[];
   socials: SocialRow[];
   hours: Record<DayOfWeek, HourRow>;
-  address: AddressForm;
+  addresses: AddressEntry[];
 };
 
-const EMPTY_ADDRESS: AddressForm = {
-  address_1: "",
-  address_2: "",
-  apartment_suite: "",
-  city: "",
-  state_province: "",
-  postal_code: "",
-  country: "",
-  latitude: "",
-  longitude: "",
-  notes: "",
-};
+function blankAddress(): AddressEntry {
+  return {
+    key: crypto.randomUUID(),
+    address_1: "",
+    address_2: "",
+    apartment_suite: "",
+    city: "",
+    state_province: "",
+    postal_code: "",
+    country: "",
+    latitude: "",
+    longitude: "",
+    notes: "",
+    isMain: false,
+  };
+}
 
 function toEditState(business: Business): EditState {
   const hours = Object.fromEntries(
@@ -110,8 +118,6 @@ function toEditState(business: Business): EditState {
       ];
     }),
   ) as Record<DayOfWeek, HourRow>;
-
-  const address = business.address;
 
   return {
     name: business.name,
@@ -130,20 +136,20 @@ function toEditState(business: Business): EditState {
       handle: social.handle,
     })),
     hours,
-    address: address
-      ? {
-          address_1: address.address_1 ?? "",
-          address_2: address.address_2 ?? "",
-          apartment_suite: address.apartment_suite ?? "",
-          city: address.city ?? "",
-          state_province: address.state_province ?? "",
-          postal_code: address.postal_code ?? "",
-          country: address.country ?? "",
-          latitude: address.latitude?.toString() ?? "",
-          longitude: address.longitude?.toString() ?? "",
-          notes: address.notes ?? "",
-        }
-      : { ...EMPTY_ADDRESS },
+    addresses: (business.addresses ?? []).map((address) => ({
+      key: crypto.randomUUID(),
+      address_1: address.address_1 ?? "",
+      address_2: address.address_2 ?? "",
+      apartment_suite: address.apartment_suite ?? "",
+      city: address.city ?? "",
+      state_province: address.state_province ?? "",
+      postal_code: address.postal_code ?? "",
+      country: address.country ?? "",
+      latitude: address.latitude?.toString() ?? "",
+      longitude: address.longitude?.toString() ?? "",
+      notes: address.notes ?? "",
+      isMain: address.is_main,
+    })),
   };
 }
 
@@ -162,10 +168,6 @@ function numberOrNull(value: string): number | null {
 }
 
 function buildPayload(edit: EditState) {
-  const hasAddress = Object.values(edit.address).some(
-    (value) => value.trim() !== "",
-  );
-
   return {
     name: edit.name.trim(),
     type: edit.type,
@@ -200,20 +202,24 @@ function buildPayload(edit: EditState) {
         : trimOrNull(edit.hours[day].close),
       closed_all_day: edit.hours[day].closed,
     })),
-    address: hasAddress
-      ? {
-          address_1: edit.address.address_1.trim(),
-          address_2: trimOrNull(edit.address.address_2),
-          apartment_suite: trimOrNull(edit.address.apartment_suite),
-          city: edit.address.city.trim(),
-          state_province: trimOrNull(edit.address.state_province),
-          postal_code: trimOrNull(edit.address.postal_code),
-          country: edit.address.country.trim().toUpperCase(),
-          latitude: numberOrNull(edit.address.latitude),
-          longitude: numberOrNull(edit.address.longitude),
-          notes: trimOrNull(edit.address.notes),
-        }
-      : null,
+    addresses: edit.addresses
+      .filter(
+        (address) =>
+          address.address_1.trim() !== "" || address.city.trim() !== "",
+      )
+      .map((address) => ({
+        address_1: address.address_1.trim(),
+        address_2: trimOrNull(address.address_2),
+        apartment_suite: trimOrNull(address.apartment_suite),
+        city: address.city.trim(),
+        state_province: trimOrNull(address.state_province),
+        postal_code: trimOrNull(address.postal_code),
+        country: address.country.trim().toUpperCase(),
+        latitude: numberOrNull(address.latitude),
+        longitude: numberOrNull(address.longitude),
+        notes: trimOrNull(address.notes),
+        is_main: address.isMain,
+      })),
   };
 }
 
@@ -583,34 +589,48 @@ export function BusinessDetail({ slug }: { slug: string }) {
             )}
           </TabsContent>
 
-          {/* Address */}
+          {/* Addresses */}
           <TabsContent value="address">
             {editing && edit ? (
-              <AddressEditor
-                value={edit.address}
-                onChange={(address) => patch({ address })}
+              <AddressesEditor
+                value={edit.addresses}
+                onChange={(addresses) => patch({ addresses })}
               />
-            ) : business.address ? (
-              <address className="text-sm not-italic">
-                {[
-                  business.address.address_1,
-                  business.address.apartment_suite,
-                  business.address.address_2,
-                  [business.address.postal_code, business.address.city]
-                    .filter(Boolean)
-                    .join(" "),
-                  business.address.state_province,
-                  business.address.country,
-                ]
-                  .filter((line): line is string =>
-                    Boolean(line && line.trim()),
-                  )
-                  .map((line) => (
-                    <span key={line} className="block">
-                      {line}
-                    </span>
-                  ))}
-              </address>
+            ) : business.addresses && business.addresses.length > 0 ? (
+              <div className="space-y-3">
+                {business.addresses.map((address) => (
+                  <div
+                    key={address.id}
+                    className="rounded-xl border p-4 text-sm"
+                  >
+                    {address.is_main ? (
+                      <Badge variant="outline" className="mb-2">
+                        {t("mainAddress")}
+                      </Badge>
+                    ) : null}
+                    <address className="not-italic">
+                      {[
+                        address.address_1,
+                        address.apartment_suite,
+                        address.address_2,
+                        [address.postal_code, address.city]
+                          .filter(Boolean)
+                          .join(" "),
+                        address.state_province,
+                        address.country,
+                      ]
+                        .filter((line): line is string =>
+                          Boolean(line && line.trim()),
+                        )
+                        .map((line) => (
+                          <span key={line} className="block">
+                            {line}
+                          </span>
+                        ))}
+                    </address>
+                  </div>
+                ))}
+              </div>
             ) : (
               <Muted>{blank("address")}</Muted>
             )}
@@ -928,71 +948,161 @@ function RepeaterEditor<TRow>({
   );
 }
 
-function AddressEditor({
+type AddressStringField = Exclude<keyof AddressEntry, "isMain" | "key">;
+
+function AddressesEditor({
   value,
   onChange,
 }: {
-  value: AddressForm;
-  onChange: (value: AddressForm) => void;
+  value: AddressEntry[];
+  onChange: (value: AddressEntry[]) => void;
 }) {
   const fields = useTranslations("businesses.detail.fields");
+  const t = useTranslations("businesses.detail");
+
+  function update(index: number, changes: Partial<AddressEntry>) {
+    onChange(
+      value.map((entry, position) =>
+        position === index ? { ...entry, ...changes } : entry,
+      ),
+    );
+  }
+
+  // Exactly one address is main: checking one unchecks the rest.
+  function setMain(index: number, main: boolean) {
+    onChange(
+      value.map((entry, position) => ({
+        ...entry,
+        isMain: position === index ? main : main ? false : entry.isMain,
+      })),
+    );
+  }
+
+  function fill(index: number, place: PlaceAddress) {
+    update(index, {
+      address_1: place.address_1 ?? "",
+      apartment_suite: place.apartment_suite ?? "",
+      city: place.city ?? "",
+      state_province: place.state_province ?? "",
+      postal_code: place.postal_code ?? "",
+      country: place.country ?? "",
+      latitude: place.latitude?.toString() ?? "",
+      longitude: place.longitude?.toString() ?? "",
+    });
+  }
+
   const set =
-    (key: keyof AddressForm) =>
+    (index: number, key: AddressStringField) =>
     (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-      onChange({ ...value, [key]: event.target.value });
+      update(index, { [key]: event.target.value });
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2">
-      <Field label={fields("line1")}>
-        <Input value={value.address_1} onChange={set("address_1")} />
-      </Field>
-      <Field label={fields("apartmentSuite")}>
-        <Input
-          value={value.apartment_suite}
-          onChange={set("apartment_suite")}
-        />
-      </Field>
-      <div className="sm:col-span-2">
-        <Field label={fields("line2")}>
-          <Input value={value.address_2} onChange={set("address_2")} />
-        </Field>
-      </div>
-      <Field label={fields("city")}>
-        <Input value={value.city} onChange={set("city")} />
-      </Field>
-      <Field label={fields("stateProvince")}>
-        <Input value={value.state_province} onChange={set("state_province")} />
-      </Field>
-      <Field label={fields("postalCode")}>
-        <Input value={value.postal_code} onChange={set("postal_code")} />
-      </Field>
-      <Field label={fields("country")}>
-        <Input
-          value={value.country}
-          onChange={set("country")}
-          maxLength={2}
-          className="uppercase"
-        />
-      </Field>
-      <Field label={fields("latitude")}>
-        <Input
-          value={value.latitude}
-          onChange={set("latitude")}
-          inputMode="decimal"
-        />
-      </Field>
-      <Field label={fields("longitude")}>
-        <Input
-          value={value.longitude}
-          onChange={set("longitude")}
-          inputMode="decimal"
-        />
-      </Field>
-      <div className="sm:col-span-2">
-        <Field label={fields("notes")}>
-          <Textarea value={value.notes} onChange={set("notes")} rows={2} />
-        </Field>
-      </div>
+    <div className="space-y-4">
+      {value.map((entry, index) => (
+        <div key={entry.key} className="space-y-4 rounded-xl border p-4">
+          <div className="flex items-center justify-between gap-2">
+            <label className="flex items-center gap-2 text-sm font-medium">
+              <Checkbox
+                checked={entry.isMain}
+                onCheckedChange={(checked) => setMain(index, checked === true)}
+              />
+              {t("mainAddress")}
+            </label>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label={t("removeAddress")}
+              onClick={() =>
+                onChange(value.filter((_, position) => position !== index))
+              }
+            >
+              <X className="size-4" />
+            </Button>
+          </div>
+
+          <AddressAutocomplete onSelect={(place) => fill(index, place)} />
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="sm:col-span-2">
+              <Field label={fields("line1")}>
+                <Input
+                  value={entry.address_1}
+                  onChange={set(index, "address_1")}
+                />
+              </Field>
+            </div>
+            <Field label={fields("apartmentSuite")}>
+              <Input
+                value={entry.apartment_suite}
+                onChange={set(index, "apartment_suite")}
+              />
+            </Field>
+            <Field label={fields("line2")}>
+              <Input
+                value={entry.address_2}
+                onChange={set(index, "address_2")}
+              />
+            </Field>
+            <Field label={fields("city")}>
+              <Input value={entry.city} onChange={set(index, "city")} />
+            </Field>
+            <Field label={fields("stateProvince")}>
+              <Input
+                value={entry.state_province}
+                onChange={set(index, "state_province")}
+              />
+            </Field>
+            <Field label={fields("postalCode")}>
+              <Input
+                value={entry.postal_code}
+                onChange={set(index, "postal_code")}
+              />
+            </Field>
+            <Field label={fields("country")}>
+              <Input
+                value={entry.country}
+                onChange={set(index, "country")}
+                maxLength={2}
+                className="uppercase"
+              />
+            </Field>
+            <Field label={fields("latitude")}>
+              <Input
+                value={entry.latitude}
+                onChange={set(index, "latitude")}
+                inputMode="decimal"
+              />
+            </Field>
+            <Field label={fields("longitude")}>
+              <Input
+                value={entry.longitude}
+                onChange={set(index, "longitude")}
+                inputMode="decimal"
+              />
+            </Field>
+            <div className="sm:col-span-2">
+              <Field label={fields("notes")}>
+                <Textarea
+                  value={entry.notes}
+                  onChange={set(index, "notes")}
+                  rows={2}
+                />
+              </Field>
+            </div>
+          </div>
+        </div>
+      ))}
+
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
+        onClick={() => onChange([...value, blankAddress()])}
+      >
+        <Plus className="size-4" />
+        {t("addAddress")}
+      </Button>
     </div>
   );
 }

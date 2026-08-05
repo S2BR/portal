@@ -37,6 +37,7 @@ const addressSchema = z.object({
   latitude: z.number().nullish(),
   longitude: z.number().nullish(),
   notes: z.string().nullish(),
+  is_main: z.boolean().optional(),
 });
 
 const updateSchema = z
@@ -50,7 +51,7 @@ const updateSchema = z
     contacts: z.array(contactSchema).optional(),
     socials: z.array(socialSchema).optional(),
     opening_hours: z.array(openingHourSchema).optional(),
-    address: addressSchema.nullable().optional(),
+    addresses: z.array(addressSchema).optional(),
   })
   .refine((value) => Object.keys(value).length > 0, { message: "empty" });
 

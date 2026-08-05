@@ -440,7 +440,13 @@
       "closedAllDay": "Fermé",
       "colorHint": "La couleur principale de votre marque.",
       "addContact": "Ajouter un contact",
-      "addSocial": "Ajouter un réseau social"
+      "addSocial": "Ajouter un réseau social",
+      "lookup": {
+        "placeholder": "Rechercher une adresse…"
+      },
+      "mainAddress": "Adresse principale",
+      "addAddress": "Ajouter une adresse",
+      "removeAddress": "Supprimer l’adresse"
     }
   }
 }
