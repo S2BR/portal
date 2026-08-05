@@ -8,6 +8,7 @@ import { useCallback, useState, useTransition } from "react";
 
 import { useCurrentUser } from "@/components/auth/current-user";
 import { UserAvatar } from "@/components/auth/user-avatar";
+import { ThemeSegmentedControl } from "@/components/theme-segmented-control";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -28,6 +29,7 @@ interface AccountSummary {
 
 export function UserMenu() {
   const t = useTranslations("nav");
+  const themeT = useTranslations("theme");
   const { user, loading, refresh } = useCurrentUser();
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -178,6 +180,15 @@ export function UserMenu() {
           <UserPlus className="size-4" />
           {t("addAccount")}
         </DropdownMenuItem>
+
+        <DropdownMenuSeparator />
+        {/* Theme lives here (Filament-style), not as a separate header button. */}
+        <div className="px-2 py-1.5">
+          <p className="text-muted-foreground mb-1.5 px-0.5 text-xs font-medium">
+            {themeT("label")}
+          </p>
+          <ThemeSegmentedControl />
+        </div>
 
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>

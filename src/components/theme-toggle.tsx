@@ -1,6 +1,6 @@
 "use client";
 
-import { Monitor, Moon, Sun } from "lucide-react";
+import { Monitor, Moon, Sun, type LucideIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 
@@ -11,44 +11,67 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  ThemeToggler,
+  type Resolved,
+  type ThemeSelection,
+} from "@/components/ui/theme-toggler";
 
+const MODES: { value: ThemeSelection; Icon: LucideIcon }[] = [
+  { value: "light", Icon: Sun },
+  { value: "dark", Icon: Moon },
+  { value: "system", Icon: Monitor },
+];
+
+function iconFor(mode: ThemeSelection) {
+  if (mode === "light") {
+    return <Sun className="size-4" />;
+  }
+  if (mode === "dark") {
+    return <Moon className="size-4" />;
+  }
+  return <Monitor className="size-4" />;
+}
+
+/**
+ * Theme control as a dropdown menu (light / dark / system). Picking an option transitions the
+ * whole page with the gradual clip-path wipe (it wraps the ThemeToggler primitive). Used on the
+ * auth and legal screens; the authenticated app houses the theme control in the user menu.
+ */
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { theme, resolvedTheme, setTheme } = useTheme();
   const t = useTranslations("theme");
 
-  const options = [
-    { value: "light", Icon: Sun, label: t("light") },
-    { value: "dark", Icon: Moon, label: t("dark") },
-    { value: "system", Icon: Monitor, label: t("system") },
-  ];
-
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="outline"
-          size="icon"
-          className="relative"
-          aria-label={t("label")}
-        >
-          <Sun className="size-4 scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
-          <Moon className="absolute size-4 scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-40">
-        {options.map(({ value, Icon, label }) => (
-          <DropdownMenuItem key={value} onClick={() => setTheme(value)}>
-            <Icon className="size-4" />
-            {label}
-            {theme === value ? (
-              <span
-                className="bg-primary ms-auto size-2 shrink-0 rounded-full"
-                aria-hidden
-              />
-            ) : null}
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <ThemeToggler
+      theme={theme as ThemeSelection | undefined}
+      resolvedTheme={resolvedTheme as Resolved | undefined}
+      setTheme={setTheme}
+      direction="ltr"
+    >
+      {({ effective, toggleTheme }) => (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="icon" aria-label={t("label")}>
+              {iconFor(effective)}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="min-w-40">
+            {MODES.map(({ value, Icon }) => (
+              <DropdownMenuItem key={value} onClick={() => toggleTheme(value)}>
+                <Icon className="size-4" />
+                {t(value)}
+                {effective === value ? (
+                  <span
+                    className="bg-primary ms-auto size-2 shrink-0 rounded-full"
+                    aria-hidden
+                  />
+                ) : null}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
+    </ThemeToggler>
   );
 }

@@ -3,7 +3,6 @@ import { UserMenu } from "@/components/auth/user-menu";
 import { Brand } from "@/components/brand";
 import { DirectionToggle } from "@/components/dev/direction-toggle";
 import { LocaleSwitcher } from "@/components/locale-switcher";
-import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function AppLayout({
   children,
@@ -17,7 +16,6 @@ export default function AppLayout({
             <div className="ms-auto flex items-center gap-2">
               <DirectionToggle />
               <LocaleSwitcher />
-              <ThemeToggle />
               <UserMenu />
             </div>
           </div>

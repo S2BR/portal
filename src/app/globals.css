@@ -197,3 +197,13 @@
     animation: auth-drift-3 12s ease-in-out infinite alternate;
   }
 }
+
+/*
+ * Theme toggler (View Transitions API): disable the default cross-fade between the old/new
+ * snapshots so only the clip-path wipe drawn by the toggler shows. See components/ui/theme-toggler.
+ */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
