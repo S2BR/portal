@@ -1,0 +1,137 @@
+import { NextResponse } from "next/server";
+import { z } from "zod";
+
+import { callWithAuth } from "@/lib/api/authed";
+
+import type { Business } from "../route";
+
+// Loose shape only — the API owns format validation (email, url, 2-letter country) and returns
+// field-level messages, so the BFF stays a thin guard rather than masking them as a generic 422.
+const contactSchema = z.object({
+  email: z.string().max(255).nullish(),
+  phone: z.string().max(32).nullish(),
+  website: z.string().max(255).nullish(),
+});
+
+const addressSchema = z.object({
+  line1: z.string().max(255).nullish(),
+  line2: z.string().max(255).nullish(),
+  city: z.string().max(255).nullish(),
+  region: z.string().max(255).nullish(),
+  postal_code: z.string().max(32).nullish(),
+  country: z.string().max(8).nullish(),
+});
+
+const updateSchema = z
+  .object({
+    name: z.string().trim().min(1).max(255).optional(),
+    type: z.enum(["company", "self_employed"]).optional(),
+    headline: z.string().max(255).nullable().optional(),
+    description: z.string().max(5000).nullable().optional(),
+    metadata: z
+      .object({
+        contact: contactSchema.nullish(),
+        address: addressSchema.nullish(),
+      })
+      .nullable()
+      .optional(),
+  })
+  .refine((value) => Object.keys(value).length > 0, { message: "empty" });
+
+/**
+ * BFF: a single business the signed-in user owns, resolved by slug. Forwards to the API's
+ * token-scoped `GET /businesses/{slug}`; a slug the user doesn't own is a 404 upstream and
+ * relayed as one.
+ */
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ slug: string }> },
+): Promise<NextResponse> {
+  const { slug } = await params;
+
+  const response = await callWithAuth<{ business?: Business }>({
+    method: "GET",
+    path: `/businesses/${encodeURIComponent(slug)}`,
+  });
+
+  if (response.ok) {
+    return NextResponse.json({ business: response.data.business });
+  }
+
+  return NextResponse.json(
+    { status: "error" },
+    { status: response.status === 404 ? 404 : 502 },
+  );
+}
+
+/**
+ * BFF: update a business the user owns. A partial PATCH — only the sent fields are applied.
+ * `metadata` is replaced wholesale by the API, so the client sends the full bag. A 422 relays
+ * the API's field errors; a 404 (not owned / gone) is relayed as-is.
+ */
+export async function PATCH(
+  request: Request,
+  { params }: { params: Promise<{ slug: string }> },
+): Promise<NextResponse> {
+  const { slug } = await params;
+
+  const parsed = updateSchema.safeParse(await request.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json({ status: "invalid" }, { status: 422 });
+  }
+
+  const response = await callWithAuth<{
+    business?: Business;
+    message?: string;
+    errors?: Record<string, string[]>;
+  }>({
+    method: "PATCH",
+    path: `/businesses/${encodeURIComponent(slug)}`,
+    body: parsed.data,
+  });
+
+  if (response.ok) {
+    return NextResponse.json({
+      status: "ok",
+      business: response.data.business,
+    });
+  }
+
+  if (response.status === 404) {
+    return NextResponse.json({ status: "not_found" }, { status: 404 });
+  }
+
+  return NextResponse.json(
+    {
+      status: "invalid",
+      message: response.data.message,
+      errors: response.data.errors,
+    },
+    { status: response.status === 422 ? 422 : 502 },
+  );
+}
+
+/**
+ * BFF: soft-delete a business the user owns. The API returns 204; a slug the user doesn't own
+ * is a 404 relayed as-is.
+ */
+export async function DELETE(
+  _request: Request,
+  { params }: { params: Promise<{ slug: string }> },
+): Promise<NextResponse> {
+  const { slug } = await params;
+
+  const response = await callWithAuth<{ message?: string }>({
+    method: "DELETE",
+    path: `/businesses/${encodeURIComponent(slug)}`,
+  });
+
+  if (response.ok) {
+    return NextResponse.json({ status: "ok" });
+  }
+
+  return NextResponse.json(
+    { status: "error" },
+    { status: response.status === 404 ? 404 : 502 },
+  );
+}

@@ -350,5 +350,54 @@
     "errorNameRequired": "Veuillez saisir le nom de l'entreprise.",
     "errorTypeRequired": "Veuillez choisir un type d'entreprise.",
     "errorGeneric": "Une erreur s'est produite. Veuillez réessayer."
+  },
+  "businesses": {
+    "title": "Mes entreprises",
+    "subtitle": "Les entreprises que vous gérez. Sélectionnez-en une pour la consulter ou la modifier.",
+    "empty": "Vous n'avez pas encore ajouté d'entreprise.",
+    "createFirst": "Créer votre première entreprise",
+    "createAnother": "Ajouter une entreprise",
+    "detail": {
+      "back": "Retour à mes entreprises",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "save": "Enregistrer les modifications",
+      "saving": "Enregistrement…",
+      "cancel": "Annuler",
+      "savedToast": "Modifications enregistrées.",
+      "deletedToast": "Entreprise supprimée.",
+      "notFound": "Cette entreprise n'existe pas ou vous n'y avez pas accès.",
+      "created": "Ajoutée le {date}",
+      "deleteTitle": "Supprimer cette entreprise?",
+      "deleteBody": "Cela retire « {name} » de vos entreprises.",
+      "deleteConfirm": "Supprimer l'entreprise",
+      "deleting": "Suppression…",
+      "sections": {
+        "headline": "Accroche",
+        "description": "Description",
+        "contact": "Coordonnées",
+        "address": "Adresse"
+      },
+      "fields": {
+        "name": "Nom de l'entreprise",
+        "headline": "Accroche",
+        "description": "Description",
+        "email": "Courriel",
+        "phone": "Téléphone",
+        "website": "Site Web",
+        "line1": "Adresse",
+        "line2": "Adresse ligne 2",
+        "city": "Ville",
+        "region": "Province ou région",
+        "postalCode": "Code postal",
+        "country": "Pays (code à 2 lettres)"
+      },
+      "empty": {
+        "headline": "Aucune accroche pour l'instant.",
+        "description": "Aucune description pour l'instant.",
+        "contact": "Aucune coordonnée pour l'instant.",
+        "address": "Aucune adresse pour l'instant."
+      }
+    }
   }
 }

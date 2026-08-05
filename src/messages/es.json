@@ -350,5 +350,54 @@
     "errorNameRequired": "Introduce el nombre del negocio.",
     "errorTypeRequired": "Elige un tipo de negocio.",
     "errorGeneric": "Algo salió mal. Inténtalo de nuevo."
+  },
+  "businesses": {
+    "title": "Mis negocios",
+    "subtitle": "Los negocios que gestionas. Selecciona uno para verlo o editarlo.",
+    "empty": "Aún no has añadido ningún negocio.",
+    "createFirst": "Crea tu primer negocio",
+    "createAnother": "Añadir negocio",
+    "detail": {
+      "back": "Volver a mis negocios",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "save": "Guardar cambios",
+      "saving": "Guardando…",
+      "cancel": "Cancelar",
+      "savedToast": "Cambios guardados.",
+      "deletedToast": "Negocio eliminado.",
+      "notFound": "Ese negocio no existe o no tienes acceso a él.",
+      "created": "Añadido el {date}",
+      "deleteTitle": "¿Eliminar este negocio?",
+      "deleteBody": "Esto quita «{name}» de tus negocios.",
+      "deleteConfirm": "Eliminar negocio",
+      "deleting": "Eliminando…",
+      "sections": {
+        "headline": "Titular",
+        "description": "Descripción",
+        "contact": "Contacto",
+        "address": "Dirección"
+      },
+      "fields": {
+        "name": "Nombre del negocio",
+        "headline": "Titular",
+        "description": "Descripción",
+        "email": "Correo electrónico",
+        "phone": "Teléfono",
+        "website": "Sitio web",
+        "line1": "Dirección",
+        "line2": "Dirección línea 2",
+        "city": "Ciudad",
+        "region": "Región o provincia",
+        "postalCode": "Código postal",
+        "country": "País (código de 2 letras)"
+      },
+      "empty": {
+        "headline": "Aún no hay titular.",
+        "description": "Aún no hay descripción.",
+        "contact": "Aún no hay datos de contacto.",
+        "address": "Aún no hay dirección."
+      }
+    }
   }
 }

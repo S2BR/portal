@@ -1,0 +1,89 @@
+"use client";
+
+import { Building2, User2, type LucideIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
+
+import type { BusinessType } from "@/app/api/businesses/route";
+import { cn } from "@/lib/utils";
+
+/**
+ * The business-type selector — Company vs Self-employed as a card radio. Shared by the create
+ * and edit forms so the two stay identical; labels come from the shared `businessNew.types`
+ * messages.
+ */
+export function BusinessTypeField({
+  value,
+  onChange,
+  label,
+  error,
+}: {
+  value: BusinessType | null;
+  onChange: (type: BusinessType) => void;
+  label: string;
+  error?: string;
+}) {
+  const t = useTranslations("businessNew");
+
+  const options: {
+    value: BusinessType;
+    title: string;
+    description: string;
+    Icon: LucideIcon;
+  }[] = [
+    {
+      value: "company",
+      title: t("types.company.title"),
+      description: t("types.company.description"),
+      Icon: Building2,
+    },
+    {
+      value: "self_employed",
+      title: t("types.selfEmployed.title"),
+      description: t("types.selfEmployed.description"),
+      Icon: User2,
+    },
+  ];
+
+  return (
+    <fieldset className="space-y-2">
+      <legend className="mb-1 text-sm font-medium">{label}</legend>
+      <div className="grid gap-3 sm:grid-cols-2">
+        {options.map((option) => {
+          const selected = value === option.value;
+          return (
+            <button
+              type="button"
+              key={option.value}
+              onClick={() => onChange(option.value)}
+              aria-pressed={selected}
+              className={cn(
+                "focus-visible:ring-ring flex items-start gap-3 rounded-xl border p-4 text-left transition-colors outline-none focus-visible:ring-2",
+                selected
+                  ? "border-primary bg-primary/5 ring-primary/20 ring-1"
+                  : "hover:border-primary/40",
+              )}
+            >
+              <span
+                className={cn(
+                  "flex size-10 shrink-0 items-center justify-center rounded-lg",
+                  selected
+                    ? "bg-primary/10 text-primary"
+                    : "bg-muted text-muted-foreground",
+                )}
+              >
+                <option.Icon className="size-5" />
+              </span>
+              <span className="min-w-0">
+                <span className="block font-medium">{option.title}</span>
+                <span className="text-muted-foreground block text-sm">
+                  {option.description}
+                </span>
+              </span>
+            </button>
+          );
+        })}
+      </div>
+      {error ? <p className="text-destructive text-sm">{error}</p> : null}
+    </fieldset>
+  );
+}

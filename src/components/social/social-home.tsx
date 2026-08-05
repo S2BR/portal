@@ -1,4 +1,4 @@
-import { Building2, Newspaper, Plus } from "lucide-react";
+import { Building2, ChevronRight, Newspaper, Plus } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 
@@ -9,9 +9,10 @@ import { AppShell } from "@/components/app-shell";
  * "create" action lives here: adding a business now, expanding to events/services/etc. later.
  */
 export async function SocialHome() {
-  const [t, create] = await Promise.all([
+  const [t, create, businesses] = await Promise.all([
     getTranslations("social"),
     getTranslations("create"),
+    getTranslations("businesses"),
   ]);
 
   return (
@@ -52,6 +53,14 @@ export async function SocialHome() {
               </div>
             </Link>
           </div>
+
+          <Link
+            href="/portal/businesses"
+            className="text-primary inline-flex items-center gap-1 text-sm font-medium hover:underline"
+          >
+            {businesses("title")}
+            <ChevronRight className="size-4 rtl:rotate-180" aria-hidden />
+          </Link>
         </section>
 
         <section className="flex flex-col items-center gap-3 border-t py-10 text-center">

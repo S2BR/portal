@@ -350,5 +350,54 @@
     "errorNameRequired": "Please enter a business name.",
     "errorTypeRequired": "Please choose a business type.",
     "errorGeneric": "Something went wrong. Please try again."
+  },
+  "businesses": {
+    "title": "My businesses",
+    "subtitle": "The businesses you own. Select one to view or edit it.",
+    "empty": "You haven't added a business yet.",
+    "createFirst": "Create your first business",
+    "createAnother": "Add business",
+    "detail": {
+      "back": "Back to my businesses",
+      "edit": "Edit",
+      "delete": "Delete",
+      "save": "Save changes",
+      "saving": "Saving…",
+      "cancel": "Cancel",
+      "savedToast": "Changes saved.",
+      "deletedToast": "Business deleted.",
+      "notFound": "That business doesn't exist, or you don't have access to it.",
+      "created": "Added {date}",
+      "deleteTitle": "Delete this business?",
+      "deleteBody": "This removes “{name}” from your businesses.",
+      "deleteConfirm": "Delete business",
+      "deleting": "Deleting…",
+      "sections": {
+        "headline": "Headline",
+        "description": "Description",
+        "contact": "Contact",
+        "address": "Address"
+      },
+      "fields": {
+        "name": "Business name",
+        "headline": "Headline",
+        "description": "Description",
+        "email": "Email",
+        "phone": "Phone",
+        "website": "Website",
+        "line1": "Address",
+        "line2": "Address line 2",
+        "city": "City",
+        "region": "Region or state",
+        "postalCode": "Postal code",
+        "country": "Country (2-letter code)"
+      },
+      "empty": {
+        "headline": "No headline yet.",
+        "description": "No description yet.",
+        "contact": "No contact details yet.",
+        "address": "No address yet."
+      }
+    }
   }
 }

@@ -350,5 +350,54 @@
     "errorNameRequired": "Informe o nome do negócio.",
     "errorTypeRequired": "Escolha um tipo de negócio.",
     "errorGeneric": "Algo deu errado. Tente novamente."
+  },
+  "businesses": {
+    "title": "Meus negócios",
+    "subtitle": "Os negócios que você administra. Selecione um para ver ou editar.",
+    "empty": "Você ainda não adicionou nenhum negócio.",
+    "createFirst": "Crie seu primeiro negócio",
+    "createAnother": "Adicionar negócio",
+    "detail": {
+      "back": "Voltar aos meus negócios",
+      "edit": "Editar",
+      "delete": "Excluir",
+      "save": "Salvar alterações",
+      "saving": "Salvando…",
+      "cancel": "Cancelar",
+      "savedToast": "Alterações salvas.",
+      "deletedToast": "Negócio excluído.",
+      "notFound": "Esse negócio não existe ou você não tem acesso a ele.",
+      "created": "Adicionado em {date}",
+      "deleteTitle": "Excluir este negócio?",
+      "deleteBody": "Isso remove “{name}” dos seus negócios.",
+      "deleteConfirm": "Excluir negócio",
+      "deleting": "Excluindo…",
+      "sections": {
+        "headline": "Chamada",
+        "description": "Descrição",
+        "contact": "Contato",
+        "address": "Endereço"
+      },
+      "fields": {
+        "name": "Nome do negócio",
+        "headline": "Chamada",
+        "description": "Descrição",
+        "email": "E-mail",
+        "phone": "Telefone",
+        "website": "Site",
+        "line1": "Endereço",
+        "line2": "Endereço linha 2",
+        "city": "Cidade",
+        "region": "Região ou estado",
+        "postalCode": "CEP",
+        "country": "País (código de 2 letras)"
+      },
+      "empty": {
+        "headline": "Ainda sem chamada.",
+        "description": "Ainda sem descrição.",
+        "contact": "Ainda sem dados de contato.",
+        "address": "Ainda sem endereço."
+      }
+    }
   }
 }
