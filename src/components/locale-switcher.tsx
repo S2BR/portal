@@ -37,7 +37,7 @@ function LocaleFlag({
 }
 
 export function LocaleSwitcher({
-  variant = "outline",
+  variant = "ghost",
 }: {
   variant?: "outline" | "ghost";
 } = {}) {

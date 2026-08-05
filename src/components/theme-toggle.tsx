@@ -39,7 +39,7 @@ function iconFor(mode: ThemeSelection) {
  * auth and legal screens; the authenticated app houses the theme control in the user menu.
  */
 export function ThemeToggle({
-  variant = "outline",
+  variant = "ghost",
 }: {
   variant?: "outline" | "ghost";
 } = {}) {

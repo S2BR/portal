@@ -121,7 +121,7 @@ export function UserMenu() {
   return (
     <DropdownMenu onOpenChange={onOpenChange}>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="gap-2">
+        <Button variant="ghost" className="gap-2">
           <UserAvatar
             name={user.name}
             src={user.avatar}

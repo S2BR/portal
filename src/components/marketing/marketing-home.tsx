@@ -53,8 +53,8 @@ export async function MarketingHome() {
             </span>
           </Link>
           <div className="ms-auto flex items-center gap-2">
-            <LocaleSwitcher variant="ghost" />
-            <ThemeToggle variant="ghost" />
+            <LocaleSwitcher />
+            <ThemeToggle />
             <Button asChild variant="ghost">
               <Link href="/login">{t("nav.login")}</Link>
             </Button>

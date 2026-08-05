@@ -26,7 +26,7 @@ export function DirectionToggle() {
 
   return (
     <Button
-      variant="outline"
+      variant="ghost"
       size="icon"
       onClick={toggle}
       aria-label="Toggle text direction (dev)"
