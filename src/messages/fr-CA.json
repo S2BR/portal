@@ -330,6 +330,25 @@
     }
   },
   "businessNew": {
-    "comingSoon": "Le formulaire complet arrive bientôt — c'est ici que vous ajouterez les informations de votre entreprise."
+    "subtitle": "Commencez par l'essentiel : vous pourrez ajouter des détails comme l'adresse, les heures et la description plus tard.",
+    "nameLabel": "Nom de l'entreprise",
+    "namePlaceholder": "p. ex. Acme Roasters",
+    "typeLabel": "De quel type d'entreprise s'agit-il?",
+    "types": {
+      "company": {
+        "title": "Entreprise",
+        "description": "Une entreprise ou organisation enregistrée."
+      },
+      "selfEmployed": {
+        "title": "Travailleur autonome",
+        "description": "Vous travaillez à votre compte : pigiste, travailleur autonome, indépendant."
+      }
+    },
+    "submit": "Créer l'entreprise",
+    "submitting": "Création…",
+    "createdToast": "Entreprise créée.",
+    "errorNameRequired": "Veuillez saisir le nom de l'entreprise.",
+    "errorTypeRequired": "Veuillez choisir un type d'entreprise.",
+    "errorGeneric": "Une erreur s'est produite. Veuillez réessayer."
   }
 }

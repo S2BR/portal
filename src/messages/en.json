@@ -330,6 +330,25 @@
     }
   },
   "businessNew": {
-    "comingSoon": "The full form is coming soon — this is where you'll add your business details."
+    "subtitle": "Start with the basics — you can add details like address, hours, and description later.",
+    "nameLabel": "Business name",
+    "namePlaceholder": "e.g. Acme Roasters",
+    "typeLabel": "What kind of business is this?",
+    "types": {
+      "company": {
+        "title": "Company",
+        "description": "A registered business or organization."
+      },
+      "selfEmployed": {
+        "title": "Self-employed",
+        "description": "You work for yourself — freelancer, sole trader, independent."
+      }
+    },
+    "submit": "Create business",
+    "submitting": "Creating…",
+    "createdToast": "Business created.",
+    "errorNameRequired": "Please enter a business name.",
+    "errorTypeRequired": "Please choose a business type.",
+    "errorGeneric": "Something went wrong. Please try again."
   }
 }

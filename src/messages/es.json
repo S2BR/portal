@@ -330,6 +330,25 @@
     }
   },
   "businessNew": {
-    "comingSoon": "El formulario completo llegará pronto: aquí añadirás los datos de tu negocio."
+    "subtitle": "Empieza por lo básico: podrás añadir detalles como dirección, horario y descripción más adelante.",
+    "nameLabel": "Nombre del negocio",
+    "namePlaceholder": "p. ej. Acme Roasters",
+    "typeLabel": "¿Qué tipo de negocio es?",
+    "types": {
+      "company": {
+        "title": "Empresa",
+        "description": "Un negocio u organización registrada."
+      },
+      "selfEmployed": {
+        "title": "Autónomo",
+        "description": "Trabajas por tu cuenta: freelance, autónomo, independiente."
+      }
+    },
+    "submit": "Crear negocio",
+    "submitting": "Creando…",
+    "createdToast": "Negocio creado.",
+    "errorNameRequired": "Introduce el nombre del negocio.",
+    "errorTypeRequired": "Elige un tipo de negocio.",
+    "errorGeneric": "Algo salió mal. Inténtalo de nuevo."
   }
 }
