@@ -6,49 +6,54 @@ import { useTheme } from "next-themes";
 
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  ThemeToggler,
+  type Resolved,
+  type ThemeSelection,
+} from "@/components/ui/theme-toggler";
 
+const MODES: ThemeSelection[] = ["light", "dark", "system"];
+
+function iconFor(mode: ThemeSelection) {
+  if (mode === "system") {
+    return <Monitor className="size-4" />;
+  }
+  if (mode === "dark") {
+    return <Moon className="size-4" />;
+  }
+  return <Sun className="size-4" />;
+}
+
+function nextMode(mode: ThemeSelection): ThemeSelection {
+  const index = MODES.indexOf(mode);
+  return MODES[(index + 1) % MODES.length] ?? "system";
+}
+
+/**
+ * Theme control: cycles light → dark → system, transitioning the whole page with a gradual
+ * clip-path wipe (View Transitions API). The icon reflects the current mode.
+ */
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { theme, resolvedTheme, setTheme } = useTheme();
   const t = useTranslations("theme");
 
-  const options = [
-    { value: "light", Icon: Sun, label: t("light") },
-    { value: "dark", Icon: Moon, label: t("dark") },
-    { value: "system", Icon: Monitor, label: t("system") },
-  ];
-
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+    <ThemeToggler
+      theme={theme as ThemeSelection | undefined}
+      resolvedTheme={resolvedTheme as Resolved | undefined}
+      setTheme={setTheme}
+      direction="ltr"
+    >
+      {({ effective, toggleTheme }) => (
         <Button
           variant="outline"
           size="icon"
-          className="relative"
           aria-label={t("label")}
+          title={t(effective)}
+          onClick={() => toggleTheme(nextMode(effective))}
         >
-          <Sun className="size-4 scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
-          <Moon className="absolute size-4 scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
+          {iconFor(effective)}
         </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-40">
-        {options.map(({ value, Icon, label }) => (
-          <DropdownMenuItem key={value} onClick={() => setTheme(value)}>
-            <Icon className="size-4" />
-            {label}
-            {theme === value ? (
-              <span
-                className="bg-primary ms-auto size-2 shrink-0 rounded-full"
-                aria-hidden
-              />
-            ) : null}
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+      )}
+    </ThemeToggler>
   );
 }
