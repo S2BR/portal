@@ -28,7 +28,11 @@ import {
   socialLabel,
 } from "@/components/business/business-constants";
 import type { PlaceAddress } from "@/app/api/addresses/place/[id]/route";
+import type { Amenity } from "@/app/api/amenities/route";
+import type { Category } from "@/app/api/categories/route";
 import { AddressAutocomplete } from "@/components/business/address-autocomplete";
+import { AmenitiesPicker } from "@/components/business/amenities-picker";
+import { CategoryPicker } from "@/components/business/category-picker";
 import { BusinessTypeField } from "@/components/business/business-type-field";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -85,6 +89,8 @@ type EditState = {
   socials: SocialRow[];
   hours: Record<DayOfWeek, HourRow>;
   addresses: AddressEntry[];
+  categoryIds: number[];
+  amenityIds: number[];
 };
 
 function blankAddress(): AddressEntry {
@@ -150,6 +156,8 @@ function toEditState(business: Business): EditState {
       notes: address.notes ?? "",
       isMain: address.is_main,
     })),
+    categoryIds: (business.categories ?? []).map((category) => category.id),
+    amenityIds: (business.amenities ?? []).map((amenity) => amenity.id),
   };
 }
 
@@ -220,6 +228,8 @@ function buildPayload(edit: EditState) {
         notes: trimOrNull(address.notes),
         is_main: address.isMain,
       })),
+    category_ids: edit.categoryIds,
+    amenity_ids: edit.amenityIds,
   };
 }
 
@@ -242,6 +252,8 @@ export function BusinessDetail({ slug }: { slug: string }) {
   const [nameError, setNameError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [categoryTree, setCategoryTree] = useState<Category[]>([]);
+  const [amenityGroups, setAmenityGroups] = useState<Amenity[]>([]);
 
   const load = useCallback(async () => {
     try {
@@ -268,6 +280,30 @@ export function BusinessDetail({ slug }: { slug: string }) {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     void load();
   }, [load]);
+
+  // Category tree + amenity groups for the pickers (reference data; loaded once).
+  useEffect(() => {
+    let active = true;
+    void Promise.all([
+      fetch("/api/categories").then(
+        (response) => response.json() as Promise<{ categories?: Category[] }>,
+      ),
+      fetch("/api/amenities").then(
+        (response) => response.json() as Promise<{ amenities?: Amenity[] }>,
+      ),
+    ])
+      .then(([categories, amenities]) => {
+        if (!active) {
+          return;
+        }
+        setCategoryTree(categories.categories ?? []);
+        setAmenityGroups(amenities.amenities ?? []);
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, []);
 
   function startEditing() {
     if (!business) {
@@ -401,11 +437,27 @@ export function BusinessDetail({ slug }: { slug: string }) {
   const tabItems = [
     { value: "general", label: tabs("general") },
     { value: "contact", label: tabs("contact") },
+    { value: "amenities", label: tabs("amenities") },
     { value: "address", label: tabs("address") },
     { value: "hours", label: tabs("hours") },
     { value: "socials", label: tabs("socials") },
     { value: "branding", label: tabs("branding") },
   ];
+
+  // Selected category slugs (roots and subcategories) drive the amenity filter.
+  const selectedCategoryIds = new Set(edit?.categoryIds ?? []);
+  const selectedRootSlugs: string[] = [];
+  const selectedSubSlugs: string[] = [];
+  for (const root of categoryTree) {
+    if (selectedCategoryIds.has(root.id)) {
+      selectedRootSlugs.push(root.slug);
+    }
+    for (const sub of root.subcategories ?? []) {
+      if (selectedCategoryIds.has(sub.id)) {
+        selectedSubSlugs.push(sub.slug);
+      }
+    }
+  }
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
@@ -484,6 +536,13 @@ export function BusinessDetail({ slug }: { slug: string }) {
                     rows={4}
                   />
                 </Field>
+                <Field label={fields("categories")}>
+                  <CategoryPicker
+                    tree={categoryTree}
+                    value={edit.categoryIds}
+                    onChange={(categoryIds) => patch({ categoryIds })}
+                  />
+                </Field>
                 <Field
                   label={fields("categorySuggestion")}
                   hint={t("categoryHint")}
@@ -511,7 +570,43 @@ export function BusinessDetail({ slug }: { slug: string }) {
                     <Muted>{blank("description")}</Muted>
                   )}
                 </ViewBlock>
+                <ViewBlock label={fields("categories")}>
+                  {business.categories && business.categories.length > 0 ? (
+                    <div className="flex flex-wrap gap-1.5">
+                      {business.categories.map((category) => (
+                        <Badge key={category.id} variant="outline">
+                          {category.name}
+                        </Badge>
+                      ))}
+                    </div>
+                  ) : (
+                    <Muted>{blank("categories")}</Muted>
+                  )}
+                </ViewBlock>
               </div>
+            )}
+          </TabsContent>
+
+          {/* Amenities */}
+          <TabsContent value="amenities">
+            {editing && edit ? (
+              <AmenitiesPicker
+                groups={amenityGroups}
+                selectedRootSlugs={selectedRootSlugs}
+                selectedSubSlugs={selectedSubSlugs}
+                value={edit.amenityIds}
+                onChange={(amenityIds) => patch({ amenityIds })}
+              />
+            ) : business.amenities && business.amenities.length > 0 ? (
+              <div className="flex flex-wrap gap-1.5">
+                {business.amenities.map((amenity) => (
+                  <Badge key={amenity.id} variant="outline">
+                    {amenity.name}
+                  </Badge>
+                ))}
+              </div>
+            ) : (
+              <Muted>{blank("amenities")}</Muted>
             )}
           </TabsContent>
 

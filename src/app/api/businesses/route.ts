@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
+import type { Amenity } from "@/app/api/amenities/route";
+import type { Category } from "@/app/api/categories/route";
 import { callWithAuth } from "@/lib/api/authed";
 
 export type BusinessType = "company" | "self_employed";
@@ -89,6 +91,8 @@ export interface Business {
   socials?: BusinessSocial[];
   opening_hours?: BusinessOpeningHour[];
   addresses?: BusinessAddress[];
+  categories?: Category[];
+  amenities?: Amenity[];
   is_claimed: boolean;
   claimed_at: string | null;
   created_at: string | null;

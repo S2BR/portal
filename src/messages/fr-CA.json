@@ -403,7 +403,8 @@
         "longitude": "Longitude",
         "notes": "Notes",
         "open": "Ouvre",
-        "close": "Ferme"
+        "close": "Ferme",
+        "categories": "Catégories"
       },
       "empty": {
         "headline": "Aucune accroche pour l'instant.",
@@ -412,7 +413,9 @@
         "address": "Aucune adresse pour l'instant.",
         "hours": "Aucune heure d'ouverture pour l'instant.",
         "socials": "Aucun réseau social pour l'instant.",
-        "branding": "Aucune couleur de marque pour l'instant."
+        "branding": "Aucune couleur de marque pour l'instant.",
+        "categories": "Aucune catégorie choisie pour l'instant.",
+        "amenities": "Aucune commodité sélectionnée pour l'instant."
       },
       "tabs": {
         "general": "Général",
@@ -420,7 +423,8 @@
         "address": "Adresse",
         "hours": "Heures d'ouverture",
         "socials": "Réseaux sociaux",
-        "branding": "Image de marque"
+        "branding": "Image de marque",
+        "amenities": "Commodités"
       },
       "days": {
         "monday": "Lundi",
@@ -446,7 +450,10 @@
       },
       "mainAddress": "Adresse principale",
       "addAddress": "Ajouter une adresse",
-      "removeAddress": "Supprimer l’adresse"
+      "removeAddress": "Supprimer l’adresse",
+      "categoriesEmpty": "Aucune catégorie disponible pour l'instant.",
+      "searchAmenities": "Rechercher des commodités…",
+      "amenitiesEmpty": "Aucune commodité ne correspond; choisissez une catégorie pour en voir plus."
     }
   }
 }

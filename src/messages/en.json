@@ -403,7 +403,8 @@
         "longitude": "Longitude",
         "notes": "Notes",
         "open": "Opens",
-        "close": "Closes"
+        "close": "Closes",
+        "categories": "Categories"
       },
       "empty": {
         "headline": "No headline yet.",
@@ -412,7 +413,9 @@
         "address": "No address yet.",
         "hours": "No opening hours yet.",
         "socials": "No social links yet.",
-        "branding": "No brand color yet."
+        "branding": "No brand color yet.",
+        "categories": "No categories chosen yet.",
+        "amenities": "No amenities selected yet."
       },
       "tabs": {
         "general": "General",
@@ -420,7 +423,8 @@
         "address": "Address",
         "hours": "Opening hours",
         "socials": "Socials",
-        "branding": "Branding"
+        "branding": "Branding",
+        "amenities": "Amenities"
       },
       "days": {
         "monday": "Monday",
@@ -446,7 +450,10 @@
       },
       "mainAddress": "Main address",
       "addAddress": "Add address",
-      "removeAddress": "Remove address"
+      "removeAddress": "Remove address",
+      "categoriesEmpty": "No categories available yet.",
+      "searchAmenities": "Search amenities…",
+      "amenitiesEmpty": "No amenities match — pick a category to see more."
     }
   }
 }

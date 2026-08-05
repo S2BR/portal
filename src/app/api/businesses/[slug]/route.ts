@@ -52,6 +52,8 @@ const updateSchema = z
     socials: z.array(socialSchema).optional(),
     opening_hours: z.array(openingHourSchema).optional(),
     addresses: z.array(addressSchema).optional(),
+    category_ids: z.array(z.number()).optional(),
+    amenity_ids: z.array(z.number()).optional(),
   })
   .refine((value) => Object.keys(value).length > 0, { message: "empty" });
 
