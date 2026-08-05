@@ -36,7 +36,11 @@ function LocaleFlag({
   );
 }
 
-export function LocaleSwitcher() {
+export function LocaleSwitcher({
+  variant = "outline",
+}: {
+  variant?: "outline" | "ghost";
+} = {}) {
   const locale = useLocale();
   const activeLocale = isLocale(locale) ? locale : locales[0];
   const t = useTranslations("locale");
@@ -54,7 +58,7 @@ export function LocaleSwitcher() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          variant="outline"
+          variant={variant}
           size="icon"
           aria-label={t("label")}
           disabled={isPending}

@@ -1,6 +1,5 @@
 import {
   CalendarDays,
-  Globe,
   Store,
   UtensilsCrossed,
   Wrench,
@@ -10,6 +9,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
+import { LocaleSwitcher } from "@/components/locale-switcher";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 
 /**
@@ -52,7 +53,9 @@ export async function MarketingHome() {
             </span>
           </Link>
           <div className="ms-auto flex items-center gap-2">
-            <Button asChild variant="ghost" size="sm">
+            <LocaleSwitcher variant="ghost" />
+            <ThemeToggle variant="ghost" />
+            <Button asChild variant="ghost">
               <Link href="/login">{t("nav.login")}</Link>
             </Button>
           </div>
@@ -81,17 +84,15 @@ export async function MarketingHome() {
             </div>
           </div>
 
-          <div className="from-brand-green-deep via-brand-green to-brand-green-deep relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-3xl bg-gradient-to-br p-8 shadow-lg">
-            <div
-              aria-hidden
-              className="pointer-events-none absolute -end-16 -top-16 size-64 rounded-full bg-white/10 blur-3xl"
+          <div className="relative mx-auto aspect-[2/3] w-full max-w-sm overflow-hidden rounded-3xl shadow-lg lg:ms-auto">
+            <Image
+              src="/images/side_image_01.jpg"
+              alt={t("hero.caption")}
+              fill
+              priority
+              sizes="(min-width: 1024px) 24rem, 100vw"
+              className="object-cover"
             />
-            <div className="relative flex flex-col items-center gap-4 text-center">
-              <Globe className="size-16 text-white/90" aria-hidden />
-              <p className="max-w-xs text-lg font-medium text-balance text-white">
-                {t("hero.caption")}
-              </p>
-            </div>
           </div>
         </section>
 
