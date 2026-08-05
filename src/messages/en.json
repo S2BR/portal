@@ -319,6 +319,17 @@
   },
   "social": {
     "comingTitle": "Your feed is coming soon",
-    "comingSubtitle": "This is where you'll see what's happening around you and in your communities. We're building it now — check back soon."
+    "comingSubtitle": "This is where you'll see what's happening around you and in your communities. We're building it now — check back soon.",
+    "getStartedTitle": "Get started",
+    "getStartedSubtitle": "Add your world to S2BR — start with your business. Events, services and more are coming soon."
+  },
+  "create": {
+    "business": {
+      "title": "Create a business",
+      "subtitle": "List your company so your community can find it."
+    }
+  },
+  "businessNew": {
+    "comingSoon": "The full form is coming soon — this is where you'll add your business details."
   }
 }
