@@ -10,8 +10,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
-import { LocaleSwitcher } from "@/components/locale-switcher";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 
 /**
@@ -54,8 +52,6 @@ export async function MarketingHome() {
             </span>
           </Link>
           <div className="ms-auto flex items-center gap-2">
-            <LocaleSwitcher />
-            <ThemeToggle />
             <Button asChild variant="ghost" size="sm">
               <Link href="/login">{t("nav.login")}</Link>
             </Button>
