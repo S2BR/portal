@@ -102,7 +102,8 @@
       "invalidTitle": "This sign-in link didn’t work",
       "invalidSubtitle": "It may have expired or already been used. Request a new one to sign in.",
       "backToLogin": "Back to sign in"
-    }
+    },
+    "goBack": "Go back"
   },
   "legal": {
     "terms": "Terms of Service",
@@ -149,7 +150,8 @@
     "signOut": "Sign out",
     "profile": "Profile",
     "addAccount": "Add another account",
-    "signOutAll": "Sign out of all accounts"
+    "signOutAll": "Sign out of all accounts",
+    "portal": "Portal"
   },
   "profile": {
     "title": "Profile",
@@ -287,5 +289,36 @@
     "confirm": "Confirm",
     "cancel": "Cancel",
     "passkeyError": "We couldn't verify your passkey. Please try again."
+  },
+  "marketing": {
+    "nav": {
+      "login": "Log in"
+    },
+    "hero": {
+      "launch": "Launching September 7, 2026",
+      "title": "Bringing communities together.",
+      "subtitle": "Your Brazilian community, wherever life takes you. Explore nearby stores, food, events, and services — built for Brazilians living around the world.",
+      "ctaPrimary": "Get started",
+      "ctaSecondary": "Sign in",
+      "caption": "Brazilians around the world, connecting through S2BR"
+    },
+    "features": {
+      "stores": "Stores",
+      "food": "Food",
+      "events": "Events",
+      "services": "Services"
+    },
+    "footer": {
+      "products": "Products",
+      "services": "Services",
+      "news": "News",
+      "events": "Events",
+      "social": "Social",
+      "rights": "© {year} S2BR"
+    }
+  },
+  "social": {
+    "comingTitle": "Your feed is coming soon",
+    "comingSubtitle": "This is where you'll see what's happening around you and in your communities. We're building it now — check back soon."
   }
 }

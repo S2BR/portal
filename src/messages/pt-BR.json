@@ -102,7 +102,8 @@
       "invalidTitle": "Este link de acesso não funcionou",
       "invalidSubtitle": "Ele pode ter expirado ou já ter sido usado. Solicite um novo para entrar.",
       "backToLogin": "Voltar ao login"
-    }
+    },
+    "goBack": "Voltar"
   },
   "legal": {
     "terms": "Termos de Serviço",
@@ -149,7 +150,8 @@
     "signOut": "Sair",
     "profile": "Perfil",
     "addAccount": "Adicionar outra conta",
-    "signOutAll": "Sair de todas as contas"
+    "signOutAll": "Sair de todas as contas",
+    "portal": "Portal"
   },
   "profile": {
     "title": "Perfil",
@@ -287,5 +289,36 @@
     "confirm": "Confirmar",
     "cancel": "Cancelar",
     "passkeyError": "Não foi possível verificar sua chave de acesso. Tente novamente."
+  },
+  "marketing": {
+    "nav": {
+      "login": "Entrar"
+    },
+    "hero": {
+      "launch": "Lançamento em 7 de setembro de 2026",
+      "title": "Aproximando comunidades.",
+      "subtitle": "Sua comunidade brasileira, onde quer que a vida leve você. Descubra lojas, comida, eventos e serviços por perto — feito para brasileiros pelo mundo.",
+      "ctaPrimary": "Começar",
+      "ctaSecondary": "Entrar",
+      "caption": "Brasileiros pelo mundo, conectados pelo S2BR"
+    },
+    "features": {
+      "stores": "Lojas",
+      "food": "Comida",
+      "events": "Eventos",
+      "services": "Serviços"
+    },
+    "footer": {
+      "products": "Produtos",
+      "services": "Serviços",
+      "news": "Notícias",
+      "events": "Eventos",
+      "social": "Social",
+      "rights": "© {year} S2BR"
+    }
+  },
+  "social": {
+    "comingTitle": "Seu feed chega em breve",
+    "comingSubtitle": "Aqui você verá o que está acontecendo ao seu redor e nas suas comunidades. Estamos construindo — volte em breve."
   }
 }

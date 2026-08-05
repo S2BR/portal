@@ -3,8 +3,10 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 vi.mock("@/lib/api/authed", () => ({
   callWithAuth: vi.fn(),
 }));
+vi.mock("@/lib/auth/session", () => ({ clearSessionCookies: vi.fn() }));
 
 import { callWithAuth } from "@/lib/api/authed";
+import { clearSessionCookies } from "@/lib/auth/session";
 
 import { GET } from "./route";
 
@@ -47,5 +49,8 @@ describe("GET /api/auth/me", () => {
 
     expect(res.status).toBe(401);
     expect((await res.json()).user).toBeNull();
+    // The stale cookies are cleared so the proxy stops treating the visitor as authenticated
+    // (otherwise a /login redirect bounces back to / forever).
+    expect(clearSessionCookies).toHaveBeenCalledOnce();
   });
 });

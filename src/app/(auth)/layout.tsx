@@ -1,13 +1,18 @@
 import Image from "next/image";
+import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
+import { AuthBackButton } from "@/components/auth/auth-back-button";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 export default async function AuthLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const t = await getTranslations("auth");
+  const [t, brand] = await Promise.all([
+    getTranslations("auth"),
+    getTranslations("brand"),
+  ]);
 
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
@@ -28,15 +33,17 @@ export default async function AuthLayout({
         />
 
         <div className="relative max-w-md space-y-8">
-          <Image
-            src="/s2br.svg"
-            alt="S2BR"
-            width={112}
-            height={112}
-            priority
-            unoptimized
-            className="size-28 rounded-2xl border-4 border-white drop-shadow-[0_6px_16px_rgba(0,0,0,0.45)]"
-          />
+          <Link href="/" aria-label={brand("name")} className="inline-flex">
+            <Image
+              src="/s2br.svg"
+              alt="S2BR"
+              width={112}
+              height={112}
+              priority
+              unoptimized
+              className="size-28 rounded-2xl border-4 border-white drop-shadow-[0_6px_16px_rgba(0,0,0,0.45)] transition-transform hover:scale-[1.03]"
+            />
+          </Link>
           <div className="space-y-4">
             <p className="font-heading text-4xl leading-tight font-semibold text-balance text-white">
               {t("tagline")}
@@ -48,9 +55,12 @@ export default async function AuthLayout({
 
       {/* Form panel */}
       <div className="relative flex min-h-full flex-col">
-        <div className="flex items-center justify-end gap-2 p-4">
-          <LocaleSwitcher />
-          <ThemeToggle />
+        <div className="flex items-center justify-between gap-2 p-4">
+          <AuthBackButton />
+          <div className="flex items-center gap-2">
+            <LocaleSwitcher />
+            <ThemeToggle />
+          </div>
         </div>
         <div className="flex flex-1 items-center justify-center px-4 pb-16">
           {children}

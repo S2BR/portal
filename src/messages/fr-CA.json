@@ -102,7 +102,8 @@
       "invalidTitle": "Ce lien de connexion n’a pas fonctionné",
       "invalidSubtitle": "Il a peut-être expiré ou déjà été utilisé. Demandez-en un nouveau pour vous connecter.",
       "backToLogin": "Retour à la connexion"
-    }
+    },
+    "goBack": "Retour"
   },
   "legal": {
     "terms": "Conditions d’utilisation",
@@ -149,7 +150,8 @@
     "signOut": "Se déconnecter",
     "profile": "Profil",
     "addAccount": "Ajouter un autre compte",
-    "signOutAll": "Se déconnecter de tous les comptes"
+    "signOutAll": "Se déconnecter de tous les comptes",
+    "portal": "Portail"
   },
   "profile": {
     "title": "Profil",
@@ -287,5 +289,36 @@
     "confirm": "Confirmer",
     "cancel": "Annuler",
     "passkeyError": "Nous n'avons pas pu vérifier votre clé d'accès. Veuillez réessayer."
+  },
+  "marketing": {
+    "nav": {
+      "login": "Se connecter"
+    },
+    "hero": {
+      "launch": "Lancement le 7 septembre 2026",
+      "title": "Rassembler les communautés.",
+      "subtitle": "Votre communauté brésilienne, où que la vie vous mène. Découvrez les commerces, la cuisine, les événements et les services près de chez vous — conçu pour les Brésiliens du monde entier.",
+      "ctaPrimary": "Commencer",
+      "ctaSecondary": "Se connecter",
+      "caption": "Des Brésiliens du monde entier, connectés grâce à S2BR"
+    },
+    "features": {
+      "stores": "Commerces",
+      "food": "Cuisine",
+      "events": "Événements",
+      "services": "Services"
+    },
+    "footer": {
+      "products": "Produits",
+      "services": "Services",
+      "news": "Actualités",
+      "events": "Événements",
+      "social": "Social",
+      "rights": "© {year} S2BR"
+    }
+  },
+  "social": {
+    "comingTitle": "Votre fil arrive bientôt",
+    "comingSubtitle": "C'est ici que vous verrez ce qui se passe autour de vous et dans vos communautés. Nous le construisons — revenez bientôt."
   }
 }

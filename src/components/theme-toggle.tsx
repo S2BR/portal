@@ -38,7 +38,11 @@ function iconFor(mode: ThemeSelection) {
  * whole page with the gradual clip-path wipe (it wraps the ThemeToggler primitive). Used on the
  * auth and legal screens; the authenticated app houses the theme control in the user menu.
  */
-export function ThemeToggle() {
+export function ThemeToggle({
+  variant = "ghost",
+}: {
+  variant?: "outline" | "ghost";
+} = {}) {
   const { theme, resolvedTheme, setTheme } = useTheme();
   const t = useTranslations("theme");
 
@@ -52,7 +56,7 @@ export function ThemeToggle() {
       {({ effective, toggleTheme }) => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="icon" aria-label={t("label")}>
+            <Button variant={variant} size="icon" aria-label={t("label")}>
               {iconFor(effective)}
             </Button>
           </DropdownMenuTrigger>
