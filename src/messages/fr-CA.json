@@ -291,8 +291,7 @@
   },
   "marketing": {
     "nav": {
-      "partnerPortal": "Portail des partenaires",
-      "signIn": "Se connecter"
+      "login": "Se connecter"
     },
     "hero": {
       "launch": "Lancement le 7 septembre 2026",
