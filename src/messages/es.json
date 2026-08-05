@@ -319,6 +319,17 @@
   },
   "social": {
     "comingTitle": "Tu feed llegará pronto",
-    "comingSubtitle": "Aquí verás lo que ocurre a tu alrededor y en tus comunidades. Lo estamos construyendo — vuelve pronto."
+    "comingSubtitle": "Aquí verás lo que ocurre a tu alrededor y en tus comunidades. Lo estamos construyendo — vuelve pronto.",
+    "getStartedTitle": "Empieza",
+    "getStartedSubtitle": "Añade tu mundo a S2BR: empieza con tu negocio. Eventos, servicios y más están por llegar."
+  },
+  "create": {
+    "business": {
+      "title": "Crear un negocio",
+      "subtitle": "Publica tu empresa para que tu comunidad la encuentre."
+    }
+  },
+  "businessNew": {
+    "comingSoon": "El formulario completo llegará pronto: aquí añadirás los datos de tu negocio."
   }
 }
