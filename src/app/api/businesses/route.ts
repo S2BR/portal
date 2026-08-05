@@ -4,28 +4,76 @@ import { z } from "zod";
 import { callWithAuth } from "@/lib/api/authed";
 
 export type BusinessType = "company" | "self_employed";
+export type BusinessContactType = "website" | "phone" | "email";
+export type DayOfWeek =
+  | "monday"
+  | "tuesday"
+  | "wednesday"
+  | "thursday"
+  | "friday"
+  | "saturday"
+  | "sunday";
+export type BusinessSocialNetwork =
+  | "instagram"
+  | "facebook"
+  | "x"
+  | "linkedin"
+  | "youtube"
+  | "tiktok"
+  | "pinterest"
+  | "snapchat"
+  | "reddit"
+  | "tumblr"
+  | "vimeo"
+  | "whatsapp"
+  | "telegram"
+  | "discord"
+  | "github"
+  | "stackoverflow"
+  | "medium"
+  | "slack"
+  | "wechat";
 
 export interface BusinessContact {
-  email?: string | null;
-  phone?: string | null;
-  website?: string | null;
+  type: BusinessContactType;
+  value: string;
+  name: string | null;
+  meta: Record<string, unknown> | null;
+}
+
+export interface BusinessSocial {
+  platform: BusinessSocialNetwork;
+  handle: string;
+}
+
+export interface BusinessOpeningHour {
+  day_of_week: DayOfWeek;
+  open_time: string | null;
+  close_time: string | null;
+  closed_all_day: boolean;
 }
 
 export interface BusinessAddress {
-  line1?: string | null;
-  line2?: string | null;
-  city?: string | null;
-  region?: string | null;
-  postal_code?: string | null;
-  country?: string | null;
+  address_1: string;
+  address_2: string | null;
+  apartment_suite: string | null;
+  city: string;
+  state_province: string | null;
+  postal_code: string | null;
+  country: string;
+  latitude: number | null;
+  longitude: number | null;
+  notes: string | null;
 }
 
-export interface BusinessMetadata {
-  contact?: BusinessContact | null;
-  address?: BusinessAddress | null;
+export interface BusinessColors {
+  primary: string | null;
 }
 
-/** A business as returned by the API's flat `{business}` / `{businesses}` envelopes. */
+/**
+ * A business as returned by the API's flat `{business}` / `{businesses}` envelopes. The child
+ * collections and address are present on single-business responses and omitted from the list.
+ */
 export interface Business {
   id: number;
   slug: string;
@@ -33,7 +81,12 @@ export interface Business {
   type: BusinessType;
   headline: string | null;
   description: string | null;
-  metadata: BusinessMetadata | null;
+  colors: BusinessColors | null;
+  category_suggestion: string | null;
+  contacts?: BusinessContact[];
+  socials?: BusinessSocial[];
+  opening_hours?: BusinessOpeningHour[];
+  address?: BusinessAddress | null;
   is_claimed: boolean;
   claimed_at: string | null;
   created_at: string | null;

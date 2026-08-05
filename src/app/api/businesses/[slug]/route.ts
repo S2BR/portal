@@ -8,18 +8,35 @@ import type { Business } from "../route";
 // Loose shape only — the API owns format validation (email, url, 2-letter country) and returns
 // field-level messages, so the BFF stays a thin guard rather than masking them as a generic 422.
 const contactSchema = z.object({
-  email: z.string().max(255).nullish(),
-  phone: z.string().max(32).nullish(),
-  website: z.string().max(255).nullish(),
+  type: z.string(),
+  value: z.string(),
+  name: z.string().nullish(),
+  meta: z.record(z.string(), z.unknown()).nullish(),
+});
+
+const socialSchema = z.object({
+  platform: z.string(),
+  handle: z.string(),
+});
+
+const openingHourSchema = z.object({
+  day_of_week: z.string(),
+  open_time: z.string().nullish(),
+  close_time: z.string().nullish(),
+  closed_all_day: z.boolean(),
 });
 
 const addressSchema = z.object({
-  line1: z.string().max(255).nullish(),
-  line2: z.string().max(255).nullish(),
-  city: z.string().max(255).nullish(),
-  region: z.string().max(255).nullish(),
-  postal_code: z.string().max(32).nullish(),
-  country: z.string().max(8).nullish(),
+  address_1: z.string().optional(),
+  address_2: z.string().nullish(),
+  apartment_suite: z.string().nullish(),
+  city: z.string().optional(),
+  state_province: z.string().nullish(),
+  postal_code: z.string().nullish(),
+  country: z.string().optional(),
+  latitude: z.number().nullish(),
+  longitude: z.number().nullish(),
+  notes: z.string().nullish(),
 });
 
 const updateSchema = z
@@ -28,13 +45,12 @@ const updateSchema = z
     type: z.enum(["company", "self_employed"]).optional(),
     headline: z.string().max(255).nullable().optional(),
     description: z.string().max(5000).nullable().optional(),
-    metadata: z
-      .object({
-        contact: contactSchema.nullish(),
-        address: addressSchema.nullish(),
-      })
-      .nullable()
-      .optional(),
+    category_suggestion: z.string().max(500).nullable().optional(),
+    colors: z.object({ primary: z.string().nullish() }).nullable().optional(),
+    contacts: z.array(contactSchema).optional(),
+    socials: z.array(socialSchema).optional(),
+    opening_hours: z.array(openingHourSchema).optional(),
+    address: addressSchema.nullable().optional(),
   })
   .refine((value) => Object.keys(value).length > 0, { message: "empty" });
 

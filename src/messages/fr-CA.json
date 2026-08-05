@@ -391,14 +391,56 @@
         "city": "Ville",
         "region": "Province ou région",
         "postalCode": "Code postal",
-        "country": "Pays (code à 2 lettres)"
+        "country": "Pays (code à 2 lettres)",
+        "categorySuggestion": "Suggestion de catégorie",
+        "contactValue": "Valeur",
+        "contactLabel": "Étiquette (facultatif)",
+        "handle": "Identifiant ou URL",
+        "color": "Couleur principale",
+        "apartmentSuite": "Appartement / bureau",
+        "stateProvince": "Province ou région",
+        "latitude": "Latitude",
+        "longitude": "Longitude",
+        "notes": "Notes",
+        "open": "Ouvre",
+        "close": "Ferme"
       },
       "empty": {
         "headline": "Aucune accroche pour l'instant.",
         "description": "Aucune description pour l'instant.",
         "contact": "Aucune coordonnée pour l'instant.",
-        "address": "Aucune adresse pour l'instant."
-      }
+        "address": "Aucune adresse pour l'instant.",
+        "hours": "Aucune heure d'ouverture pour l'instant.",
+        "socials": "Aucun réseau social pour l'instant.",
+        "branding": "Aucune couleur de marque pour l'instant."
+      },
+      "tabs": {
+        "general": "Général",
+        "contact": "Coordonnées",
+        "address": "Adresse",
+        "hours": "Heures d'ouverture",
+        "socials": "Réseaux sociaux",
+        "branding": "Image de marque"
+      },
+      "days": {
+        "monday": "Lundi",
+        "tuesday": "Mardi",
+        "wednesday": "Mercredi",
+        "thursday": "Jeudi",
+        "friday": "Vendredi",
+        "saturday": "Samedi",
+        "sunday": "Dimanche"
+      },
+      "contactTypes": {
+        "website": "Site Web",
+        "phone": "Téléphone",
+        "email": "Courriel"
+      },
+      "categoryHint": "Vous ne trouvez pas votre catégorie? Dites-nous ce qui convient et nous y jetterons un œil.",
+      "closedAllDay": "Fermé",
+      "colorHint": "La couleur principale de votre marque.",
+      "addContact": "Ajouter un contact",
+      "addSocial": "Ajouter un réseau social"
     }
   }
 }

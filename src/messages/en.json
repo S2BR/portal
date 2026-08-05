@@ -391,14 +391,56 @@
         "city": "City",
         "region": "Region or state",
         "postalCode": "Postal code",
-        "country": "Country (2-letter code)"
+        "country": "Country (2-letter code)",
+        "categorySuggestion": "Category suggestion",
+        "contactValue": "Value",
+        "contactLabel": "Label (optional)",
+        "handle": "Handle or URL",
+        "color": "Primary color",
+        "apartmentSuite": "Apartment / suite",
+        "stateProvince": "Region or state",
+        "latitude": "Latitude",
+        "longitude": "Longitude",
+        "notes": "Notes",
+        "open": "Opens",
+        "close": "Closes"
       },
       "empty": {
         "headline": "No headline yet.",
         "description": "No description yet.",
         "contact": "No contact details yet.",
-        "address": "No address yet."
-      }
+        "address": "No address yet.",
+        "hours": "No opening hours yet.",
+        "socials": "No social links yet.",
+        "branding": "No brand color yet."
+      },
+      "tabs": {
+        "general": "General",
+        "contact": "Contact",
+        "address": "Address",
+        "hours": "Opening hours",
+        "socials": "Socials",
+        "branding": "Branding"
+      },
+      "days": {
+        "monday": "Monday",
+        "tuesday": "Tuesday",
+        "wednesday": "Wednesday",
+        "thursday": "Thursday",
+        "friday": "Friday",
+        "saturday": "Saturday",
+        "sunday": "Sunday"
+      },
+      "contactTypes": {
+        "website": "Website",
+        "phone": "Phone",
+        "email": "Email"
+      },
+      "categoryHint": "Can't find your category? Tell us what fits and we'll take a look.",
+      "closedAllDay": "Closed",
+      "colorHint": "Your brand's primary color.",
+      "addContact": "Add contact",
+      "addSocial": "Add social link"
     }
   }
 }

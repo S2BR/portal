@@ -391,14 +391,56 @@
         "city": "Ciudad",
         "region": "Región o provincia",
         "postalCode": "Código postal",
-        "country": "País (código de 2 letras)"
+        "country": "País (código de 2 letras)",
+        "categorySuggestion": "Sugerencia de categoría",
+        "contactValue": "Valor",
+        "contactLabel": "Etiqueta (opcional)",
+        "handle": "Usuario o URL",
+        "color": "Color principal",
+        "apartmentSuite": "Apartamento / suite",
+        "stateProvince": "Región o provincia",
+        "latitude": "Latitud",
+        "longitude": "Longitud",
+        "notes": "Notas",
+        "open": "Abre",
+        "close": "Cierra"
       },
       "empty": {
         "headline": "Aún no hay titular.",
         "description": "Aún no hay descripción.",
         "contact": "Aún no hay datos de contacto.",
-        "address": "Aún no hay dirección."
-      }
+        "address": "Aún no hay dirección.",
+        "hours": "Aún no hay horario.",
+        "socials": "Aún no hay redes sociales.",
+        "branding": "Aún no hay color de marca."
+      },
+      "tabs": {
+        "general": "General",
+        "contact": "Contacto",
+        "address": "Dirección",
+        "hours": "Horario",
+        "socials": "Redes sociales",
+        "branding": "Marca"
+      },
+      "days": {
+        "monday": "Lunes",
+        "tuesday": "Martes",
+        "wednesday": "Miércoles",
+        "thursday": "Jueves",
+        "friday": "Viernes",
+        "saturday": "Sábado",
+        "sunday": "Domingo"
+      },
+      "contactTypes": {
+        "website": "Sitio web",
+        "phone": "Teléfono",
+        "email": "Correo electrónico"
+      },
+      "categoryHint": "¿No encuentras tu categoría? Dinos cuál encaja y le echamos un vistazo.",
+      "closedAllDay": "Cerrado",
+      "colorHint": "El color principal de tu marca.",
+      "addContact": "Añadir contacto",
+      "addSocial": "Añadir red social"
     }
   }
 }
