@@ -1,6 +1,6 @@
 "use client";
 
-import { LogOut, User, UserPlus, Users } from "lucide-react";
+import { LayoutPanelLeft, LogOut, User, UserPlus, Users } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -191,6 +191,12 @@ export function UserMenu() {
         </div>
 
         <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link href="/portal">
+            <LayoutPanelLeft className="size-4" />
+            {t("portal")}
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link href="/profile">
             <User className="size-4" />
