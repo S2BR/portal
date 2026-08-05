@@ -19,6 +19,7 @@ import { useEffect, useState } from "react";
 
 import { useCurrentUser } from "@/components/auth/current-user";
 import { UserAvatar } from "@/components/auth/user-avatar";
+import type { AuthUser } from "@/lib/api/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -45,9 +46,20 @@ function greetingKey(hour: number): "morning" | "afternoon" | "evening" {
 }
 
 export default function DashboardPage() {
+  const { user, loading } = useCurrentUser();
+
+  if (loading || !user) {
+    return <DashboardSkeleton />;
+  }
+
+  // Key by account id so switching users gives a fresh mount — the per-account counts
+  // (passkeys/sessions) refetch instead of leaving the previous account's numbers stale.
+  return <DashboardContent key={user.id} user={user} />;
+}
+
+function DashboardContent({ user }: { user: AuthUser }) {
   const t = useTranslations("dashboard");
   const format = useFormatter();
-  const { user, loading } = useCurrentUser();
   const [counts, setCounts] = useState<{
     passkeys: number;
     sessions: number;
@@ -77,10 +89,6 @@ export default function DashboardPage() {
       active = false;
     };
   }, []);
-
-  if (loading || !user) {
-    return <DashboardSkeleton />;
-  }
 
   const hour = new Date().getHours();
   const steps = [
