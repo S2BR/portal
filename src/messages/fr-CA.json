@@ -453,7 +453,27 @@
       "removeAddress": "Supprimer l’adresse",
       "categoriesEmpty": "Aucune catégorie disponible pour l'instant.",
       "searchAmenities": "Rechercher des commodités…",
-      "amenitiesEmpty": "Aucune commodité ne correspond; choisissez une catégorie pour en voir plus."
+      "amenitiesEmpty": "Aucune commodité ne correspond; choisissez une catégorie pour en voir plus.",
+      "media": {
+        "logoTitle": "Logo",
+        "logoHint": "Une image carrée fonctionne mieux",
+        "bannerTitle": "Bannière",
+        "bannerHint": "Une image de couverture large pour votre page",
+        "galleryTitle": "Galerie",
+        "galleryHint": "Montrez votre espace, vos produits ou votre équipe",
+        "upload": "Téléverser",
+        "replace": "Remplacer",
+        "remove": "Retirer",
+        "addImages": "Ajouter des images",
+        "uploading": "Téléversement… {percent} %",
+        "finalizing": "Finalisation…",
+        "constraints": "JPG, PNG ou WebP · jusqu’à {max}",
+        "tooLarge": "Cette image est trop volumineuse",
+        "invalidType": "Choisissez une image JPG, PNG ou WebP",
+        "savedToast": "Image mise à jour",
+        "removedToast": "Image retirée",
+        "error": "Une erreur s’est produite. Veuillez réessayer"
+      }
     }
   }
 }

@@ -61,7 +61,7 @@ export async function uploadFile<T = unknown>(
 }
 
 /** PUT the file straight to the presigned S3 url. XHR, not fetch, for upload progress. */
-function putToS3(
+export function putToS3(
   signed: SignedUpload,
   file: File,
   options: UploadOptions,

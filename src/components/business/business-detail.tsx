@@ -34,6 +34,10 @@ import { AddressAutocomplete } from "@/components/business/address-autocomplete"
 import { AmenitiesPicker } from "@/components/business/amenities-picker";
 import { CategoryPicker } from "@/components/business/category-picker";
 import { BusinessTypeField } from "@/components/business/business-type-field";
+import {
+  BusinessGallery,
+  BusinessImageField,
+} from "@/components/business/business-media";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -502,89 +506,97 @@ export function BusinessDetail({ slug }: { slug: string }) {
 
           {/* General */}
           <TabsContent value="general">
-            {editing && edit ? (
-              <div className="space-y-5">
-                <Field label={fields("name")} error={nameError}>
-                  <Input
-                    value={edit.name}
-                    onChange={(event) => patch({ name: event.target.value })}
-                    maxLength={255}
-                    aria-invalid={Boolean(nameError)}
+            <div className="space-y-6">
+              <BusinessImageField
+                slug={slug}
+                kind="logo"
+                value={business.logo}
+                onUpdated={(updated) => setBusiness(updated)}
+              />
+              {editing && edit ? (
+                <div className="space-y-5">
+                  <Field label={fields("name")} error={nameError}>
+                    <Input
+                      value={edit.name}
+                      onChange={(event) => patch({ name: event.target.value })}
+                      maxLength={255}
+                      aria-invalid={Boolean(nameError)}
+                    />
+                  </Field>
+                  <BusinessTypeField
+                    value={edit.type}
+                    onChange={(type) => patch({ type })}
+                    label={create("typeLabel")}
                   />
-                </Field>
-                <BusinessTypeField
-                  value={edit.type}
-                  onChange={(type) => patch({ type })}
-                  label={create("typeLabel")}
-                />
-                <Field label={fields("headline")}>
-                  <Input
-                    value={edit.headline}
-                    onChange={(event) =>
-                      patch({ headline: event.target.value })
-                    }
-                    maxLength={255}
-                  />
-                </Field>
-                <Field label={fields("description")}>
-                  <Textarea
-                    value={edit.description}
-                    onChange={(event) =>
-                      patch({ description: event.target.value })
-                    }
-                    maxLength={5000}
-                    rows={4}
-                  />
-                </Field>
-                <Field label={fields("categories")}>
-                  <CategoryPicker
-                    tree={categoryTree}
-                    value={edit.categoryIds}
-                    onChange={(categoryIds) => patch({ categoryIds })}
-                  />
-                </Field>
-                <Field
-                  label={fields("categorySuggestion")}
-                  hint={t("categoryHint")}
-                >
-                  <Input
-                    value={edit.categorySuggestion}
-                    onChange={(event) =>
-                      patch({ categorySuggestion: event.target.value })
-                    }
-                    maxLength={500}
-                  />
-                </Field>
-              </div>
-            ) : (
-              <div className="space-y-5">
-                <ViewBlock label={fields("headline")}>
-                  {business.headline ?? <Muted>{blank("headline")}</Muted>}
-                </ViewBlock>
-                <ViewBlock label={fields("description")}>
-                  {business.description ? (
-                    <p className="whitespace-pre-line">
-                      {business.description}
-                    </p>
-                  ) : (
-                    <Muted>{blank("description")}</Muted>
-                  )}
-                </ViewBlock>
-                <ViewBlock label={fields("categories")}>
-                  {business.categories && business.categories.length > 0 ? (
-                    <div className="flex flex-wrap gap-1.5">
-                      {business.categories.map((category) => (
-                        <Badge key={category.id} variant="outline">
-                          {category.name}
-                        </Badge>
-                      ))}
-                    </div>
-                  ) : (
-                    <Muted>{blank("categories")}</Muted>
-                  )}
-                </ViewBlock>
-              </div>
-            )}
+                  <Field label={fields("headline")}>
+                    <Input
+                      value={edit.headline}
+                      onChange={(event) =>
+                        patch({ headline: event.target.value })
+                      }
+                      maxLength={255}
+                    />
+                  </Field>
+                  <Field label={fields("description")}>
+                    <Textarea
+                      value={edit.description}
+                      onChange={(event) =>
+                        patch({ description: event.target.value })
+                      }
+                      maxLength={5000}
+                      rows={4}
+                    />
+                  </Field>
+                  <Field label={fields("categories")}>
+                    <CategoryPicker
+                      tree={categoryTree}
+                      value={edit.categoryIds}
+                      onChange={(categoryIds) => patch({ categoryIds })}
+                    />
+                  </Field>
+                  <Field
+                    label={fields("categorySuggestion")}
+                    hint={t("categoryHint")}
+                  >
+                    <Input
+                      value={edit.categorySuggestion}
+                      onChange={(event) =>
+                        patch({ categorySuggestion: event.target.value })
+                      }
+                      maxLength={500}
+                    />
+                  </Field>
+                </div>
+              ) : (
+                <div className="space-y-5">
+                  <ViewBlock label={fields("headline")}>
+                    {business.headline ?? <Muted>{blank("headline")}</Muted>}
+                  </ViewBlock>
+                  <ViewBlock label={fields("description")}>
+                    {business.description ? (
+                      <p className="whitespace-pre-line">
+                        {business.description}
+                      </p>
+                    ) : (
+                      <Muted>{blank("description")}</Muted>
+                    )}
+                  </ViewBlock>
+                  <ViewBlock label={fields("categories")}>
+                    {business.categories && business.categories.length > 0 ? (
+                      <div className="flex flex-wrap gap-1.5">
+                        {business.categories.map((category) => (
+                          <Badge key={category.id} variant="outline">
+                            {category.name}
+                          </Badge>
+                        ))}
+                      </div>
+                    ) : (
+                      <Muted>{blank("categories")}</Muted>
+                    )}
+                  </ViewBlock>
+                </div>
+              )}
+            </div>
           </TabsContent>
 
           {/* Amenities */}
@@ -883,44 +895,57 @@ export function BusinessDetail({ slug }: { slug: string }) {
 
           {/* Branding */}
           <TabsContent value="branding">
-            {editing && edit ? (
-              <Field label={fields("color")} hint={t("colorHint")}>
-                <div className="flex items-center gap-3">
-                  <input
-                    type="color"
-                    value={
-                      /^#[0-9a-fA-F]{6}$/.test(edit.colorPrimary)
-                        ? edit.colorPrimary
-                        : "#000000"
-                    }
-                    onChange={(event) =>
-                      patch({ colorPrimary: event.target.value })
-                    }
-                    className="border-input size-11 shrink-0 cursor-pointer rounded-lg border bg-transparent p-1"
-                    aria-label={fields("color")}
+            <div className="space-y-6">
+              <BusinessImageField
+                slug={slug}
+                kind="banner"
+                value={business.banner}
+                onUpdated={(updated) => setBusiness(updated)}
+              />
+              <BusinessGallery
+                slug={slug}
+                images={business.images}
+                onUpdated={(updated) => setBusiness(updated)}
+              />
+              {editing && edit ? (
+                <Field label={fields("color")} hint={t("colorHint")}>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="color"
+                      value={
+                        /^#[0-9a-fA-F]{6}$/.test(edit.colorPrimary)
+                          ? edit.colorPrimary
+                          : "#000000"
+                      }
+                      onChange={(event) =>
+                        patch({ colorPrimary: event.target.value })
+                      }
+                      className="border-input size-11 shrink-0 cursor-pointer rounded-lg border bg-transparent p-1"
+                      aria-label={fields("color")}
+                    />
+                    <Input
+                      value={edit.colorPrimary}
+                      onChange={(event) =>
+                        patch({ colorPrimary: event.target.value })
+                      }
+                      placeholder="#0a7d4b"
+                      className="max-w-40"
+                    />
+                  </div>
+                </Field>
+              ) : business.colors?.primary ? (
+                <div className="flex items-center gap-3 text-sm">
+                  <span
+                    className="border-input size-8 rounded-lg border"
+                    style={{ backgroundColor: business.colors.primary }}
+                    aria-hidden
                   />
-                  <Input
-                    value={edit.colorPrimary}
-                    onChange={(event) =>
-                      patch({ colorPrimary: event.target.value })
-                    }
-                    placeholder="#0a7d4b"
-                    className="max-w-40"
-                  />
+                  <span className="font-mono">{business.colors.primary}</span>
                 </div>
-              </Field>
-            ) : business.colors?.primary ? (
-              <div className="flex items-center gap-3 text-sm">
-                <span
-                  className="border-input size-8 rounded-lg border"
-                  style={{ backgroundColor: business.colors.primary }}
-                  aria-hidden
-                />
-                <span className="font-mono">{business.colors.primary}</span>
-              </div>
-            ) : (
-              <Muted>{blank("branding")}</Muted>
-            )}
+              ) : (
+                <Muted>{blank("branding")}</Muted>
+              )}
+            </div>
           </TabsContent>
         </Tabs>
 

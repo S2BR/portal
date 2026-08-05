@@ -453,7 +453,27 @@
       "removeAddress": "Remover endereço",
       "categoriesEmpty": "Ainda não há categorias disponíveis.",
       "searchAmenities": "Buscar comodidades…",
-      "amenitiesEmpty": "Nenhuma comodidade corresponde; escolha uma categoria para ver mais."
+      "amenitiesEmpty": "Nenhuma comodidade corresponde; escolha uma categoria para ver mais.",
+      "media": {
+        "logoTitle": "Logotipo",
+        "logoHint": "Uma imagem quadrada funciona melhor",
+        "bannerTitle": "Banner",
+        "bannerHint": "Uma imagem de capa larga para a sua página",
+        "galleryTitle": "Galeria",
+        "galleryHint": "Mostre seu espaço, produtos ou equipe",
+        "upload": "Enviar",
+        "replace": "Substituir",
+        "remove": "Remover",
+        "addImages": "Adicionar imagens",
+        "uploading": "Enviando… {percent}%",
+        "finalizing": "Finalizando…",
+        "constraints": "JPG, PNG ou WebP · até {max}",
+        "tooLarge": "Essa imagem é muito grande",
+        "invalidType": "Escolha uma imagem JPG, PNG ou WebP",
+        "savedToast": "Imagem atualizada",
+        "removedToast": "Imagem removida",
+        "error": "Algo deu errado. Tente novamente"
+      }
     }
   }
 }

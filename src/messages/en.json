@@ -453,7 +453,27 @@
       "removeAddress": "Remove address",
       "categoriesEmpty": "No categories available yet.",
       "searchAmenities": "Search amenities…",
-      "amenitiesEmpty": "No amenities match — pick a category to see more."
+      "amenitiesEmpty": "No amenities match — pick a category to see more.",
+      "media": {
+        "logoTitle": "Logo",
+        "logoHint": "A square image works best",
+        "bannerTitle": "Banner",
+        "bannerHint": "A wide cover image for your page",
+        "galleryTitle": "Gallery",
+        "galleryHint": "Show your space, products, or team",
+        "upload": "Upload",
+        "replace": "Replace",
+        "remove": "Remove",
+        "addImages": "Add images",
+        "uploading": "Uploading… {percent}%",
+        "finalizing": "Finalizing…",
+        "constraints": "JPG, PNG or WebP · up to {max}",
+        "tooLarge": "That image is too large",
+        "invalidType": "Choose a JPG, PNG or WebP image",
+        "savedToast": "Image updated",
+        "removedToast": "Image removed",
+        "error": "Something went wrong. Please try again"
+      }
     }
   }
 }

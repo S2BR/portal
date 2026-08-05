@@ -74,6 +74,11 @@ export interface BusinessColors {
   primary: string | null;
 }
 
+export interface BusinessImage {
+  id: number;
+  url: string;
+}
+
 /**
  * A business as returned by the API's flat `{business}` / `{businesses}` envelopes. The child
  * collections and address are present on single-business responses and omitted from the list.
@@ -87,12 +92,17 @@ export interface Business {
   description: string | null;
   colors: BusinessColors | null;
   category_suggestion: string | null;
+  // Presigned GET urls (short-lived) for the single logo + banner; null when unset. Always
+  // present since they're columns.
+  logo: string | null;
+  banner: string | null;
   contacts?: BusinessContact[];
   socials?: BusinessSocial[];
   opening_hours?: BusinessOpeningHour[];
   addresses?: BusinessAddress[];
   categories?: Category[];
   amenities?: Amenity[];
+  images?: BusinessImage[];
   is_claimed: boolean;
   claimed_at: string | null;
   created_at: string | null;
