@@ -102,7 +102,8 @@
       "invalidTitle": "Este link de acesso não funcionou",
       "invalidSubtitle": "Ele pode ter expirado ou já ter sido usado. Solicite um novo para entrar.",
       "backToLogin": "Voltar ao login"
-    }
+    },
+    "goBack": "Voltar"
   },
   "legal": {
     "terms": "Termos de Serviço",

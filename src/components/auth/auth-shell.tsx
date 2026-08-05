@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { ReactNode } from "react";
 
 /**
@@ -10,15 +11,17 @@ export function AuthShell({ children }: { children: ReactNode }) {
   return (
     <div className="flex w-full max-w-sm flex-col gap-6">
       <div className="flex justify-center lg:hidden">
-        <Image
-          src="/s2br.svg"
-          alt="S2BR"
-          width={52}
-          height={52}
-          priority
-          unoptimized
-          className="rounded-xl"
-        />
+        <Link href="/" aria-label="S2BR" className="inline-flex">
+          <Image
+            src="/s2br.svg"
+            alt="S2BR"
+            width={52}
+            height={52}
+            priority
+            unoptimized
+            className="rounded-xl"
+          />
+        </Link>
       </div>
       {children}
     </div>

@@ -102,7 +102,8 @@
       "invalidTitle": "Ce lien de connexion n’a pas fonctionné",
       "invalidSubtitle": "Il a peut-être expiré ou déjà été utilisé. Demandez-en un nouveau pour vous connecter.",
       "backToLogin": "Retour à la connexion"
-    }
+    },
+    "goBack": "Retour"
   },
   "legal": {
     "terms": "Conditions d’utilisation",
