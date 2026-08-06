@@ -151,7 +151,8 @@
     "profile": "Perfil",
     "addAccount": "Adicionar outra conta",
     "signOutAll": "Sair de todas as contas",
-    "portal": "Portal"
+    "portal": "Portal",
+    "businesses": "Negócios"
   },
   "profile": {
     "title": "Perfil",
@@ -330,6 +331,149 @@
     }
   },
   "businessNew": {
-    "comingSoon": "O formulário completo chega em breve — é aqui que você adicionará os dados do seu negócio."
+    "subtitle": "Comece pelo básico — você poderá adicionar detalhes como endereço, horário e descrição depois.",
+    "nameLabel": "Nome do negócio",
+    "namePlaceholder": "ex.: Acme Roasters",
+    "typeLabel": "Que tipo de negócio é este?",
+    "types": {
+      "company": {
+        "title": "Empresa",
+        "description": "Um negócio ou organização registrada."
+      },
+      "selfEmployed": {
+        "title": "Autônomo",
+        "description": "Você trabalha por conta própria — freelancer, autônomo, independente."
+      }
+    },
+    "submit": "Criar negócio",
+    "submitting": "Criando…",
+    "createdToast": "Negócio criado.",
+    "errorNameRequired": "Informe o nome do negócio.",
+    "errorTypeRequired": "Escolha um tipo de negócio.",
+    "errorGeneric": "Algo deu errado. Tente novamente."
+  },
+  "businesses": {
+    "title": "Meus negócios",
+    "subtitle": "Os negócios que você administra. Selecione um para ver ou editar.",
+    "empty": "Você ainda não adicionou nenhum negócio.",
+    "createFirst": "Crie seu primeiro negócio",
+    "createAnother": "Adicionar negócio",
+    "detail": {
+      "back": "Voltar aos meus negócios",
+      "edit": "Editar",
+      "delete": "Excluir",
+      "save": "Salvar alterações",
+      "saving": "Salvando…",
+      "cancel": "Cancelar",
+      "savedToast": "Alterações salvas.",
+      "deletedToast": "Negócio excluído.",
+      "notFound": "Esse negócio não existe ou você não tem acesso a ele.",
+      "created": "Adicionado em {date}",
+      "deleteTitle": "Excluir este negócio?",
+      "deleteBody": "Isso remove “{name}” dos seus negócios.",
+      "deleteConfirm": "Excluir negócio",
+      "deleting": "Excluindo…",
+      "sections": {
+        "headline": "Chamada",
+        "description": "Descrição",
+        "contact": "Contato",
+        "address": "Endereço"
+      },
+      "fields": {
+        "name": "Nome do negócio",
+        "headline": "Chamada",
+        "description": "Descrição",
+        "email": "E-mail",
+        "phone": "Telefone",
+        "website": "Site",
+        "line1": "Endereço",
+        "line2": "Endereço linha 2",
+        "city": "Cidade",
+        "region": "Região ou estado",
+        "postalCode": "CEP",
+        "country": "País (código de 2 letras)",
+        "categorySuggestion": "Sugestão de categoria",
+        "contactValue": "Valor",
+        "contactLabel": "Rótulo (opcional)",
+        "handle": "Usuário ou URL",
+        "color": "Cor principal",
+        "apartmentSuite": "Apartamento / sala",
+        "stateProvince": "Região ou estado",
+        "latitude": "Latitude",
+        "longitude": "Longitude",
+        "notes": "Observações",
+        "open": "Abre",
+        "close": "Fecha",
+        "categories": "Categorias"
+      },
+      "empty": {
+        "headline": "Ainda sem chamada.",
+        "description": "Ainda sem descrição.",
+        "contact": "Ainda sem dados de contato.",
+        "address": "Ainda sem endereço.",
+        "hours": "Ainda sem horário.",
+        "socials": "Ainda sem redes sociais.",
+        "branding": "Ainda sem cor de marca.",
+        "categories": "Ainda sem categorias escolhidas.",
+        "amenities": "Ainda sem comodidades selecionadas."
+      },
+      "tabs": {
+        "general": "Geral",
+        "contact": "Contato",
+        "address": "Endereço",
+        "hours": "Horário",
+        "socials": "Redes sociais",
+        "branding": "Marca",
+        "amenities": "Comodidades"
+      },
+      "days": {
+        "monday": "Segunda",
+        "tuesday": "Terça",
+        "wednesday": "Quarta",
+        "thursday": "Quinta",
+        "friday": "Sexta",
+        "saturday": "Sábado",
+        "sunday": "Domingo"
+      },
+      "contactTypes": {
+        "website": "Site",
+        "phone": "Telefone",
+        "email": "E-mail"
+      },
+      "categoryHint": "Não encontrou sua categoria? Diga-nos qual se encaixa e vamos verificar.",
+      "closedAllDay": "Fechado",
+      "colorHint": "A cor principal da sua marca.",
+      "addContact": "Adicionar contato",
+      "addSocial": "Adicionar rede social",
+      "lookup": {
+        "placeholder": "Buscar um endereço…"
+      },
+      "mainAddress": "Endereço principal",
+      "addAddress": "Adicionar endereço",
+      "removeAddress": "Remover endereço",
+      "categoriesEmpty": "Ainda não há categorias disponíveis.",
+      "searchAmenities": "Buscar comodidades…",
+      "amenitiesEmpty": "Nenhuma comodidade corresponde; escolha uma categoria para ver mais.",
+      "media": {
+        "logoTitle": "Logotipo",
+        "logoHint": "Uma imagem quadrada funciona melhor",
+        "bannerTitle": "Banner",
+        "bannerHint": "Uma imagem de capa larga para a sua página",
+        "galleryTitle": "Galeria",
+        "galleryHint": "Mostre seu espaço, produtos ou equipe",
+        "upload": "Enviar",
+        "replace": "Substituir",
+        "remove": "Remover",
+        "addImages": "Adicionar imagens",
+        "uploading": "Enviando… {percent}%",
+        "finalizing": "Finalizando…",
+        "constraints": "JPG, PNG ou WebP · até {max}",
+        "tooLarge": "Essa imagem é muito grande",
+        "invalidType": "Escolha uma imagem JPG, PNG ou WebP",
+        "savedToast": "Imagem atualizada",
+        "removedToast": "Imagem removida",
+        "error": "Algo deu errado. Tente novamente"
+      }
+    }
   }
 }

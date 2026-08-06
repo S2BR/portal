@@ -19,6 +19,11 @@ export interface UploadOptions {
    */
   onPhase?: (phase: "uploading" | "finalizing") => void;
   signal?: AbortSignal;
+  /**
+   * Target for a scoped upload kind (e.g. `{ business: slug }` for a business logo). Passed
+   * through to the API's upload type; user-scoped kinds like the avatar omit it.
+   */
+  context?: Record<string, unknown>;
 }
 
 /**
@@ -34,7 +39,10 @@ export async function uploadFile<T = unknown>(
   const urlResponse = await fetch(`/api/uploads/${type}/url`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ content_type: file.type }),
+    body: JSON.stringify({
+      content_type: file.type,
+      ...(options.context ? { context: options.context } : {}),
+    }),
   });
   if (!urlResponse.ok) {
     return { ok: false, error: "url" };
@@ -52,7 +60,10 @@ export async function uploadFile<T = unknown>(
   const attachResponse = await fetch(`/api/uploads/${type}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ key: signed.key }),
+    body: JSON.stringify({
+      key: signed.key,
+      ...(options.context ? { context: options.context } : {}),
+    }),
   });
   if (!attachResponse.ok) {
     return { ok: false, error: "attach" };
@@ -60,8 +71,28 @@ export async function uploadFile<T = unknown>(
   return { ok: true, data: (await attachResponse.json()) as T };
 }
 
+/**
+ * Remove the current object of an upload type. Pass `context` for scoped kinds (e.g.
+ * `{ business: slug }`, or `{ business: slug, image: id }` to drop one gallery image); the
+ * avatar and other user-scoped kinds omit it. Returns the type's remove payload.
+ */
+export async function removeUpload<T = unknown>(
+  type: string,
+  context?: Record<string, unknown>,
+): Promise<{ ok: boolean; data?: T }> {
+  const response = await fetch(`/api/uploads/${type}`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: context ? JSON.stringify({ context }) : undefined,
+  });
+  if (!response.ok) {
+    return { ok: false };
+  }
+  return { ok: true, data: (await response.json()) as T };
+}
+
 /** PUT the file straight to the presigned S3 url. XHR, not fetch, for upload progress. */
-function putToS3(
+export function putToS3(
   signed: SignedUpload,
   file: File,
   options: UploadOptions,

@@ -151,7 +151,8 @@
     "profile": "Profile",
     "addAccount": "Add another account",
     "signOutAll": "Sign out of all accounts",
-    "portal": "Portal"
+    "portal": "Portal",
+    "businesses": "Businesses"
   },
   "profile": {
     "title": "Profile",
@@ -330,6 +331,149 @@
     }
   },
   "businessNew": {
-    "comingSoon": "The full form is coming soon — this is where you'll add your business details."
+    "subtitle": "Start with the basics — you can add details like address, hours, and description later.",
+    "nameLabel": "Business name",
+    "namePlaceholder": "e.g. Acme Roasters",
+    "typeLabel": "What kind of business is this?",
+    "types": {
+      "company": {
+        "title": "Company",
+        "description": "A registered business or organization."
+      },
+      "selfEmployed": {
+        "title": "Self-employed",
+        "description": "You work for yourself — freelancer, sole trader, independent."
+      }
+    },
+    "submit": "Create business",
+    "submitting": "Creating…",
+    "createdToast": "Business created.",
+    "errorNameRequired": "Please enter a business name.",
+    "errorTypeRequired": "Please choose a business type.",
+    "errorGeneric": "Something went wrong. Please try again."
+  },
+  "businesses": {
+    "title": "My businesses",
+    "subtitle": "The businesses you own. Select one to view or edit it.",
+    "empty": "You haven't added a business yet.",
+    "createFirst": "Create your first business",
+    "createAnother": "Add business",
+    "detail": {
+      "back": "Back to my businesses",
+      "edit": "Edit",
+      "delete": "Delete",
+      "save": "Save changes",
+      "saving": "Saving…",
+      "cancel": "Cancel",
+      "savedToast": "Changes saved.",
+      "deletedToast": "Business deleted.",
+      "notFound": "That business doesn't exist, or you don't have access to it.",
+      "created": "Added {date}",
+      "deleteTitle": "Delete this business?",
+      "deleteBody": "This removes “{name}” from your businesses.",
+      "deleteConfirm": "Delete business",
+      "deleting": "Deleting…",
+      "sections": {
+        "headline": "Headline",
+        "description": "Description",
+        "contact": "Contact",
+        "address": "Address"
+      },
+      "fields": {
+        "name": "Business name",
+        "headline": "Headline",
+        "description": "Description",
+        "email": "Email",
+        "phone": "Phone",
+        "website": "Website",
+        "line1": "Address",
+        "line2": "Address line 2",
+        "city": "City",
+        "region": "Region or state",
+        "postalCode": "Postal code",
+        "country": "Country (2-letter code)",
+        "categorySuggestion": "Category suggestion",
+        "contactValue": "Value",
+        "contactLabel": "Label (optional)",
+        "handle": "Handle or URL",
+        "color": "Primary color",
+        "apartmentSuite": "Apartment / suite",
+        "stateProvince": "Region or state",
+        "latitude": "Latitude",
+        "longitude": "Longitude",
+        "notes": "Notes",
+        "open": "Opens",
+        "close": "Closes",
+        "categories": "Categories"
+      },
+      "empty": {
+        "headline": "No headline yet.",
+        "description": "No description yet.",
+        "contact": "No contact details yet.",
+        "address": "No address yet.",
+        "hours": "No opening hours yet.",
+        "socials": "No social links yet.",
+        "branding": "No brand color yet.",
+        "categories": "No categories chosen yet.",
+        "amenities": "No amenities selected yet."
+      },
+      "tabs": {
+        "general": "General",
+        "contact": "Contact",
+        "address": "Address",
+        "hours": "Opening hours",
+        "socials": "Socials",
+        "branding": "Branding",
+        "amenities": "Amenities"
+      },
+      "days": {
+        "monday": "Monday",
+        "tuesday": "Tuesday",
+        "wednesday": "Wednesday",
+        "thursday": "Thursday",
+        "friday": "Friday",
+        "saturday": "Saturday",
+        "sunday": "Sunday"
+      },
+      "contactTypes": {
+        "website": "Website",
+        "phone": "Phone",
+        "email": "Email"
+      },
+      "categoryHint": "Can't find your category? Tell us what fits and we'll take a look.",
+      "closedAllDay": "Closed",
+      "colorHint": "Your brand's primary color.",
+      "addContact": "Add contact",
+      "addSocial": "Add social link",
+      "lookup": {
+        "placeholder": "Search for an address…"
+      },
+      "mainAddress": "Main address",
+      "addAddress": "Add address",
+      "removeAddress": "Remove address",
+      "categoriesEmpty": "No categories available yet.",
+      "searchAmenities": "Search amenities…",
+      "amenitiesEmpty": "No amenities match — pick a category to see more.",
+      "media": {
+        "logoTitle": "Logo",
+        "logoHint": "A square image works best",
+        "bannerTitle": "Banner",
+        "bannerHint": "A wide cover image for your page",
+        "galleryTitle": "Gallery",
+        "galleryHint": "Show your space, products, or team",
+        "upload": "Upload",
+        "replace": "Replace",
+        "remove": "Remove",
+        "addImages": "Add images",
+        "uploading": "Uploading… {percent}%",
+        "finalizing": "Finalizing…",
+        "constraints": "JPG, PNG or WebP · up to {max}",
+        "tooLarge": "That image is too large",
+        "invalidType": "Choose a JPG, PNG or WebP image",
+        "savedToast": "Image updated",
+        "removedToast": "Image removed",
+        "error": "Something went wrong. Please try again"
+      }
+    }
   }
 }

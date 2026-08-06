@@ -4,7 +4,16 @@ import { z } from "zod";
 import { callWithAuth } from "@/lib/api/authed";
 import type { ApiError, AuthUser } from "@/lib/api/types";
 
-const bodySchema = z.object({ key: z.string().min(1) });
+const bodySchema = z.object({
+  key: z.string().min(1),
+  context: z.record(z.string(), z.unknown()).optional(),
+});
+
+// Removal carries only an optional target (avatar sends none; a business logo/gallery sends
+// `{ business, image? }`).
+const removeSchema = z.object({
+  context: z.record(z.string(), z.unknown()).optional(),
+});
 
 const TYPE = /^[a-z][a-z0-9-]*$/;
 
@@ -44,7 +53,7 @@ export async function POST(
   );
 }
 
-/** BFF: remove the user's current object of this upload type. */
+/** BFF: remove the current object of this upload type (optionally a scoped target's). */
 export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ type: string }> },
@@ -54,9 +63,14 @@ export async function DELETE(
     return NextResponse.json({ status: "invalid" }, { status: 422 });
   }
 
+  // A body is optional (avatar sends none); when present it carries the scoped target.
+  const parsed = removeSchema.safeParse(await request.json().catch(() => ({})));
+  const context = parsed.success ? parsed.data.context : undefined;
+
   const response = await callWithAuth<AttachResult>({
     method: "DELETE",
     path: `/uploads/${type}`,
+    ...(context ? { body: { context } } : {}),
   });
 
   if (response.ok) {

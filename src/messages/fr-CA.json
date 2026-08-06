@@ -151,7 +151,8 @@
     "profile": "Profil",
     "addAccount": "Ajouter un autre compte",
     "signOutAll": "Se déconnecter de tous les comptes",
-    "portal": "Portail"
+    "portal": "Portail",
+    "businesses": "Entreprises"
   },
   "profile": {
     "title": "Profil",
@@ -330,6 +331,149 @@
     }
   },
   "businessNew": {
-    "comingSoon": "Le formulaire complet arrive bientôt — c'est ici que vous ajouterez les informations de votre entreprise."
+    "subtitle": "Commencez par l'essentiel : vous pourrez ajouter des détails comme l'adresse, les heures et la description plus tard.",
+    "nameLabel": "Nom de l'entreprise",
+    "namePlaceholder": "p. ex. Acme Roasters",
+    "typeLabel": "De quel type d'entreprise s'agit-il?",
+    "types": {
+      "company": {
+        "title": "Entreprise",
+        "description": "Une entreprise ou organisation enregistrée."
+      },
+      "selfEmployed": {
+        "title": "Travailleur autonome",
+        "description": "Vous travaillez à votre compte : pigiste, travailleur autonome, indépendant."
+      }
+    },
+    "submit": "Créer l'entreprise",
+    "submitting": "Création…",
+    "createdToast": "Entreprise créée.",
+    "errorNameRequired": "Veuillez saisir le nom de l'entreprise.",
+    "errorTypeRequired": "Veuillez choisir un type d'entreprise.",
+    "errorGeneric": "Une erreur s'est produite. Veuillez réessayer."
+  },
+  "businesses": {
+    "title": "Mes entreprises",
+    "subtitle": "Les entreprises que vous gérez. Sélectionnez-en une pour la consulter ou la modifier.",
+    "empty": "Vous n'avez pas encore ajouté d'entreprise.",
+    "createFirst": "Créer votre première entreprise",
+    "createAnother": "Ajouter une entreprise",
+    "detail": {
+      "back": "Retour à mes entreprises",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "save": "Enregistrer les modifications",
+      "saving": "Enregistrement…",
+      "cancel": "Annuler",
+      "savedToast": "Modifications enregistrées.",
+      "deletedToast": "Entreprise supprimée.",
+      "notFound": "Cette entreprise n'existe pas ou vous n'y avez pas accès.",
+      "created": "Ajoutée le {date}",
+      "deleteTitle": "Supprimer cette entreprise?",
+      "deleteBody": "Cela retire « {name} » de vos entreprises.",
+      "deleteConfirm": "Supprimer l'entreprise",
+      "deleting": "Suppression…",
+      "sections": {
+        "headline": "Accroche",
+        "description": "Description",
+        "contact": "Coordonnées",
+        "address": "Adresse"
+      },
+      "fields": {
+        "name": "Nom de l'entreprise",
+        "headline": "Accroche",
+        "description": "Description",
+        "email": "Courriel",
+        "phone": "Téléphone",
+        "website": "Site Web",
+        "line1": "Adresse",
+        "line2": "Adresse ligne 2",
+        "city": "Ville",
+        "region": "Province ou région",
+        "postalCode": "Code postal",
+        "country": "Pays (code à 2 lettres)",
+        "categorySuggestion": "Suggestion de catégorie",
+        "contactValue": "Valeur",
+        "contactLabel": "Étiquette (facultatif)",
+        "handle": "Identifiant ou URL",
+        "color": "Couleur principale",
+        "apartmentSuite": "Appartement / bureau",
+        "stateProvince": "Province ou région",
+        "latitude": "Latitude",
+        "longitude": "Longitude",
+        "notes": "Notes",
+        "open": "Ouvre",
+        "close": "Ferme",
+        "categories": "Catégories"
+      },
+      "empty": {
+        "headline": "Aucune accroche pour l'instant.",
+        "description": "Aucune description pour l'instant.",
+        "contact": "Aucune coordonnée pour l'instant.",
+        "address": "Aucune adresse pour l'instant.",
+        "hours": "Aucune heure d'ouverture pour l'instant.",
+        "socials": "Aucun réseau social pour l'instant.",
+        "branding": "Aucune couleur de marque pour l'instant.",
+        "categories": "Aucune catégorie choisie pour l'instant.",
+        "amenities": "Aucune commodité sélectionnée pour l'instant."
+      },
+      "tabs": {
+        "general": "Général",
+        "contact": "Coordonnées",
+        "address": "Adresse",
+        "hours": "Heures d'ouverture",
+        "socials": "Réseaux sociaux",
+        "branding": "Image de marque",
+        "amenities": "Commodités"
+      },
+      "days": {
+        "monday": "Lundi",
+        "tuesday": "Mardi",
+        "wednesday": "Mercredi",
+        "thursday": "Jeudi",
+        "friday": "Vendredi",
+        "saturday": "Samedi",
+        "sunday": "Dimanche"
+      },
+      "contactTypes": {
+        "website": "Site Web",
+        "phone": "Téléphone",
+        "email": "Courriel"
+      },
+      "categoryHint": "Vous ne trouvez pas votre catégorie? Dites-nous ce qui convient et nous y jetterons un œil.",
+      "closedAllDay": "Fermé",
+      "colorHint": "La couleur principale de votre marque.",
+      "addContact": "Ajouter un contact",
+      "addSocial": "Ajouter un réseau social",
+      "lookup": {
+        "placeholder": "Rechercher une adresse…"
+      },
+      "mainAddress": "Adresse principale",
+      "addAddress": "Ajouter une adresse",
+      "removeAddress": "Supprimer l’adresse",
+      "categoriesEmpty": "Aucune catégorie disponible pour l'instant.",
+      "searchAmenities": "Rechercher des commodités…",
+      "amenitiesEmpty": "Aucune commodité ne correspond; choisissez une catégorie pour en voir plus.",
+      "media": {
+        "logoTitle": "Logo",
+        "logoHint": "Une image carrée fonctionne mieux",
+        "bannerTitle": "Bannière",
+        "bannerHint": "Une image de couverture large pour votre page",
+        "galleryTitle": "Galerie",
+        "galleryHint": "Montrez votre espace, vos produits ou votre équipe",
+        "upload": "Téléverser",
+        "replace": "Remplacer",
+        "remove": "Retirer",
+        "addImages": "Ajouter des images",
+        "uploading": "Téléversement… {percent} %",
+        "finalizing": "Finalisation…",
+        "constraints": "JPG, PNG ou WebP · jusqu’à {max}",
+        "tooLarge": "Cette image est trop volumineuse",
+        "invalidType": "Choisissez une image JPG, PNG ou WebP",
+        "savedToast": "Image mise à jour",
+        "removedToast": "Image retirée",
+        "error": "Une erreur s’est produite. Veuillez réessayer"
+      }
+    }
   }
 }
