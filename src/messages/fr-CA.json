@@ -293,19 +293,19 @@
   },
   "marketing": {
     "nav": {
-      "login": "Se connecter"
+      "login": "Espace Partenaires"
     },
     "hero": {
       "launch": "Lancement le 7 septembre 2026",
-      "title": "Rassembler les communautés.",
-      "subtitle": "Votre communauté brésilienne, où que la vie vous mène. Découvrez les commerces, la cuisine, les événements et les services près de chez vous — conçu pour les Brésiliens du monde entier.",
+      "title": "Rapprocher les communautés.",
+      "subtitle": "Votre communauté brésilienne, où que la vie vous mène. Explorez les boutiques, la gastronomie, les événements et les services à proximité — conçu pour les Brésiliens du monde entier.",
       "ctaPrimary": "Commencer",
       "ctaSecondary": "Se connecter",
       "caption": "Des Brésiliens du monde entier, connectés grâce à S2BR"
     },
     "features": {
-      "stores": "Commerces",
-      "food": "Cuisine",
+      "stores": "Boutiques",
+      "food": "Gastronomie",
       "events": "Événements",
       "services": "Services"
     },

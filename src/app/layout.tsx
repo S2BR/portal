@@ -24,9 +24,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "S2BR",
-  description: "S2BR — for business owners and community operators.",
-  icons: { icon: "/s2br.svg" },
+  // The landing (and any page without its own title) matches the original s2br.com; inner pages
+  // set a plain title that the template suffixes. The favicon is the S2BR logo, served from the
+  // `app/favicon.ico` + `app/icon.svg` file conventions.
+  title: {
+    default: "S2BR · Bringing Communities Together",
+    template: "%s · S2BR",
+  },
+  description:
+    "S2BR is the Brazilian community platform for Brazilians living around the world. Discover nearby stores, food, events, and services — wherever life takes you.",
 };
 
 export default async function RootLayout({
