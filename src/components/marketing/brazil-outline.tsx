@@ -125,7 +125,6 @@ export function BrazilOutline({ className }: { className?: string }) {
         d={BRAZIL_PATH}
         pathLength={1}
         fill="none"
-        stroke="#c9ffdf"
         strokeWidth={5}
         strokeLinecap="round"
       />
