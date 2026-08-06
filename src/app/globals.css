@@ -224,10 +224,13 @@
 }
 .launch-glow {
   background-image: linear-gradient(to right, #44bcff, #ff44ec, #ff675e);
-  background-size: 300% 300%;
+  /* Static default shows the whole spectrum; the animated state widens it to 300% so the
+     gradient has room to slide. Without this, a reduced-motion viewer sees only a sliver. */
+  background-size: 100% 100%;
 }
 @media (prefers-reduced-motion: no-preference) {
   .launch-glow {
+    background-size: 300% 300%;
     animation: launch-glow 5s ease infinite;
   }
 }
