@@ -39,7 +39,7 @@ export async function MarketingHome() {
             <p className="text-muted-foreground max-w-xl text-lg">
               {t("hero.subtitle")}
             </p>
-            <p className="text-sm font-medium">
+            <p className="text-base font-medium">
               <span className="text-muted-foreground">
                 {t("hero.launchPrefix")}
               </span>{" "}
@@ -48,14 +48,14 @@ export async function MarketingHome() {
                   aria-hidden
                   className="launch-glow absolute inset-0 opacity-30 blur-xl"
                 />
-                <span className="launch-glow relative bg-clip-text text-transparent">
+                <span className="launch-glow relative bg-clip-text font-semibold text-transparent">
                   {t("hero.launchDate")}
                 </span>
               </span>
             </p>
           </div>
 
-          <div className="relative mx-auto w-full max-w-sm lg:ms-auto">
+          <div className="relative mx-auto w-full max-w-xs lg:ms-auto">
             <span
               aria-hidden
               className="launch-glow absolute -inset-4 rounded-[2rem] opacity-30 blur-3xl"
@@ -67,7 +67,7 @@ export async function MarketingHome() {
                 width={800}
                 height={1200}
                 priority
-                sizes="(min-width: 1024px) 24rem, 100vw"
+                sizes="(min-width: 1024px) 20rem, 100vw"
                 className="h-auto w-full object-cover"
               />
             </div>
