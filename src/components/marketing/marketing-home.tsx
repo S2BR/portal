@@ -44,7 +44,7 @@ export async function MarketingHome() {
             <NotifyForm />
           </div>
 
-          <div className="relative mx-auto w-full max-w-sm lg:ms-auto">
+          <div className="relative mx-auto w-full max-w-sm lg:ms-auto lg:max-w-lg">
             <BrazilOutline />
           </div>
         </section>
