@@ -296,12 +296,13 @@
       "login": "Log in"
     },
     "hero": {
-      "launch": "Launching on September 7, 2026",
       "title": "Bringing communities together.",
       "subtitle": "Your Brazilian community, wherever life takes you. Explore nearby stores, food, events, and services — built for Brazilians living around the world.",
       "ctaPrimary": "Get started",
       "ctaSecondary": "Log in",
-      "caption": "Brazilians around the world, connecting through S2BR"
+      "caption": "Brazilians around the world, connecting through S2BR",
+      "launchPrefix": "Launching on",
+      "launchDate": "September 7, 2026"
     },
     "features": {
       "stores": "Stores",

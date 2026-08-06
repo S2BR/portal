@@ -207,3 +207,27 @@
   animation: none;
   mix-blend-mode: normal;
 }
+
+/*
+ * Landing hero "launch date" glow — an animated blue → pink → coral gradient (mirrors the
+ * original s2br.com). Used both as the text fill (with `bg-clip-text text-transparent`) and as a
+ * blurred copy behind it. The gradient only drifts when the viewer hasn't asked to reduce motion.
+ */
+@keyframes launch-glow {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+.launch-glow {
+  background-image: linear-gradient(to right, #44bcff, #ff44ec, #ff675e);
+  background-size: 300% 300%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .launch-glow {
+    animation: launch-glow 5s ease infinite;
+  }
+}

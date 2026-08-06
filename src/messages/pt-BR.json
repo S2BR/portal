@@ -296,12 +296,13 @@
       "login": "Entrar"
     },
     "hero": {
-      "launch": "Lançamento em 7 de setembro de 2026",
       "title": "Unindo comunidades.",
       "subtitle": "Sua comunidade brasileira, onde quer que a vida te leve. Explore lojas, gastronomia, eventos e serviços próximos — feito para brasileiros ao redor do mundo.",
       "ctaPrimary": "Começar",
       "ctaSecondary": "Entrar",
-      "caption": "Brasileiros pelo mundo, conectados pelo S2BR"
+      "caption": "Brasileiros pelo mundo, conectados pelo S2BR",
+      "launchPrefix": "Lançamento em",
+      "launchDate": "7 de setembro de 2026"
     },
     "features": {
       "stores": "Lojas",
