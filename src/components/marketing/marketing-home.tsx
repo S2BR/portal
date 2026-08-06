@@ -33,6 +33,12 @@ export async function MarketingHome() {
       <main className="flex-1">
         <section className="mx-auto grid w-full max-w-6xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:py-24">
           <div className="space-y-6">
+            <h1 className="font-heading text-4xl leading-tight font-semibold tracking-tight text-balance sm:text-5xl">
+              {t("hero.title")}
+            </h1>
+            <p className="text-muted-foreground max-w-xl text-lg">
+              {t("hero.subtitle")}
+            </p>
             <p className="text-sm font-medium">
               <span className="text-muted-foreground">
                 {t("hero.launchPrefix")}
@@ -46,12 +52,6 @@ export async function MarketingHome() {
                   {t("hero.launchDate")}
                 </span>
               </span>
-            </p>
-            <h1 className="font-heading text-4xl leading-tight font-semibold tracking-tight text-balance sm:text-5xl">
-              {t("hero.title")}
-            </h1>
-            <p className="text-muted-foreground max-w-xl text-lg">
-              {t("hero.subtitle")}
             </p>
           </div>
 
