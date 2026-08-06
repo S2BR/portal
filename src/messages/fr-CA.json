@@ -291,6 +291,12 @@
     "cancel": "Annuler",
     "passkeyError": "Nous n'avons pas pu vérifier votre clé d'accès. Veuillez réessayer."
   },
+  "consent": {
+    "message": "Nous utilisons des témoins d'analyse pour voir quelles pages sont les plus utiles. Aucune publicité, et nous ne vendons jamais vos données.",
+    "learnMore": "Politique de confidentialité",
+    "accept": "Accepter",
+    "decline": "Refuser"
+  },
   "marketing": {
     "nav": {
       "login": "Se connecter"

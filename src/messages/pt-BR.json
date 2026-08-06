@@ -291,6 +291,12 @@
     "cancel": "Cancelar",
     "passkeyError": "Não foi possível verificar sua chave de acesso. Tente novamente."
   },
+  "consent": {
+    "message": "Usamos cookies de análise para ver quais páginas são mais úteis. Sem anúncios, e nunca vendemos seus dados.",
+    "learnMore": "Política de Privacidade",
+    "accept": "Aceitar",
+    "decline": "Recusar"
+  },
   "marketing": {
     "nav": {
       "login": "Entrar"

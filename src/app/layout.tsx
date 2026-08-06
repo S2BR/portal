@@ -4,9 +4,12 @@ import { cookies } from "next/headers";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
 
+import { Analytics } from "@/components/analytics/analytics";
+import { ConsentBanner } from "@/components/analytics/consent-banner";
 import { DirectionProvider } from "@/components/direction-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { REFRESH_COOKIE } from "@/lib/auth/cookies";
 import { getDirection, type Direction } from "@/i18n/config";
 import "./globals.css";
 
@@ -67,10 +70,13 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const locale = await getLocale();
+  const gaId = process.env.NEXT_PUBLIC_GA_ID;
 
+  const cookieStore = await cookies();
+  const authenticated = cookieStore.has(REFRESH_COOKIE);
   const devDir =
     process.env.NODE_ENV !== "production"
-      ? (await cookies()).get(DEV_DIR_COOKIE)?.value
+      ? cookieStore.get(DEV_DIR_COOKIE)?.value
       : undefined;
   const dir: Direction =
     devDir === "rtl" || devDir === "ltr" ? devDir : getDirection(locale);
@@ -85,10 +91,15 @@ export default async function RootLayout({
       <body className="flex min-h-full flex-col">
         <ThemeProvider>
           <DirectionProvider dir={dir}>
-            <NextIntlClientProvider>{children}</NextIntlClientProvider>
+            <NextIntlClientProvider>
+              {children}
+              {/* Inside the intl provider — the banner is translated. */}
+              {gaId ? <ConsentBanner /> : null}
+            </NextIntlClientProvider>
           </DirectionProvider>
           <Toaster />
         </ThemeProvider>
+        {gaId ? <Analytics gaId={gaId} authenticated={authenticated} /> : null}
       </body>
     </html>
   );

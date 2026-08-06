@@ -291,6 +291,12 @@
     "cancel": "Cancel",
     "passkeyError": "We couldn't verify your passkey. Please try again."
   },
+  "consent": {
+    "message": "We use analytics cookies to see which pages are most useful. No ads, and we never sell your data.",
+    "learnMore": "Privacy Policy",
+    "accept": "Accept",
+    "decline": "Decline"
+  },
   "marketing": {
     "nav": {
       "login": "Log in"
