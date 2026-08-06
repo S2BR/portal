@@ -120,7 +120,14 @@ export function NotifyForm() {
       }}
     >
       <DialogTrigger asChild>
-        <Button size="lg">{t("open")}</Button>
+        {/* Green outline + green text, transparent fill, light-gray hover (like the header). The
+            border makes it read as a button; its left edge lines up with the text above. */}
+        <Button
+          variant="outline"
+          className="border-primary text-primary hover:text-primary dark:border-primary"
+        >
+          {t("open")}
+        </Button>
       </DialogTrigger>
       <DialogContent showCloseButton={!pending}>
         <form onSubmit={onSubmit} className="grid gap-4" noValidate>

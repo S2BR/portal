@@ -51,7 +51,12 @@ export function ConsentBanner() {
           </Link>
         </p>
         <div className="mt-3 flex gap-2">
-          <Button size="sm" onClick={() => decide(true)}>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => decide(true)}
+            className="border-primary text-primary hover:text-primary dark:border-primary"
+          >
             {t("accept")}
           </Button>
           <Button size="sm" variant="ghost" onClick={() => decide(false)}>
