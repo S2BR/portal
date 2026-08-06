@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import { cookies } from "next/headers";
 import { NextIntlClientProvider } from "next-intl";
@@ -23,16 +23,42 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const SITE_TITLE = "S2BR · Bringing Communities Together";
+const SITE_DESCRIPTION =
+  "S2BR is the Brazilian community platform for Brazilians living around the world. Discover nearby stores, food, events, and services — wherever life takes you.";
+
+// Mobile browser chrome matches the page background (white in light, near-black in dark).
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#101312" },
+  ],
+};
+
 export const metadata: Metadata = {
+  // Absolute-URL base for og:image etc. (the `app/opengraph-image` route). Override with APP_URL
+  // in production.
+  metadataBase: new URL(process.env.APP_URL ?? "https://s2br.com"),
   // The landing (and any page without its own title) matches the original s2br.com; inner pages
   // set a plain title that the template suffixes. The favicon is the S2BR logo, served from the
   // `app/favicon.ico` + `app/icon.svg` file conventions.
   title: {
-    default: "S2BR · Bringing Communities Together",
+    default: SITE_TITLE,
     template: "%s · S2BR",
   },
-  description:
-    "S2BR is the Brazilian community platform for Brazilians living around the world. Discover nearby stores, food, events, and services — wherever life takes you.",
+  description: SITE_DESCRIPTION,
+  // og:image / twitter:image are added automatically from `app/opengraph-image.tsx`.
+  openGraph: {
+    type: "website",
+    siteName: "S2BR",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+  },
 };
 
 export default async function RootLayout({

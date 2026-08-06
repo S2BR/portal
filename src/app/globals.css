@@ -223,12 +223,13 @@
   }
 }
 .launch-glow {
+  /* Green + gold (brand), to sit cohesively with the green Brazil outline. */
   background-image: linear-gradient(
     to right,
-    #1fa2ff,
     #14d67a,
+    #3ae08f,
     #ffc72c,
-    #ff6a5c
+    #14d67a
   );
   /* Static default shows the whole spectrum; the animated state widens it to 300% so the
      gradient has room to slide. Without this, a reduced-motion viewer sees only a sliver. */

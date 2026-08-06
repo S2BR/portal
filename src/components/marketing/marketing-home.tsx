@@ -1,8 +1,10 @@
-import Link from "next/link";
 import { getTranslations } from "next-intl/server";
+import Link from "next/link";
+import { Fragment } from "react";
 
 import { Brand } from "@/components/brand";
 import { BrazilOutline } from "@/components/marketing/brazil-outline";
+import { NotifyForm } from "@/components/marketing/notify-form";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
@@ -30,7 +32,7 @@ export async function MarketingHome() {
         </div>
       </header>
 
-      <main className="flex-1">
+      <main className="flex flex-1 flex-col justify-center">
         <section className="mx-auto grid w-full max-w-6xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:py-24">
           <div className="space-y-6">
             <h1 className="font-heading text-4xl leading-tight font-semibold tracking-tight text-balance sm:text-5xl">
@@ -53,6 +55,8 @@ export async function MarketingHome() {
                 </span>
               </span>
             </p>
+
+            <NotifyForm />
           </div>
 
           <div className="relative mx-auto w-full max-w-sm lg:ms-auto">
@@ -63,13 +67,18 @@ export async function MarketingHome() {
 
       <footer className="border-t">
         <div className="text-muted-foreground mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-8 text-sm sm:flex-row sm:items-center sm:px-6">
-          <nav className="flex flex-wrap gap-x-6 gap-y-2">
+          <nav className="flex flex-wrap items-center gap-x-2 gap-y-1">
             {(
               ["products", "services", "news", "events", "social"] as const
-            ).map((key) => (
-              <span key={key} className="hover:text-foreground cursor-default">
-                {t(`footer.${key}`)}
-              </span>
+            ).map((key, index) => (
+              <Fragment key={key}>
+                {index > 0 ? (
+                  <span aria-hidden className="text-muted-foreground/50">
+                    ·
+                  </span>
+                ) : null}
+                <span>{t(`footer.${key}`)}</span>
+              </Fragment>
             ))}
           </nav>
           <span className="sm:ms-auto">{t("footer.rights", { year })}</span>

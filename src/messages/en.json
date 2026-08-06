@@ -304,6 +304,22 @@
       "launchPrefix": "Launching on",
       "launchDate": "September 7, 2026"
     },
+    "notify": {
+      "open": "Notify me at launch",
+      "title": "Get notified at launch",
+      "description": "Leave your name and email — we'll let you know the moment S2BR goes live.",
+      "name": "Your name",
+      "email": "Email address",
+      "submit": "Notify me",
+      "success": "You're on the list! We'll email you when S2BR launches.",
+      "errors": {
+        "name": "Please enter your name.",
+        "email": "Please enter a valid email address.",
+        "captcha": "Please complete the captcha.",
+        "rateLimited": "Too many attempts. Please try again in a moment.",
+        "generic": "Something went wrong. Please try again."
+      }
+    },
     "features": {
       "stores": "Stores",
       "food": "Food",
