@@ -9,6 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
+import { Brand } from "@/components/brand";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
@@ -18,10 +19,7 @@ import { Button } from "@/components/ui/button";
  * visitors get the social home instead — see src/app/page.tsx.
  */
 export async function MarketingHome() {
-  const [t, brand] = await Promise.all([
-    getTranslations("marketing"),
-    getTranslations("brand"),
-  ]);
+  const t = await getTranslations("marketing");
   const year = new Date().getFullYear();
 
   const features: {
@@ -38,20 +36,7 @@ export async function MarketingHome() {
     <div className="flex min-h-svh flex-col">
       <header className="border-b">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center gap-4 px-4 sm:px-6">
-          <Link href="/" className="flex items-center gap-2.5">
-            <Image
-              src="/s2br.svg"
-              alt=""
-              width={32}
-              height={32}
-              priority
-              unoptimized
-              className="size-8 rounded-lg"
-            />
-            <span className="font-heading text-lg font-semibold tracking-tight">
-              {brand("name")}
-            </span>
-          </Link>
+          <Brand />
           <div className="ms-auto flex items-center gap-2">
             <LocaleSwitcher />
             <ThemeToggle />
