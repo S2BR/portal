@@ -285,4 +285,13 @@
 .brazil-runner {
   stroke-dasharray: 0.14 0.86;
   opacity: 0;
+  /* Light mode: a light green highlight with a green glow so it reads as bright/luminous on the
+     light page; dark mode keeps the mint below. */
+  stroke: #c2f5c6;
+  filter: drop-shadow(0 0 3px rgb(58 224 143 / 0.85))
+    drop-shadow(0 0 8px rgb(20 214 122 / 0.5));
+}
+.dark .brazil-runner {
+  stroke: #c9ffdf;
+  filter: none;
 }
