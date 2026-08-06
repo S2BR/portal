@@ -76,6 +76,17 @@ export function ThemeToggler({
     resolved: Resolved;
   }>(null);
 
+  // next-themes can't know the theme on the server, so `theme`/`resolvedTheme` are only
+  // trustworthy after mount. Until then we render the same SSR-safe defaults the server did —
+  // otherwise a viewer whose system/stored theme differs from the server default (e.g. dark-mode
+  // Safari) mismatches on hydration and the theme-dependent icon/active state is regenerated.
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => {
+    // Mount detection: flipping this after hydration is the whole point.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
+
   const [fromClip, toClip] = getClipKeyframes(direction);
 
   const toggleTheme = React.useCallback(
@@ -122,8 +133,12 @@ export function ThemeToggler({
     [onImmediateChange, resolvedTheme, fromClip, toClip, setTheme],
   );
 
-  const effective: ThemeSelection = preview?.effective ?? theme ?? "system";
-  const resolved: Resolved = preview?.resolved ?? resolvedTheme ?? "light";
+  const effective: ThemeSelection = mounted
+    ? (preview?.effective ?? theme ?? "system")
+    : "system";
+  const resolved: Resolved = mounted
+    ? (preview?.resolved ?? resolvedTheme ?? "light")
+    : "light";
 
   return (
     <>
