@@ -223,7 +223,13 @@
   }
 }
 .launch-glow {
-  background-image: linear-gradient(to right, #44bcff, #ff44ec, #ff675e);
+  background-image: linear-gradient(
+    to right,
+    #1fa2ff,
+    #14d67a,
+    #ffc72c,
+    #ff6a5c
+  );
   /* Static default shows the whole spectrum; the animated state widens it to 300% so the
      gradient has room to slide. Without this, a reduced-motion viewer sees only a sliver. */
   background-size: 100% 100%;
