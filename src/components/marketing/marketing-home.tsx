@@ -84,14 +84,15 @@ export async function MarketingHome() {
             </div>
           </div>
 
-          <div className="relative mx-auto aspect-[2/3] w-full max-w-sm overflow-hidden rounded-3xl shadow-lg lg:ms-auto">
+          <div className="mx-auto w-full max-w-sm overflow-hidden rounded-3xl shadow-lg lg:ms-auto">
             <Image
               src="/images/side_image_01.jpg"
               alt={t("hero.caption")}
-              fill
+              width={800}
+              height={1200}
               priority
               sizes="(min-width: 1024px) 24rem, 100vw"
-              className="object-cover"
+              className="h-auto w-full object-cover"
             />
           </div>
         </section>
