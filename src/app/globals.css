@@ -240,3 +240,49 @@
     animation: launch-glow 5s ease infinite;
   }
 }
+
+/*
+ * The Brazil hero outline draws itself once on load — `pathLength="1"` normalizes the length so a
+ * single dash of 1 covers it, and the offset animates from 1 (hidden) to 0 (drawn). Reduced-motion
+ * viewers just get the finished outline.
+ */
+@keyframes brazil-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.brazil-outline {
+  /* A very subtle shadow to lift the line off the background — a dark drop-shadow in light mode,
+     and a soft light glow in dark mode (a dark shadow is invisible against the near-black page). */
+  filter: drop-shadow(0 2px 4px rgb(0 0 0 / 0.45));
+}
+.dark .brazil-outline {
+  /* Colored neon glow — two green tones (bright mint + deeper emerald) matching the outline. */
+  filter: drop-shadow(0 0 5px rgb(58 224 143 / 0.32))
+    drop-shadow(0 0 9px rgb(7 159 71 / 0.26));
+}
+.brazil-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .brazil-line {
+    animation: brazil-draw 3.5s ease-in-out 0.3s forwards;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .brazil-line {
+    stroke-dashoffset: 0;
+  }
+}
+
+/*
+ * A brighter highlight (a short 14% dash) that sweeps the outline. Each pass is driven from JS
+ * (brazil-outline.tsx): it jumps to a random start, then glides a short distance while fading in
+ * and out — so every pass appears and disappears mid-motion at a random spot. Reduced-motion
+ * viewers get none (the script bails). Static defaults live here.
+ */
+.brazil-runner {
+  stroke-dasharray: 0.14 0.86;
+  opacity: 0;
+}
