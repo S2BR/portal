@@ -1,10 +1,3 @@
-import {
-  CalendarDays,
-  Store,
-  UtensilsCrossed,
-  Wrench,
-  type LucideIcon,
-} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
@@ -21,16 +14,6 @@ import { Button } from "@/components/ui/button";
 export async function MarketingHome() {
   const t = await getTranslations("marketing");
   const year = new Date().getFullYear();
-
-  const features: {
-    key: "stores" | "food" | "events" | "services";
-    Icon: LucideIcon;
-  }[] = [
-    { key: "stores", Icon: Store },
-    { key: "food", Icon: UtensilsCrossed },
-    { key: "events", Icon: CalendarDays },
-    { key: "services", Icon: Wrench },
-  ];
 
   return (
     <div className="flex min-h-svh flex-col">
@@ -71,22 +54,6 @@ export async function MarketingHome() {
               sizes="(min-width: 1024px) 24rem, 100vw"
               className="h-auto w-full object-cover"
             />
-          </div>
-        </section>
-
-        <section className="border-t">
-          <div className="mx-auto grid w-full max-w-6xl gap-4 px-4 py-14 sm:grid-cols-2 sm:px-6 lg:grid-cols-4">
-            {features.map(({ key, Icon }) => (
-              <div
-                key={key}
-                className="bg-card flex items-center gap-3 rounded-xl border p-4"
-              >
-                <span className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-lg">
-                  <Icon className="size-5" />
-                </span>
-                <span className="font-medium">{t(`features.${key}`)}</span>
-              </div>
-            ))}
           </div>
         </section>
       </main>
