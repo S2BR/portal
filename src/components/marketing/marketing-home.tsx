@@ -41,7 +41,7 @@ export async function MarketingHome() {
             <p className="text-muted-foreground max-w-xl text-lg">
               {t("hero.subtitle")}
             </p>
-            <p className="text-base font-medium">
+            <p className="text-xl font-medium">
               <span className="text-muted-foreground">
                 {t("hero.launchPrefix")}
               </span>{" "}
