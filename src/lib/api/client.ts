@@ -1,9 +1,10 @@
 import "server-only";
 
-import { cookies, headers } from "next/headers";
+import { headers } from "next/headers";
 
 import { env } from "@/env";
-import { isLocale, LOCALE_COOKIE, toApiLocale } from "@/i18n/config";
+import { toApiLocale } from "@/i18n/config";
+import { resolveLocale } from "@/i18n/resolve";
 import { deviceNameFromUserAgent } from "@/lib/device-name";
 
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
@@ -30,13 +31,15 @@ export interface PortalResponse<T> {
 }
 
 /**
- * The portal-format locale (e.g. `fr_CA`) from the visitor's cookie, if set.
- * Forwarded as `Accept-Language` so the portal localizes its response messages.
+ * The portal-format locale (e.g. `fr_CA`) for the current request — the visitor's saved choice
+ * if set, otherwise negotiated from their browser (defaulting to English), the SAME resolution
+ * the UI uses. Forwarded as `Accept-Language` so the API localizes its response messages to match
+ * what the user sees. Best-effort: undefined outside a request scope (the API then uses its own
+ * default).
  */
 async function requestApiLocale(): Promise<string | undefined> {
   try {
-    const cookieLocale = (await cookies()).get(LOCALE_COOKIE)?.value;
-    return isLocale(cookieLocale) ? toApiLocale(cookieLocale) : undefined;
+    return toApiLocale(await resolveLocale());
   } catch {
     return undefined;
   }
