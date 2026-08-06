@@ -59,14 +59,6 @@ export async function MarketingHome() {
             <p className="text-muted-foreground max-w-xl text-lg">
               {t("hero.subtitle")}
             </p>
-            <div className="flex flex-wrap gap-3">
-              <Button asChild size="lg">
-                <Link href="/register">{t("hero.ctaPrimary")}</Link>
-              </Button>
-              <Button asChild variant="outline" size="lg">
-                <Link href="/login">{t("hero.ctaSecondary")}</Link>
-              </Button>
-            </div>
           </div>
 
           <div className="mx-auto w-full max-w-sm overflow-hidden rounded-3xl shadow-lg lg:ms-auto">
