@@ -34,7 +34,18 @@ export function useCurrentUser(): CurrentUserState {
  * re-loads it after account changes. If the session is gone on first load, the
  * user is sent back to sign in.
  */
-export function CurrentUserProvider({ children }: { children: ReactNode }) {
+export function CurrentUserProvider({
+  children,
+  redirectOnFailure = true,
+}: {
+  children: ReactNode;
+  /**
+   * On the authenticated shell, a failed load means the session is gone — send the user to sign
+   * in. On a public page (the shared header), a stale cookie should just fall back to a signed-out
+   * header, so pass `false`.
+   */
+  redirectOnFailure?: boolean;
+}) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -65,8 +76,8 @@ export function CurrentUserProvider({ children }: { children: ReactNode }) {
     // One-off fetch on mount; setState only runs after the async response
     // resolves, which this lint rule cannot see through.
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    void load(true);
-  }, [load]);
+    void load(redirectOnFailure);
+  }, [load, redirectOnFailure]);
 
   const refresh = useCallback(() => load(false), [load]);
 

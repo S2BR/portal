@@ -1,18 +1,22 @@
+import { cookies } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 
 import { Brand } from "@/components/brand";
 import { LocaleSwitcher } from "@/components/locale-switcher";
+import { SiteHeaderAuth } from "@/components/site-header-auth";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
+import { REFRESH_COOKIE } from "@/lib/auth/cookies";
 
 /**
- * The shared public site header — the logo, locale switcher, theme toggle, and "Log in". Used by
- * both the marketing landing and the legal pages so the two are always identical; change it once
- * and both follow.
+ * The shared public site header — the logo, locale switcher, theme toggle, and either "Log in"
+ * (signed out) or the user menu (signed in). Used by both the marketing landing and the legal
+ * pages so the two are always identical; change it once and both follow.
  */
 export async function SiteHeader() {
   const t = await getTranslations("marketing");
+  const authenticated = (await cookies()).has(REFRESH_COOKIE);
 
   return (
     <header className="border-b">
@@ -21,9 +25,13 @@ export async function SiteHeader() {
         <div className="ms-auto flex items-center gap-2">
           <LocaleSwitcher />
           <ThemeToggle />
-          <Button asChild variant="ghost">
-            <Link href="/login">{t("nav.login")}</Link>
-          </Button>
+          {authenticated ? (
+            <SiteHeaderAuth />
+          ) : (
+            <Button asChild variant="ghost">
+              <Link href="/login">{t("nav.login")}</Link>
+            </Button>
+          )}
         </div>
       </div>
     </header>
