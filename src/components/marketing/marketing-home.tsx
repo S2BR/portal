@@ -1,8 +1,8 @@
-import Image from "next/image";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
 import { Brand } from "@/components/brand";
+import { BrazilOutline } from "@/components/marketing/brazil-outline";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
@@ -55,22 +55,8 @@ export async function MarketingHome() {
             </p>
           </div>
 
-          <div className="relative mx-auto w-full max-w-xs lg:ms-auto">
-            <span
-              aria-hidden
-              className="launch-glow absolute -inset-4 rounded-[2rem] opacity-30 blur-3xl"
-            />
-            <div className="relative overflow-hidden rounded-3xl shadow-lg">
-              <Image
-                src="/images/side_image_01.jpg"
-                alt={t("hero.caption")}
-                width={800}
-                height={1200}
-                priority
-                sizes="(min-width: 1024px) 20rem, 100vw"
-                className="h-auto w-full object-cover"
-              />
-            </div>
+          <div className="relative mx-auto w-full max-w-sm lg:ms-auto">
+            <BrazilOutline />
           </div>
         </section>
       </main>
