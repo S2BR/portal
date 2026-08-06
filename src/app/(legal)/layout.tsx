@@ -1,9 +1,7 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
-import { Brand } from "@/components/brand";
-import { LocaleSwitcher } from "@/components/locale-switcher";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { SiteHeader } from "@/components/site-header";
 
 export default async function LegalLayout({
   children,
@@ -12,15 +10,7 @@ export default async function LegalLayout({
 
   return (
     <div className="flex min-h-svh flex-col">
-      <header className="border-b">
-        <div className="mx-auto flex h-16 w-full max-w-6xl items-center gap-4 px-4 sm:px-6">
-          <Brand />
-          <div className="ms-auto flex items-center gap-2">
-            <LocaleSwitcher />
-            <ThemeToggle />
-          </div>
-        </div>
-      </header>
+      <SiteHeader />
 
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-10 sm:px-6">
         {children}

@@ -1,13 +1,9 @@
 import { getTranslations } from "next-intl/server";
-import Link from "next/link";
 import { Fragment } from "react";
 
-import { Brand } from "@/components/brand";
 import { BrazilOutline } from "@/components/marketing/brazil-outline";
 import { NotifyForm } from "@/components/marketing/notify-form";
-import { LocaleSwitcher } from "@/components/locale-switcher";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { Button } from "@/components/ui/button";
+import { SiteHeader } from "@/components/site-header";
 
 /**
  * The public landing at `/` for logged-out visitors (mirrors the content of s2br.com). Logged-in
@@ -19,18 +15,7 @@ export async function MarketingHome() {
 
   return (
     <div className="flex min-h-svh flex-col">
-      <header className="border-b">
-        <div className="mx-auto flex h-16 w-full max-w-6xl items-center gap-4 px-4 sm:px-6">
-          <Brand />
-          <div className="ms-auto flex items-center gap-2">
-            <LocaleSwitcher />
-            <ThemeToggle />
-            <Button asChild variant="ghost">
-              <Link href="/login">{t("nav.login")}</Link>
-            </Button>
-          </div>
-        </div>
-      </header>
+      <SiteHeader />
 
       <main className="flex flex-1 flex-col justify-center">
         <section className="mx-auto grid w-full max-w-6xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:py-24">
