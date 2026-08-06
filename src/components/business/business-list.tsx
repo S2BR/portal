@@ -73,8 +73,17 @@ export function BusinessList() {
             className="focus-visible:ring-ring rounded-xl outline-none focus-visible:ring-2"
           >
             <div className="bg-card hover:border-primary/40 flex h-full items-start gap-3 rounded-xl border p-4 transition-colors">
-              <span className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-lg">
-                <Icon className="size-5" />
+              <span className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg">
+                {business.logo ? (
+                  // eslint-disable-next-line @next/next/no-img-element -- presigned S3 url, not a bundled asset
+                  <img
+                    src={business.logo}
+                    alt=""
+                    className="size-full object-cover"
+                  />
+                ) : (
+                  <Icon className="size-5" />
+                )}
               </span>
               <div className="min-w-0 flex-1 space-y-1">
                 <p className="truncate font-medium">{business.name}</p>
