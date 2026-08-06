@@ -58,7 +58,7 @@ export async function MarketingHome() {
           <div className="relative mx-auto w-full max-w-sm lg:ms-auto">
             <span
               aria-hidden
-              className="launch-glow absolute -inset-2 rounded-3xl opacity-20 blur-2xl"
+              className="launch-glow absolute -inset-4 rounded-[2rem] opacity-30 blur-3xl"
             />
             <div className="relative overflow-hidden rounded-3xl shadow-lg">
               <Image
