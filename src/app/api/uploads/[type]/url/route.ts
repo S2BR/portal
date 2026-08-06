@@ -4,7 +4,12 @@ import { z } from "zod";
 import { callWithAuth } from "@/lib/api/authed";
 import type { ApiError } from "@/lib/api/types";
 
-const bodySchema = z.object({ content_type: z.string().min(1) });
+const bodySchema = z.object({
+  content_type: z.string().min(1),
+  // Optional target for scoped upload kinds (e.g. `{ business: slug }`); forwarded verbatim,
+  // the API's upload type validates it.
+  context: z.record(z.string(), z.unknown()).optional(),
+});
 
 const TYPE = /^[a-z][a-z0-9-]*$/;
 

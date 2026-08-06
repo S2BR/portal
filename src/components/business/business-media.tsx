@@ -8,13 +8,11 @@ import { toast } from "sonner";
 import type { Business } from "@/app/api/businesses/route";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import {
-  removeBusinessGalleryImage,
-  removeBusinessMedia,
-  uploadBusinessMedia,
-} from "@/lib/uploads/business-media";
 import { normalizeImage } from "@/lib/uploads/image";
+import { removeUpload, uploadFile } from "@/lib/uploads/upload";
 import { cn } from "@/lib/utils";
+
+type BusinessPayload = { business: Business };
 
 const ACCEPTED = ["image/jpeg", "image/png", "image/webp"];
 const MAX_BYTES = 5 * 1024 * 1024;
@@ -109,10 +107,15 @@ export function BusinessImageField({
     setPhase("uploading");
     setProgress(0);
 
-    const result = await uploadBusinessMedia(slug, kind, prepared, {
-      onProgress: setProgress,
-      onPhase: setPhase,
-    });
+    const result = await uploadFile<BusinessPayload>(
+      `business-${kind}`,
+      prepared,
+      {
+        onProgress: setProgress,
+        onPhase: setPhase,
+        context: { business: slug },
+      },
+    );
 
     setPhase("idle");
     setPreview(null);
@@ -126,10 +129,12 @@ export function BusinessImageField({
 
   async function remove() {
     setPending(true);
-    const business = await removeBusinessMedia(slug, kind);
+    const result = await removeUpload<BusinessPayload>(`business-${kind}`, {
+      business: slug,
+    });
     setPending(false);
-    if (business) {
-      onUpdated(business);
+    if (result.ok && result.data) {
+      onUpdated(result.data.business);
       toast.success(t("removedToast"));
     } else {
       toast.error(t("error"));
@@ -257,10 +262,15 @@ export function BusinessGallery({
       });
       setPhase("uploading");
       setProgress(0);
-      const result = await uploadBusinessMedia(slug, "gallery", prepared, {
-        onProgress: setProgress,
-        onPhase: setPhase,
-      });
+      const result = await uploadFile<BusinessPayload>(
+        "business-gallery",
+        prepared,
+        {
+          onProgress: setProgress,
+          onPhase: setPhase,
+          context: { business: slug },
+        },
+      );
       setPhase("idle");
       if (result.ok && result.data) {
         onUpdated(result.data.business);
@@ -277,10 +287,13 @@ export function BusinessGallery({
 
   async function remove(imageId: number) {
     setRemovingId(imageId);
-    const business = await removeBusinessGalleryImage(slug, imageId);
+    const result = await removeUpload<BusinessPayload>("business-gallery", {
+      business: slug,
+      image: imageId,
+    });
     setRemovingId(null);
-    if (business) {
-      onUpdated(business);
+    if (result.ok && result.data) {
+      onUpdated(result.data.business);
     } else {
       toast.error(t("error"));
     }

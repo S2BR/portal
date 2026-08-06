@@ -56,6 +56,25 @@ describe("POST /api/uploads/[type] (attach)", () => {
     expect(callWithAuth).not.toHaveBeenCalled();
   });
 
+  it("forwards a scoped attach's context to the portal", async () => {
+    vi.mocked(callWithAuth).mockResolvedValue({
+      ok: true,
+      status: 200,
+      data: { business: { id: 1, slug: "acme" } },
+    });
+
+    await POST(
+      request("POST", { key: "1/logo/x.webp", context: { business: "acme" } }),
+      context("business-logo"),
+    );
+
+    expect(callWithAuth).toHaveBeenCalledWith({
+      method: "POST",
+      path: "/uploads/business-logo",
+      body: { key: "1/logo/x.webp", context: { business: "acme" } },
+    });
+  });
+
   it("rejects a missing key without calling the portal", async () => {
     const res = await POST(request("POST", {}), context("avatar"));
 
@@ -117,6 +136,25 @@ describe("DELETE /api/uploads/[type] (remove)", () => {
 
     expect(res.status).toBe(422);
     expect(callWithAuth).not.toHaveBeenCalled();
+  });
+
+  it("forwards a scoped remove's context to the portal", async () => {
+    vi.mocked(callWithAuth).mockResolvedValue({
+      ok: true,
+      status: 200,
+      data: { business: { id: 1, slug: "acme" } },
+    });
+
+    await DELETE(
+      request("DELETE", { context: { business: "acme", image: 5 } }),
+      context("business-gallery"),
+    );
+
+    expect(callWithAuth).toHaveBeenCalledWith({
+      method: "DELETE",
+      path: "/uploads/business-gallery",
+      body: { context: { business: "acme", image: 5 } },
+    });
   });
 
   it("surfaces a portal error as 422", async () => {

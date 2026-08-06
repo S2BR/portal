@@ -49,6 +49,25 @@ describe("POST /api/uploads/[type]/url", () => {
     });
   });
 
+  it("forwards a scoped upload's context to the portal", async () => {
+    vi.mocked(callWithAuth).mockResolvedValue({
+      ok: true,
+      status: 200,
+      data: { url: "u", headers: {}, key: "1/logo/x.webp" },
+    });
+
+    await POST(
+      request({ content_type: "image/webp", context: { business: "acme" } }),
+      context("business-logo"),
+    );
+
+    expect(callWithAuth).toHaveBeenCalledWith({
+      method: "POST",
+      path: "/uploads/business-logo/url",
+      body: { content_type: "image/webp", context: { business: "acme" } },
+    });
+  });
+
   it("rejects a malformed type without calling the portal", async () => {
     const res = await POST(
       request({ content_type: "image/jpeg" }),
