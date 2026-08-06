@@ -13,7 +13,7 @@ export default async function LegalLayout({
   return (
     <div className="flex min-h-svh flex-col">
       <header className="border-b">
-        <div className="mx-auto flex h-16 w-full max-w-3xl items-center gap-4 px-4 sm:px-6">
+        <div className="mx-auto flex h-16 w-full max-w-6xl items-center gap-4 px-4 sm:px-6">
           <Brand />
           <div className="ms-auto flex items-center gap-2">
             <LocaleSwitcher />
@@ -27,7 +27,7 @@ export default async function LegalLayout({
       </main>
 
       <footer className="border-t">
-        <div className="text-muted-foreground mx-auto flex w-full max-w-3xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-6 text-sm sm:px-6">
+        <div className="text-muted-foreground mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-6 text-sm sm:px-6">
           <Link href="/terms" className="hover:text-foreground">
             {t("terms")}
           </Link>
