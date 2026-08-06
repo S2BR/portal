@@ -20,8 +20,9 @@ function isPublicPath(pathname: string): boolean {
 
 /** Routes reachable in ANY auth state — never gated, never redirected away (e.g. legal pages). */
 // Reachable in ANY auth state — never gated, never bounced. `/` is the Facebook-style home
-// (landing when logged out, social when logged in); the legal pages are public documents.
-const OPEN_PATHS = ["/", "/terms", "/privacy"];
+// (landing when logged out, social when logged in); the legal pages are public documents; the
+// generated social card must be fetchable by crawlers (which have no session).
+const OPEN_PATHS = ["/", "/terms", "/privacy", "/opengraph-image"];
 
 function isOpenPath(pathname: string): boolean {
   return OPEN_PATHS.some(

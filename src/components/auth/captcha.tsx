@@ -16,7 +16,9 @@ import type { CaptchaChallenge } from "@/lib/api/types";
  * issues a fresh challenge (challenges are single-use — a failed attempt burns
  * the current one).
  */
-export function useCaptcha(context: "login" | "register" | "email_login") {
+export function useCaptcha(
+  context: "login" | "register" | "email_login" | "launch",
+) {
   const [challenge, setChallenge] = useState<CaptchaChallenge | null>(null);
   const [token, setToken] = useState<string | null>(null);
 

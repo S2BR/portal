@@ -304,6 +304,22 @@
       "launchPrefix": "Lanzamiento el",
       "launchDate": "7 de septiembre de 2026"
     },
+    "notify": {
+      "open": "Avísame en el lanzamiento",
+      "title": "Recibe aviso en el lanzamiento",
+      "description": "Deja tu nombre y correo — te avisaremos en cuanto S2BR esté disponible.",
+      "name": "Tu nombre",
+      "email": "Correo electrónico",
+      "submit": "Avísame",
+      "success": "¡Estás en la lista! Te enviaremos un correo cuando S2BR se lance.",
+      "errors": {
+        "name": "Introduce tu nombre.",
+        "email": "Introduce un correo electrónico válido.",
+        "captcha": "Completa el captcha.",
+        "rateLimited": "Demasiados intentos. Inténtalo de nuevo en un momento.",
+        "generic": "Algo salió mal. Inténtalo de nuevo."
+      }
+    },
     "features": {
       "stores": "Tiendas",
       "food": "Gastronomía",

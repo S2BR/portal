@@ -14,7 +14,8 @@ export async function GET(request: Request): Promise<NextResponse> {
   if (
     context !== "login" &&
     context !== "register" &&
-    context !== "email_login"
+    context !== "email_login" &&
+    context !== "launch"
   ) {
     return NextResponse.json({ required: false });
   }

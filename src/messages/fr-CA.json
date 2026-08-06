@@ -304,6 +304,22 @@
       "launchPrefix": "Lancement le",
       "launchDate": "7 septembre 2026"
     },
+    "notify": {
+      "open": "Prévenez-moi au lancement",
+      "title": "Soyez informé au lancement",
+      "description": "Laissez votre nom et votre courriel — nous vous préviendrons dès le lancement de S2BR.",
+      "name": "Votre nom",
+      "email": "Adresse courriel",
+      "submit": "Prévenez-moi",
+      "success": "Vous êtes sur la liste! Nous vous écrirons au lancement de S2BR.",
+      "errors": {
+        "name": "Veuillez entrer votre nom.",
+        "email": "Veuillez entrer une adresse courriel valide.",
+        "captcha": "Veuillez compléter le captcha.",
+        "rateLimited": "Trop de tentatives. Réessayez dans un moment.",
+        "generic": "Une erreur s'est produite. Veuillez réessayer."
+      }
+    },
     "features": {
       "stores": "Boutiques",
       "food": "Gastronomie",
