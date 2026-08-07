@@ -23,6 +23,9 @@ export function UserAvatar({
     <Avatar className={className}>
       {src ? <AvatarImage src={src} alt={name} /> : null}
       <AvatarFallback
+        // With a src, delay the initials so a cached image (e.g. after the header re-mounts on a
+        // layout change) paints first and never flashes to initials. With no src, show them at once.
+        delayMs={src ? 600 : undefined}
         className={cn(
           // `text-background!` wins over a parent's `focus:**:text-accent-foreground`
           // (e.g. a DropdownMenuItem) so the initials stay readable on hover. `leading-none`

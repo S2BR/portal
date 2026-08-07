@@ -111,7 +111,9 @@ export function UserMenu() {
         router.refresh();
         await loadAccounts();
       } else {
-        // Fully signed out — send the visitor to the public landing, not the sign-in page.
+        // Fully signed out — clear the cached user (refresh 401s now, wiping the display cookie),
+        // then send the visitor to the public landing, not the sign-in page.
+        await refresh();
         router.replace("/");
         router.refresh();
       }
