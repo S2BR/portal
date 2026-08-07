@@ -111,7 +111,8 @@ export function UserMenu() {
         router.refresh();
         await loadAccounts();
       } else {
-        router.replace("/login");
+        // Fully signed out — send the visitor to the public landing, not the sign-in page.
+        router.replace("/");
         router.refresh();
       }
     });
