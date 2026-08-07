@@ -1,11 +1,11 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { apiErrorText } from "@/lib/api/error-text";
+import { enterApp } from "@/lib/auth/enter-app";
 import {
   browserSupportsWebAuthn,
   getPasskeyAssertion,
@@ -26,7 +26,6 @@ export function PasskeySignInButton({
   disabled?: boolean;
 }) {
   const t = useTranslations("auth");
-  const router = useRouter();
   const config = useAppConfig();
   const [supported, setSupported] = useState(false);
   const [pending, setPending] = useState(false);
@@ -79,8 +78,7 @@ export function PasskeySignInButton({
       };
 
       if (verifyData.status === "authenticated") {
-        router.replace(nextPath);
-        router.refresh();
+        enterApp(nextPath);
       } else if (verifyData.status === "rate_limited") {
         setError(t("errors.rateLimited"));
       } else {

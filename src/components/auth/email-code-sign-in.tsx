@@ -1,10 +1,10 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, type FormEvent } from "react";
 
 import { Captcha, useCaptcha } from "@/components/auth/captcha";
+import { enterApp } from "@/lib/auth/enter-app";
 import { OtpInput } from "@/components/auth/otp-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,7 +30,6 @@ export function EmailCodeSignIn({
   initialEmail?: string;
 }) {
   const t = useTranslations("auth");
-  const router = useRouter();
   const otpLength = useOtpLength();
   const {
     challenge,
@@ -151,8 +150,7 @@ export function EmailCodeSignIn({
         errors?: Record<string, string[]>;
       };
       if (data.status === "authenticated") {
-        router.replace(nextPath);
-        router.refresh();
+        enterApp(nextPath);
         return;
       }
       if (data.status === "two_factor_required" && data.pending_token) {
@@ -196,8 +194,7 @@ export function EmailCodeSignIn({
         errors?: Record<string, string[]>;
       };
       if (data.status === "authenticated") {
-        router.replace(nextPath);
-        router.refresh();
+        enterApp(nextPath);
         return;
       }
       if (data.status === "rate_limited") {

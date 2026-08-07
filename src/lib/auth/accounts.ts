@@ -12,6 +12,7 @@ import {
   getRefreshToken,
   removeFromVault,
   setSessionCookies,
+  setUserCookie,
   type VaultAccount,
 } from "./session";
 
@@ -40,6 +41,13 @@ export async function establishSession(
 
   if (newAccountId !== undefined) {
     await removeFromVault(newAccountId);
+  }
+
+  // Seed the display cookie for the newly-active account so the post-login full reload renders the
+  // header immediately, instead of showing a skeleton until the background /me returns.
+  const me = await callWithAuth<{ user: AuthUser }>({ path: "/account" });
+  if (me.ok) {
+    await setUserCookie(me.data.user);
   }
 }
 

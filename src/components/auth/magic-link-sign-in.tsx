@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
@@ -9,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { apiErrorText } from "@/lib/api/error-text";
+import { enterApp } from "@/lib/auth/enter-app";
 
 type State = "verifying" | "two_factor" | "error";
 
@@ -32,7 +32,6 @@ export function MagicLinkSignIn({
   nextPath: string;
 }) {
   const t = useTranslations("auth");
-  const router = useRouter();
 
   const [state, setState] = useState<State>(
     email && token ? "verifying" : "error",
@@ -68,8 +67,7 @@ export function MagicLinkSignIn({
           pending_token?: string;
         };
         if (data.status === "authenticated") {
-          router.replace(nextPath);
-          router.refresh();
+          enterApp(nextPath);
           return;
         }
         if (data.status === "two_factor_required" && data.pending_token) {
@@ -82,7 +80,7 @@ export function MagicLinkSignIn({
         setState("error");
       }
     })();
-  }, [email, token, expires, signature, nextPath, router]);
+  }, [email, token, expires, signature, nextPath]);
 
   async function submitTwoFactor(event: FormEvent) {
     event.preventDefault();
@@ -107,8 +105,7 @@ export function MagicLinkSignIn({
         errors?: Record<string, string[]>;
       };
       if (data.status === "authenticated") {
-        router.replace(nextPath);
-        router.refresh();
+        enterApp(nextPath);
         return;
       }
       if (data.status === "rate_limited") {

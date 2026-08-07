@@ -2,10 +2,13 @@ import "server-only";
 
 import { cookies } from "next/headers";
 
-import type { TokenPair } from "@/lib/api/types";
+import type { AuthUser, TokenPair } from "@/lib/api/types";
 
 import { ACCESS_COOKIE, ACCOUNTS_COOKIE, REFRESH_COOKIE } from "./cookies";
+import { encodeUser, USER_COOKIE } from "./user-cookie";
 import { verifyAccessToken } from "./verify-token";
+
+const USER_COOKIE_MAX_AGE = 60 * 60 * 24 * 7; // 7 days; overwritten on each session change
 
 const REFRESH_MAX_AGE_SECONDS = 60 * 60 * 24 * 30; // 30 days
 /** Most signed-in accounts we keep in the switcher (bounds the cookie size). */
@@ -70,12 +73,32 @@ export async function setSessionCookies(tokens: TokenPair): Promise<void> {
     tokens.refresh_token,
     cookieOptions(REFRESH_MAX_AGE_SECONDS),
   );
+  // The active account just changed (login / add / switch / refresh) — drop the stale display
+  // cookie so it can't show the previous user; the next `/me` repopulates it for the new one.
+  store.delete(USER_COOKIE);
+}
+
+/**
+ * Seed the non-httpOnly display cookie for the now-active account, so the header renders from it
+ * immediately after a login/switch instead of waiting on the background `/me`. Holds no
+ * credentials.
+ */
+export async function setUserCookie(user: AuthUser): Promise<void> {
+  const store = await cookies();
+  store.set(USER_COOKIE, encodeUser(user), {
+    httpOnly: false,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: USER_COOKIE_MAX_AGE,
+  });
 }
 
 export async function clearSessionCookies(): Promise<void> {
   const store = await cookies();
   store.delete(ACCESS_COOKIE);
   store.delete(REFRESH_COOKIE);
+  store.delete(USER_COOKIE);
 }
 
 export async function getAccessToken(): Promise<string | undefined> {
