@@ -496,7 +496,9 @@
         "savedToast": "Imagem atualizada",
         "removedToast": "Imagem removida",
         "error": "Algo deu errado. Tente novamente"
-      }
+      },
+      "loadError": "Não foi possível carregar esta empresa. Tente novamente.",
+      "retry": "Tentar de novo"
     }
   }
 }

@@ -98,4 +98,49 @@ describe("callWithAuth", () => {
     expect(clearSessionCookies).toHaveBeenCalledTimes(1);
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
+
+  it("single-flights concurrent refreshes of the same token", async () => {
+    // Two authed calls fire at once with an expired access token — as a page mounting several
+    // components does. They must rotate the single-use refresh token ONCE between them, not race.
+    let refreshCalls = 0;
+    fetchMock.mockImplementation((url: string, init?: RequestInit) => {
+      if (String(url).endsWith("/auth/refresh")) {
+        refreshCalls += 1;
+        // A small delay keeps both callers overlapping on the in-flight refresh.
+        return new Promise<Response>((resolve) => {
+          setTimeout(
+            () =>
+              resolve(
+                jsonResponse(200, {
+                  access_token: "access-2",
+                  refresh_token: "refresh-2",
+                  token_type: "Bearer",
+                  expires_in: 900,
+                }),
+              ),
+            10,
+          );
+        });
+      }
+
+      const authorization = (init?.headers as Record<string, string>)
+        ?.Authorization;
+      return Promise.resolve(
+        authorization === "Bearer access-1"
+          ? jsonResponse(401, { message: "Unauthenticated." })
+          : jsonResponse(200, { ok: true }),
+      );
+    });
+
+    const [first, second] = await Promise.all([
+      callWithAuth({ path: "/businesses/acme" }),
+      callWithAuth({ path: "/categories" }),
+    ]);
+
+    expect(first.status).toBe(200);
+    expect(second.status).toBe(200);
+    expect(refreshCalls).toBe(1);
+    expect(clearSessionCookies).not.toHaveBeenCalled();
+    expect(setSessionCookies).toHaveBeenCalledTimes(2);
+  });
 });
