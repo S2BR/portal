@@ -6,6 +6,7 @@ vi.mock("@/lib/api/authed", () => ({ callWithAuth: vi.fn() }));
 vi.mock("@/lib/api/client", () => ({ portalFetch: vi.fn() }));
 vi.mock("@/lib/auth/session", () => ({
   setSessionCookies: vi.fn(),
+  setUserCookie: vi.fn(),
   addToVault: vi.fn(),
   removeFromVault: vi.fn(),
   getRefreshToken: vi.fn(),
@@ -42,13 +43,17 @@ afterEach(() => vi.clearAllMocks());
 describe("establishSession", () => {
   it("just activates the session when not adding an account", async () => {
     cookieStore.get.mockReturnValue(undefined);
+    vi.mocked(callWithAuth).mockResolvedValue(
+      apiResponse(true, { user: { id: 1, name: "Me", email: "me@x.co" } }),
+    );
 
     await establishSession(tokens, 1);
 
     expect(setSessionCookies).toHaveBeenCalledWith(tokens);
     expect(removeFromVault).toHaveBeenCalledWith(1);
-    expect(addToVault).not.toHaveBeenCalled();
-    expect(callWithAuth).not.toHaveBeenCalled(); // no prior-account capture
+    expect(addToVault).not.toHaveBeenCalled(); // no prior-account capture
+    // Seeds the display cookie for the newly-active account (no prior-account capture call).
+    expect(callWithAuth).toHaveBeenCalledWith({ path: "/account" });
   });
 
   it("vaults the previously-active account when adding, then clears the flag", async () => {

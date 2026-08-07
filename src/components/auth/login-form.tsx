@@ -1,6 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+
+import { enterApp } from "@/lib/auth/enter-app";
 import { useTranslations } from "next-intl";
 import { useState, type FormEvent } from "react";
 
@@ -50,8 +52,7 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
 
       switch (data.status) {
         case "authenticated":
-          router.replace(nextPath);
-          router.refresh();
+          enterApp(nextPath);
           break;
         case "two_factor_required":
           setStep(data.status);

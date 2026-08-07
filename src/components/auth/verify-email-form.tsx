@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, type FormEvent } from "react";
 
@@ -8,11 +7,11 @@ import { OtpInput } from "@/components/auth/otp-input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { apiErrorText } from "@/lib/api/error-text";
+import { enterApp } from "@/lib/auth/enter-app";
 import { useOtpLength } from "@/lib/config/use-app-config";
 
 export function VerifyEmailForm({ email }: { email: string }) {
   const t = useTranslations("auth");
-  const router = useRouter();
   const otpLength = useOtpLength();
 
   const [code, setCode] = useState("");
@@ -40,8 +39,7 @@ export function VerifyEmailForm({ email }: { email: string }) {
         errors?: Record<string, string[]>;
       };
       if (data.status === "authenticated") {
-        router.replace("/");
-        router.refresh();
+        enterApp("/");
         return;
       }
       setError(apiErrorText(data) ?? t("errors.generic"));
