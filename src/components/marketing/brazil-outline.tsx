@@ -16,6 +16,43 @@ const BRAZIL_PATH =
 
 export function BrazilOutline({ className }: { className?: string }) {
   const runner = useRef<SVGPathElement>(null);
+  const wrapper = useRef<HTMLDivElement>(null);
+  const svg = useRef<SVGSVGElement>(null);
+
+  // Pointer-reactive tilt: the map leans toward the cursor for a subtle 3D "float", easing back
+  // when the pointer leaves. Desktop only (a fine pointer) and disabled under reduced-motion, so
+  // touch and motion-sensitive users are unaffected.
+  useEffect(() => {
+    const box = wrapper.current;
+    const target = svg.current;
+    if (!box || !target) {
+      return;
+    }
+    if (
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      !window.matchMedia("(hover: hover) and (pointer: fine)").matches
+    ) {
+      return;
+    }
+
+    const MAX_TILT = 11; // degrees at the edges
+    const onMove = (event: PointerEvent) => {
+      const rect = box.getBoundingClientRect();
+      const x = (event.clientX - rect.left) / rect.width - 0.5; // -0.5 … 0.5
+      const y = (event.clientY - rect.top) / rect.height - 0.5;
+      target.style.transform = `rotateX(${-y * MAX_TILT * 2}deg) rotateY(${x * MAX_TILT * 2}deg)`;
+    };
+    const onLeave = () => {
+      target.style.transform = "rotateX(0deg) rotateY(0deg)";
+    };
+
+    box.addEventListener("pointermove", onMove);
+    box.addEventListener("pointerleave", onLeave);
+    return () => {
+      box.removeEventListener("pointermove", onMove);
+      box.removeEventListener("pointerleave", onLeave);
+    };
+  }, []);
 
   useEffect(() => {
     const el = runner.current;
@@ -68,66 +105,72 @@ export function BrazilOutline({ className }: { className?: string }) {
   }, []);
 
   return (
-    <svg
-      viewBox="0 0 975.3 1000"
-      aria-hidden
-      className={cn("brazil-outline h-auto w-full", className)}
-    >
-      <defs>
-        {/*
-         * userSpaceOnUse + animating x1/x2 (rather than animateTransform on gradientTransform,
-         * which WebKit/Safari doesn't animate) flows the gradient along the outline, matching the
-         * launch-date glow. The tile is 500 units wide; shifting x1/x2 by one full tile loops
-         * seamlessly (first and last stop are the same color).
-         */}
-        <linearGradient
-          id="brazil-stroke"
-          gradientUnits="userSpaceOnUse"
-          x1="0"
-          y1="0"
-          x2="500"
-          y2="0"
-          spreadMethod="repeat"
-        >
-          <stop offset="0" stopColor="#3ae08f" />
-          <stop offset="0.5" stopColor="#079f47" />
-          <stop offset="1" stopColor="#3ae08f" />
-          <animate
-            attributeName="x1"
-            from="0"
-            to="500"
-            dur="6s"
-            repeatCount="indefinite"
-          />
-          <animate
-            attributeName="x2"
-            from="500"
-            to="1000"
-            dur="6s"
-            repeatCount="indefinite"
-          />
-        </linearGradient>
-      </defs>
-      <path
-        className="brazil-line"
-        d={BRAZIL_PATH}
-        pathLength={1}
-        fill="none"
-        stroke="url(#brazil-stroke)"
-        strokeWidth={5}
-        strokeLinejoin="round"
-        strokeLinecap="round"
-      />
-      {/* A brighter highlight that sweeps around the outline; JS fades it in at random moments. */}
-      <path
-        ref={runner}
-        className="brazil-runner"
-        d={BRAZIL_PATH}
-        pathLength={1}
-        fill="none"
-        strokeWidth={5}
-        strokeLinecap="round"
-      />
-    </svg>
+    <div ref={wrapper} className="[perspective:900px]">
+      <svg
+        ref={svg}
+        viewBox="0 0 975.3 1000"
+        aria-hidden
+        className={cn(
+          "brazil-outline h-auto w-full transition-transform duration-200 ease-out will-change-transform",
+          className,
+        )}
+      >
+        <defs>
+          {/*
+           * userSpaceOnUse + animating x1/x2 (rather than animateTransform on gradientTransform,
+           * which WebKit/Safari doesn't animate) flows the gradient along the outline, matching the
+           * launch-date glow. The tile is 500 units wide; shifting x1/x2 by one full tile loops
+           * seamlessly (first and last stop are the same color).
+           */}
+          <linearGradient
+            id="brazil-stroke"
+            gradientUnits="userSpaceOnUse"
+            x1="0"
+            y1="0"
+            x2="500"
+            y2="0"
+            spreadMethod="repeat"
+          >
+            <stop offset="0" stopColor="#3ae08f" />
+            <stop offset="0.5" stopColor="#079f47" />
+            <stop offset="1" stopColor="#3ae08f" />
+            <animate
+              attributeName="x1"
+              from="0"
+              to="500"
+              dur="6s"
+              repeatCount="indefinite"
+            />
+            <animate
+              attributeName="x2"
+              from="500"
+              to="1000"
+              dur="6s"
+              repeatCount="indefinite"
+            />
+          </linearGradient>
+        </defs>
+        <path
+          className="brazil-line"
+          d={BRAZIL_PATH}
+          pathLength={1}
+          fill="none"
+          stroke="url(#brazil-stroke)"
+          strokeWidth={5}
+          strokeLinejoin="round"
+          strokeLinecap="round"
+        />
+        {/* A brighter highlight that sweeps around the outline; JS fades it in at random moments. */}
+        <path
+          ref={runner}
+          className="brazil-runner"
+          d={BRAZIL_PATH}
+          pathLength={1}
+          fill="none"
+          strokeWidth={5}
+          strokeLinecap="round"
+        />
+      </svg>
+    </div>
   );
 }
