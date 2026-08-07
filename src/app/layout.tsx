@@ -6,10 +6,12 @@ import { getLocale } from "next-intl/server";
 
 import { Analytics } from "@/components/analytics/analytics";
 import { ConsentBanner } from "@/components/analytics/consent-banner";
+import { CurrentUserProvider } from "@/components/auth/current-user";
 import { DirectionProvider } from "@/components/direction-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { REFRESH_COOKIE } from "@/lib/auth/cookies";
+import { decodeUser, USER_COOKIE } from "@/lib/auth/user-cookie";
 import { getDirection, type Direction } from "@/i18n/config";
 import "./globals.css";
 
@@ -74,6 +76,9 @@ export default async function RootLayout({
 
   const cookieStore = await cookies();
   const authenticated = cookieStore.has(REFRESH_COOKIE);
+  // Seed the header from the display cookie — no API call. The provider (mounted once here, never
+  // remounted on navigation) revalidates in the background on this full load.
+  const cookieUser = decodeUser(cookieStore.get(USER_COOKIE)?.value);
   const devDir =
     process.env.NODE_ENV !== "production"
       ? cookieStore.get(DEV_DIR_COOKIE)?.value
@@ -92,7 +97,16 @@ export default async function RootLayout({
         <ThemeProvider>
           <DirectionProvider dir={dir}>
             <NextIntlClientProvider>
-              {children}
+              {/* One provider for the whole app — mounted here so it never remounts on navigation.
+                  redirectOnFailure is false: public pages must not bounce to /login; protected
+                  routes still guard server-side in AppShell. */}
+              <CurrentUserProvider
+                initialUser={cookieUser}
+                authenticated={authenticated}
+                redirectOnFailure={false}
+              >
+                {children}
+              </CurrentUserProvider>
               {/* Inside the intl provider — the banner is translated. */}
               {gaId ? <ConsentBanner /> : null}
             </NextIntlClientProvider>

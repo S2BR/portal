@@ -1,7 +1,6 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
@@ -25,12 +24,14 @@ function LocaleFlag({
   className?: string;
 }) {
   return (
-    <Image
+    // A plain <img> (not next/image) so the cached flag paints instantly when the header re-mounts
+    // on a layout change, with no loading transition.
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
       src={`/images/flags/${locale}.png`}
       alt=""
       width={20}
       height={20}
-      unoptimized
       className={cn("size-5 shrink-0 rounded-full object-cover", className)}
     />
   );
