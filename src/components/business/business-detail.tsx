@@ -250,6 +250,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
 
   const [business, setBusiness] = useState<Business | null>(null);
   const [missing, setMissing] = useState(false);
+  const [loadFailed, setLoadFailed] = useState(false);
   const [editing, setEditing] = useState(false);
   const [edit, setEdit] = useState<EditState | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -260,22 +261,29 @@ export function BusinessDetail({ slug }: { slug: string }) {
   const [amenityGroups, setAmenityGroups] = useState<Amenity[]>([]);
 
   const load = useCallback(async () => {
+    setLoadFailed(false);
     try {
       const response = await fetch(
         `/api/businesses/${encodeURIComponent(slug)}`,
       );
+      // Only a real 404 means "not yours / gone". Anything else (a transient upstream or refresh
+      // blip, a network stutter) is a temporary failure the user can retry — not an access problem.
       if (response.status === 404) {
         setMissing(true);
+        return;
+      }
+      if (!response.ok) {
+        setLoadFailed(true);
         return;
       }
       const data = (await response.json()) as { business?: Business };
       if (data.business) {
         setBusiness(data.business);
       } else {
-        setMissing(true);
+        setLoadFailed(true);
       }
     } catch {
-      setMissing(true);
+      setLoadFailed(true);
     }
   }, [slug]);
 
@@ -418,6 +426,20 @@ export function BusinessDetail({ slug }: { slug: string }) {
         <p className="text-muted-foreground rounded-xl border border-dashed p-8 text-center text-sm">
           {t("notFound")}
         </p>
+      </div>
+    );
+  }
+
+  if (loadFailed) {
+    return (
+      <div className="mx-auto max-w-2xl space-y-6">
+        {backLink}
+        <div className="space-y-4 rounded-xl border border-dashed p-8 text-center">
+          <p className="text-muted-foreground text-sm">{t("loadError")}</p>
+          <Button variant="outline" onClick={() => void load()}>
+            {t("retry")}
+          </Button>
+        </div>
       </div>
     );
   }

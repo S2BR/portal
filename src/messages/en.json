@@ -496,7 +496,9 @@
         "savedToast": "Image updated",
         "removedToast": "Image removed",
         "error": "Something went wrong. Please try again"
-      }
+      },
+      "loadError": "Couldn't load this business. Please try again.",
+      "retry": "Try again"
     }
   }
 }
