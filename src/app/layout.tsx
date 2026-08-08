@@ -8,6 +8,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@/components/analytics/analytics";
 import { ConsentBanner } from "@/components/analytics/consent-banner";
 import { CurrentUserProvider } from "@/components/auth/current-user";
+import { SettingsDialogProvider } from "@/components/auth/settings-dialog";
 import { DirectionProvider } from "@/components/direction-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -106,7 +107,7 @@ export default async function RootLayout({
                 authenticated={authenticated}
                 redirectOnFailure={false}
               >
-                {children}
+                <SettingsDialogProvider>{children}</SettingsDialogProvider>
               </CurrentUserProvider>
               {/* Inside the intl provider — the banner is translated. */}
               {gaId ? <ConsentBanner /> : null}

@@ -161,7 +161,16 @@
     "emailNotVerified": "Courriel non vérifié",
     "twoFactorOn": "Double authentification activée",
     "twoFactorOff": "Double authentification désactivée",
-    "memberSince": "Membre depuis {date}"
+    "memberSince": "Membre depuis {date}",
+    "settingsTitle": "Paramètres",
+    "settingsDescription": "Gérez les paramètres et les préférences de votre compte.",
+    "nav": {
+      "profile": "Profil",
+      "account": "Compte",
+      "security": "Sécurité",
+      "sessions": "Sessions",
+      "danger": "Zone de danger"
+    }
   },
   "avatarSettings": {
     "title": "Photo de profil",
