@@ -3,6 +3,7 @@ import { Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import { cookies } from "next/headers";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import { Analytics } from "@/components/analytics/analytics";
 import { ConsentBanner } from "@/components/analytics/consent-banner";
@@ -114,6 +115,7 @@ export default async function RootLayout({
           <Toaster />
         </ThemeProvider>
         {gaId ? <Analytics gaId={gaId} authenticated={authenticated} /> : null}
+        <SpeedInsights />
       </body>
     </html>
   );
