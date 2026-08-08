@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useState, useTransition } from "react";
 
 import { useCurrentUser } from "@/components/auth/current-user";
+import { useSettingsDialog } from "@/components/auth/settings-dialog";
 import { UserAvatar } from "@/components/auth/user-avatar";
 import { ThemeSegmentedControl } from "@/components/theme-segmented-control";
 import { Button } from "@/components/ui/button";
@@ -38,6 +39,7 @@ export function UserMenu() {
   const t = useTranslations("nav");
   const themeT = useTranslations("theme");
   const { user, loading, refresh } = useCurrentUser();
+  const { open: openSettings } = useSettingsDialog();
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [others, setOthers] = useState<AccountSummary[]>([]);
@@ -213,11 +215,9 @@ export function UserMenu() {
             {t("businesses")}
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href="/profile">
-            <User className="size-4" />
-            {t("profile")}
-          </Link>
+        <DropdownMenuItem onSelect={() => openSettings()}>
+          <User className="size-4" />
+          {t("profile")}
         </DropdownMenuItem>
         <DropdownMenuItem disabled={pending} onClick={() => signOut("current")}>
           <LogOut className="size-4" />

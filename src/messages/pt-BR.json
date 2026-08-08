@@ -161,7 +161,16 @@
     "emailNotVerified": "E-mail não verificado",
     "twoFactorOn": "Dois fatores ativado",
     "twoFactorOff": "Dois fatores desativado",
-    "memberSince": "Membro desde {date}"
+    "memberSince": "Membro desde {date}",
+    "settingsTitle": "Configurações",
+    "settingsDescription": "Gerencie as configurações e preferências da sua conta.",
+    "nav": {
+      "profile": "Perfil",
+      "account": "Conta",
+      "security": "Segurança",
+      "sessions": "Sessões",
+      "danger": "Zona de perigo"
+    }
   },
   "avatarSettings": {
     "title": "Foto de perfil",

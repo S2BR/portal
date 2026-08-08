@@ -161,7 +161,16 @@
     "emailNotVerified": "Email not verified",
     "twoFactorOn": "Two-factor on",
     "twoFactorOff": "Two-factor off",
-    "memberSince": "Member since {date}"
+    "memberSince": "Member since {date}",
+    "settingsTitle": "Settings",
+    "settingsDescription": "Manage your account settings and preferences.",
+    "nav": {
+      "profile": "Profile",
+      "account": "Account",
+      "security": "Security",
+      "sessions": "Sessions",
+      "danger": "Danger zone"
+    }
   },
   "avatarSettings": {
     "title": "Avatar",
