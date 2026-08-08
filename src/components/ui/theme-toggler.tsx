@@ -45,6 +45,16 @@ function getClipKeyframes(direction: Direction): [string, string] {
   }
 }
 
+/**
+ * The theme-wipe blur look, chosen by `NEXT_PUBLIC_THEME_BLUR_MODE` (inlined at build time):
+ *   "new"  — only the incoming theme blurs in as it wipes (default)
+ *   "both" — incoming blurs in AND the outgoing theme blurs out (fuller crossfade)
+ */
+type BlurMode = "new" | "both";
+const BLUR_RADIUS = "6px";
+const BLUR_MODE: BlurMode =
+  process.env.NEXT_PUBLIC_THEME_BLUR_MODE === "both" ? "both" : "new";
+
 export type ThemeTogglerProps = {
   theme: ThemeSelection | undefined;
   resolvedTheme: Resolved | undefined;
@@ -114,21 +124,43 @@ export function ThemeToggler({
         });
       }).ready;
 
-      document.documentElement
-        .animate(
-          { clipPath: [fromClip, toClip] },
+      // The incoming theme wipes in and sharpens from blurred → crisp.
+      const animations = [
+        document.documentElement.animate(
+          {
+            clipPath: [fromClip, toClip],
+            filter: [`blur(${BLUR_RADIUS})`, "blur(0px)"],
+          },
           {
             duration: 700,
             easing: "ease-in-out",
             pseudoElement: "::view-transition-new(root)",
           },
-        )
-        .finished.finally(() => {
-          // Commit to next-themes and drop the preview in one batch, so the shown state falls
-          // back to the (now-matching) real theme without a flicker.
-          setTheme(next);
-          setPreview(null);
-        });
+        ),
+      ];
+
+      // "both": the outgoing theme underneath also blurs out for a fuller crossfade.
+      if (BLUR_MODE === "both") {
+        animations.push(
+          document.documentElement.animate(
+            { filter: ["blur(0px)", `blur(${BLUR_RADIUS})`] },
+            {
+              duration: 700,
+              easing: "ease-in-out",
+              pseudoElement: "::view-transition-old(root)",
+            },
+          ),
+        );
+      }
+
+      void Promise.allSettled(
+        animations.map((animation) => animation.finished),
+      ).finally(() => {
+        // Commit to next-themes and drop the preview in one batch, so the shown state falls
+        // back to the (now-matching) real theme without a flicker.
+        setTheme(next);
+        setPreview(null);
+      });
     },
     [onImmediateChange, resolvedTheme, fromClip, toClip, setTheme],
   );
