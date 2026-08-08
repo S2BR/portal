@@ -231,6 +231,61 @@
 }
 
 /*
+ * Toast timeout bar: a full-width fill flush to the bottom edge of each toast that grows from
+ * start → end over the toast's lifetime, reaching full exactly as the toast auto-dismisses (both
+ * driven by `--toast-duration`, set on the Sonner toaster in components/ui/sonner). `overflow:
+ * hidden` clips it to the card's rounded corners (safe: we render no close button). Tinted to the
+ * toast's own color via `currentColor` — faint green/red for success/error (richColors), neutral
+ * otherwise. Paused while the toaster is hovered, matching Sonner pausing the dismiss timer then, so
+ * the two stay in sync. Toasts that don't auto-dismiss (loading/persistent) and reduced-motion get
+ * no bar.
+ */
+@keyframes toast-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+[data-sonner-toast][data-styled="true"] {
+  overflow: hidden;
+}
+
+[data-sonner-toast][data-styled="true"]::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 3px;
+  background: currentColor;
+  opacity: 0.22;
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: toast-progress var(--toast-duration, 4000ms) linear forwards;
+  pointer-events: none;
+}
+
+[dir="rtl"] [data-sonner-toast][data-styled="true"]::after {
+  transform-origin: right;
+}
+
+[data-sonner-toaster]:hover [data-sonner-toast][data-styled="true"]::after {
+  animation-play-state: paused;
+}
+
+[data-sonner-toast][data-type="loading"][data-styled="true"]::after {
+  content: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-sonner-toast][data-styled="true"]::after {
+    content: none;
+  }
+}
+
+/*
  * Landing hero "launch date" glow — an animated blue → pink → coral gradient (mirrors the
  * original s2br.com). Used both as the text fill (with `bg-clip-text text-transparent`) and as a
  * blurred copy behind it. The gradient only drifts when the viewer hasn't asked to reduce motion.
