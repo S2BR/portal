@@ -507,7 +507,13 @@
         "error": "Une erreur s’est produite. Veuillez réessayer"
       },
       "loadError": "Impossible de charger cette entreprise. Veuillez réessayer.",
-      "retry": "Réessayer"
+      "retry": "Réessayer",
+      "addTime": "Ajouter une plage",
+      "removeTime": "Retirer la plage",
+      "unavailable": "Indisponible",
+      "copyTo": "Copier vers…",
+      "everyDay": "Tous les jours",
+      "apply": "Appliquer"
     }
   }
 }

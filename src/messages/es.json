@@ -507,7 +507,13 @@
         "error": "Algo salió mal. Inténtalo de nuevo"
       },
       "loadError": "No se pudo cargar esta empresa. Inténtalo de nuevo.",
-      "retry": "Reintentar"
+      "retry": "Reintentar",
+      "addTime": "Añadir horario",
+      "removeTime": "Quitar horario",
+      "unavailable": "No disponible",
+      "copyTo": "Copiar a…",
+      "everyDay": "Todos los días",
+      "apply": "Aplicar"
     }
   }
 }

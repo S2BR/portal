@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowLeft, Building2, Plus, Trash2, User2, X } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -19,7 +19,6 @@ import type {
   BusinessContactType,
   BusinessSocialNetwork,
   BusinessType,
-  DayOfWeek,
 } from "@/app/api/businesses/route";
 import {
   CONTACT_TYPES,
@@ -38,6 +37,11 @@ import {
   BusinessGallery,
   BusinessImageField,
 } from "@/components/business/business-media";
+import {
+  formatTime,
+  HoursScheduler,
+  type WeekSchedule,
+} from "@/components/business/hours-scheduler";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -67,7 +71,6 @@ import { apiErrorText } from "@/lib/api/error-text";
 
 type ContactRow = { type: BusinessContactType; value: string; name: string };
 type SocialRow = { platform: BusinessSocialNetwork; handle: string };
-type HourRow = { open: string; close: string; closed: boolean };
 type AddressEntry = {
   key: string; // stable client key for the list
   address_1: string;
@@ -91,7 +94,7 @@ type EditState = {
   colorPrimary: string;
   contacts: ContactRow[];
   socials: SocialRow[];
-  hours: Record<DayOfWeek, HourRow>;
+  hours: WeekSchedule;
   addresses: AddressEntry[];
   categoryIds: number[];
   amenityIds: number[];
@@ -117,17 +120,15 @@ function blankAddress(): AddressEntry {
 function toEditState(business: Business): EditState {
   const hours = Object.fromEntries(
     DAYS.map((day) => {
-      const found = business.opening_hours?.find((h) => h.day_of_week === day);
-      return [
-        day,
-        {
-          open: found?.open_time ?? "",
-          close: found?.close_time ?? "",
-          closed: found?.closed_all_day ?? false,
-        },
-      ];
+      const slots = (business.opening_hours ?? [])
+        .filter(
+          (h) =>
+            h.day_of_week === day && !h.closed_all_day && h.open_time != null,
+        )
+        .map((h) => ({ open: h.open_time ?? "", close: h.close_time ?? "" }));
+      return [day, { enabled: slots.length > 0, slots }];
     }),
-  ) as Record<DayOfWeek, HourRow>;
+  ) as WeekSchedule;
 
   return {
     name: business.name,
@@ -202,18 +203,20 @@ function buildPayload(edit: EditState) {
         platform: social.platform,
         handle: social.handle.trim(),
       })),
-    opening_hours: DAYS.filter(
-      (day) => edit.hours[day].closed || edit.hours[day].open.trim() !== "",
-    ).map((day) => ({
-      day_of_week: day,
-      open_time: edit.hours[day].closed
-        ? null
-        : trimOrNull(edit.hours[day].open),
-      close_time: edit.hours[day].closed
-        ? null
-        : trimOrNull(edit.hours[day].close),
-      closed_all_day: edit.hours[day].closed,
-    })),
+    opening_hours: DAYS.flatMap((day) => {
+      const schedule = edit.hours[day];
+      if (!schedule.enabled) {
+        return [];
+      }
+      return schedule.slots
+        .filter((slot) => slot.open.trim() !== "" && slot.close.trim() !== "")
+        .map((slot) => ({
+          day_of_week: day,
+          open_time: slot.open,
+          close_time: slot.close,
+          closed_all_day: false,
+        }));
+    }),
     addresses: edit.addresses
       .filter(
         (address) =>
@@ -246,6 +249,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
   const blank = useTranslations("businesses.detail.empty");
   const types = useTranslations("businessNew.types");
   const create = useTranslations("businessNew");
+  const locale = useLocale();
   const router = useRouter();
 
   const [business, setBusiness] = useState<Business | null>(null);
@@ -777,85 +781,38 @@ export function BusinessDetail({ slug }: { slug: string }) {
           {/* Opening hours */}
           <TabsContent value="hours">
             {editing && edit ? (
-              <div className="space-y-2">
-                {DAYS.map((day) => {
-                  const row = edit.hours[day];
-                  return (
-                    <div
-                      key={day}
-                      className="flex flex-wrap items-center gap-3 rounded-lg border p-2.5"
-                    >
-                      <span className="w-24 shrink-0 text-sm font-medium">
-                        {days(day)}
-                      </span>
-                      <label className="text-muted-foreground flex items-center gap-2 text-sm">
-                        <Checkbox
-                          checked={row.closed}
-                          onCheckedChange={(checked) =>
-                            patch({
-                              hours: {
-                                ...edit.hours,
-                                [day]: { ...row, closed: checked === true },
-                              },
-                            })
-                          }
-                        />
-                        {t("closedAllDay")}
-                      </label>
-                      {!row.closed ? (
-                        <div className="ms-auto flex items-center gap-2">
-                          <Input
-                            type="time"
-                            value={row.open}
-                            onChange={(event) =>
-                              patch({
-                                hours: {
-                                  ...edit.hours,
-                                  [day]: { ...row, open: event.target.value },
-                                },
-                              })
-                            }
-                            className="w-32"
-                            aria-label={fields("open")}
-                          />
-                          <span className="text-muted-foreground">–</span>
-                          <Input
-                            type="time"
-                            value={row.close}
-                            onChange={(event) =>
-                              patch({
-                                hours: {
-                                  ...edit.hours,
-                                  [day]: { ...row, close: event.target.value },
-                                },
-                              })
-                            }
-                            className="w-32"
-                            aria-label={fields("close")}
-                          />
-                        </div>
-                      ) : null}
-                    </div>
-                  );
-                })}
-              </div>
+              <HoursScheduler
+                value={edit.hours}
+                onChange={(hours) => patch({ hours })}
+              />
             ) : business.opening_hours && business.opening_hours.length > 0 ? (
               <ul className="divide-y rounded-xl border">
-                {business.opening_hours.map((hour) => (
-                  <li
-                    key={hour.day_of_week}
-                    className="flex items-center justify-between p-3 text-sm"
-                  >
-                    <span className="font-medium">
-                      {days(hour.day_of_week)}
-                    </span>
-                    <span className="text-muted-foreground">
-                      {hour.closed_all_day
-                        ? t("closedAllDay")
-                        : `${hour.open_time ?? "—"} – ${hour.close_time ?? "—"}`}
-                    </span>
-                  </li>
-                ))}
+                {DAYS.map((day) => {
+                  const ranges = (business.opening_hours ?? []).filter(
+                    (hour) =>
+                      hour.day_of_week === day &&
+                      !hour.closed_all_day &&
+                      hour.open_time != null,
+                  );
+                  return (
+                    <li
+                      key={day}
+                      className="flex items-center justify-between gap-4 p-3 text-sm"
+                    >
+                      <span className="font-medium">{days(day)}</span>
+                      <span className="text-muted-foreground text-end">
+                        {ranges.length > 0
+                          ? ranges
+                              .map(
+                                (hour) =>
+                                  `${hour.open_time ? formatTime(hour.open_time, locale) : "—"} – ${hour.close_time ? formatTime(hour.close_time, locale) : "—"}`,
+                              )
+                              .join(", ")
+                          : t("closedAllDay")}
+                      </span>
+                    </li>
+                  );
+                })}
               </ul>
             ) : (
               <Muted>{blank("hours")}</Muted>
