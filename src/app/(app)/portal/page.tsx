@@ -14,10 +14,13 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { useCurrentUser } from "@/components/auth/current-user";
+import {
+  useSettingsDialog,
+  type SectionKey,
+} from "@/components/auth/settings-dialog";
 import { UserAvatar } from "@/components/auth/user-avatar";
 import type { AuthUser } from "@/lib/api/types";
 import { Badge } from "@/components/ui/badge";
@@ -60,6 +63,8 @@ export default function DashboardPage() {
 function DashboardContent({ user }: { user: AuthUser }) {
   const t = useTranslations("dashboard");
   const format = useFormatter();
+  // Opens the settings dialog in place (no navigation) on the given tab — see useSettingsDialog.
+  const { open } = useSettingsDialog();
   const [counts, setCounts] = useState<{
     passkeys: number;
     sessions: number;
@@ -91,10 +96,30 @@ function DashboardContent({ user }: { user: AuthUser }) {
   }, []);
 
   const hour = new Date().getHours();
-  const steps = [
-    { key: "avatar", done: user.avatar !== null, icon: Camera },
-    { key: "twoFactor", done: user.two_factor_enabled, icon: ShieldCheck },
-    { key: "passkey", done: (counts?.passkeys ?? 0) > 0, icon: KeyRound },
+  const steps: {
+    key: string;
+    done: boolean;
+    icon: LucideIcon;
+    section: SectionKey;
+  }[] = [
+    {
+      key: "avatar",
+      done: user.avatar !== null,
+      icon: Camera,
+      section: "profile",
+    },
+    {
+      key: "twoFactor",
+      done: user.two_factor_enabled,
+      icon: ShieldCheck,
+      section: "security",
+    },
+    {
+      key: "passkey",
+      done: (counts?.passkeys ?? 0) > 0,
+      icon: KeyRound,
+      section: "security",
+    },
   ];
   const done = steps.filter((step) => step.done).length;
   const allDone = counts !== null && done === steps.length;
@@ -145,7 +170,7 @@ function DashboardContent({ user }: { user: AuthUser }) {
           <CardContent className="space-y-4">
             <Progress value={(done / steps.length) * 100} />
             <ul className="space-y-1">
-              {steps.map(({ key, done: stepDone, icon: Icon }) => (
+              {steps.map(({ key, done: stepDone, icon: Icon, section }) => (
                 <li key={key} className="flex items-center gap-3 py-1">
                   <span
                     className={cn(
@@ -170,11 +195,13 @@ function DashboardContent({ user }: { user: AuthUser }) {
                     {t(`setup.${key}`)}
                   </span>
                   {stepDone ? null : (
-                    <Button asChild variant="ghost" size="sm">
-                      <Link href="/profile">
-                        {t("setup.action")}
-                        <ChevronRight className="size-4 rtl:rotate-180" />
-                      </Link>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => open(section)}
+                    >
+                      {t("setup.action")}
+                      <ChevronRight className="size-4 rtl:rotate-180" />
                     </Button>
                   )}
                 </li>
@@ -190,16 +217,22 @@ function DashboardContent({ user }: { user: AuthUser }) {
           label={t("status.twoFactor")}
           value={user.two_factor_enabled ? t("status.on") : t("status.off")}
           tone={user.two_factor_enabled ? "good" : "warn"}
+          section="security"
+          onOpen={open}
         />
         <StatTile
           icon={KeyRound}
           label={t("status.passkeys")}
           value={counts ? String(counts.passkeys) : null}
+          section="security"
+          onOpen={open}
         />
         <StatTile
           icon={MonitorSmartphone}
           label={t("status.sessions")}
           value={counts ? String(counts.sessions) : null}
+          section="sessions"
+          onOpen={open}
         />
         <StatTile
           icon={CalendarDays}
@@ -207,6 +240,8 @@ function DashboardContent({ user }: { user: AuthUser }) {
           value={format.dateTime(new Date(user.created_at), {
             dateStyle: "medium",
           })}
+          section="profile"
+          onOpen={open}
         />
       </div>
 
@@ -244,22 +279,30 @@ const TONE_STYLES: Record<Tone, string> = {
   neutral: "bg-muted text-muted-foreground",
 };
 
-/** A compact stat tile linking into settings; shows a skeleton until its value resolves. */
+/**
+ * A compact stat tile that opens its settings tab in place (no navigation — stays on the current
+ * page); shows a skeleton until its value resolves.
+ */
 function StatTile({
   icon: Icon,
   label,
   value,
   tone = "neutral",
+  section,
+  onOpen,
 }: {
   icon: LucideIcon;
   label: string;
   value: string | null;
   tone?: Tone;
+  section: SectionKey;
+  onOpen: (section: SectionKey) => void;
 }) {
   return (
-    <Link
-      href="/profile"
-      className="focus-visible:ring-ring group rounded-xl outline-none focus-visible:ring-2"
+    <button
+      type="button"
+      onClick={() => onOpen(section)}
+      className="focus-visible:ring-ring group w-full rounded-xl text-start outline-none focus-visible:ring-2"
     >
       <div className="bg-muted/40 hover:bg-muted/70 flex h-full items-center gap-3 rounded-xl p-4 transition-colors">
         <span
@@ -279,7 +322,7 @@ function StatTile({
           )}
         </div>
       </div>
-    </Link>
+    </button>
   );
 }
 

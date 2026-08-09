@@ -36,7 +36,8 @@ import {
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 
-type SectionKey = "profile" | "account" | "security" | "sessions" | "danger";
+export type SectionKey =
+  "profile" | "account" | "security" | "sessions" | "danger";
 
 /** The settings categories — each renders one or more of the existing settings cards. */
 const SECTIONS: {
