@@ -95,7 +95,9 @@ export default async function RootLayout({
       suppressHydrationWarning
       className={`${jakarta.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col">
+      {/* suppressHydrationWarning: browser extensions (e.g. Grammarly) inject data-* attributes on
+          <body> before hydration; this silences that element's attribute mismatch only. */}
+      <body className="flex min-h-full flex-col" suppressHydrationWarning>
         <ThemeProvider>
           <DirectionProvider dir={dir}>
             <NextIntlClientProvider>
