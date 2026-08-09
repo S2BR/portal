@@ -34,8 +34,8 @@ export async function SocialHome() {
               href="/portal/businesses/new"
               className="focus-visible:ring-ring group rounded-xl outline-none focus-visible:ring-2"
             >
-              <div className="bg-card hover:border-primary/40 flex h-full items-start gap-3 rounded-xl border p-4 transition-colors">
-                <span className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-lg">
+              <div className="bg-muted/40 hover:bg-muted/70 flex h-full items-start gap-3 rounded-xl p-4 transition-colors">
+                <span className="bg-muted text-muted-foreground flex size-10 shrink-0 items-center justify-center rounded-lg">
                   <Building2 className="size-5" />
                 </span>
                 <div className="min-w-0 flex-1">
