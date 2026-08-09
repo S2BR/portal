@@ -40,7 +40,8 @@ export interface BusinessContact {
   type: BusinessContactType;
   value: string;
   name: string | null;
-  meta: Record<string, unknown> | null;
+  /** Open-ended bag; for phones it holds `country` (ISO 3166-1 alpha-2) for view-time formatting. */
+  meta: ({ country?: string } & Record<string, unknown>) | null;
 }
 
 export interface BusinessSocial {

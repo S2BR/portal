@@ -513,7 +513,13 @@
       "unavailable": "No disponible",
       "copyTo": "Copiar a…",
       "everyDay": "Todos los días",
-      "apply": "Aplicar"
+      "apply": "Aplicar",
+      "phone": {
+        "country": "País",
+        "countrySearch": "Buscar países…",
+        "countryEmpty": "No se encontró ningún país",
+        "number": "Número de teléfono"
+      }
     }
   }
 }
