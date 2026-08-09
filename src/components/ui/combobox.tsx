@@ -49,7 +49,10 @@ function Combobox({
   const selected = options.find((option) => option.value === value);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    // `modal` installs the popover's own scroll lock so its list stays scrollable even inside a
+    // Dialog (whose scroll lock would otherwise block this portalled content — e.g. the timezone
+    // list in the settings dialog).
+    <Popover open={open} onOpenChange={setOpen} modal>
       <PopoverTrigger asChild>
         <button
           id={id}
