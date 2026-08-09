@@ -30,30 +30,30 @@ import {
 } from "@/components/ui/popover";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useCompanyNav } from "@/components/business/company-nav-context";
+import { useBusinessNav } from "@/components/business/business-nav-context";
 import { cn } from "@/lib/utils";
 
 type NavKey = "dashboard" | "information" | "products" | "services";
 type NavItem = { key: NavKey; href: string; icon: LucideIcon; exact?: boolean };
 
 /**
- * The company-scoped rail shown while viewing a company (`/portal/businesses/[slug]/*`). Mirrors the
- * Filament business (tenant) panel: a company switcher + "create company" at the top, then a
+ * The business-scoped rail shown while viewing a business (`/portal/businesses/[slug]/*`). Mirrors the
+ * Filament business (tenant) panel: a business switcher + "create business" at the top, then a
  * Dashboard and two grouped sections. Lives inside the app shell's centered content, and — because
  * it's rendered by the `[slug]` layout — stays mounted (no refetch/reload) as you move between the
- * company's pages.
+ * business's pages.
  */
-export function CompanySidebar({ slug }: { slug: string }) {
-  const t = useTranslations("businesses.company");
+export function BusinessSidebar({ slug }: { slug: string }) {
+  const t = useTranslations("businesses.workspace");
   const pathname = usePathname();
   const router = useRouter();
-  const nav = useCompanyNav();
+  const nav = useBusinessNav();
   const setNavPresent = nav?.setPresent;
   const setNavOpen = nav?.setOpen;
   const [switcherOpen, setSwitcherOpen] = useState(false);
   const [businesses, setBusinesses] = useState<Business[] | null>(null);
 
-  // Tell the header a company sidebar is mounted (so it shows the mobile toggle) and tidy up on
+  // Tell the header a business sidebar is mounted (so it shows the mobile toggle) and tidy up on
   // unmount. The setters are stable, so this runs once per mount.
   useEffect(() => {
     setNavPresent?.(true);
@@ -125,7 +125,7 @@ export function CompanySidebar({ slug }: { slug: string }) {
 
   const navContent = (
     <div className="space-y-10">
-      {/* Company switcher — searchable, so a long list stays easy to navigate. `modal` lets its
+      {/* Business switcher — searchable, so a long list stays easy to navigate. `modal` lets its
           portalled panel work while inside the mobile drawer (a Dialog), matching the Combobox. */}
       <Popover open={switcherOpen} onOpenChange={setSwitcherOpen} modal>
         <PopoverTrigger asChild>
@@ -156,7 +156,7 @@ export function CompanySidebar({ slug }: { slug: string }) {
           className="w-(--radix-popover-trigger-width) min-w-64 p-0"
         >
           <Command>
-            {/* Only worth a search box once there's more than one company to sift through. */}
+            {/* Only worth a search box once there's more than one business to sift through. */}
             {(businesses?.length ?? 0) > 1 ? (
               <CommandInput placeholder={t("searchPlaceholder")} />
             ) : null}
