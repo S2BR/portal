@@ -14,9 +14,7 @@ import { AppHeader } from "@/components/app-header";
  */
 export function AppShell({ children }: { children: ReactNode }) {
   return (
-    <div className="flex min-h-svh flex-col pt-16">
-      {/* Header is position: fixed (never scrolls away), so it's out of flow — pt-16 reserves its
-          64px height so the content below isn't hidden behind it. */}
+    <div className="flex min-h-svh flex-col">
       <AppHeader />
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-10 sm:px-6">
         <AccountBoundary>{children}</AccountBoundary>
