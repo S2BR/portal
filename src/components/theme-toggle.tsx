@@ -67,7 +67,7 @@ export function ThemeToggle({
                 {t(value)}
                 {effective === value ? (
                   <span
-                    className="bg-primary ms-auto size-2 shrink-0 rounded-full"
+                    className="bg-brand-green ms-auto size-2 shrink-0 rounded-full"
                     aria-hidden
                   />
                 ) : null}
