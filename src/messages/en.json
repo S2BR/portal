@@ -520,6 +520,26 @@
         "countryEmpty": "No country found",
         "number": "Phone number"
       }
+    },
+    "company": {
+      "switch": "Switch company",
+      "create": "Create new company",
+      "nav": {
+        "dashboard": "Dashboard",
+        "information": "Company information",
+        "products": "Products",
+        "services": "Services"
+      },
+      "groups": {
+        "manage": "Manage",
+        "offerings": "Offerings"
+      },
+      "comingSoon": {
+        "subtitle": "This area is coming soon."
+      },
+      "dashboard": {
+        "subtitle": "Manage everything about your company here."
+      }
     }
   }
 }
