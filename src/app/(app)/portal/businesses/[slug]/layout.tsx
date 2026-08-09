@@ -1,14 +1,14 @@
 import type { ReactNode } from "react";
 
-import { CompanySidebar } from "@/components/business/company-sidebar";
-import { CompanyWorkspace } from "@/components/business/company-workspace";
+import { BusinessSidebar } from "@/components/business/business-sidebar";
+import { BusinessWorkspace } from "@/components/business/business-workspace";
 
 /**
- * The company workspace: a company-scoped sidebar (switcher + Dashboard / Manage / Offerings) beside
- * the page content. The layout persists across the company's sub-pages, so the sidebar and switcher
+ * The business workspace: a business-scoped sidebar (switcher + Dashboard / Manage / Offerings) beside
+ * the page content. The layout persists across the business's sub-pages, so the sidebar and switcher
  * never refetch or reload as you navigate between them.
  */
-export default async function CompanyLayout({
+export default async function BusinessLayout({
   children,
   params,
 }: {
@@ -23,10 +23,10 @@ export default async function CompanyLayout({
     // data, so it renders immediately — only the content area waits on the access check.
     <div className="mx-[calc(50%_-_50vw)] -mt-10 w-screen">
       <div className="flex flex-col sm:flex-row">
-        <CompanySidebar slug={slug} />
+        <BusinessSidebar slug={slug} />
         <div className="min-w-0 flex-1 px-4 py-10 sm:px-8">
           <div className="mx-auto w-full max-w-7xl">
-            <CompanyWorkspace slug={slug}>{children}</CompanyWorkspace>
+            <BusinessWorkspace slug={slug}>{children}</BusinessWorkspace>
           </div>
         </div>
       </div>

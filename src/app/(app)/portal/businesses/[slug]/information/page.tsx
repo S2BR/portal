@@ -4,7 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { BusinessDetail } from "@/components/business/business-detail";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("businesses.company.nav");
+  const t = await getTranslations("businesses.workspace.nav");
   return { title: t("information") };
 }
 
@@ -13,7 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
  * tabs). Resolves the business by slug through the BFF; a slug the user doesn't own renders a "not
  * found" state.
  */
-export default async function CompanyInformationPage({
+export default async function BusinessInformationPage({
   params,
 }: {
   params: Promise<{ slug: string }>;

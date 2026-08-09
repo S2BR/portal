@@ -3,16 +3,16 @@
 import { Menu } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-import { useCompanyNav } from "@/components/business/company-nav-context";
+import { useBusinessNav } from "@/components/business/business-nav-context";
 
 /**
- * The hamburger next to the logo that opens the company sidebar as a drawer on small screens. Shows
- * only while a company sidebar is mounted (a company page) and only on mobile — on wider screens the
+ * The hamburger next to the logo that opens the business sidebar as a drawer on small screens. Shows
+ * only while a business sidebar is mounted (a business page) and only on mobile — on wider screens the
  * sidebar is always visible, so there's nothing to toggle.
  */
-export function CompanyNavToggle() {
-  const nav = useCompanyNav();
-  const t = useTranslations("businesses.company");
+export function BusinessNavToggle() {
+  const nav = useBusinessNav();
+  const t = useTranslations("businesses.workspace");
 
   if (!nav?.present) {
     return null;

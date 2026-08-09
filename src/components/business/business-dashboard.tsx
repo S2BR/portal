@@ -9,9 +9,9 @@ import type { Business } from "@/app/api/businesses/route";
 import { UserAvatar } from "@/components/auth/user-avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 
-/** The company home — a light overview with quick links into the company's areas. */
-export function CompanyDashboard({ slug }: { slug: string }) {
-  const t = useTranslations("businesses.company");
+/** The business home — a light overview with quick links into the business's areas. */
+export function BusinessDashboard({ slug }: { slug: string }) {
+  const t = useTranslations("businesses.workspace");
   const [business, setBusiness] = useState<Business | null>(null);
   const [loading, setLoading] = useState(true);
 

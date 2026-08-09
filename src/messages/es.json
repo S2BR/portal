@@ -568,7 +568,7 @@
       "addPhone": "Agregar teléfono",
       "addEmail": "Agregar correo"
     },
-    "company": {
+    "workspace": {
       "create": "Crear nueva empresa",
       "nav": {
         "dashboard": "Panel",

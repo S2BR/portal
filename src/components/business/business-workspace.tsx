@@ -9,14 +9,14 @@ import {
 } from "@/components/business/business-skeletons";
 
 /**
- * Gates the company content on access. The dashboard and placeholder pages would otherwise render
+ * Gates the business content on access. The dashboard and placeholder pages would otherwise render
  * their data for anyone with the URL — so after a profile switch (AccountBoundary re-mounts this), an
- * account that doesn't own the company would briefly see it. We confirm access first (the API 404s a
- * company the account can't see) and, when denied, render the not-found page. While checking we show
+ * account that doesn't own the business would briefly see it. We confirm access first (the API 404s a
+ * business the account can't see) and, when denied, render the not-found page. While checking we show
  * a skeleton of the page (the sidebar, which only lists the account's own companies, renders
- * immediately from the layout) — no company data appears until access is granted.
+ * immediately from the layout) — no business data appears until access is granted.
  */
-export function CompanyWorkspace({
+export function BusinessWorkspace({
   slug,
   children,
 }: {
@@ -55,7 +55,7 @@ export function CompanyWorkspace({
     };
   }, [slug]);
 
-  // A company this account can't see (e.g. after a profile switch) renders the 404 page.
+  // A business this account can't see (e.g. after a profile switch) renders the 404 page.
   if (access === "denied") {
     notFound();
   }
