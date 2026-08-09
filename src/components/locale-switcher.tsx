@@ -74,7 +74,7 @@ export function LocaleSwitcher({
             <span className="whitespace-nowrap">{localeNames[option]}</span>
             {option === activeLocale ? (
               <span
-                className="bg-primary ms-auto size-2 shrink-0 rounded-full"
+                className="bg-brand-green ms-auto size-2 shrink-0 rounded-full"
                 aria-hidden
               />
             ) : null}

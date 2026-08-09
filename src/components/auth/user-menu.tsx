@@ -155,7 +155,7 @@ export function UserMenu() {
           </span>
           {/* Green dot marks the active account (mirrors the app's switcher). */}
           <span
-            className="bg-primary size-2 shrink-0 rounded-full"
+            className="bg-brand-green size-2 shrink-0 rounded-full"
             aria-hidden
           />
         </DropdownMenuLabel>
