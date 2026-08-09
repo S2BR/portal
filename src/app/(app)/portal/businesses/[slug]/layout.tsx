@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 import { CompanySidebar } from "@/components/business/company-sidebar";
+import { CompanyWorkspace } from "@/components/business/company-workspace";
 
 /**
  * The company workspace: a company-scoped sidebar (switcher + Dashboard / Manage / Offerings) beside
@@ -17,9 +18,17 @@ export default async function CompanyLayout({
   const { slug } = await params;
 
   return (
-    <div className="flex flex-col gap-6 sm:flex-row sm:gap-8">
-      <CompanySidebar slug={slug} />
-      <div className="min-w-0 flex-1">{children}</div>
-    </div>
+    <CompanyWorkspace slug={slug}>
+      {/* Break out of the app shell's centered, padded main so the sidebar sits flush at the
+          viewport's left edge (Filament-style); the content to its right stays capped. */}
+      <div className="-mt-10 mx-[calc(50%_-_50vw)] w-screen">
+        <div className="flex flex-col sm:flex-row">
+          <CompanySidebar slug={slug} />
+          <div className="min-w-0 flex-1 px-4 py-10 sm:px-8">
+            <div className="mx-auto w-full max-w-7xl">{children}</div>
+          </div>
+        </div>
+      </div>
+    </CompanyWorkspace>
   );
 }

@@ -582,9 +582,13 @@ export function BusinessDetail({ slug }: { slug: string }) {
 
       <form onSubmit={save}>
         <Tabs defaultValue="general">
-          <TabsList className="mx-auto w-fit max-w-full">
+          <TabsList className="mx-auto h-auto w-fit max-w-full p-1.5">
             {tabItems.map((tab) => (
-              <TabsTrigger key={tab.value} value={tab.value}>
+              <TabsTrigger
+                key={tab.value}
+                value={tab.value}
+                className="px-4 py-2"
+              >
                 <tab.icon className="size-4" aria-hidden />
                 {tab.label}
               </TabsTrigger>
@@ -594,65 +598,69 @@ export function BusinessDetail({ slug }: { slug: string }) {
           {/* General */}
           <TabsContent value="general">
             <div>
-              <FormSection
-                title={sections("basics.title")}
-                description={sections("basics.description")}
-              >
-                <BusinessImageField
-                  slug={slug}
-                  kind="logo"
-                  value={business.logo}
-                  onUpdated={(updated) => setBusiness(updated)}
-                />
-                {editing && edit ? (
-                  <>
-                    <Field label={fields("name")} error={nameError}>
-                      <Input
-                        value={edit.name}
-                        onChange={(event) =>
-                          patch({ name: event.target.value })
-                        }
-                        maxLength={255}
-                        aria-invalid={Boolean(nameError)}
-                      />
-                    </Field>
-                    <Field label={fields("headline")}>
-                      <Input
-                        value={edit.headline}
-                        onChange={(event) =>
-                          patch({ headline: event.target.value })
-                        }
-                        maxLength={255}
-                      />
-                    </Field>
-                    <Field label={fields("description")}>
-                      <Textarea
-                        value={edit.description}
-                        onChange={(event) =>
-                          patch({ description: event.target.value })
-                        }
-                        maxLength={5000}
-                        rows={4}
-                      />
-                    </Field>
-                  </>
-                ) : (
-                  <>
-                    <ViewBlock label={fields("headline")}>
-                      {business.headline ?? <Muted>{blank("headline")}</Muted>}
-                    </ViewBlock>
-                    <ViewBlock label={fields("description")}>
-                      {business.description ? (
-                        <p className="whitespace-pre-line">
-                          {business.description}
-                        </p>
-                      ) : (
-                        <Muted>{blank("description")}</Muted>
-                      )}
-                    </ViewBlock>
-                  </>
-                )}
-              </FormSection>
+              {/* Basics: the logo takes the left column (like Filament), the fields the right. */}
+              <div className="grid gap-x-8 gap-y-4 md:grid-cols-3">
+                <div className="md:col-span-1">
+                  <BusinessImageField
+                    slug={slug}
+                    kind="logo"
+                    value={business.logo}
+                    onUpdated={(updated) => setBusiness(updated)}
+                  />
+                </div>
+                <div className="space-y-5 md:col-span-2">
+                  {editing && edit ? (
+                    <>
+                      <Field label={fields("name")} error={nameError}>
+                        <Input
+                          value={edit.name}
+                          onChange={(event) =>
+                            patch({ name: event.target.value })
+                          }
+                          maxLength={255}
+                          aria-invalid={Boolean(nameError)}
+                        />
+                      </Field>
+                      <Field label={fields("headline")}>
+                        <Input
+                          value={edit.headline}
+                          onChange={(event) =>
+                            patch({ headline: event.target.value })
+                          }
+                          maxLength={255}
+                        />
+                      </Field>
+                      <Field label={fields("description")}>
+                        <Textarea
+                          value={edit.description}
+                          onChange={(event) =>
+                            patch({ description: event.target.value })
+                          }
+                          maxLength={5000}
+                          rows={4}
+                        />
+                      </Field>
+                    </>
+                  ) : (
+                    <>
+                      <ViewBlock label={fields("headline")}>
+                        {business.headline ?? (
+                          <Muted>{blank("headline")}</Muted>
+                        )}
+                      </ViewBlock>
+                      <ViewBlock label={fields("description")}>
+                        {business.description ? (
+                          <p className="whitespace-pre-line">
+                            {business.description}
+                          </p>
+                        ) : (
+                          <Muted>{blank("description")}</Muted>
+                        )}
+                      </ViewBlock>
+                    </>
+                  )}
+                </div>
+              </div>
 
               <FormSection
                 title={sections("businessType.title")}

@@ -406,10 +406,6 @@
       "deleteConfirm": "Delete business",
       "deleting": "Deleting…",
       "sections": {
-        "basics": {
-          "title": "Basic information",
-          "description": "Your logo, business name, tagline, and a short description."
-        },
         "businessType": {
           "title": "Business Type",
           "description": "Select the type that best describes your business."
@@ -511,15 +507,9 @@
         "saturday": "Saturday",
         "sunday": "Sunday"
       },
-      "contactTypes": {
-        "website": "Website",
-        "phone": "Phone",
-        "email": "Email"
-      },
       "categoryHint": "Can't find your category? Tell us what fits and we'll take a look.",
       "closedAllDay": "Closed",
       "colorHint": "Your brand's primary color.",
-      "addContact": "Add contact",
       "addSocial": "Add social link",
       "lookup": {
         "placeholder": "Search for an address…"
@@ -569,7 +559,6 @@
       "addEmail": "Add email"
     },
     "company": {
-      "switch": "Switch company",
       "create": "Create new company",
       "nav": {
         "dashboard": "Dashboard",
@@ -586,7 +575,11 @@
       },
       "dashboard": {
         "subtitle": "Manage everything about your company here."
-      }
+      },
+      "searchPlaceholder": "Search companies…",
+      "noResults": "No companies found",
+      "openMenu": "Open company menu",
+      "menuTitle": "Company menu"
     }
   }
 }

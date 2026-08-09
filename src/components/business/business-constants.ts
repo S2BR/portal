@@ -1,5 +1,4 @@
 import type {
-  BusinessContactType,
   BusinessSocialNetwork,
   DayOfWeek,
 } from "@/app/api/businesses/route";
@@ -37,12 +36,6 @@ const SOCIAL_LABELS: Record<BusinessSocialNetwork, string> = Object.fromEntries(
 export function socialLabel(platform: BusinessSocialNetwork): string {
   return SOCIAL_LABELS[platform];
 }
-
-export const CONTACT_TYPES: BusinessContactType[] = [
-  "website",
-  "phone",
-  "email",
-];
 
 export const DAYS: DayOfWeek[] = [
   "monday",

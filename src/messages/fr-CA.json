@@ -406,10 +406,6 @@
       "deleteConfirm": "Supprimer l'entreprise",
       "deleting": "Suppression…",
       "sections": {
-        "basics": {
-          "title": "Informations de base",
-          "description": "Votre logo, le nom de l’entreprise, le slogan et une brève description."
-        },
         "businessType": {
           "title": "Type d'Entreprise",
           "description": "Sélectionnez le type qui décrit le mieux votre entreprise."
@@ -511,15 +507,9 @@
         "saturday": "Samedi",
         "sunday": "Dimanche"
       },
-      "contactTypes": {
-        "website": "Site Web",
-        "phone": "Téléphone",
-        "email": "Courriel"
-      },
       "categoryHint": "Vous ne trouvez pas votre catégorie? Dites-nous ce qui convient et nous y jetterons un œil.",
       "closedAllDay": "Fermé",
       "colorHint": "La couleur principale de votre marque.",
-      "addContact": "Ajouter un contact",
       "addSocial": "Ajouter un réseau social",
       "lookup": {
         "placeholder": "Rechercher une adresse…"
@@ -569,7 +559,6 @@
       "addEmail": "Ajouter un courriel"
     },
     "company": {
-      "switch": "Changer d’entreprise",
       "create": "Créer une entreprise",
       "nav": {
         "dashboard": "Tableau de bord",
@@ -586,7 +575,11 @@
       },
       "dashboard": {
         "subtitle": "Gérez tout ce qui concerne votre entreprise ici."
-      }
+      },
+      "searchPlaceholder": "Rechercher une entreprise…",
+      "noResults": "Aucune entreprise trouvée",
+      "openMenu": "Ouvrir le menu de l’entreprise",
+      "menuTitle": "Menu de l’entreprise"
     }
   }
 }
