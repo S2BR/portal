@@ -1,15 +1,20 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
-import { notFound } from "next/navigation";
+import { notFound, usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 
+import {
+  BusinessDashboardSkeleton,
+  BusinessFormSkeleton,
+} from "@/components/business/business-skeletons";
+
 /**
- * Gates the company workspace on access. The company sidebar, dashboard, and placeholder pages would
- * otherwise render for anyone with the URL — so after a profile switch (AccountBoundary re-mounts
- * this), an account that doesn't own the company would see an empty shell. Instead we confirm access
- * first (the API 404s a company the account can't see) and, when denied, render the not-found page.
- * Nothing of the company renders until access is granted.
+ * Gates the company content on access. The dashboard and placeholder pages would otherwise render
+ * their data for anyone with the URL — so after a profile switch (AccountBoundary re-mounts this), an
+ * account that doesn't own the company would briefly see it. We confirm access first (the API 404s a
+ * company the account can't see) and, when denied, render the not-found page. While checking we show
+ * a skeleton of the page (the sidebar, which only lists the account's own companies, renders
+ * immediately from the layout) — no company data appears until access is granted.
  */
 export function CompanyWorkspace({
   slug,
@@ -18,6 +23,7 @@ export function CompanyWorkspace({
   slug: string;
   children: ReactNode;
 }) {
+  const pathname = usePathname();
   const [access, setAccess] = useState<"checking" | "granted" | "denied">(
     "checking",
   );
@@ -55,12 +61,14 @@ export function CompanyWorkspace({
   }
 
   if (access !== "granted") {
-    // Cancel the app shell's vertical padding and fill the area below the header, so the spinner
-    // sits at the center of the screen instead of the top of a half-height box.
-    return (
-      <div className="-my-10 flex min-h-[calc(100svh-4rem)] items-center justify-center">
-        <Loader2 className="text-muted-foreground size-6 animate-spin" />
-      </div>
+    // Show the shape of the page being entered (the sidebar is already rendered by the layout)
+    // instead of a spinner, so the workspace appears immediately and only the content fills in once
+    // access is confirmed. The information page is the detail form; everything else lands on the
+    // dashboard-style overview.
+    return pathname.endsWith("/information") ? (
+      <BusinessFormSkeleton />
+    ) : (
+      <BusinessDashboardSkeleton />
     );
   }
 

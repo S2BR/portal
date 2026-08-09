@@ -56,7 +56,6 @@ export function ExpandableActionBar({
       setAutoOpen(false);
       return;
     }
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setAutoOpen(true);
     const timer = setTimeout(() => setAutoOpen(false), 1200);
     return () => clearTimeout(timer);

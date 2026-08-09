@@ -18,17 +18,18 @@ export default async function CompanyLayout({
   const { slug } = await params;
 
   return (
-    <CompanyWorkspace slug={slug}>
-      {/* Break out of the app shell's centered, padded main so the sidebar sits flush at the
-          viewport's left edge (Filament-style); the content to its right stays capped. */}
-      <div className="-mt-10 mx-[calc(50%_-_50vw)] w-screen">
-        <div className="flex flex-col sm:flex-row">
-          <CompanySidebar slug={slug} />
-          <div className="min-w-0 flex-1 px-4 py-10 sm:px-8">
-            <div className="mx-auto w-full max-w-7xl">{children}</div>
+    // Break out of the app shell's centered, padded main so the sidebar sits flush at the viewport's
+    // left edge (Filament-style); the content to its right stays capped. The sidebar loads its own
+    // data, so it renders immediately — only the content area waits on the access check.
+    <div className="mx-[calc(50%_-_50vw)] -mt-10 w-screen">
+      <div className="flex flex-col sm:flex-row">
+        <CompanySidebar slug={slug} />
+        <div className="min-w-0 flex-1 px-4 py-10 sm:px-8">
+          <div className="mx-auto w-full max-w-7xl">
+            <CompanyWorkspace slug={slug}>{children}</CompanyWorkspace>
           </div>
         </div>
       </div>
-    </CompanyWorkspace>
+    </div>
   );
 }
