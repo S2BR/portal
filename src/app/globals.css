@@ -66,11 +66,11 @@
   --auth-panel-to: var(--brand-green-deep);
 
   --background: oklch(1 0 0);
-  --foreground: oklch(0.17 0.006 152);
+  --foreground: oklch(0.17 0 152);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.17 0.006 152);
+  --card-foreground: oklch(0.17 0 152);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.17 0.006 152);
+  --popover-foreground: oklch(0.17 0 152);
   /* Brand green as the primary accent (buttons, links, focus). */
   --primary: oklch(0.205 0 0);
   --primary-foreground: oklch(0.985 0 0);
@@ -90,8 +90,8 @@
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0.003 152);
-  --sidebar-foreground: oklch(0.17 0.006 152);
+  --sidebar: oklch(0.985 0 152);
+  --sidebar-foreground: oklch(0.17 0 152);
   --sidebar-primary: oklch(0.205 0 0);
   --sidebar-primary-foreground: oklch(0.985 0 0);
   --sidebar-accent: oklch(0.955 0 152);
@@ -101,16 +101,16 @@
 }
 
 .dark {
-  --background: oklch(0.165 0.005 152);
+  --background: oklch(0.165 0 152);
   /* Deep, almost-black green — calmer in a dark UI, still clearly the brand panel. */
   --auth-panel-from: oklch(0.3 0.08 152);
   --auth-panel-via: oklch(0.24 0.065 152);
   --auth-panel-to: oklch(0.18 0.05 152);
-  --foreground: oklch(0.985 0.002 152);
-  --card: oklch(0.212 0.006 152);
-  --card-foreground: oklch(0.985 0.002 152);
-  --popover: oklch(0.212 0.006 152);
-  --popover-foreground: oklch(0.985 0.002 152);
+  --foreground: oklch(0.985 0 152);
+  --card: oklch(0.212 0 152);
+  --card-foreground: oklch(0.985 0 152);
+  --popover: oklch(0.212 0 152);
+  --popover-foreground: oklch(0.985 0 152);
   /* A slightly brighter green so it pops on dark without glowing. */
   --primary: oklch(0.985 0 0);
   --primary-foreground: oklch(0.205 0 0);
@@ -129,8 +129,8 @@
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.212 0.006 152);
-  --sidebar-foreground: oklch(0.985 0.002 152);
+  --sidebar: oklch(0.212 0 152);
+  --sidebar-foreground: oklch(0.985 0 152);
   --sidebar-primary: oklch(0.985 0 0);
   --sidebar-primary-foreground: oklch(0.205 0 0);
   --sidebar-accent: oklch(0.29 0 152);
