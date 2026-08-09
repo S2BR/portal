@@ -406,6 +406,10 @@
       "deleteConfirm": "Excluir negócio",
       "deleting": "Excluindo…",
       "sections": {
+        "basics": {
+          "title": "Informações básicas",
+          "description": "Seu logotipo, o nome da empresa, o slogan e uma breve descrição."
+        },
         "businessType": {
           "title": "Tipo de Empresa",
           "description": "Selecione o tipo que melhor descreve sua empresa."

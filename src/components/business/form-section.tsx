@@ -8,11 +8,14 @@ import { cn } from "@/lib/utils";
  * divider so a tab reads as separated panels (the first one has none).
  */
 export function FormSection({
+  id,
   title,
   description,
   children,
   className,
 }: {
+  /** Anchor id, so the preview rail can scroll-spy and jump to the section. */
+  id?: string;
   title: string;
   description?: string;
   children: ReactNode;
@@ -20,6 +23,7 @@ export function FormSection({
 }) {
   return (
     <section
+      id={id}
       className={cn(
         "border-border/60 mt-10 grid gap-x-8 gap-y-4 border-t pt-10 first:mt-0 first:border-t-0 first:pt-0 md:grid-cols-3",
         className,

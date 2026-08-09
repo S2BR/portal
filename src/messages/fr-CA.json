@@ -406,6 +406,10 @@
       "deleteConfirm": "Supprimer l'entreprise",
       "deleting": "Suppression…",
       "sections": {
+        "basics": {
+          "title": "Informations de base",
+          "description": "Votre logo, le nom de l’entreprise, le slogan et une brève description."
+        },
         "businessType": {
           "title": "Type d'Entreprise",
           "description": "Sélectionnez le type qui décrit le mieux votre entreprise."
