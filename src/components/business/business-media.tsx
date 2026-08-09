@@ -141,42 +141,85 @@ export function BusinessImageField({
     }
   }
 
-  const controls = (
-    <div className="min-w-0 space-y-2">
-      <div className="flex flex-wrap gap-2">
-        <input
-          ref={inputRef}
-          type="file"
-          accept={ACCEPTED.join(",")}
-          className="hidden"
-          onChange={onFileChange}
+  const fileInput = (
+    <input
+      ref={inputRef}
+      type="file"
+      accept={ACCEPTED.join(",")}
+      className="hidden"
+      onChange={onFileChange}
+    />
+  );
+
+  const hint = (
+    <p className="text-muted-foreground text-xs">
+      {isLogo ? t("logoHint") : t("bannerHint")} ·{" "}
+      {t("constraints", { max: maxLabel })}
+    </p>
+  );
+
+  // One interactive block for both slots: click to upload/replace, with a hover overlay + gentle
+  // zoom (like the gallery tiles) and a remove control that fades in on hover. The banner is wide and
+  // shows a labeled pill; the compact logo square shows an icon-only badge.
+  const imageBlock = (options: {
+    wrapperClassName: string;
+    buttonClassName: string;
+    withLabel: boolean;
+    removeClassName: string;
+  }) => (
+    <div className={cn("group relative", options.wrapperClassName)}>
+      <button
+        type="button"
+        disabled={busy}
+        onClick={() => inputRef.current?.click()}
+        aria-label={shown ? t("replace") : t("upload")}
+        className={cn(
+          "focus-visible:ring-ring focus-visible:ring-offset-background relative block overflow-hidden rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed",
+          options.buttonClassName,
+        )}
+      >
+        <ImageBox
+          src={shown}
+          alt={isLogo ? t("logoTitle") : t("bannerTitle")}
+          className="size-full rounded-xl transition-transform duration-300 ease-out group-hover:scale-[1.04]"
         />
+        <span className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors duration-200 group-hover:bg-black/40">
+          {options.withLabel ? (
+            <span className="bg-background/95 text-foreground flex translate-y-1 items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium opacity-0 shadow-sm transition duration-200 ease-out group-hover:translate-y-0 group-hover:opacity-100">
+              {phase !== "idle" ? (
+                <Spinner />
+              ) : (
+                <ImagePlus className="size-4" aria-hidden />
+              )}
+              {shown ? t("replace") : t("upload")}
+            </span>
+          ) : (
+            <span className="bg-background/95 text-foreground flex size-9 scale-90 items-center justify-center rounded-full opacity-0 shadow-sm transition duration-200 ease-out group-hover:scale-100 group-hover:opacity-100">
+              {phase !== "idle" ? (
+                <Spinner />
+              ) : (
+                <ImagePlus className="size-4" aria-hidden />
+              )}
+            </span>
+          )}
+        </span>
+      </button>
+      {shown ? (
         <Button
           type="button"
-          variant="outline"
-          size="sm"
+          variant="secondary"
+          size="icon"
+          aria-label={t("remove")}
           disabled={busy}
-          onClick={() => inputRef.current?.click()}
+          onClick={remove}
+          className={cn(
+            "absolute opacity-0 shadow-sm transition-opacity duration-200 group-hover:opacity-100 focus-visible:opacity-100",
+            options.removeClassName,
+          )}
         >
-          {phase !== "idle" ? <Spinner /> : null}
-          {shown ? t("replace") : t("upload")}
+          {pending ? <Spinner /> : <X className="size-4" />}
         </Button>
-        {shown ? (
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            disabled={busy}
-            onClick={remove}
-          >
-            {t("remove")}
-          </Button>
-        ) : null}
-      </div>
-      <p className="text-muted-foreground text-xs">
-        {isLogo ? t("logoHint") : t("bannerHint")} ·{" "}
-        {t("constraints", { max: maxLabel })}
-      </p>
+      ) : null}
     </div>
   );
 
@@ -186,23 +229,27 @@ export function BusinessImageField({
         {isLogo ? t("logoTitle") : t("bannerTitle")}
       </h3>
 
+      {fileInput}
+
       {isLogo ? (
         <div className="flex items-center gap-4">
-          <ImageBox
-            src={shown}
-            alt={t("logoTitle")}
-            className="size-24 shrink-0 rounded-xl"
-          />
-          {controls}
+          {imageBlock({
+            wrapperClassName: "shrink-0",
+            buttonClassName: "size-24",
+            withLabel: false,
+            removeClassName: "end-1.5 top-1.5 size-6",
+          })}
+          {hint}
         </div>
       ) : (
-        <div className="space-y-3">
-          <ImageBox
-            src={shown}
-            alt={t("bannerTitle")}
-            className="aspect-[16/6] w-full rounded-xl"
-          />
-          {controls}
+        <div className="space-y-2">
+          {imageBlock({
+            wrapperClassName: "",
+            buttonClassName: "aspect-[16/6] w-full",
+            withLabel: true,
+            removeClassName: "end-2 top-2 size-7",
+          })}
+          {hint}
         </div>
       )}
 
