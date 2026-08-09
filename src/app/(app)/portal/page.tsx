@@ -296,7 +296,7 @@ function ModuleCard({
   soon: string;
 }) {
   return (
-    <div className="bg-card flex items-start gap-4 rounded-xl border border-dashed p-5">
+    <div className="bg-muted/40 flex items-start gap-4 rounded-xl p-5">
       <span className="bg-muted text-muted-foreground flex size-11 shrink-0 items-center justify-center rounded-lg">
         <Icon className="size-5" />
       </span>
