@@ -425,7 +425,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
 
   if (missing) {
     return (
-      <div className="mx-auto max-w-2xl space-y-6">
+      <div className="space-y-6">
         {backLink}
         <p className="text-muted-foreground rounded-xl border border-dashed p-8 text-center text-sm">
           {t("notFound")}
@@ -436,7 +436,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
 
   if (loadFailed) {
     return (
-      <div className="mx-auto max-w-2xl space-y-6">
+      <div className="space-y-6">
         {backLink}
         <div className="space-y-4 rounded-xl border border-dashed p-8 text-center">
           <p className="text-muted-foreground text-sm">{t("loadError")}</p>
@@ -450,7 +450,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
 
   if (!business) {
     return (
-      <div className="mx-auto max-w-3xl space-y-6">
+      <div className="space-y-6">
         {backLink}
         <Skeleton className="h-8 w-2/3" />
         <Skeleton className="h-64 w-full rounded-xl" />
@@ -490,7 +490,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
   }
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
+    <div className="space-y-6">
       {backLink}
 
       <div className="flex flex-wrap items-start justify-between gap-4">
@@ -531,7 +531,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
 
       <form onSubmit={save}>
         <Tabs defaultValue="general">
-          <TabsList>
+          <TabsList className="mx-auto w-fit max-w-full">
             {tabItems.map((tab) => (
               <TabsTrigger key={tab.value} value={tab.value}>
                 {tab.label}
