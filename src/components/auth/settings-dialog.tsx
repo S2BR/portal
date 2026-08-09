@@ -223,7 +223,9 @@ function SettingsDialog({
               {t(`nav.${active}`)}
             </h2>
           </div>
-          <div className="flex-1 space-y-8 overflow-y-auto px-6 py-6">
+          {/* Strip the card chrome (ring + shadow) for the sections in here so they blend into the
+              dialog and read as one panel — they're already bg-card, same as this pane. */}
+          <div className="flex-1 space-y-8 overflow-y-auto px-6 py-6 [&_[data-slot=card]]:shadow-none [&_[data-slot=card]]:ring-0">
             {user && current ? current.render() : null}
           </div>
         </div>
