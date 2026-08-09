@@ -219,12 +219,20 @@ export function UserMenu() {
           <User className="size-4" />
           {t("profile")}
         </DropdownMenuItem>
-        <DropdownMenuItem disabled={pending} onClick={() => signOut("current")}>
+        <DropdownMenuItem
+          variant="destructive"
+          disabled={pending}
+          onClick={() => signOut("current")}
+        >
           <LogOut className="size-4" />
           {t("signOut")}
         </DropdownMenuItem>
         {others.length > 0 ? (
-          <DropdownMenuItem disabled={pending} onClick={() => signOut("all")}>
+          <DropdownMenuItem
+            variant="destructive"
+            disabled={pending}
+            onClick={() => signOut("all")}
+          >
             <Users className="size-4" />
             {t("signOutAll")}
           </DropdownMenuItem>
