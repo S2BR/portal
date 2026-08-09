@@ -19,7 +19,7 @@ export default async function BusinessesPage() {
   const t = await getTranslations("businesses");
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-1">
           <h1 className="font-heading text-2xl font-semibold tracking-tight">
