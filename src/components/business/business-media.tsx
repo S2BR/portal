@@ -381,7 +381,7 @@ function ImageBox({
     return (
       <div
         className={cn(
-          "bg-muted text-muted-foreground flex items-center justify-center border border-dashed",
+          "bg-muted text-muted-foreground flex items-center justify-center",
           className,
         )}
         aria-hidden
