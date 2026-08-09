@@ -3,11 +3,13 @@
 import {
   ArrowLeft,
   Building2,
+  Check,
   Clock,
   Contact,
   Info,
   MapPin,
   Palette,
+  Pencil,
   Plus,
   Share2,
   Sparkles,
@@ -47,6 +49,10 @@ import { AmenitiesPicker } from "@/components/business/amenities-picker";
 import { CategoryPicker } from "@/components/business/category-picker";
 import { BusinessTypeField } from "@/components/business/business-type-field";
 import { FormSection } from "@/components/business/form-section";
+import {
+  ExpandableActionBar,
+  type ActionBarItem,
+} from "@/components/ui/expandable-action-bar";
 import { PreviewRail } from "@/components/ui/preview-rail";
 import { PhoneField } from "@/components/business/phone-field";
 import { flagEmoji, formatPhone } from "@/components/business/phone-format";
@@ -70,7 +76,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -316,6 +321,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
   const [categoryTree, setCategoryTree] = useState<Category[]>([]);
   const [amenityGroups, setAmenityGroups] = useState<Amenity[]>([]);
   const [activeTab, setActiveTab] = useState("general");
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   const load = useCallback(async () => {
     setLoadFailed(false);
@@ -582,16 +588,26 @@ export function BusinessDetail({ slug }: { slug: string }) {
         </div>
 
         {!editing ? (
-          <div className="flex items-center gap-2">
-            <Button variant="outline" onClick={startEditing}>
-              {t("edit")}
-            </Button>
-            <DeleteButton
-              name={business.name}
-              deleting={deleting}
-              onConfirm={remove}
-            />
-          </div>
+          <ExpandableActionBar
+            align="end"
+            items={
+              [
+                {
+                  id: "edit",
+                  label: t("edit"),
+                  icon: <Pencil />,
+                  onClick: startEditing,
+                },
+                {
+                  id: "delete",
+                  label: t("delete"),
+                  icon: <Trash2 />,
+                  tone: "danger",
+                  onClick: () => setConfirmingDelete(true),
+                },
+              ] satisfies ActionBarItem[]
+            }
+          />
         ) : null}
       </div>
 
@@ -1136,28 +1152,47 @@ export function BusinessDetail({ slug }: { slug: string }) {
           </TabsContent>
         </Tabs>
 
-        {editing ? (
-          <div className="mt-6 space-y-3">
-            {error ? <p className="text-destructive text-sm">{error}</p> : null}
-            <div className="flex items-center gap-2">
-              <Button type="submit" disabled={saving}>
-                {saving ? t("saving") : t("save")}
-              </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={cancelEditing}
-                disabled={saving}
-              >
-                {t("cancel")}
-              </Button>
-            </div>
-          </div>
+        {editing && error ? (
+          <p className="text-destructive mt-6 text-sm">{error}</p>
         ) : null}
+        {/* Save/Cancel float in an expandable bar (open drives the rise + pulse / drop animation). */}
+        <ExpandableActionBar
+          open={editing}
+          floating
+          inverted
+          items={
+            [
+              {
+                id: "save",
+                label: saving ? t("saving") : t("save"),
+                icon: <Check />,
+                type: "submit",
+                disabled: saving,
+                tone: "success",
+              },
+              {
+                id: "cancel",
+                label: t("cancel"),
+                icon: <X />,
+                onClick: cancelEditing,
+                disabled: saving,
+                variant: "ghost",
+              },
+            ] satisfies ActionBarItem[]
+          }
+        />
       </form>
 
       {/* Right-edge rail for the current tab's blocks (multi-block tabs only). */}
       <PreviewRail items={railItems} />
+
+      <DeleteDialog
+        open={confirmingDelete}
+        onOpenChange={setConfirmingDelete}
+        name={business.name}
+        deleting={deleting}
+        onConfirm={remove}
+      />
     </div>
   );
 }
@@ -1454,11 +1489,15 @@ function AddressesEditor({
   );
 }
 
-function DeleteButton({
+function DeleteDialog({
+  open,
+  onOpenChange,
   name,
   deleting,
   onConfirm,
 }: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
   name: string;
   deleting: boolean;
   onConfirm: () => void;
@@ -1466,16 +1505,7 @@ function DeleteButton({
   const t = useTranslations("businesses.detail");
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          className="text-destructive hover:text-destructive"
-        >
-          <Trash2 className="size-4" />
-          {t("delete")}
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{t("deleteTitle")}</DialogTitle>
