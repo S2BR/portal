@@ -1,6 +1,20 @@
 "use client";
 
-import { ArrowLeft, Building2, Plus, Trash2, User2, X } from "lucide-react";
+import {
+  ArrowLeft,
+  Building2,
+  Clock,
+  Contact,
+  Info,
+  MapPin,
+  Palette,
+  Plus,
+  Share2,
+  Sparkles,
+  Trash2,
+  User2,
+  X,
+} from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -479,13 +493,13 @@ export function BusinessDetail({ slug }: { slug: string }) {
       : types("selfEmployed.title");
 
   const tabItems = [
-    { value: "general", label: tabs("general") },
-    { value: "contact", label: tabs("contact") },
-    { value: "amenities", label: tabs("amenities") },
-    { value: "address", label: tabs("address") },
-    { value: "hours", label: tabs("hours") },
-    { value: "socials", label: tabs("socials") },
-    { value: "branding", label: tabs("branding") },
+    { value: "general", label: tabs("general"), icon: Info },
+    { value: "contact", label: tabs("contact"), icon: Contact },
+    { value: "amenities", label: tabs("amenities"), icon: Sparkles },
+    { value: "address", label: tabs("address"), icon: MapPin },
+    { value: "hours", label: tabs("hours"), icon: Clock },
+    { value: "socials", label: tabs("socials"), icon: Share2 },
+    { value: "branding", label: tabs("branding"), icon: Palette },
   ];
 
   // Selected category slugs (roots and subcategories) drive the amenity filter.
@@ -548,6 +562,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
           <TabsList className="mx-auto w-fit max-w-full">
             {tabItems.map((tab) => (
               <TabsTrigger key={tab.value} value={tab.value}>
+                <tab.icon className="size-4" aria-hidden />
                 {tab.label}
               </TabsTrigger>
             ))}
