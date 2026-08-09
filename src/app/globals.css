@@ -373,3 +373,16 @@
   stroke: #c9ffdf;
   filter: none;
 }
+
+/*
+ * Frosted menus. Radix positions dropdown / select / popover content inside a wrapper that carries a
+ * `transform`, and `backdrop-filter` on a *descendant* of a transform renders wrong (it paints
+ * opaque). So put the blur on the wrapper itself — its own transform doesn't break its own
+ * backdrop-filter — and round it to the panel's corners. The translucent content (bg-popover/70)
+ * sits on top, giving the frosted-glass look everywhere the header has it.
+ */
+[data-radix-popper-content-wrapper] {
+  border-radius: var(--radius-lg, 0.5rem);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+}
