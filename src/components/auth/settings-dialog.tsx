@@ -177,30 +177,44 @@ function SettingsDialog({
             {t("settingsDescription")}
           </DialogDescription>
           <nav className="flex gap-1 overflow-x-auto p-2 sm:flex-1 sm:flex-col sm:overflow-x-visible sm:overflow-y-auto">
-            {SECTIONS.map((section) => (
-              <button
-                key={section.key}
-                type="button"
-                onClick={() => onActiveChange(section.key)}
-                aria-current={section.key === active ? "page" : undefined}
-                className={cn(
-                  "flex items-center gap-2.5 rounded-md px-3 py-2 text-sm whitespace-nowrap transition-colors",
-                  section.key === active
-                    ? "bg-background text-foreground font-medium shadow-sm"
-                    : "text-muted-foreground hover:bg-background/60 hover:text-foreground",
-                )}
-              >
-                <section.icon className="size-4 shrink-0" />
-                <span>{t(`nav.${section.key}`)}</span>
-              </button>
-            ))}
+            {SECTIONS.map((section) => {
+              const isActive = section.key === active;
+              const isDanger = section.key === "danger";
+              return (
+                <button
+                  key={section.key}
+                  type="button"
+                  onClick={() => onActiveChange(section.key)}
+                  aria-current={isActive ? "page" : undefined}
+                  className={cn(
+                    "flex items-center gap-2.5 rounded-md px-3 py-2 text-sm whitespace-nowrap transition-colors",
+                    isActive
+                      ? "bg-background font-medium shadow-sm"
+                      : "hover:bg-background/60",
+                    isDanger
+                      ? "text-destructive"
+                      : isActive
+                        ? "text-foreground"
+                        : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  <section.icon className="size-4 shrink-0" />
+                  <span>{t(`nav.${section.key}`)}</span>
+                </button>
+              );
+            })}
           </nav>
         </div>
 
         {/* Active section content. */}
         <div className="flex min-h-0 min-w-0 flex-1 flex-col">
           <div className="flex h-14 shrink-0 items-center border-b px-6">
-            <h2 className="font-heading text-base font-semibold tracking-tight">
+            <h2
+              className={cn(
+                "font-heading text-base font-semibold tracking-tight",
+                active === "danger" && "text-destructive",
+              )}
+            >
               {t(`nav.${active}`)}
             </h2>
           </div>
