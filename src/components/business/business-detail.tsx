@@ -33,6 +33,8 @@ import { AddressAutocomplete } from "@/components/business/address-autocomplete"
 import { AmenitiesPicker } from "@/components/business/amenities-picker";
 import { CategoryPicker } from "@/components/business/category-picker";
 import { BusinessTypeField } from "@/components/business/business-type-field";
+import { PhoneField } from "@/components/business/phone-field";
+import { flagEmoji, formatPhone } from "@/components/business/phone-format";
 import {
   BusinessGallery,
   BusinessImageField,
@@ -69,7 +71,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { apiErrorText } from "@/lib/api/error-text";
 
-type ContactRow = { type: BusinessContactType; value: string; name: string };
+type ContactRow = {
+  type: BusinessContactType;
+  value: string;
+  name: string;
+  /** ISO 3166-1 alpha-2 — phones only; kept in the contact's meta bag so +1 stays CA vs US. */
+  country?: string;
+};
 type SocialRow = { platform: BusinessSocialNetwork; handle: string };
 type AddressEntry = {
   key: string; // stable client key for the list
@@ -141,6 +149,7 @@ function toEditState(business: Business): EditState {
       type: contact.type,
       value: contact.value,
       name: contact.name ?? "",
+      country: contact.meta?.country,
     })),
     socials: (business.socials ?? []).map((social) => ({
       platform: social.platform,
@@ -196,6 +205,11 @@ function buildPayload(edit: EditState) {
         type: contact.type,
         value: contact.value.trim(),
         name: trimOrNull(contact.name),
+        // A phone carries its country in the meta bag; other contact types have no meta.
+        meta:
+          contact.type === "phone" && contact.country
+            ? { country: contact.country }
+            : null,
       })),
     socials: edit.socials
       .filter((social) => social.handle.trim() !== "")
@@ -688,14 +702,25 @@ export function BusinessDetail({ slug }: { slug: string }) {
                         ))}
                       </SelectContent>
                     </Select>
-                    <Input
-                      value={row.value}
-                      onChange={(event) =>
-                        update({ value: event.target.value })
-                      }
-                      placeholder={fields("contactValue")}
-                      className="flex-1"
-                    />
+                    {row.type === "phone" ? (
+                      <PhoneField
+                        value={row.value}
+                        country={row.country}
+                        defaultCountry={edit.addresses[0]?.country?.toUpperCase()}
+                        onChange={(value, country) =>
+                          update({ value, country })
+                        }
+                      />
+                    ) : (
+                      <Input
+                        value={row.value}
+                        onChange={(event) =>
+                          update({ value: event.target.value })
+                        }
+                        placeholder={fields("contactValue")}
+                        className="flex-1"
+                      />
+                    )}
                     <Input
                       value={row.name}
                       onChange={(event) => update({ name: event.target.value })}
@@ -716,7 +741,9 @@ export function BusinessDetail({ slug }: { slug: string }) {
                       {contactTypeLabels(contact.type)}
                     </span>
                     <span className="min-w-0 flex-1 truncate">
-                      {contact.value}
+                      {contact.type === "phone"
+                        ? `${contact.meta?.country ? `${flagEmoji(contact.meta.country)} ` : ""}${formatPhone(contact.value, contact.meta?.country)}`
+                        : contact.value}
                     </span>
                     {contact.name ? (
                       <span className="text-muted-foreground shrink-0">
