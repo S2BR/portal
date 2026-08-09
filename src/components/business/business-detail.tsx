@@ -427,7 +427,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
     return (
       <div className="space-y-6">
         {backLink}
-        <p className="text-muted-foreground rounded-xl border border-dashed p-8 text-center text-sm">
+        <p className="text-muted-foreground p-8 text-center text-sm">
           {t("notFound")}
         </p>
       </div>
@@ -438,7 +438,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
     return (
       <div className="space-y-6">
         {backLink}
-        <div className="space-y-4 rounded-xl border border-dashed p-8 text-center">
+        <div className="space-y-4 p-8 text-center">
           <p className="text-muted-foreground text-sm">{t("loadError")}</p>
           <Button variant="outline" onClick={() => void load()}>
             {t("retry")}
@@ -706,7 +706,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
                 )}
               />
             ) : business.contacts && business.contacts.length > 0 ? (
-              <ul className="divide-y rounded-xl border">
+              <ul className="divide-y">
                 {business.contacts.map((contact, index) => (
                   <li
                     key={index}
@@ -743,7 +743,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
                 {business.addresses.map((address) => (
                   <div
                     key={address.id}
-                    className="rounded-xl border p-4 text-sm"
+                    className="border-b pb-3 text-sm last:border-b-0 last:pb-0"
                   >
                     {address.is_main ? (
                       <Badge variant="outline" className="mb-2">
@@ -786,7 +786,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
                 onChange={(hours) => patch({ hours })}
               />
             ) : business.opening_hours && business.opening_hours.length > 0 ? (
-              <ul className="divide-y rounded-xl border">
+              <ul className="divide-y">
                 {DAYS.map((day) => {
                   const ranges = (business.opening_hours ?? []).filter(
                     (hour) =>
@@ -861,7 +861,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
                 )}
               />
             ) : business.socials && business.socials.length > 0 ? (
-              <ul className="divide-y rounded-xl border">
+              <ul className="divide-y">
                 {business.socials.map((social, index) => (
                   <li
                     key={index}
@@ -1107,7 +1107,10 @@ function AddressesEditor({
   return (
     <div className="space-y-4">
       {value.map((entry, index) => (
-        <div key={entry.key} className="space-y-4 rounded-xl border p-4">
+        <div
+          key={entry.key}
+          className="space-y-4 border-b pb-6 last:border-b-0 last:pb-0"
+        >
           <div className="flex items-center justify-between gap-2">
             <label className="flex items-center gap-2 text-sm font-medium">
               <Checkbox
