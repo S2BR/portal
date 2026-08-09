@@ -406,10 +406,50 @@
       "deleteConfirm": "Supprimer l'entreprise",
       "deleting": "Suppression…",
       "sections": {
-        "headline": "Accroche",
-        "description": "Description",
-        "contact": "Coordonnées",
-        "address": "Adresse"
+        "businessType": {
+          "title": "Type d'Entreprise",
+          "description": "Sélectionnez le type qui décrit le mieux votre entreprise."
+        },
+        "categories": {
+          "title": "Catégorie et Sous-catégorie",
+          "description": "Sélectionnez une ou plusieurs catégories qui correspondent le mieux à votre entreprise. Les sous-catégories seront filtrées en fonction de votre sélection de catégorie."
+        },
+        "website": {
+          "title": "Site Web",
+          "description": "Fournissez les informations de contact de votre entreprise. Cela aidera les clients à vous joindre facilement."
+        },
+        "phone": {
+          "title": "Téléphone",
+          "description": "Ajoutez un ou plusieurs numéros de téléphone pour votre entreprise. Les clients peuvent utiliser ces numéros pour vous contacter directement. Vous pouvez spécifier une étiquette pour chaque numéro (ex: \"Ligne Principale\", \"Support Client\") pour indiquer son objectif."
+        },
+        "email": {
+          "title": "Courriel",
+          "description": "Ajoutez une ou plusieurs adresses courriel pour votre entreprise. Les clients peuvent utiliser ces courriels pour vous contacter directement. Vous pouvez spécifier une étiquette pour chaque courriel (ex: \"Demandes Générales\", \"Support\") pour indiquer son objectif."
+        },
+        "amenities": {
+          "title": "Commodités",
+          "description": "Sélectionnez les commodités et les caractéristiques offertes par votre entreprise."
+        },
+        "address": {
+          "title": "Adresse d'Entreprise",
+          "description": "Commencez à taper votre adresse dans la boîte de recherche. Sélectionnez l'adresse correcte dans le menu déroulant, et le reste des champs se remplira automatiquement avec les bonnes informations. Vous pouvez apporter des ajustements à n'importe quel champ si nécessaire."
+        },
+        "hours": {
+          "title": "Heures d'Ouverture de l'Entreprise",
+          "description": "Définissez les heures d'ouverture de votre entreprise pour chaque jour de la semaine. Vous pouvez spécifier plusieurs plages horaires pour chaque jour (ex: 9h00 - 12h00, 13h00 - 17h00) pour accommoder les pauses ou les quarts de travail divisés. Cette information aidera les clients à savoir quand votre entreprise est ouverte."
+        },
+        "socials": {
+          "title": "Liens de Réseaux Sociaux",
+          "description": "Ajoutez des liens vers vos profils de réseaux sociaux. Cela aidera les clients à vous trouver et vous suivre sur les réseaux sociaux."
+        },
+        "branding": {
+          "title": "Image de Marque",
+          "description": "Téléchargez une image de bannière qui représente votre entreprise. Elle sera affichée de manière proéminente sur la page de votre fiche. Vous pouvez également choisir une couleur primaire qui correspond à votre marque, qui sera utilisée pour les accents et les surlignages sur votre fiche."
+        },
+        "images": {
+          "title": "Images",
+          "description": "Téléchargez des images supplémentaires pour présenter votre entreprise. Ces images apparaîtront dans une galerie sur la page de votre fiche, vous permettant de mettre en valeur vos produits, services ou ambiance. Nous recommandons d'utiliser des images de haute qualité avec un rapport d'aspect 16:9 pour les meilleurs résultats d'affichage."
+        }
       },
       "fields": {
         "name": "Nom de l'entreprise",
@@ -467,15 +507,9 @@
         "saturday": "Samedi",
         "sunday": "Dimanche"
       },
-      "contactTypes": {
-        "website": "Site Web",
-        "phone": "Téléphone",
-        "email": "Courriel"
-      },
       "categoryHint": "Vous ne trouvez pas votre catégorie? Dites-nous ce qui convient et nous y jetterons un œil.",
       "closedAllDay": "Fermé",
       "colorHint": "La couleur principale de votre marque.",
-      "addContact": "Ajouter un contact",
       "addSocial": "Ajouter un réseau social",
       "lookup": {
         "placeholder": "Rechercher une adresse…"
@@ -519,10 +553,12 @@
         "countrySearch": "Rechercher un pays…",
         "countryEmpty": "Aucun pays trouvé",
         "number": "Numéro de téléphone"
-      }
+      },
+      "addWebsite": "Ajouter un site web",
+      "addPhone": "Ajouter un téléphone",
+      "addEmail": "Ajouter un courriel"
     },
     "company": {
-      "switch": "Changer d’entreprise",
       "create": "Créer une entreprise",
       "nav": {
         "dashboard": "Tableau de bord",
@@ -539,7 +575,11 @@
       },
       "dashboard": {
         "subtitle": "Gérez tout ce qui concerne votre entreprise ici."
-      }
+      },
+      "searchPlaceholder": "Rechercher une entreprise…",
+      "noResults": "Aucune entreprise trouvée",
+      "openMenu": "Ouvrir le menu de l’entreprise",
+      "menuTitle": "Menu de l’entreprise"
     }
   }
 }

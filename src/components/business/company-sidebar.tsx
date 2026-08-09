@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Check,
   ChevronsUpDown,
   Info,
   LayoutDashboard,
@@ -12,20 +11,26 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 import type { Business } from "@/app/api/businesses/route";
 import { UserAvatar } from "@/components/auth/user-avatar";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Command,
+  CommandEmpty,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useCompanyNav } from "@/components/business/company-nav-context";
 import { cn } from "@/lib/utils";
 
 type NavKey = "dashboard" | "information" | "products" | "services";
@@ -41,7 +46,27 @@ type NavItem = { key: NavKey; href: string; icon: LucideIcon; exact?: boolean };
 export function CompanySidebar({ slug }: { slug: string }) {
   const t = useTranslations("businesses.company");
   const pathname = usePathname();
+  const router = useRouter();
+  const nav = useCompanyNav();
+  const setNavPresent = nav?.setPresent;
+  const setNavOpen = nav?.setOpen;
+  const [switcherOpen, setSwitcherOpen] = useState(false);
   const [businesses, setBusinesses] = useState<Business[] | null>(null);
+
+  // Tell the header a company sidebar is mounted (so it shows the mobile toggle) and tidy up on
+  // unmount. The setters are stable, so this runs once per mount.
+  useEffect(() => {
+    setNavPresent?.(true);
+    return () => {
+      setNavPresent?.(false);
+      setNavOpen?.(false);
+    };
+  }, [setNavPresent, setNavOpen]);
+
+  // Close the mobile drawer whenever navigation happens (e.g. tapping a nav item).
+  useEffect(() => {
+    setNavOpen?.(false);
+  }, [pathname, setNavOpen]);
 
   const load = useCallback(async () => {
     try {
@@ -98,42 +123,54 @@ export function CompanySidebar({ slug }: { slug: string }) {
     </li>
   );
 
-  return (
-    <aside className="sm:w-56 sm:shrink-0">
-      <div className="space-y-10 sm:sticky sm:top-20">
-        {/* Company switcher */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button
-              type="button"
-              className="border-input hover:bg-muted/50 focus-visible:ring-ring flex w-full items-center gap-2 rounded-lg border p-2 text-start outline-none focus-visible:ring-2"
-            >
-              {current ? (
-                <UserAvatar
-                  name={current.name}
-                  src={current.logo}
-                  className="size-8 rounded-md"
-                />
-              ) : (
-                <Skeleton className="size-8 shrink-0 rounded-md" />
-              )}
-              <span className="min-w-0 flex-1 truncate font-medium">
-                {current?.name ?? <Skeleton className="h-4 w-24" />}
-              </span>
-              <ChevronsUpDown
-                className="text-muted-foreground size-4 shrink-0"
-                aria-hidden
-              />
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            align="start"
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56"
+  const navContent = (
+    <div className="space-y-10">
+      {/* Company switcher — searchable, so a long list stays easy to navigate. `modal` lets its
+          portalled panel work while inside the mobile drawer (a Dialog), matching the Combobox. */}
+      <Popover open={switcherOpen} onOpenChange={setSwitcherOpen} modal>
+        <PopoverTrigger asChild>
+          <button
+            type="button"
+            className="hover:bg-muted/60 focus-visible:ring-ring flex w-full items-center gap-2 rounded-lg p-2 text-start outline-none focus-visible:ring-2"
           >
-            <DropdownMenuLabel>{t("switch")}</DropdownMenuLabel>
-            {(businesses ?? []).map((business) => (
-              <DropdownMenuItem key={business.slug} asChild>
-                <Link href={`/portal/businesses/${business.slug}`}>
+            {current ? (
+              <UserAvatar
+                name={current.name}
+                src={current.logo}
+                className="size-8 rounded-md"
+              />
+            ) : (
+              <Skeleton className="size-8 shrink-0 rounded-md" />
+            )}
+            <span className="min-w-0 flex-1 truncate font-medium">
+              {current?.name ?? <Skeleton className="h-4 w-24" />}
+            </span>
+            <ChevronsUpDown
+              className="text-muted-foreground size-4 shrink-0"
+              aria-hidden
+            />
+          </button>
+        </PopoverTrigger>
+        <PopoverContent
+          align="start"
+          className="w-(--radix-popover-trigger-width) min-w-64 p-0"
+        >
+          <Command>
+            {/* Only worth a search box once there's more than one company to sift through. */}
+            {(businesses?.length ?? 0) > 1 ? (
+              <CommandInput placeholder={t("searchPlaceholder")} />
+            ) : null}
+            <CommandList>
+              <CommandEmpty>{t("noResults")}</CommandEmpty>
+              {(businesses ?? []).map((business) => (
+                <CommandItem
+                  key={business.slug}
+                  value={business.name}
+                  onSelect={() => {
+                    setSwitcherOpen(false);
+                    router.push(`/portal/businesses/${business.slug}`);
+                  }}
+                >
                   <UserAvatar
                     name={business.name}
                     src={business.logo}
@@ -141,33 +178,57 @@ export function CompanySidebar({ slug }: { slug: string }) {
                   />
                   <span className="truncate">{business.name}</span>
                   {business.slug === slug ? (
-                    <Check className="ms-auto size-4" aria-hidden />
+                    <span
+                      className="bg-brand-green ms-auto size-2 shrink-0 rounded-full"
+                      aria-hidden
+                    />
                   ) : null}
-                </Link>
-              </DropdownMenuItem>
-            ))}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link href="/portal/businesses/new">
+                </CommandItem>
+              ))}
+            </CommandList>
+            <div className="border-border/60 border-t p-1">
+              <Link
+                href="/portal/businesses/new"
+                onClick={() => setSwitcherOpen(false)}
+                className="hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-2 py-1.5 text-sm"
+              >
                 <Plus className="size-4" aria-hidden />
                 {t("create")}
               </Link>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+            </div>
+          </Command>
+        </PopoverContent>
+      </Popover>
 
-        {/* Navigation */}
-        <nav className="space-y-10 text-sm">
-          <ul className="space-y-1">{renderItem(dashboard)}</ul>
-          <NavGroup label={t("groups.manage")}>
-            {manage.map(renderItem)}
-          </NavGroup>
-          <NavGroup label={t("groups.offerings")}>
-            {offerings.map(renderItem)}
-          </NavGroup>
-        </nav>
-      </div>
-    </aside>
+      {/* Navigation */}
+      <nav className="space-y-10 text-sm">
+        <ul className="space-y-1">{renderItem(dashboard)}</ul>
+        <NavGroup label={t("groups.manage")}>{manage.map(renderItem)}</NavGroup>
+        <NavGroup label={t("groups.offerings")}>
+          {offerings.map(renderItem)}
+        </NavGroup>
+      </nav>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Desktop: a persistent left column. */}
+      <aside className="hidden px-4 pt-6 sm:block sm:w-80 sm:shrink-0 sm:px-6 sm:pt-10">
+        <div className="sm:sticky sm:top-24">{navContent}</div>
+      </aside>
+      {/* Mobile: a drawer opened from the header's hamburger. */}
+      <Sheet
+        open={nav?.open ?? false}
+        onOpenChange={(value) => setNavOpen?.(value)}
+      >
+        {/* Extra top padding so the switcher clears the sheet's close button. */}
+        <SheetContent side="left" className="pt-14">
+          <SheetTitle className="sr-only">{t("menuTitle")}</SheetTitle>
+          {navContent}
+        </SheetContent>
+      </Sheet>
+    </>
   );
 }
 

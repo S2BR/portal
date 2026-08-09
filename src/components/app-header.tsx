@@ -1,5 +1,6 @@
 import { UserMenu } from "@/components/auth/user-menu";
 import { Brand } from "@/components/brand";
+import { CompanyNavToggle } from "@/components/business/company-nav-toggle";
 import { DirectionToggle } from "@/components/dev/direction-toggle";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 
@@ -16,8 +17,9 @@ export function AppHeader() {
         WebkitBackdropFilter: "blur(16px)",
       }}
     >
-      <div className="mx-auto flex h-16 w-full max-w-6xl items-center gap-4 px-4 sm:px-6">
+      <div className="flex h-16 w-full items-center gap-4 px-4 sm:px-6">
         <Brand />
+        <CompanyNavToggle />
         <div className="ms-auto flex items-center gap-2">
           <DirectionToggle />
           <LocaleSwitcher />

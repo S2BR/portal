@@ -406,10 +406,50 @@
       "deleteConfirm": "Eliminar negocio",
       "deleting": "Eliminando…",
       "sections": {
-        "headline": "Titular",
-        "description": "Descripción",
-        "contact": "Contacto",
-        "address": "Dirección"
+        "businessType": {
+          "title": "Tipo de Empresa",
+          "description": "Selecciona el tipo que mejor describe tu empresa."
+        },
+        "categories": {
+          "title": "Categoría y Subcategoría",
+          "description": "Selecciona una o más categorías que mejor se ajusten a tu empresa. Las subcategorías se filtrarán según tu selección de categoría."
+        },
+        "website": {
+          "title": "Sitio Web",
+          "description": "Proporciona la información de contacto de tu empresa. Esto ayudará a los clientes a contactarte fácilmente."
+        },
+        "phone": {
+          "title": "Teléfono",
+          "description": "Agrega uno o más números de teléfono para tu empresa. Los clientes pueden usar estos números para contactarte directamente. Puedes especificar una etiqueta para cada número (ej. \"Línea Principal\", \"Atención al Cliente\") para indicar su propósito."
+        },
+        "email": {
+          "title": "Correo Electrónico",
+          "description": "Agrega una o más direcciones de correo electrónico para tu empresa. Los clientes pueden usar estos emails para contactarte directamente. Puedes especificar una etiqueta para cada email (ej. \"Consultas Generales\", \"Soporte\") para indicar su propósito."
+        },
+        "amenities": {
+          "title": "Servicios",
+          "description": "Selecciona los servicios y las características que ofrece tu empresa."
+        },
+        "address": {
+          "title": "Dirección de la Empresa",
+          "description": "Comienza escribiendo tu dirección en la caja de búsqueda. Selecciona la dirección correcta del menú desplegable, y el resto de los campos se completarán automáticamente con la información correcta. Puedes hacer ajustes a cualquier campo si es necesario."
+        },
+        "hours": {
+          "title": "Horarios de Atención de la Empresa",
+          "description": "Establece los horarios de atención de tu empresa para cada día de la semana. Puedes especificar múltiples rangos de tiempo para cada día (ej. 9:00 AM - 12:00 PM, 1:00 PM - 5:00 PM) para acomodar descansos o turnos divididos. Esta información ayudará a los clientes a saber cuándo tu empresa está abierta."
+        },
+        "socials": {
+          "title": "Enlaces de Redes Sociales",
+          "description": "Agrega enlaces a tus perfiles de redes sociales. Esto ayudará a los clientes a encontrarte y seguirte en redes sociales."
+        },
+        "branding": {
+          "title": "Marca",
+          "description": "Sube una imagen de banner que represente tu empresa. Esta se mostrará prominentemente en tu página de listado. También puedes elegir un color primario que coincida con tu marca, que se usará para acentos y resaltados en tu listado."
+        },
+        "images": {
+          "title": "Imágenes",
+          "description": "Sube imágenes adicionales para mostrar tu empresa. Estas imágenes aparecerán en una galería en tu página de listado, permitiéndote resaltar tus productos, servicios o ambiente. Recomendamos usar imágenes de alta calidad con una relación de aspecto de 16:9 para los mejores resultados de visualización."
+        }
       },
       "fields": {
         "name": "Nombre del negocio",
@@ -467,15 +507,9 @@
         "saturday": "Sábado",
         "sunday": "Domingo"
       },
-      "contactTypes": {
-        "website": "Sitio web",
-        "phone": "Teléfono",
-        "email": "Correo electrónico"
-      },
       "categoryHint": "¿No encuentras tu categoría? Dinos cuál encaja y le echamos un vistazo.",
       "closedAllDay": "Cerrado",
       "colorHint": "El color principal de tu marca.",
-      "addContact": "Añadir contacto",
       "addSocial": "Añadir red social",
       "lookup": {
         "placeholder": "Busca una dirección…"
@@ -519,10 +553,12 @@
         "countrySearch": "Buscar países…",
         "countryEmpty": "No se encontró ningún país",
         "number": "Número de teléfono"
-      }
+      },
+      "addWebsite": "Agregar sitio web",
+      "addPhone": "Agregar teléfono",
+      "addEmail": "Agregar correo"
     },
     "company": {
-      "switch": "Cambiar de empresa",
       "create": "Crear nueva empresa",
       "nav": {
         "dashboard": "Panel",
@@ -539,7 +575,11 @@
       },
       "dashboard": {
         "subtitle": "Gestiona todo sobre tu empresa desde aquí."
-      }
+      },
+      "searchPlaceholder": "Buscar empresas…",
+      "noResults": "No se encontraron empresas",
+      "openMenu": "Abrir menú de la empresa",
+      "menuTitle": "Menú de la empresa"
     }
   }
 }
