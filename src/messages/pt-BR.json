@@ -406,10 +406,54 @@
       "deleteConfirm": "Excluir negócio",
       "deleting": "Excluindo…",
       "sections": {
-        "headline": "Chamada",
-        "description": "Descrição",
-        "contact": "Contato",
-        "address": "Endereço"
+        "basics": {
+          "title": "Informações básicas",
+          "description": "Seu logotipo, o nome da empresa, o slogan e uma breve descrição."
+        },
+        "businessType": {
+          "title": "Tipo de Empresa",
+          "description": "Selecione o tipo que melhor descreve sua empresa."
+        },
+        "categories": {
+          "title": "Categoria e Subcategoria",
+          "description": "Selecione uma ou mais categorias que melhor se adequem à sua empresa. As subcategorias serão filtradas com base na seleção da sua categoria."
+        },
+        "website": {
+          "title": "Website",
+          "description": "Forneça as informações de contato da sua empresa. Isso ajudará os clientes a entrar em contato com você facilmente."
+        },
+        "phone": {
+          "title": "Telefone",
+          "description": "Adicione um ou mais números de telefone para sua empresa. Os clientes podem usar esses números para entrar em contato diretamente com você. Você pode especificar um rótulo para cada número (ex: \"Linha Principal\", \"Suporte ao Cliente\") para indicar sua finalidade."
+        },
+        "email": {
+          "title": "E-mail",
+          "description": "Adicione um ou mais endereços de e-mail para sua empresa. Os clientes podem usar esses e-mails para entrar em contato diretamente com você. Você pode especificar um rótulo para cada e-mail (ex: \"Consultas Gerais\", \"Suporte\") para indicar sua finalidade."
+        },
+        "amenities": {
+          "title": "Comodidades",
+          "description": "Selecione as comodidades e os recursos que sua empresa oferece."
+        },
+        "address": {
+          "title": "Endereço da Empresa",
+          "description": "Comece digitando seu endereço na caixa de pesquisa. Selecione o endereço correto no menu suspenso, e os demais campos serão preenchidos automaticamente com as informações corretas. Você pode fazer ajustes em qualquer campo se necessário."
+        },
+        "hours": {
+          "title": "Horário de Funcionamento da Empresa",
+          "description": "Defina o horário de funcionamento da sua empresa para cada dia da semana. Você pode especificar múltiplos intervalos de tempo para cada dia (ex: 9:00 - 12:00, 13:00 - 17:00) para acomodar pausas ou turnos divididos. Essa informação ajudará os clientes a saber quando sua empresa está aberta."
+        },
+        "socials": {
+          "title": "Links de Redes Sociais",
+          "description": "Adicione links para seus perfis de redes sociais. Isso ajudará os clientes a encontrá-lo e segui-lo nas redes sociais."
+        },
+        "branding": {
+          "title": "Marca",
+          "description": "Faça o upload de uma imagem de banner que represente sua empresa. Esta será exibida de forma proeminente na página da sua listagem. Você também pode escolher uma cor primária que combine com sua marca, que será usada para acentos e destaques na sua listagem."
+        },
+        "images": {
+          "title": "Imagens",
+          "description": "Faça o upload de imagens adicionais para mostrar sua empresa. Essas imagens aparecerão em uma galeria na página da sua listagem, permitindo que você destaque seus produtos, serviços ou ambiente. Recomendamos usar imagens de alta qualidade com proporção 16:9 para os melhores resultados de exibição."
+        }
       },
       "fields": {
         "name": "Nome do negócio",
@@ -519,7 +563,10 @@
         "countrySearch": "Buscar países…",
         "countryEmpty": "Nenhum país encontrado",
         "number": "Número de telefone"
-      }
+      },
+      "addWebsite": "Adicionar site",
+      "addPhone": "Adicionar telefone",
+      "addEmail": "Adicionar e-mail"
     },
     "company": {
       "switch": "Trocar de empresa",

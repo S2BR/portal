@@ -30,12 +30,11 @@ import { toast } from "sonner";
 
 import type {
   Business,
-  BusinessContactType,
+  BusinessContact,
   BusinessSocialNetwork,
   BusinessType,
 } from "@/app/api/businesses/route";
 import {
-  CONTACT_TYPES,
   DAYS,
   SOCIAL_NETWORKS,
   socialLabel,
@@ -47,6 +46,7 @@ import { AddressAutocomplete } from "@/components/business/address-autocomplete"
 import { AmenitiesPicker } from "@/components/business/amenities-picker";
 import { CategoryPicker } from "@/components/business/category-picker";
 import { BusinessTypeField } from "@/components/business/business-type-field";
+import { FormSection } from "@/components/business/form-section";
 import { PhoneField } from "@/components/business/phone-field";
 import { flagEmoji, formatPhone } from "@/components/business/phone-format";
 import {
@@ -85,13 +85,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { apiErrorText } from "@/lib/api/error-text";
 
-type ContactRow = {
-  type: BusinessContactType;
-  value: string;
-  name: string;
-  /** ISO 3166-1 alpha-2 — phones only; kept in the contact's meta bag so +1 stays CA vs US. */
-  country?: string;
-};
+/** A website or email contact: the value plus an optional label. */
+type LinkRow = { value: string; name: string };
+/** A phone contact: adds the ISO 3166-1 alpha-2 country (kept in meta so +1 stays CA vs US). */
+type PhoneRow = { value: string; name: string; country?: string };
 type SocialRow = { platform: BusinessSocialNetwork; handle: string };
 type AddressEntry = {
   key: string; // stable client key for the list
@@ -114,7 +111,9 @@ type EditState = {
   description: string;
   categorySuggestion: string;
   colorPrimary: string;
-  contacts: ContactRow[];
+  websites: LinkRow[];
+  phones: PhoneRow[];
+  emails: LinkRow[];
   socials: SocialRow[];
   hours: WeekSchedule;
   addresses: AddressEntry[];
@@ -159,12 +158,20 @@ function toEditState(business: Business): EditState {
     description: business.description ?? "",
     categorySuggestion: business.category_suggestion ?? "",
     colorPrimary: business.colors?.primary ?? "",
-    contacts: (business.contacts ?? []).map((contact) => ({
-      type: contact.type,
-      value: contact.value,
-      name: contact.name ?? "",
-      country: contact.meta?.country,
-    })),
+    // Contacts arrive as one typed list; split them into the three sections the form shows.
+    websites: (business.contacts ?? [])
+      .filter((contact) => contact.type === "website")
+      .map((contact) => ({ value: contact.value, name: contact.name ?? "" })),
+    phones: (business.contacts ?? [])
+      .filter((contact) => contact.type === "phone")
+      .map((contact) => ({
+        value: contact.value,
+        name: contact.name ?? "",
+        country: contact.meta?.country,
+      })),
+    emails: (business.contacts ?? [])
+      .filter((contact) => contact.type === "email")
+      .map((contact) => ({ value: contact.value, name: contact.name ?? "" })),
     socials: (business.socials ?? []).map((social) => ({
       platform: social.platform,
       handle: social.handle,
@@ -213,18 +220,34 @@ function buildPayload(edit: EditState) {
     colors: trimOrNull(edit.colorPrimary)
       ? { primary: edit.colorPrimary.trim() }
       : null,
-    contacts: edit.contacts
-      .filter((contact) => contact.value.trim() !== "")
-      .map((contact) => ({
-        type: contact.type,
-        value: contact.value.trim(),
-        name: trimOrNull(contact.name),
-        // A phone carries its country in the meta bag; other contact types have no meta.
-        meta:
-          contact.type === "phone" && contact.country
-            ? { country: contact.country }
-            : null,
-      })),
+    // Recombine the three contact sections into the API's one typed list.
+    contacts: [
+      ...edit.websites
+        .filter((row) => row.value.trim() !== "")
+        .map((row) => ({
+          type: "website" as const,
+          value: row.value.trim(),
+          name: trimOrNull(row.name),
+          meta: null as { country: string } | null,
+        })),
+      ...edit.phones
+        .filter((row) => row.value.trim() !== "")
+        .map((row) => ({
+          type: "phone" as const,
+          value: row.value.trim(),
+          name: trimOrNull(row.name),
+          // A phone carries its country in the meta bag; other types have no meta.
+          meta: row.country ? { country: row.country } : null,
+        })),
+      ...edit.emails
+        .filter((row) => row.value.trim() !== "")
+        .map((row) => ({
+          type: "email" as const,
+          value: row.value.trim(),
+          name: trimOrNull(row.name),
+          meta: null as { country: string } | null,
+        })),
+    ],
     socials: edit.socials
       .filter((social) => social.handle.trim() !== "")
       .map((social) => ({
@@ -271,9 +294,9 @@ function buildPayload(edit: EditState) {
 export function BusinessDetail({ slug }: { slug: string }) {
   const t = useTranslations("businesses.detail");
   const tabs = useTranslations("businesses.detail.tabs");
+  const sections = useTranslations("businesses.detail.sections");
   const fields = useTranslations("businesses.detail.fields");
   const days = useTranslations("businesses.detail.days");
-  const contactTypeLabels = useTranslations("businesses.detail.contactTypes");
   const blank = useTranslations("businesses.detail.empty");
   const types = useTranslations("businessNew.types");
   const create = useTranslations("businessNew");
@@ -570,411 +593,512 @@ export function BusinessDetail({ slug }: { slug: string }) {
 
           {/* General */}
           <TabsContent value="general">
-            <div className="space-y-6">
-              <BusinessImageField
-                slug={slug}
-                kind="logo"
-                value={business.logo}
-                onUpdated={(updated) => setBusiness(updated)}
-              />
-              {editing && edit ? (
-                <div className="space-y-5">
-                  <Field label={fields("name")} error={nameError}>
-                    <Input
-                      value={edit.name}
-                      onChange={(event) => patch({ name: event.target.value })}
-                      maxLength={255}
-                      aria-invalid={Boolean(nameError)}
-                    />
-                  </Field>
+            <div>
+              <FormSection
+                title={sections("basics.title")}
+                description={sections("basics.description")}
+              >
+                <BusinessImageField
+                  slug={slug}
+                  kind="logo"
+                  value={business.logo}
+                  onUpdated={(updated) => setBusiness(updated)}
+                />
+                {editing && edit ? (
+                  <>
+                    <Field label={fields("name")} error={nameError}>
+                      <Input
+                        value={edit.name}
+                        onChange={(event) =>
+                          patch({ name: event.target.value })
+                        }
+                        maxLength={255}
+                        aria-invalid={Boolean(nameError)}
+                      />
+                    </Field>
+                    <Field label={fields("headline")}>
+                      <Input
+                        value={edit.headline}
+                        onChange={(event) =>
+                          patch({ headline: event.target.value })
+                        }
+                        maxLength={255}
+                      />
+                    </Field>
+                    <Field label={fields("description")}>
+                      <Textarea
+                        value={edit.description}
+                        onChange={(event) =>
+                          patch({ description: event.target.value })
+                        }
+                        maxLength={5000}
+                        rows={4}
+                      />
+                    </Field>
+                  </>
+                ) : (
+                  <>
+                    <ViewBlock label={fields("headline")}>
+                      {business.headline ?? <Muted>{blank("headline")}</Muted>}
+                    </ViewBlock>
+                    <ViewBlock label={fields("description")}>
+                      {business.description ? (
+                        <p className="whitespace-pre-line">
+                          {business.description}
+                        </p>
+                      ) : (
+                        <Muted>{blank("description")}</Muted>
+                      )}
+                    </ViewBlock>
+                  </>
+                )}
+              </FormSection>
+
+              <FormSection
+                title={sections("businessType.title")}
+                description={sections("businessType.description")}
+              >
+                {editing && edit ? (
                   <BusinessTypeField
                     value={edit.type}
                     onChange={(type) => patch({ type })}
                     label={create("typeLabel")}
                   />
-                  <Field label={fields("headline")}>
-                    <Input
-                      value={edit.headline}
-                      onChange={(event) =>
-                        patch({ headline: event.target.value })
-                      }
-                      maxLength={255}
-                    />
-                  </Field>
-                  <Field label={fields("description")}>
-                    <Textarea
-                      value={edit.description}
-                      onChange={(event) =>
-                        patch({ description: event.target.value })
-                      }
-                      maxLength={5000}
-                      rows={4}
-                    />
-                  </Field>
-                  <Field label={fields("categories")}>
-                    <CategoryPicker
-                      tree={categoryTree}
-                      value={edit.categoryIds}
-                      onChange={(categoryIds) => patch({ categoryIds })}
-                    />
-                  </Field>
-                  <Field
-                    label={fields("categorySuggestion")}
-                    hint={t("categoryHint")}
-                  >
-                    <Input
-                      value={edit.categorySuggestion}
-                      onChange={(event) =>
-                        patch({ categorySuggestion: event.target.value })
-                      }
-                      maxLength={500}
-                    />
-                  </Field>
-                </div>
-              ) : (
-                <div className="space-y-5">
-                  <ViewBlock label={fields("headline")}>
-                    {business.headline ?? <Muted>{blank("headline")}</Muted>}
-                  </ViewBlock>
-                  <ViewBlock label={fields("description")}>
-                    {business.description ? (
-                      <p className="whitespace-pre-line">
-                        {business.description}
-                      </p>
-                    ) : (
-                      <Muted>{blank("description")}</Muted>
-                    )}
-                  </ViewBlock>
-                  <ViewBlock label={fields("categories")}>
-                    {business.categories && business.categories.length > 0 ? (
-                      <div className="flex flex-wrap gap-1.5">
-                        {business.categories.map((category) => (
-                          <Badge key={category.id} variant="outline">
-                            {category.name}
-                          </Badge>
-                        ))}
-                      </div>
-                    ) : (
-                      <Muted>{blank("categories")}</Muted>
-                    )}
-                  </ViewBlock>
-                </div>
-              )}
+                ) : (
+                  <Badge variant="outline">{typeLabel}</Badge>
+                )}
+              </FormSection>
+
+              <FormSection
+                title={sections("categories.title")}
+                description={sections("categories.description")}
+              >
+                {editing && edit ? (
+                  <>
+                    <Field label={fields("categories")}>
+                      <CategoryPicker
+                        tree={categoryTree}
+                        value={edit.categoryIds}
+                        onChange={(categoryIds) => patch({ categoryIds })}
+                      />
+                    </Field>
+                    <Field
+                      label={fields("categorySuggestion")}
+                      hint={t("categoryHint")}
+                    >
+                      <Input
+                        value={edit.categorySuggestion}
+                        onChange={(event) =>
+                          patch({ categorySuggestion: event.target.value })
+                        }
+                        maxLength={500}
+                      />
+                    </Field>
+                  </>
+                ) : business.categories && business.categories.length > 0 ? (
+                  <div className="flex flex-wrap gap-1.5">
+                    {business.categories.map((category) => (
+                      <Badge key={category.id} variant="outline">
+                        {category.name}
+                      </Badge>
+                    ))}
+                  </div>
+                ) : (
+                  <Muted>{blank("categories")}</Muted>
+                )}
+              </FormSection>
             </div>
           </TabsContent>
 
           {/* Amenities */}
           <TabsContent value="amenities">
-            {editing && edit ? (
-              <AmenitiesPicker
-                groups={amenityGroups}
-                selectedRootSlugs={selectedRootSlugs}
-                selectedSubSlugs={selectedSubSlugs}
-                value={edit.amenityIds}
-                onChange={(amenityIds) => patch({ amenityIds })}
-              />
-            ) : business.amenities && business.amenities.length > 0 ? (
-              <div className="flex flex-wrap gap-1.5">
-                {business.amenities.map((amenity) => (
-                  <Badge key={amenity.id} variant="outline">
-                    {amenity.name}
-                  </Badge>
-                ))}
-              </div>
-            ) : (
-              <Muted>{blank("amenities")}</Muted>
-            )}
+            <FormSection
+              title={sections("amenities.title")}
+              description={sections("amenities.description")}
+            >
+              {editing && edit ? (
+                <AmenitiesPicker
+                  groups={amenityGroups}
+                  selectedRootSlugs={selectedRootSlugs}
+                  selectedSubSlugs={selectedSubSlugs}
+                  value={edit.amenityIds}
+                  onChange={(amenityIds) => patch({ amenityIds })}
+                />
+              ) : business.amenities && business.amenities.length > 0 ? (
+                <div className="flex flex-wrap gap-1.5">
+                  {business.amenities.map((amenity) => (
+                    <Badge key={amenity.id} variant="outline">
+                      {amenity.name}
+                    </Badge>
+                  ))}
+                </div>
+              ) : (
+                <Muted>{blank("amenities")}</Muted>
+              )}
+            </FormSection>
           </TabsContent>
 
-          {/* Contact */}
+          {/* Contact — Website / Phone / Email */}
           <TabsContent value="contact">
-            {editing && edit ? (
-              <RepeaterEditor
-                rows={edit.contacts}
-                onChange={(contacts) => patch({ contacts })}
-                addLabel={t("addContact")}
-                makeRow={(): ContactRow => ({
-                  type: "website",
-                  value: "",
-                  name: "",
-                })}
-                renderRow={(row, update) => (
-                  <>
-                    <Select
-                      value={row.type}
-                      onValueChange={(value) =>
-                        update({ type: value as BusinessContactType })
-                      }
-                    >
-                      <SelectTrigger className="sm:w-40">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {CONTACT_TYPES.map((type) => (
-                          <SelectItem key={type} value={type}>
-                            {contactTypeLabels(type)}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {row.type === "phone" ? (
-                      <PhoneField
-                        value={row.value}
-                        country={row.country}
-                        defaultCountry={edit.addresses[0]?.country?.toUpperCase()}
-                        onChange={(value, country) =>
-                          update({ value, country })
-                        }
-                      />
-                    ) : (
-                      <Input
-                        value={row.value}
-                        onChange={(event) =>
-                          update({ value: event.target.value })
-                        }
-                        placeholder={fields("contactValue")}
-                        className="flex-1"
-                      />
+            <div>
+              <FormSection
+                title={sections("website.title")}
+                description={sections("website.description")}
+              >
+                {editing && edit ? (
+                  <RepeaterEditor
+                    rows={edit.websites}
+                    onChange={(websites) => patch({ websites })}
+                    addLabel={t("addWebsite")}
+                    makeRow={(): LinkRow => ({ value: "", name: "" })}
+                    renderRow={(row, update) => (
+                      <>
+                        <Input
+                          value={row.value}
+                          onChange={(event) =>
+                            update({ value: event.target.value })
+                          }
+                          placeholder={fields("contactValue")}
+                          className="flex-1"
+                        />
+                        <Input
+                          value={row.name}
+                          onChange={(event) =>
+                            update({ name: event.target.value })
+                          }
+                          placeholder={fields("contactLabel")}
+                          className="sm:w-40"
+                        />
+                      </>
                     )}
-                    <Input
-                      value={row.name}
-                      onChange={(event) => update({ name: event.target.value })}
-                      placeholder={fields("contactLabel")}
-                      className="sm:w-40"
-                    />
-                  </>
+                  />
+                ) : (
+                  <ContactValues
+                    items={(business.contacts ?? []).filter(
+                      (contact) => contact.type === "website",
+                    )}
+                    empty={blank("contact")}
+                  />
                 )}
-              />
-            ) : business.contacts && business.contacts.length > 0 ? (
-              <ul className="divide-y">
-                {business.contacts.map((contact, index) => (
-                  <li
-                    key={index}
-                    className="flex items-center justify-between gap-3 py-3 text-sm"
-                  >
-                    <span className="text-muted-foreground w-20 shrink-0 capitalize">
-                      {contactTypeLabels(contact.type)}
-                    </span>
-                    <span className="min-w-0 flex-1 truncate">
-                      {contact.type === "phone"
-                        ? `${contact.meta?.country ? `${flagEmoji(contact.meta.country)} ` : ""}${formatPhone(contact.value, contact.meta?.country)}`
-                        : contact.value}
-                    </span>
-                    {contact.name ? (
-                      <span className="text-muted-foreground shrink-0">
-                        {contact.name}
-                      </span>
-                    ) : null}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <Muted>{blank("contact")}</Muted>
-            )}
+              </FormSection>
+
+              <FormSection
+                title={sections("phone.title")}
+                description={sections("phone.description")}
+              >
+                {editing && edit ? (
+                  <RepeaterEditor
+                    rows={edit.phones}
+                    onChange={(phones) => patch({ phones })}
+                    addLabel={t("addPhone")}
+                    makeRow={(): PhoneRow => ({ value: "", name: "" })}
+                    renderRow={(row, update) => (
+                      <>
+                        <PhoneField
+                          value={row.value}
+                          country={row.country}
+                          defaultCountry={edit.addresses[0]?.country?.toUpperCase()}
+                          onChange={(value, country) =>
+                            update({ value, country })
+                          }
+                        />
+                        <Input
+                          value={row.name}
+                          onChange={(event) =>
+                            update({ name: event.target.value })
+                          }
+                          placeholder={fields("contactLabel")}
+                          className="sm:w-40"
+                        />
+                      </>
+                    )}
+                  />
+                ) : (
+                  <ContactValues
+                    items={(business.contacts ?? []).filter(
+                      (contact) => contact.type === "phone",
+                    )}
+                    empty={blank("contact")}
+                  />
+                )}
+              </FormSection>
+
+              <FormSection
+                title={sections("email.title")}
+                description={sections("email.description")}
+              >
+                {editing && edit ? (
+                  <RepeaterEditor
+                    rows={edit.emails}
+                    onChange={(emails) => patch({ emails })}
+                    addLabel={t("addEmail")}
+                    makeRow={(): LinkRow => ({ value: "", name: "" })}
+                    renderRow={(row, update) => (
+                      <>
+                        <Input
+                          type="email"
+                          value={row.value}
+                          onChange={(event) =>
+                            update({ value: event.target.value })
+                          }
+                          placeholder={fields("contactValue")}
+                          className="flex-1"
+                        />
+                        <Input
+                          value={row.name}
+                          onChange={(event) =>
+                            update({ name: event.target.value })
+                          }
+                          placeholder={fields("contactLabel")}
+                          className="sm:w-40"
+                        />
+                      </>
+                    )}
+                  />
+                ) : (
+                  <ContactValues
+                    items={(business.contacts ?? []).filter(
+                      (contact) => contact.type === "email",
+                    )}
+                    empty={blank("contact")}
+                  />
+                )}
+              </FormSection>
+            </div>
           </TabsContent>
 
           {/* Addresses */}
           <TabsContent value="address">
-            {editing && edit ? (
-              <AddressesEditor
-                value={edit.addresses}
-                onChange={(addresses) => patch({ addresses })}
-              />
-            ) : business.addresses && business.addresses.length > 0 ? (
-              <div className="space-y-3">
-                {business.addresses.map((address) => (
-                  <div
-                    key={address.id}
-                    className="border-b pb-3 text-sm last:border-b-0 last:pb-0"
-                  >
-                    {address.is_main ? (
-                      <Badge variant="outline" className="mb-2">
-                        {t("mainAddress")}
-                      </Badge>
-                    ) : null}
-                    <address className="not-italic">
-                      {[
-                        address.address_1,
-                        address.apartment_suite,
-                        address.address_2,
-                        [address.postal_code, address.city]
-                          .filter(Boolean)
-                          .join(" "),
-                        address.state_province,
-                        address.country,
-                      ]
-                        .filter((line): line is string =>
-                          Boolean(line && line.trim()),
-                        )
-                        .map((line) => (
-                          <span key={line} className="block">
-                            {line}
-                          </span>
-                        ))}
-                    </address>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <Muted>{blank("address")}</Muted>
-            )}
+            <FormSection
+              title={sections("address.title")}
+              description={sections("address.description")}
+            >
+              {editing && edit ? (
+                <AddressesEditor
+                  value={edit.addresses}
+                  onChange={(addresses) => patch({ addresses })}
+                />
+              ) : business.addresses && business.addresses.length > 0 ? (
+                <div className="space-y-3">
+                  {business.addresses.map((address) => (
+                    <div
+                      key={address.id}
+                      className="border-b pb-3 text-sm last:border-b-0 last:pb-0"
+                    >
+                      {address.is_main ? (
+                        <Badge variant="outline" className="mb-2">
+                          {t("mainAddress")}
+                        </Badge>
+                      ) : null}
+                      <address className="not-italic">
+                        {[
+                          address.address_1,
+                          address.apartment_suite,
+                          address.address_2,
+                          [address.postal_code, address.city]
+                            .filter(Boolean)
+                            .join(" "),
+                          address.state_province,
+                          address.country,
+                        ]
+                          .filter((line): line is string =>
+                            Boolean(line && line.trim()),
+                          )
+                          .map((line) => (
+                            <span key={line} className="block">
+                              {line}
+                            </span>
+                          ))}
+                      </address>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <Muted>{blank("address")}</Muted>
+              )}
+            </FormSection>
           </TabsContent>
 
           {/* Opening hours */}
           <TabsContent value="hours">
-            {editing && edit ? (
-              <HoursScheduler
-                value={edit.hours}
-                onChange={(hours) => patch({ hours })}
-              />
-            ) : business.opening_hours && business.opening_hours.length > 0 ? (
-              <ul className="divide-y">
-                {DAYS.map((day) => {
-                  const ranges = (business.opening_hours ?? []).filter(
-                    (hour) =>
-                      hour.day_of_week === day &&
-                      !hour.closed_all_day &&
-                      hour.open_time != null,
-                  );
-                  return (
-                    <li
-                      key={day}
-                      className="flex items-center justify-between gap-4 py-3 text-sm"
-                    >
-                      <span className="font-medium">{days(day)}</span>
-                      <span className="text-muted-foreground text-end">
-                        {ranges.length > 0
-                          ? ranges
-                              .map(
-                                (hour) =>
-                                  `${hour.open_time ? formatTime(hour.open_time, locale) : "—"} – ${hour.close_time ? formatTime(hour.close_time, locale) : "—"}`,
-                              )
-                              .join(", ")
-                          : t("closedAllDay")}
-                      </span>
-                    </li>
-                  );
-                })}
-              </ul>
-            ) : (
-              <Muted>{blank("hours")}</Muted>
-            )}
+            <FormSection
+              title={sections("hours.title")}
+              description={sections("hours.description")}
+            >
+              {editing && edit ? (
+                <HoursScheduler
+                  value={edit.hours}
+                  onChange={(hours) => patch({ hours })}
+                />
+              ) : business.opening_hours &&
+                business.opening_hours.length > 0 ? (
+                <ul className="divide-y">
+                  {DAYS.map((day) => {
+                    const ranges = (business.opening_hours ?? []).filter(
+                      (hour) =>
+                        hour.day_of_week === day &&
+                        !hour.closed_all_day &&
+                        hour.open_time != null,
+                    );
+                    return (
+                      <li
+                        key={day}
+                        className="flex items-center justify-between gap-4 py-3 text-sm"
+                      >
+                        <span className="font-medium">{days(day)}</span>
+                        <span className="text-muted-foreground text-end">
+                          {ranges.length > 0
+                            ? ranges
+                                .map(
+                                  (hour) =>
+                                    `${hour.open_time ? formatTime(hour.open_time, locale) : "—"} – ${hour.close_time ? formatTime(hour.close_time, locale) : "—"}`,
+                                )
+                                .join(", ")
+                            : t("closedAllDay")}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : (
+                <Muted>{blank("hours")}</Muted>
+              )}
+            </FormSection>
           </TabsContent>
 
           {/* Socials */}
           <TabsContent value="socials">
-            {editing && edit ? (
-              <RepeaterEditor
-                rows={edit.socials}
-                onChange={(socials) => patch({ socials })}
-                addLabel={t("addSocial")}
-                makeRow={(): SocialRow => ({
-                  platform: "instagram",
-                  handle: "",
-                })}
-                renderRow={(row, update) => (
-                  <>
-                    <Select
-                      value={row.platform}
-                      onValueChange={(value) =>
-                        update({ platform: value as BusinessSocialNetwork })
-                      }
+            <FormSection
+              title={sections("socials.title")}
+              description={sections("socials.description")}
+            >
+              {editing && edit ? (
+                <RepeaterEditor
+                  rows={edit.socials}
+                  onChange={(socials) => patch({ socials })}
+                  addLabel={t("addSocial")}
+                  makeRow={(): SocialRow => ({
+                    platform: "instagram",
+                    handle: "",
+                  })}
+                  renderRow={(row, update) => (
+                    <>
+                      <Select
+                        value={row.platform}
+                        onValueChange={(value) =>
+                          update({ platform: value as BusinessSocialNetwork })
+                        }
+                      >
+                        <SelectTrigger className="sm:w-48">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {SOCIAL_NETWORKS.map((network) => (
+                            <SelectItem
+                              key={network.value}
+                              value={network.value}
+                            >
+                              {network.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <Input
+                        value={row.handle}
+                        onChange={(event) =>
+                          update({ handle: event.target.value })
+                        }
+                        placeholder={fields("handle")}
+                        className="flex-1"
+                      />
+                    </>
+                  )}
+                />
+              ) : business.socials && business.socials.length > 0 ? (
+                <ul className="divide-y">
+                  {business.socials.map((social, index) => (
+                    <li
+                      key={index}
+                      className="flex items-center justify-between py-3 text-sm"
                     >
-                      <SelectTrigger className="sm:w-48">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {SOCIAL_NETWORKS.map((network) => (
-                          <SelectItem key={network.value} value={network.value}>
-                            {network.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <Input
-                      value={row.handle}
-                      onChange={(event) =>
-                        update({ handle: event.target.value })
-                      }
-                      placeholder={fields("handle")}
-                      className="flex-1"
-                    />
-                  </>
-                )}
-              />
-            ) : business.socials && business.socials.length > 0 ? (
-              <ul className="divide-y">
-                {business.socials.map((social, index) => (
-                  <li
-                    key={index}
-                    className="flex items-center justify-between py-3 text-sm"
-                  >
-                    <span className="font-medium">
-                      {socialLabel(social.platform)}
-                    </span>
-                    <span className="text-muted-foreground">
-                      {social.handle}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <Muted>{blank("socials")}</Muted>
-            )}
+                      <span className="font-medium">
+                        {socialLabel(social.platform)}
+                      </span>
+                      <span className="text-muted-foreground">
+                        {social.handle}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <Muted>{blank("socials")}</Muted>
+              )}
+            </FormSection>
           </TabsContent>
 
           {/* Branding */}
           <TabsContent value="branding">
-            <div className="space-y-6">
-              <BusinessImageField
-                slug={slug}
-                kind="banner"
-                value={business.banner}
-                onUpdated={(updated) => setBusiness(updated)}
-              />
-              <BusinessGallery
-                slug={slug}
-                images={business.images}
-                onUpdated={(updated) => setBusiness(updated)}
-              />
-              {editing && edit ? (
-                <Field label={fields("color")} hint={t("colorHint")}>
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="color"
-                      value={
-                        /^#[0-9a-fA-F]{6}$/.test(edit.colorPrimary)
-                          ? edit.colorPrimary
-                          : "#000000"
-                      }
-                      onChange={(event) =>
-                        patch({ colorPrimary: event.target.value })
-                      }
-                      className="border-input size-11 shrink-0 cursor-pointer rounded-lg border bg-transparent p-1"
-                      aria-label={fields("color")}
+            <div>
+              <FormSection
+                title={sections("branding.title")}
+                description={sections("branding.description")}
+              >
+                <BusinessImageField
+                  slug={slug}
+                  kind="banner"
+                  value={business.banner}
+                  onUpdated={(updated) => setBusiness(updated)}
+                />
+                {editing && edit ? (
+                  <Field label={fields("color")} hint={t("colorHint")}>
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="color"
+                        value={
+                          /^#[0-9a-fA-F]{6}$/.test(edit.colorPrimary)
+                            ? edit.colorPrimary
+                            : "#000000"
+                        }
+                        onChange={(event) =>
+                          patch({ colorPrimary: event.target.value })
+                        }
+                        className="border-input size-11 shrink-0 cursor-pointer rounded-lg border bg-transparent p-1"
+                        aria-label={fields("color")}
+                      />
+                      <Input
+                        value={edit.colorPrimary}
+                        onChange={(event) =>
+                          patch({ colorPrimary: event.target.value })
+                        }
+                        placeholder="#0a7d4b"
+                        className="max-w-40"
+                      />
+                    </div>
+                  </Field>
+                ) : business.colors?.primary ? (
+                  <div className="flex items-center gap-3 text-sm">
+                    <span
+                      className="border-input size-8 rounded-lg border"
+                      style={{ backgroundColor: business.colors.primary }}
+                      aria-hidden
                     />
-                    <Input
-                      value={edit.colorPrimary}
-                      onChange={(event) =>
-                        patch({ colorPrimary: event.target.value })
-                      }
-                      placeholder="#0a7d4b"
-                      className="max-w-40"
-                    />
+                    <span className="font-mono">{business.colors.primary}</span>
                   </div>
-                </Field>
-              ) : business.colors?.primary ? (
-                <div className="gapy-3 flex items-center text-sm">
-                  <span
-                    className="border-input size-8 rounded-lg border"
-                    style={{ backgroundColor: business.colors.primary }}
-                    aria-hidden
-                  />
-                  <span className="font-mono">{business.colors.primary}</span>
-                </div>
-              ) : (
-                <Muted>{blank("branding")}</Muted>
-              )}
+                ) : (
+                  <Muted>{blank("branding")}</Muted>
+                )}
+              </FormSection>
+
+              <FormSection
+                title={sections("images.title")}
+                description={sections("images.description")}
+              >
+                <BusinessGallery
+                  slug={slug}
+                  images={business.images}
+                  onUpdated={(updated) => setBusiness(updated)}
+                />
+              </FormSection>
             </div>
           </TabsContent>
         </Tabs>
@@ -1042,6 +1166,40 @@ function ViewBlock({
 
 function Muted({ children }: { children: ReactNode }) {
   return <p className="text-muted-foreground text-sm italic">{children}</p>;
+}
+
+/** Read-only list for one contact section (website/phone/email); phones show flag + formatted. */
+function ContactValues({
+  items,
+  empty,
+}: {
+  items: BusinessContact[];
+  empty: string;
+}) {
+  if (items.length === 0) {
+    return <Muted>{empty}</Muted>;
+  }
+  return (
+    <ul className="divide-y">
+      {items.map((contact, index) => (
+        <li
+          key={index}
+          className="flex items-center justify-between gap-3 py-3 text-sm"
+        >
+          <span className="min-w-0 flex-1 truncate">
+            {contact.type === "phone"
+              ? `${contact.meta?.country ? `${flagEmoji(contact.meta.country)} ` : ""}${formatPhone(contact.value, contact.meta?.country)}`
+              : contact.value}
+          </span>
+          {contact.name ? (
+            <span className="text-muted-foreground shrink-0">
+              {contact.name}
+            </span>
+          ) : null}
+        </li>
+      ))}
+    </ul>
+  );
 }
 
 /**

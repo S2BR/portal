@@ -406,10 +406,54 @@
       "deleteConfirm": "Delete business",
       "deleting": "Deleting…",
       "sections": {
-        "headline": "Headline",
-        "description": "Description",
-        "contact": "Contact",
-        "address": "Address"
+        "basics": {
+          "title": "Basic information",
+          "description": "Your logo, business name, tagline, and a short description."
+        },
+        "businessType": {
+          "title": "Business Type",
+          "description": "Select the type that best describes your business."
+        },
+        "categories": {
+          "title": "Category & Subcategory",
+          "description": "Select one or more categories that best fit your business. Subcategories will be filtered based on your category selection."
+        },
+        "website": {
+          "title": "Website",
+          "description": "Provide your business contact information. This will help customers reach you easily."
+        },
+        "phone": {
+          "title": "Phone",
+          "description": "Add one or more phone numbers for your business. Customers can use these numbers to contact you directly. You can specify a label for each number (e.g., \"Main Line\", \"Customer Support\") to indicate its purpose."
+        },
+        "email": {
+          "title": "Email",
+          "description": "Add one or more email addresses for your business. Customers can use these emails to contact you directly. You can specify a label for each email (e.g., \"General Inquiries\", \"Support\") to indicate its purpose."
+        },
+        "amenities": {
+          "title": "Amenities",
+          "description": "Select the amenities and features your business offers."
+        },
+        "address": {
+          "title": "Business Address",
+          "description": "Start typing your address in the search box. Select the correct address from the dropdown, and the rest of the fields will auto-fill with the correct information. You can make adjustments to any field if needed."
+        },
+        "hours": {
+          "title": "Business Opening Hours",
+          "description": "Set your business opening hours for each day of the week. You can specify multiple time ranges for each day (e.g., 9:00 AM - 12:00 PM, 1:00 PM - 5:00 PM) to accommodate breaks or split shifts. This information will help customers know when your business is open."
+        },
+        "socials": {
+          "title": "Social Media Links",
+          "description": "Add links to your social media profiles. This will help customers find and follow you on social media."
+        },
+        "branding": {
+          "title": "Branding",
+          "description": "Upload a banner image that represents your business. This will be displayed prominently on your listing page. You can also choose a primary color that matches your brand, which will be used for accents and highlights on your listing."
+        },
+        "images": {
+          "title": "Images",
+          "description": "Upload additional images to showcase your business. These images will appear in a gallery on your listing page, allowing you to highlight your products, services, or ambiance. We recommend using high-quality images with a 16:9 aspect ratio for the best display results."
+        }
       },
       "fields": {
         "name": "Business name",
@@ -519,7 +563,10 @@
         "countrySearch": "Search countries…",
         "countryEmpty": "No country found",
         "number": "Phone number"
-      }
+      },
+      "addWebsite": "Add website",
+      "addPhone": "Add phone",
+      "addEmail": "Add email"
     },
     "company": {
       "switch": "Switch company",

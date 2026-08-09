@@ -406,10 +406,54 @@
       "deleteConfirm": "Supprimer l'entreprise",
       "deleting": "Suppression…",
       "sections": {
-        "headline": "Accroche",
-        "description": "Description",
-        "contact": "Coordonnées",
-        "address": "Adresse"
+        "basics": {
+          "title": "Informations de base",
+          "description": "Votre logo, le nom de l’entreprise, le slogan et une brève description."
+        },
+        "businessType": {
+          "title": "Type d'Entreprise",
+          "description": "Sélectionnez le type qui décrit le mieux votre entreprise."
+        },
+        "categories": {
+          "title": "Catégorie et Sous-catégorie",
+          "description": "Sélectionnez une ou plusieurs catégories qui correspondent le mieux à votre entreprise. Les sous-catégories seront filtrées en fonction de votre sélection de catégorie."
+        },
+        "website": {
+          "title": "Site Web",
+          "description": "Fournissez les informations de contact de votre entreprise. Cela aidera les clients à vous joindre facilement."
+        },
+        "phone": {
+          "title": "Téléphone",
+          "description": "Ajoutez un ou plusieurs numéros de téléphone pour votre entreprise. Les clients peuvent utiliser ces numéros pour vous contacter directement. Vous pouvez spécifier une étiquette pour chaque numéro (ex: \"Ligne Principale\", \"Support Client\") pour indiquer son objectif."
+        },
+        "email": {
+          "title": "Courriel",
+          "description": "Ajoutez une ou plusieurs adresses courriel pour votre entreprise. Les clients peuvent utiliser ces courriels pour vous contacter directement. Vous pouvez spécifier une étiquette pour chaque courriel (ex: \"Demandes Générales\", \"Support\") pour indiquer son objectif."
+        },
+        "amenities": {
+          "title": "Commodités",
+          "description": "Sélectionnez les commodités et les caractéristiques offertes par votre entreprise."
+        },
+        "address": {
+          "title": "Adresse d'Entreprise",
+          "description": "Commencez à taper votre adresse dans la boîte de recherche. Sélectionnez l'adresse correcte dans le menu déroulant, et le reste des champs se remplira automatiquement avec les bonnes informations. Vous pouvez apporter des ajustements à n'importe quel champ si nécessaire."
+        },
+        "hours": {
+          "title": "Heures d'Ouverture de l'Entreprise",
+          "description": "Définissez les heures d'ouverture de votre entreprise pour chaque jour de la semaine. Vous pouvez spécifier plusieurs plages horaires pour chaque jour (ex: 9h00 - 12h00, 13h00 - 17h00) pour accommoder les pauses ou les quarts de travail divisés. Cette information aidera les clients à savoir quand votre entreprise est ouverte."
+        },
+        "socials": {
+          "title": "Liens de Réseaux Sociaux",
+          "description": "Ajoutez des liens vers vos profils de réseaux sociaux. Cela aidera les clients à vous trouver et vous suivre sur les réseaux sociaux."
+        },
+        "branding": {
+          "title": "Image de Marque",
+          "description": "Téléchargez une image de bannière qui représente votre entreprise. Elle sera affichée de manière proéminente sur la page de votre fiche. Vous pouvez également choisir une couleur primaire qui correspond à votre marque, qui sera utilisée pour les accents et les surlignages sur votre fiche."
+        },
+        "images": {
+          "title": "Images",
+          "description": "Téléchargez des images supplémentaires pour présenter votre entreprise. Ces images apparaîtront dans une galerie sur la page de votre fiche, vous permettant de mettre en valeur vos produits, services ou ambiance. Nous recommandons d'utiliser des images de haute qualité avec un rapport d'aspect 16:9 pour les meilleurs résultats d'affichage."
+        }
       },
       "fields": {
         "name": "Nom de l'entreprise",
@@ -519,7 +563,10 @@
         "countrySearch": "Rechercher un pays…",
         "countryEmpty": "Aucun pays trouvé",
         "number": "Numéro de téléphone"
-      }
+      },
+      "addWebsite": "Ajouter un site web",
+      "addPhone": "Ajouter un téléphone",
+      "addEmail": "Ajouter un courriel"
     },
     "company": {
       "switch": "Changer d’entreprise",
