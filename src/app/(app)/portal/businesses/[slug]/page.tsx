@@ -1,24 +1,20 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
-import { BusinessDetail } from "@/components/business/business-detail";
+import { CompanyDashboard } from "@/components/business/company-dashboard";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("businesses");
-  return { title: t("title") };
+  const t = await getTranslations("businesses.company.nav");
+  return { title: t("dashboard") };
 }
 
-/**
- * A single business the signed-in user owns — view its details, edit them inline, or delete it.
- * The component resolves the business by slug through the BFF; a slug the user doesn't own
- * renders a "not found" state.
- */
-export default async function BusinessDetailPage({
+/** The company home (Dashboard) — the landing page of a company's workspace. */
+export default async function CompanyDashboardPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
 
-  return <BusinessDetail slug={slug} />;
+  return <CompanyDashboard slug={slug} />;
 }

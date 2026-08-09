@@ -520,6 +520,26 @@
         "countryEmpty": "Aucun pays trouvé",
         "number": "Numéro de téléphone"
       }
+    },
+    "company": {
+      "switch": "Changer d’entreprise",
+      "create": "Créer une entreprise",
+      "nav": {
+        "dashboard": "Tableau de bord",
+        "information": "Informations de l’entreprise",
+        "products": "Produits",
+        "services": "Services"
+      },
+      "groups": {
+        "manage": "Gestion",
+        "offerings": "Offres"
+      },
+      "comingSoon": {
+        "subtitle": "Cette section arrive bientôt."
+      },
+      "dashboard": {
+        "subtitle": "Gérez tout ce qui concerne votre entreprise ici."
+      }
     }
   }
 }

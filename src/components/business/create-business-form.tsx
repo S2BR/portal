@@ -65,7 +65,8 @@ export function CreateBusinessForm() {
 
       if (data.status === "ok" && data.business) {
         toast.success(t("createdToast"));
-        router.push(`/portal/businesses/${data.business.slug}`);
+        // Land on Company information so the owner can fill in the rest right away.
+        router.push(`/portal/businesses/${data.business.slug}/information`);
         return;
       }
 
