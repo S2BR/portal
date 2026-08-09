@@ -101,7 +101,7 @@ function DashboardContent({ user }: { user: AuthUser }) {
 
   return (
     <div className="space-y-8">
-      <section className="from-primary/12 via-card to-card relative overflow-hidden rounded-2xl border bg-gradient-to-br p-6 sm:p-8">
+      <section className="from-primary/12 via-card to-card relative overflow-hidden rounded-2xl bg-gradient-to-br p-6 sm:p-8">
         <Sparkles
           aria-hidden
           className="text-primary/15 pointer-events-none absolute -end-6 -top-6 size-32"
@@ -123,7 +123,7 @@ function DashboardContent({ user }: { user: AuthUser }) {
       </section>
 
       {allDone ? (
-        <Card>
+        <Card className="shadow-none">
           <CardHeader className="flex-row items-center gap-3 space-y-0">
             <span className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-full">
               <Check className="size-5" />
@@ -135,7 +135,7 @@ function DashboardContent({ user }: { user: AuthUser }) {
           </CardHeader>
         </Card>
       ) : (
-        <Card>
+        <Card className="shadow-none">
           <CardHeader>
             <CardTitle>{t("setup.title")}</CardTitle>
             <CardDescription>
@@ -261,7 +261,7 @@ function StatTile({
       href="/profile"
       className="focus-visible:ring-ring group rounded-xl outline-none focus-visible:ring-2"
     >
-      <div className="bg-card hover:border-primary/40 flex h-full items-center gap-3 rounded-xl border p-4 transition-colors">
+      <div className="bg-muted/40 hover:bg-muted/70 flex h-full items-center gap-3 rounded-xl p-4 transition-colors">
         <span
           className={cn(
             "flex size-10 shrink-0 items-center justify-center rounded-lg",
