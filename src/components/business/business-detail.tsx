@@ -710,7 +710,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
                 {business.contacts.map((contact, index) => (
                   <li
                     key={index}
-                    className="flex items-center justify-between gap-3 p-3 text-sm"
+                    className="flex items-center justify-between gap-3 py-3 text-sm"
                   >
                     <span className="text-muted-foreground w-20 shrink-0 capitalize">
                       {contactTypeLabels(contact.type)}
@@ -797,7 +797,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
                   return (
                     <li
                       key={day}
-                      className="flex items-center justify-between gap-4 p-3 text-sm"
+                      className="flex items-center justify-between gap-4 py-3 text-sm"
                     >
                       <span className="font-medium">{days(day)}</span>
                       <span className="text-muted-foreground text-end">
@@ -865,7 +865,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
                 {business.socials.map((social, index) => (
                   <li
                     key={index}
-                    className="flex items-center justify-between p-3 text-sm"
+                    className="flex items-center justify-between py-3 text-sm"
                   >
                     <span className="font-medium">
                       {socialLabel(social.platform)}
@@ -922,7 +922,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
                   </div>
                 </Field>
               ) : business.colors?.primary ? (
-                <div className="flex items-center gap-3 text-sm">
+                <div className="gapy-3 flex items-center text-sm">
                   <span
                     className="border-input size-8 rounded-lg border"
                     style={{ backgroundColor: business.colors.primary }}
