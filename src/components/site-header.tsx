@@ -29,7 +29,7 @@ export async function SiteHeader() {
         WebkitBackdropFilter: "blur(16px)",
       }}
     >
-      <div className="mx-auto flex h-16 w-full max-w-6xl items-center gap-4 px-4 sm:px-6">
+      <div className="flex h-16 w-full items-center gap-4 px-4 sm:px-6">
         <Brand />
         <div className="ms-auto flex items-center gap-2">
           <LocaleSwitcher />
