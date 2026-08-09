@@ -14,7 +14,7 @@ import {
   createContext,
   useCallback,
   useContext,
-  useRef,
+  useEffect,
   useState,
   type ReactNode,
 } from "react";
@@ -91,48 +91,53 @@ export function useSettingsDialog(): SettingsDialogState {
   return useContext(SettingsDialogContext);
 }
 
-/** The URL that represents "settings open" — the dialog is shown whenever the app is here. */
+/** The URL that also opens the dialog — for people who type/bookmark `/profile` directly. */
 const PROFILE_PATH = "/profile";
 
 /**
- * Provides the app-wide settings dialog. Mount once (root layout). The dialog IS the `/profile`
- * route: it's shown whenever the URL is `/profile` — so it opens from a menu click, a typed URL, a
- * bookmark, or a refresh, from anywhere. The section content only mounts while the dialog is open
- * (Radix doesn't render closed content).
+ * Provides the app-wide settings dialog. Mount once (root layout).
+ *
+ * Opening from within the app (e.g. the user menu) overlays the dialog IN PLACE — no navigation —
+ * so the page underneath is never unmounted and doesn't reload when you close it. As a convenience,
+ * the dialog ALSO opens when the URL is `/profile` (a typed URL / bookmark); closing then leaves
+ * that URL. The section content only mounts while the dialog is open (Radix doesn't render closed
+ * content).
  */
 export function SettingsDialogProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [active, setActive] = useState<SectionKey>("profile");
-  // Whether we arrived at /profile via an in-app open() (so closing can return where we were).
-  const openedInApp = useRef(false);
+  // Overlaid in place from the app (no navigation), so closing doesn't reload what's underneath.
+  const [openedInPlace, setOpenedInPlace] = useState(false);
 
-  const isOpen = pathname === PROFILE_PATH;
+  const onProfileUrl = pathname === PROFILE_PATH;
+  const isOpen = openedInPlace || onProfileUrl;
 
-  const open = useCallback(
-    (section?: SectionKey) => {
-      setActive(section ?? "profile");
-      openedInApp.current = true;
-      router.push(PROFILE_PATH);
-    },
-    [router],
-  );
+  const open = useCallback((section?: SectionKey) => {
+    setActive(section ?? "profile");
+    setOpenedInPlace(true);
+  }, []);
+
+  // Any real navigation dismisses an in-place overlay (e.g. an action inside settings that routes
+  // away), so it never lingers over a different page.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setOpenedInPlace(false);
+  }, [pathname]);
 
   const handleOpenChange = useCallback(
     (next: boolean) => {
-      // Opening is driven by navigation, not the dialog. On close, leave the /profile URL: return to
-      // the previous page when we opened from within the app, else (typed URL / bookmark) go home.
       if (next) {
         return;
       }
-      if (openedInApp.current) {
-        openedInApp.current = false;
-        router.back();
-      } else {
+      setOpenedInPlace(false);
+      // Only navigate when the dialog was opened by the /profile URL itself; an in-place overlay
+      // just closes, leaving the underlying page (and its state) exactly as it was.
+      if (onProfileUrl) {
         router.push("/");
       }
     },
-    [router],
+    [onProfileUrl, router],
   );
 
   return (
