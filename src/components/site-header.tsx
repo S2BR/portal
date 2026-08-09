@@ -19,7 +19,7 @@ export async function SiteHeader() {
   const authenticated = (await cookies()).has(REFRESH_COOKIE);
 
   return (
-    <header className="border-b">
+    <header className="bg-background/55 sticky top-0 z-10 border-b shadow-[0_10px_28px_-8px_rgba(0,0,0,0.06)] backdrop-blur-xl">
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center gap-4 px-4 sm:px-6">
         <Brand />
         <div className="ms-auto flex items-center gap-2">
