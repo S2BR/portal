@@ -100,7 +100,7 @@ export function CompanySidebar({ slug }: { slug: string }) {
 
   return (
     <aside className="sm:w-56 sm:shrink-0">
-      <div className="space-y-6 sm:sticky sm:top-20">
+      <div className="space-y-10 sm:sticky sm:top-20">
         {/* Company switcher */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
