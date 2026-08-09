@@ -23,6 +23,7 @@ import { useRouter } from "next/navigation";
 import {
   useCallback,
   useEffect,
+  useMemo,
   useState,
   type ChangeEvent,
   type FormEvent,
@@ -86,10 +87,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
+import { BusinessFormSkeleton } from "@/components/business/business-skeletons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { apiErrorText } from "@/lib/api/error-text";
+import { useUnsavedChangesGuard } from "@/lib/use-unsaved-changes-guard";
 
 /** A website or email contact: the value plus an optional label. */
 type LinkRow = { value: string; name: string };
@@ -297,6 +299,30 @@ function buildPayload(edit: EditState) {
   };
 }
 
+/**
+ * Which payload fields each tab owns, so an unsaved-changes dot can mark exactly the tabs the user
+ * touched. Images (logo/banner) save immediately on upload, so they're not part of this diff.
+ */
+const TAB_PAYLOAD_KEYS: Record<
+  string,
+  (keyof ReturnType<typeof buildPayload>)[]
+> = {
+  general: [
+    "name",
+    "type",
+    "headline",
+    "description",
+    "category_suggestion",
+    "category_ids",
+  ],
+  contact: ["contacts"],
+  amenities: ["amenity_ids"],
+  address: ["addresses"],
+  hours: ["opening_hours"],
+  socials: ["socials"],
+  branding: ["colors"],
+};
+
 export function BusinessDetail({ slug }: { slug: string }) {
   const t = useTranslations("businesses.detail");
   const tabs = useTranslations("businesses.detail.tabs");
@@ -322,6 +348,46 @@ export function BusinessDetail({ slug }: { slug: string }) {
   const [amenityGroups, setAmenityGroups] = useState<Amenity[]>([]);
   const [activeTab, setActiveTab] = useState("general");
   const [confirmingDelete, setConfirmingDelete] = useState(false);
+
+  // The saved record's payload, serialized per tab. Built once per loaded record (not per keystroke),
+  // so typing only has to serialize the current edit and string-compare — no baseline rebuild.
+  const baselineByTab = useMemo(() => {
+    if (!business) {
+      return null;
+    }
+    const baseline = buildPayload(toEditState(business));
+    const map: Record<string, string[]> = {};
+    for (const [tab, keys] of Object.entries(TAB_PAYLOAD_KEYS)) {
+      map[tab] = keys.map((key) => JSON.stringify(baseline[key]));
+    }
+    return map;
+  }, [business]);
+
+  // Which tabs hold unsaved edits, so their triggers can show a dot. Recomputed as the user types,
+  // but only a single payload build + cheap string compares against the precomputed baseline.
+  const dirtyTabs = useMemo(() => {
+    const dirty = new Set<string>();
+    if (!editing || !edit || !baselineByTab) {
+      return dirty;
+    }
+    const current = buildPayload(edit);
+    for (const [tab, keys] of Object.entries(TAB_PAYLOAD_KEYS)) {
+      const changed = keys.some(
+        (key, index) =>
+          JSON.stringify(current[key]) !== baselineByTab[tab]?.[index],
+      );
+      if (changed) {
+        dirty.add(tab);
+      }
+    }
+    return dirty;
+  }, [editing, edit, baselineByTab]);
+
+  // Warn before leaving (refresh, close, navigating away, or Cancel) while edits are unsaved.
+  const leaveGuard = useUnsavedChangesGuard(
+    dirtyTabs.size > 0,
+    t("leaveConfirm"),
+  );
 
   const load = useCallback(async () => {
     setLoadFailed(false);
@@ -508,13 +574,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
   }
 
   if (!business) {
-    return (
-      <div className="space-y-6">
-        {backLink}
-        <Skeleton className="h-8 w-2/3" />
-        <Skeleton className="h-64 w-full rounded-xl" />
-      </div>
-    );
+    return <BusinessFormSkeleton />;
   }
 
   const TypeIcon = business.type === "company" ? Building2 : User2;
@@ -622,6 +682,12 @@ export function BusinessDetail({ slug }: { slug: string }) {
               >
                 <tab.icon className="size-4" aria-hidden />
                 {tab.label}
+                {dirtyTabs.has(tab.value) ? (
+                  <span
+                    className="bg-brand-gold size-1.5 shrink-0 rounded-full"
+                    aria-label={t("unsavedChanges")}
+                  />
+                ) : null}
               </TabsTrigger>
             ))}
           </TabsList>
@@ -1174,7 +1240,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
                 id: "cancel",
                 label: t("cancel"),
                 icon: <X />,
-                onClick: cancelEditing,
+                onClick: () => leaveGuard.requestLeave(cancelEditing),
                 disabled: saving,
                 variant: "ghost",
               },
@@ -1192,6 +1258,12 @@ export function BusinessDetail({ slug }: { slug: string }) {
         name={business.name}
         deleting={deleting}
         onConfirm={remove}
+      />
+
+      <LeaveDialog
+        open={leaveGuard.open}
+        onConfirm={leaveGuard.confirm}
+        onCancel={leaveGuard.cancel}
       />
     </div>
   );
@@ -1517,6 +1589,48 @@ function DeleteDialog({
           </DialogClose>
           <Button variant="destructive" onClick={onConfirm} disabled={deleting}>
             {deleting ? t("deleting") : t("deleteConfirm")}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+/**
+ * Styled confirmation shown when the user tries to abandon an edit with unsaved changes — from a
+ * navigation the guard intercepts or from the Cancel button.
+ */
+function LeaveDialog({
+  open,
+  onConfirm,
+  onCancel,
+}: {
+  open: boolean;
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
+  const t = useTranslations("businesses.detail");
+
+  return (
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        if (!next) {
+          onCancel();
+        }
+      }}
+    >
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{t("leaveTitle")}</DialogTitle>
+          <DialogDescription>{t("leaveBody")}</DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button variant="outline" onClick={onCancel}>
+            {t("leaveStay")}
+          </Button>
+          <Button variant="destructive" onClick={onConfirm}>
+            {t("leaveDiscard")}
           </Button>
         </DialogFooter>
       </DialogContent>
