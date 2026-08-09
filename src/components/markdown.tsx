@@ -1,4 +1,5 @@
 import ReactMarkdown from "react-markdown";
+import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 
 /**
@@ -9,6 +10,8 @@ export function Markdown({ children }: { children: string }) {
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
+      // Give headings stable id slugs so the preview rail can anchor to and scroll-spy them.
+      rehypePlugins={[rehypeSlug]}
       components={{
         h1: (props) => (
           <h1

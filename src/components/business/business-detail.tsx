@@ -47,6 +47,7 @@ import { AmenitiesPicker } from "@/components/business/amenities-picker";
 import { CategoryPicker } from "@/components/business/category-picker";
 import { BusinessTypeField } from "@/components/business/business-type-field";
 import { FormSection } from "@/components/business/form-section";
+import { PreviewRail } from "@/components/ui/preview-rail";
 import { PhoneField } from "@/components/business/phone-field";
 import { flagEmoji, formatPhone } from "@/components/business/phone-format";
 import {
@@ -314,6 +315,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
   const [deleting, setDeleting] = useState(false);
   const [categoryTree, setCategoryTree] = useState<Category[]>([]);
   const [amenityGroups, setAmenityGroups] = useState<Amenity[]>([]);
+  const [activeTab, setActiveTab] = useState("general");
 
   const load = useCallback(async () => {
     setLoadFailed(false);
@@ -525,6 +527,19 @@ export function BusinessDetail({ slug }: { slug: string }) {
     { value: "branding", label: tabs("branding"), icon: Palette },
   ];
 
+  // The blocks in each multi-block tab, for the right-edge preview rail. Single-block tabs are
+  // omitted (nothing to navigate), so the rail hides itself there.
+  const railBlocks: Record<string, string[]> = {
+    general: ["basics", "businessType", "categories"],
+    contact: ["website", "phone", "email"],
+    branding: ["branding", "images"],
+  };
+  const railItems = (railBlocks[activeTab] ?? []).map((key) => ({
+    id: `section-${key}`,
+    label: sections(`${key}.title`),
+    description: sections(`${key}.description`),
+  }));
+
   // Selected category slugs (roots and subcategories) drive the amenity filter.
   const selectedCategoryIds = new Set(edit?.categoryIds ?? []);
   const selectedRootSlugs: string[] = [];
@@ -581,7 +596,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
       </div>
 
       <form onSubmit={save}>
-        <Tabs defaultValue="general">
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="mx-auto h-auto w-fit max-w-full p-1.5">
             {tabItems.map((tab) => (
               <TabsTrigger
@@ -599,7 +614,10 @@ export function BusinessDetail({ slug }: { slug: string }) {
           <TabsContent value="general">
             <div>
               {/* Basics: the logo takes the left column (like Filament), the fields the right. */}
-              <div className="grid gap-x-8 gap-y-4 md:grid-cols-3">
+              <div
+                id="section-basics"
+                className="grid gap-x-8 gap-y-4 md:grid-cols-3"
+              >
                 <div className="md:col-span-1">
                   <BusinessImageField
                     slug={slug}
@@ -663,6 +681,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
               </div>
 
               <FormSection
+                id="section-businessType"
                 title={sections("businessType.title")}
                 description={sections("businessType.description")}
               >
@@ -678,6 +697,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
               </FormSection>
 
               <FormSection
+                id="section-categories"
                 title={sections("categories.title")}
                 description={sections("categories.description")}
               >
@@ -750,6 +770,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
           <TabsContent value="contact">
             <div>
               <FormSection
+                id="section-website"
                 title={sections("website.title")}
                 description={sections("website.description")}
               >
@@ -791,6 +812,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
               </FormSection>
 
               <FormSection
+                id="section-phone"
                 title={sections("phone.title")}
                 description={sections("phone.description")}
               >
@@ -832,6 +854,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
               </FormSection>
 
               <FormSection
+                id="section-email"
                 title={sections("email.title")}
                 description={sections("email.description")}
               >
@@ -1048,6 +1071,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
           <TabsContent value="branding">
             <div>
               <FormSection
+                id="section-branding"
                 title={sections("branding.title")}
                 description={sections("branding.description")}
               >
@@ -1098,6 +1122,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
               </FormSection>
 
               <FormSection
+                id="section-images"
                 title={sections("images.title")}
                 description={sections("images.description")}
               >
@@ -1130,6 +1155,9 @@ export function BusinessDetail({ slug }: { slug: string }) {
           </div>
         ) : null}
       </form>
+
+      {/* Right-edge rail for the current tab's blocks (multi-block tabs only). */}
+      <PreviewRail items={railItems} />
     </div>
   );
 }

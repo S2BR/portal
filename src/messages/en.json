@@ -406,6 +406,10 @@
       "deleteConfirm": "Delete business",
       "deleting": "Deleting…",
       "sections": {
+        "basics": {
+          "title": "Basics",
+          "description": "Your logo, business name, tagline, and a short description."
+        },
         "businessType": {
           "title": "Business Type",
           "description": "Select the type that best describes your business."
