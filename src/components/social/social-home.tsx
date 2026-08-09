@@ -17,7 +17,7 @@ export async function SocialHome() {
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-2xl space-y-10">
+      <div className="space-y-10">
         <section className="space-y-4">
           <div>
             <h1 className="font-heading text-2xl font-semibold tracking-tight">
