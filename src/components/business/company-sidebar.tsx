@@ -157,7 +157,7 @@ export function CompanySidebar({ slug }: { slug: string }) {
         </DropdownMenu>
 
         {/* Navigation */}
-        <nav className="space-y-8 text-sm">
+        <nav className="space-y-10 text-sm">
           <ul className="space-y-1">{renderItem(dashboard)}</ul>
           <NavGroup label={t("groups.manage")}>
             {manage.map(renderItem)}
