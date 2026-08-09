@@ -21,7 +21,7 @@ export function FormSection({
   return (
     <section
       className={cn(
-        "border-border/60 grid gap-x-8 gap-y-4 border-t pt-8 first:border-t-0 first:pt-0 md:grid-cols-3",
+        "border-border/60 mt-10 grid gap-x-8 gap-y-4 border-t pt-10 first:mt-0 first:border-t-0 first:pt-0 md:grid-cols-3",
         className,
       )}
     >
