@@ -214,7 +214,7 @@ function SettingsDialog({
 
         {/* Active section content. */}
         <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-          <div className="flex h-14 shrink-0 items-center border-b px-6">
+          <div className="flex h-14 shrink-0 items-center border-b px-6 sm:px-8">
             <h2
               className={cn(
                 "font-heading text-base font-semibold tracking-tight",
@@ -228,7 +228,7 @@ function SettingsDialog({
               dialog and read as one panel — they're already bg-card, same as this pane. */}
           {/* Sections are borderless here, so strip the cards' own box padding (py + header/content
               px) — content aligns flush to the panel and the space-y-8 does the separation. */}
-          <div className="flex-1 space-y-8 overflow-y-auto px-6 py-6 [&_[data-slot=card-content]]:px-0 [&_[data-slot=card-header]]:px-0 [&_[data-slot=card]]:gap-4 [&_[data-slot=card]]:py-0 [&_[data-slot=card]]:shadow-none [&_[data-slot=card]]:ring-0">
+          <div className="flex-1 space-y-8 overflow-y-auto px-6 py-6 sm:px-8 [&_[data-slot=card-content]]:px-0 [&_[data-slot=card-header]]:px-0 [&_[data-slot=card]]:gap-4 [&_[data-slot=card]]:py-0 [&_[data-slot=card]]:shadow-none [&_[data-slot=card]]:ring-0">
             {user && current ? current.render() : null}
           </div>
         </div>
