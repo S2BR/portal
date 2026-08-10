@@ -1005,18 +1005,15 @@ export function BusinessDetail({ slug }: { slug: string }) {
                   onChange={(addresses) => patch({ addresses })}
                 />
               ) : business.addresses && business.addresses.length > 0 ? (
-                <div className="space-y-3">
+                <div className="divide-border/60 -my-4 divide-y">
                   {business.addresses.map((address) => (
-                    <div
-                      key={address.id}
-                      className="border-b pb-3 text-sm last:border-b-0 last:pb-0"
-                    >
+                    <div key={address.id} className="py-4 text-sm first:pt-0 last:pb-0">
                       {address.is_main ? (
-                        <Badge variant="outline" className="mb-2">
+                        <Badge variant="outline" className="mb-3">
                           {t("mainAddress")}
                         </Badge>
                       ) : null}
-                      <address className="not-italic">
+                      <address className="text-foreground/90 space-y-1 leading-relaxed not-italic">
                         {[
                           address.address_1,
                           address.apartment_suite,
