@@ -102,25 +102,25 @@ function ThemePane({ dark }: { dark: boolean }) {
     >
       <div
         className={cn(
-          "h-1 w-6 rounded-full",
+          "h-1 w-6 animate-pulse rounded-full motion-reduce:animate-none",
           dark ? "bg-neutral-600" : "bg-neutral-300",
         )}
       />
       <div
         className={cn(
-          "h-1 w-full rounded-full",
+          "h-1 w-full animate-pulse rounded-full [animation-delay:150ms] motion-reduce:animate-none",
           dark ? "bg-neutral-700" : "bg-neutral-200",
         )}
       />
       <div
         className={cn(
-          "h-1 w-4/5 rounded-full",
+          "h-1 w-4/5 animate-pulse rounded-full [animation-delay:300ms] motion-reduce:animate-none",
           dark ? "bg-neutral-700" : "bg-neutral-200",
         )}
       />
       <div
         className={cn(
-          "mt-auto h-2.5 w-8 rounded",
+          "mt-auto h-2.5 w-8 animate-pulse rounded [animation-delay:450ms] motion-reduce:animate-none",
           dark ? "bg-neutral-100" : "bg-neutral-800",
         )}
       />
@@ -138,7 +138,10 @@ function ThemeMock({ mode }: { mode: ThemeSelection }) {
         <ThemePane dark />
         <div
           className="absolute inset-0"
-          style={{ clipPath: "polygon(0 0, 100% 0, 0% 100%)" }}
+          // Diagonal stays exactly corner-to-corner (top-right → bottom-left); the top-left vertex
+          // is pushed far outside so the light half's straight edges never sit on a container edge
+          // (no antialiased sliver of the dark base showing through at the top/left).
+          style={{ clipPath: "polygon(-50% -50%, 100% 0, 0% 100%)" }}
         >
           <ThemePane dark={false} />
         </div>
@@ -159,11 +162,11 @@ function DirectionMock({ dir }: { dir: Direction }) {
       dir={dir}
       className="bg-background flex h-14 w-full items-stretch gap-1.5 p-2"
     >
-      <div className="bg-muted-foreground/25 h-full w-2.5 shrink-0 rounded" />
+      <div className="bg-muted-foreground/25 h-full w-2.5 shrink-0 animate-pulse rounded motion-reduce:animate-none" />
       <div className="flex flex-1 flex-col justify-center gap-1.5">
-        <div className="bg-muted-foreground/20 h-1 w-full rounded-full" />
-        <div className="bg-muted-foreground/20 h-1 w-4/5 rounded-full" />
-        <div className="bg-muted-foreground/20 h-1 w-3/5 rounded-full" />
+        <div className="bg-muted-foreground/20 h-1 w-full animate-pulse rounded-full [animation-delay:150ms] motion-reduce:animate-none" />
+        <div className="bg-muted-foreground/20 h-1 w-4/5 animate-pulse rounded-full [animation-delay:300ms] motion-reduce:animate-none" />
+        <div className="bg-muted-foreground/20 h-1 w-3/5 animate-pulse rounded-full [animation-delay:450ms] motion-reduce:animate-none" />
       </div>
     </div>
   );
