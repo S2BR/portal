@@ -378,14 +378,17 @@
     "nameLabel": "Business name",
     "namePlaceholder": "e.g. Acme Roasters",
     "typeLabel": "What kind of business is this?",
+    "moreInfo": "More information",
     "types": {
       "company": {
         "title": "Company",
-        "description": "A registered business or organization."
+        "description": "A registered business or organization.",
+        "info": "An organization that provides goods or services, typically with multiple employees and a formal structure."
       },
       "selfEmployed": {
         "title": "Self-employed",
-        "description": "You work for yourself — freelancer, sole trader, independent."
+        "description": "You work for yourself — freelancer, sole trader, independent.",
+        "info": "An individual or professional who works for themselves and is not employed by a company, often offering specialized services or freelance work."
       }
     },
     "submit": "Create business",
