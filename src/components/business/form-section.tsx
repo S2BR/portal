@@ -47,7 +47,9 @@ export function FormSection({
           </p>
         ) : null}
       </div>
-      <div className="space-y-5 md:col-span-2">{children}</div>
+      <div data-section-fields className="space-y-5 md:col-span-2">
+        {children}
+      </div>
     </section>
   );
 }

@@ -671,7 +671,13 @@ export function BusinessDetail({ slug }: { slug: string }) {
         ) : null}
       </div>
 
-      <form onSubmit={save}>
+      {/* Read mode has short one-line values, so give the field columns more vertical breathing room
+          than the edit form (whose inputs already add height) — matched via the data-section-fields
+          marker on each FormSection's (and the basics') fields column. */}
+      <form
+        onSubmit={save}
+        className={editing ? undefined : "[&_[data-section-fields]]:space-y-8"}
+      >
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="mx-auto h-auto w-fit max-w-full p-1.5">
             {tabItems.map((tab) => (
@@ -708,7 +714,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
                     onUpdated={(updated) => setBusiness(updated)}
                   />
                 </div>
-                <div className="space-y-5 md:col-span-2">
+                <div data-section-fields className="space-y-5 md:col-span-2">
                   {editing && edit ? (
                     <>
                       <Field label={fields("name")} error={nameError}>
