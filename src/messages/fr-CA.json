@@ -201,7 +201,15 @@
     "timezone": "Fuseau horaire",
     "deviceDefault": "Valeur par défaut de l'appareil",
     "searchTimezone": "Rechercher des fuseaux horaires…",
-    "noTimezone": "Aucun fuseau horaire trouvé."
+    "noTimezone": "Aucun fuseau horaire trouvé.",
+    "dateOfBirth": "Date de naissance",
+    "addDateOfBirth": "Ajoutez votre date de naissance",
+    "clear": "Effacer",
+    "dobHint": "Vous devez avoir au moins 13 ans. Vous seul pouvez le voir.",
+    "dobYear": "Année",
+    "dobMonth": "Mois",
+    "dobDay": "Jour",
+    "memberSince": "Membre depuis"
   },
   "sessions": {
     "title": "Sessions actives",

@@ -201,7 +201,15 @@
     "timezone": "Zona horaria",
     "deviceDefault": "Predeterminada del dispositivo",
     "searchTimezone": "Buscar zonas horarias…",
-    "noTimezone": "No se encontró ninguna zona horaria."
+    "noTimezone": "No se encontró ninguna zona horaria.",
+    "dateOfBirth": "Fecha de nacimiento",
+    "addDateOfBirth": "Agrega tu fecha de nacimiento",
+    "clear": "Borrar",
+    "dobHint": "Debes tener al menos 13 años. Solo tú puedes verlo.",
+    "dobYear": "Año",
+    "dobMonth": "Mes",
+    "dobDay": "Día",
+    "memberSince": "Miembro desde"
   },
   "sessions": {
     "title": "Sesiones activas",

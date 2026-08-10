@@ -201,7 +201,15 @@
     "timezone": "Timezone",
     "deviceDefault": "Device default",
     "searchTimezone": "Search timezones…",
-    "noTimezone": "No timezone found."
+    "noTimezone": "No timezone found.",
+    "dateOfBirth": "Date of birth",
+    "addDateOfBirth": "Add your date of birth",
+    "clear": "Clear",
+    "dobHint": "You must be at least 13 years old. Only you can see this.",
+    "dobYear": "Year",
+    "dobMonth": "Month",
+    "dobDay": "Day",
+    "memberSince": "Member since"
   },
   "sessions": {
     "title": "Active sessions",

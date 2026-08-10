@@ -10,10 +10,20 @@ const bodySchema = z
     name: z.string().trim().min(1).max(255).optional(),
     // `null` clears the preference (fall back to the device zone); a string sets it.
     timezone: z.string().min(1).nullable().optional(),
+    // `YYYY-MM-DD`, or `null` to clear. The api validates the age (13+) and range.
+    date_of_birth: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/)
+      .nullable()
+      .optional(),
   })
-  .refine((value) => value.name !== undefined || value.timezone !== undefined, {
-    message: "empty",
-  });
+  .refine(
+    (value) =>
+      value.name !== undefined ||
+      value.timezone !== undefined ||
+      value.date_of_birth !== undefined,
+    { message: "empty" },
+  );
 
 /**
  * BFF: update the signed-in account's low-sensitivity profile fields — the

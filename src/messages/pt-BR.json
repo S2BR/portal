@@ -201,7 +201,15 @@
     "timezone": "Fuso horário",
     "deviceDefault": "Padrão do dispositivo",
     "searchTimezone": "Pesquisar fusos horários…",
-    "noTimezone": "Nenhum fuso horário encontrado."
+    "noTimezone": "Nenhum fuso horário encontrado.",
+    "dateOfBirth": "Data de nascimento",
+    "addDateOfBirth": "Adicione sua data de nascimento",
+    "clear": "Limpar",
+    "dobHint": "Você precisa ter pelo menos 13 anos. Somente você pode ver isto.",
+    "dobYear": "Ano",
+    "dobMonth": "Mês",
+    "dobDay": "Dia",
+    "memberSince": "Membro desde"
   },
   "sessions": {
     "title": "Sessões ativas",

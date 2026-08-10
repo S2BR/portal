@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState, type FormEvent } from "react";
 
 import type { Timezone } from "@/app/api/auth/timezones/route";
@@ -10,22 +10,41 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Combobox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { DateWheelPicker } from "@/components/ui/wheel-picker";
 import { apiErrorText } from "@/lib/api/error-text";
 
+/** "March 2026" — the account-creation month, in the active locale. */
+function formatMonthYear(iso: string, locale: string): string {
+  return new Intl.DateTimeFormat(locale, {
+    month: "long",
+    year: "numeric",
+  }).format(new Date(iso));
+}
+
+/** A `YYYY-MM-DD` date as a long localized date, parsed as local (no timezone shift). */
+function formatDate(ymd: string, locale: string): string {
+  return new Intl.DateTimeFormat(locale, { dateStyle: "long" }).format(
+    new Date(`${ymd}T00:00:00`),
+  );
+}
+
 /**
- * Edit the account's low-sensitivity profile fields — display name and timezone
- * preference — via `PATCH /account`. Timestamps stay UTC on the api; the chosen
- * zone is what the app formats them in. An empty zone means "device default".
+ * Edit the account's low-sensitivity profile fields — display name, timezone
+ * preference, and date of birth — via `PATCH /account`, and show when the account
+ * was created. Timestamps stay UTC on the api; the chosen zone is what the app
+ * formats them in. An empty zone means "device default".
  */
 export function ProfileSettings() {
   const t = useTranslations("profileSettings");
   const fields = useTranslations("auth.fields");
   const authErrors = useTranslations("auth.errors");
+  const locale = useLocale();
   const { user, refresh } = useCurrentUser();
 
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState("");
   const [timezone, setTimezone] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState<string | null>(null);
   const [timezones, setTimezones] = useState<Timezone[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -55,6 +74,7 @@ export function ProfileSettings() {
     }
     setName(user.name);
     setTimezone(user.timezone ?? "");
+    setDateOfBirth(user.date_of_birth ?? null);
     setError(null);
     setEditing(true);
   }
@@ -75,6 +95,7 @@ export function ProfileSettings() {
         body: JSON.stringify({
           name: trimmedName,
           timezone: timezone === "" ? null : timezone,
+          date_of_birth: dateOfBirth,
         }),
       });
       const data = (await response.json()) as {
@@ -136,6 +157,32 @@ export function ProfileSettings() {
                 emptyText={t("noTimezone")}
               />
             </div>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label>{t("dateOfBirth")}</Label>
+                {dateOfBirth ? (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setDateOfBirth(null)}
+                  >
+                    {t("clear")}
+                  </Button>
+                ) : null}
+              </div>
+              <DateWheelPicker
+                value={dateOfBirth}
+                onChange={setDateOfBirth}
+                locale={locale}
+                labels={{
+                  year: t("dobYear"),
+                  month: t("dobMonth"),
+                  day: t("dobDay"),
+                }}
+              />
+              <p className="text-muted-foreground text-xs">{t("dobHint")}</p>
+            </div>
             {error ? <p className="text-destructive text-sm">{error}</p> : null}
             <div className="flex gap-2">
               <Button type="submit" disabled={pending}>
@@ -158,8 +205,24 @@ export function ProfileSettings() {
                 <dd>{user.name}</dd>
               </div>
               <div className="flex gap-2">
+                <dt className="text-muted-foreground">{t("dateOfBirth")}</dt>
+                <dd>
+                  {user.date_of_birth ? (
+                    formatDate(user.date_of_birth, locale)
+                  ) : (
+                    <span className="text-muted-foreground italic">
+                      {t("addDateOfBirth")}
+                    </span>
+                  )}
+                </dd>
+              </div>
+              <div className="flex gap-2">
                 <dt className="text-muted-foreground">{t("timezone")}</dt>
                 <dd>{currentZoneLabel}</dd>
+              </div>
+              <div className="flex gap-2">
+                <dt className="text-muted-foreground">{t("memberSince")}</dt>
+                <dd>{formatMonthYear(user.created_at, locale)}</dd>
               </div>
             </dl>
             <Button variant="outline" size="sm" onClick={startEditing}>
