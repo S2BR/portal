@@ -75,7 +75,7 @@ export function SettingTile({
     return (
       <div
         className={cn(
-          "flex items-center gap-3 rounded-xl p-4",
+          "flex w-full items-center gap-3 rounded-xl p-4",
           danger ? "bg-destructive/5" : "bg-muted/40",
           className,
         )}
@@ -90,7 +90,7 @@ export function SettingTile({
       type="button"
       onClick={onClick}
       className={cn(
-        "group focus-visible:ring-ring flex items-center gap-3 rounded-xl p-4 text-start transition-colors outline-none focus-visible:ring-2 focus-visible:ring-inset",
+        "group focus-visible:ring-ring flex w-full items-center gap-3 rounded-xl p-4 text-start transition-colors outline-none focus-visible:ring-2 focus-visible:ring-inset",
         danger ? "bg-destructive/5 hover:bg-destructive/10" : "bg-muted/40 hover:bg-muted/70",
         className,
       )}
