@@ -1,15 +1,8 @@
 "use client";
 
-import {
-  Cake,
-  CalendarDays,
-  Clock,
-  Pencil,
-  User,
-  type LucideIcon,
-} from "lucide-react";
+import { Cake, CalendarDays, Clock, User } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState } from "react";
 
 import type { Timezone } from "@/app/api/auth/timezones/route";
 import { useCurrentUser } from "@/components/auth/current-user";
@@ -18,9 +11,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Combobox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
 import { DateWheelPicker } from "@/components/ui/date-wheel-picker";
+import {
+  SettingBlock,
+  SettingTile,
+} from "@/components/ui/setting-tile";
 import { defaultBirthDate } from "@/lib/date-wheel";
 import { apiErrorText } from "@/lib/api/error-text";
-import { cn } from "@/lib/utils";
 
 /** "March 2026" — the account-creation month, in the active locale. */
 function formatMonthYear(iso: string, locale: string): string {
@@ -166,7 +162,7 @@ export function ProfileSettings() {
         <div className="grid gap-3 sm:grid-cols-2">
           {/* Name */}
           {editingField === "name" ? (
-            <EditShell icon={User} label={fields("name")} className="sm:col-span-2">
+            <SettingBlock icon={User} label={fields("name")} className="sm:col-span-2">
               <Input
                 aria-label={fields("name")}
                 autoComplete="name"
@@ -180,21 +176,21 @@ export function ProfileSettings() {
                 autoFocus
               />
               {footer}
-            </EditShell>
+            </SettingBlock>
           ) : (
-            <InfoTile
+            <SettingTile
               icon={User}
               label={fields("name")}
               onClick={() => startEdit("name")}
               className="sm:col-span-2"
             >
               {user.name}
-            </InfoTile>
+            </SettingTile>
           )}
 
           {/* Date of birth */}
           {editingField === "dateOfBirth" ? (
-            <EditShell
+            <SettingBlock
               icon={Cake}
               label={t("dateOfBirth")}
               className="sm:col-span-2"
@@ -236,9 +232,9 @@ export function ProfileSettings() {
               />
               <p className="text-muted-foreground text-xs">{t("dobHint")}</p>
               {footer}
-            </EditShell>
+            </SettingBlock>
           ) : (
-            <InfoTile
+            <SettingTile
               icon={Cake}
               label={t("dateOfBirth")}
               onClick={() => startEdit("dateOfBirth")}
@@ -250,12 +246,12 @@ export function ProfileSettings() {
                   {t("addDateOfBirth")}
                 </span>
               )}
-            </InfoTile>
+            </SettingTile>
           )}
 
           {/* Timezone */}
           {editingField === "timezone" ? (
-            <EditShell
+            <SettingBlock
               icon={Clock}
               label={t("timezone")}
               className="sm:col-span-2"
@@ -275,123 +271,24 @@ export function ProfileSettings() {
                 emptyText={t("noTimezone")}
               />
               {footer}
-            </EditShell>
+            </SettingBlock>
           ) : (
-            <InfoTile
+            <SettingTile
               icon={Clock}
               label={t("timezone")}
               onClick={() => startEdit("timezone")}
             >
               {currentZoneLabel}
-            </InfoTile>
+            </SettingTile>
           )}
         </div>
 
         {/* Account-creation tile — read-only. */}
-        <InfoTile icon={CalendarDays} label={t("memberSince")}>
+        <SettingTile icon={CalendarDays} label={t("memberSince")}>
           {formatMonthYear(user.created_at, locale)}
-        </InfoTile>
+        </SettingTile>
       </CardContent>
     </Card>
   );
 }
 
-/**
- * The expanded state of a field tile: the same muted block, with an icon + label header (and an
- * optional header action), the field's control, and its save/cancel footer.
- */
-function EditShell({
-  icon: Icon,
-  label,
-  action,
-  children,
-  className,
-}: {
-  icon: LucideIcon;
-  label: string;
-  action?: ReactNode;
-  children: ReactNode;
-  className?: string;
-}) {
-  return (
-    <div
-      className={cn(
-        // A real border (not a ring) so it isn't clipped by the settings card's overflow-hidden.
-        "bg-muted/40 border-ring/50 space-y-3 rounded-xl border p-4",
-        className,
-      )}
-    >
-      <div className="flex items-center justify-between gap-2">
-        <div className="text-muted-foreground flex items-center gap-2">
-          <Icon className="size-4" />
-          <span className="text-xs font-medium">{label}</span>
-        </div>
-        {action}
-      </div>
-      {children}
-    </div>
-  );
-}
-
-/**
- * A muted rounded tile — an icon, a small label, and a value — matching the /portal dashboard's stat
- * tiles. With `onClick` it becomes a button (hover highlight + a pencil affordance); without it, a
- * plain read-only block.
- */
-function InfoTile({
-  icon: Icon,
-  label,
-  children,
-  onClick,
-  className,
-}: {
-  icon: LucideIcon;
-  label: string;
-  children: ReactNode;
-  onClick?: () => void;
-  className?: string;
-}) {
-  const body = (
-    <>
-      <span className="bg-muted text-muted-foreground flex size-10 shrink-0 items-center justify-center rounded-lg">
-        <Icon className="size-5" />
-      </span>
-      <div className="min-w-0 flex-1">
-        <p className="text-muted-foreground text-xs">{label}</p>
-        <div className="truncate text-base font-semibold">{children}</div>
-      </div>
-      {onClick ? (
-        <Pencil
-          aria-hidden
-          className="text-muted-foreground size-4 shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
-        />
-      ) : null}
-    </>
-  );
-
-  if (!onClick) {
-    return (
-      <div
-        className={cn(
-          "bg-muted/40 flex items-center gap-3 rounded-xl p-4",
-          className,
-        )}
-      >
-        {body}
-      </div>
-    );
-  }
-
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={cn(
-        "group bg-muted/40 hover:bg-muted/70 focus-visible:ring-ring flex items-center gap-3 rounded-xl p-4 text-start transition-colors outline-none focus-visible:ring-2 focus-visible:ring-inset",
-        className,
-      )}
-    >
-      {body}
-    </button>
-  );
-}

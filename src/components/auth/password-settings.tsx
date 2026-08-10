@@ -1,5 +1,6 @@
 "use client";
 
+import { Lock } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState, type FormEvent } from "react";
 import { toast } from "sonner";
@@ -7,9 +8,9 @@ import { toast } from "sonner";
 import { PasswordRequirements } from "@/components/auth/password-requirements";
 import { VerifyDialog } from "@/components/auth/verify-dialog";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
+import { SettingBlock, SettingTile } from "@/components/ui/setting-tile";
 import { apiErrorText } from "@/lib/api/error-text";
 import { checkPassword } from "@/lib/auth/password";
 import { useAppConfig } from "@/lib/config/use-app-config";
@@ -29,7 +30,6 @@ export function PasswordSettings() {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [done, setDone] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   function reset() {
@@ -71,7 +71,6 @@ export function PasswordSettings() {
     };
     if (data.status === "ok") {
       reset();
-      setDone(true);
       toast.success(t("success"));
       return null;
     }
@@ -79,12 +78,9 @@ export function PasswordSettings() {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("title")}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        {editing ? (
+    <>
+      {editing ? (
+        <SettingBlock icon={Lock} label={t("title")}>
           <form onSubmit={startChange} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="new-password">{t("newPassword")}</Label>
@@ -123,24 +119,16 @@ export function PasswordSettings() {
               </Button>
             </div>
           </form>
-        ) : (
-          <div className="flex items-center justify-between gap-4">
-            <span className="text-muted-foreground text-sm">
-              {done ? t("success") : t("hint")}
-            </span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                setDone(false);
-                setEditing(true);
-              }}
-            >
-              {t("change")}
-            </Button>
-          </div>
-        )}
-      </CardContent>
+        </SettingBlock>
+      ) : (
+        <SettingTile
+          icon={Lock}
+          label={t("title")}
+          onClick={() => setEditing(true)}
+        >
+          ••••••••
+        </SettingTile>
+      )}
       <VerifyDialog
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
@@ -149,6 +137,6 @@ export function PasswordSettings() {
         onVerified={submitChange}
         confirmLabel={t("submit")}
       />
-    </Card>
+    </>
   );
 }
