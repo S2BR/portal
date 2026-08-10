@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Combobox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { DateWheelPicker } from "@/components/ui/wheel-picker";
+import { DateWheelPicker } from "@/components/ui/date-wheel-picker";
 import { apiErrorText } from "@/lib/api/error-text";
 
 /** "March 2026" — the account-creation month, in the active locale. */

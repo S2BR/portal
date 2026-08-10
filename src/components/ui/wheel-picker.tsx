@@ -1,378 +1,601 @@
 "use client";
+// beui.dev/components/motion/wheel-picker
 
 import { useReducedMotion } from "motion/react";
 import {
+  type KeyboardEvent,
+  type PointerEvent,
   useCallback,
   useEffect,
-  useLayoutEffect,
   useMemo,
   useRef,
   useState,
-  type ReactNode,
 } from "react";
-
-import {
-  clampDay,
-  daysInMonth,
-  fieldOrder,
-  fromISO,
-  monthLabels,
-  toISO,
-  yearBounds,
-  type DateField,
-} from "@/lib/date-wheel";
+import { createTickPlayer } from "@/lib/tick-sound";
 import { cn } from "@/lib/utils";
 
-const ITEM_HEIGHT = 40;
-const VISIBLE = 5; // odd — the middle row is the selection
-const HALF = (VISIBLE - 1) / 2;
+export type WheelPickerOption = string | { label: string; value: string };
 
-export type WheelItem = { value: string; label: string };
-
-/**
- * A short "tick" via the Web Audio API — the sound an iOS wheel makes at each detent. One lazily
- * created AudioContext (a scroll gesture satisfies autoplay policy); no audio asset (CSP-safe,
- * offline). Returns a no-op if Web Audio is unavailable.
- */
-function useWheelTick(): () => void {
-  const contextRef = useRef<AudioContext | null>(null);
-
-  return useCallback(() => {
-    try {
-      if (!contextRef.current) {
-        const Ctor =
-          window.AudioContext ??
-          (window as unknown as { webkitAudioContext?: typeof AudioContext })
-            .webkitAudioContext;
-        if (!Ctor) {
-          return;
-        }
-        contextRef.current = new Ctor();
-      }
-      const context = contextRef.current;
-      if (context.state === "suspended") {
-        void context.resume();
-      }
-      const now = context.currentTime;
-      const oscillator = context.createOscillator();
-      const gain = context.createGain();
-      oscillator.type = "triangle";
-      oscillator.frequency.value = 900;
-      gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.exponentialRampToValueAtTime(0.05, now + 0.002);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.05);
-      oscillator.connect(gain).connect(context.destination);
-      oscillator.start(now);
-      oscillator.stop(now + 0.06);
-    } catch {
-      // Audio is a nicety; never let it break the picker.
-    }
-  }, []);
+export interface WheelPickerProps {
+  options: WheelPickerOption[];
+  value?: string;
+  defaultValue?: string;
+  onValueChange?: (value: string) => void;
+  /** Rows visible through the window, odd. More = flatter curve. Default 5. */
+  visibleCount?: number;
+  /** Row height in px. Default 36. */
+  itemHeight?: number;
+  disabled?: boolean;
+  /** Play a short tick each time the selected value changes. Default false. */
+  sound?: boolean;
+  className?: string;
+  "aria-label"?: string;
 }
 
-/**
- * A single scrolling wheel column: a CSS scroll-snap list whose centered row is the selection. As it
- * scrolls, rows curve away (rotateX + fade) for the 3D wheel look, a tick plays at each new detent,
- * and the snapped value is reported. Keyboard: Arrow Up/Down move the selection. Reduced motion drops
- * the 3D curve and smooth scrolling (it still snaps).
- */
-export function WheelPicker({
-  items,
-  value,
-  onChange,
-  ariaLabel,
-  showBand = true,
-  className,
-}: {
-  items: WheelItem[];
-  value: string;
-  onChange: (value: string) => void;
-  ariaLabel: string;
-  showBand?: boolean;
-  className?: string;
-}) {
-  const reduce = useReducedMotion();
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const tick = useWheelTick();
-  const frame = useRef<number | null>(null);
-  const programmatic = useRef(false);
-  const lastIndex = useRef(-1);
+const DEG = Math.PI / 180;
+// Physics constants, tuned for an iOS-like flick rather than reused from the
+// shared spring tokens: the wheel coasts in whole-row units and springs to an
+// integer detent, which a layout spring can't express cleanly.
+const DECELERATION = 0.00042; // rows per ms², how fast a flick bleeds off (lower = freer)
+const MAX_VELOCITY = 0.18; // rows per ms, caps a hard fling
+const VELOCITY_WINDOW = 90; // ms of recent drag to average a release velocity over
+const WHEEL_SENS = 0.012; // rows per pixel of wheel delta
+const WHEEL_SETTLE = 110; // ms of wheel idle before snapping to a row
+const easeOutCubic = (p: number) => 1 - (1 - p) ** 3;
+// Overshoots the target by a few percent then settles — the little spring
+// bounce as a row snaps home. `BACK` sets how far it drifts past.
+const BACK = 1.35;
+const easeOutBack = (p: number) =>
+  1 + (BACK + 1) * (p - 1) ** 3 + BACK * (p - 1) ** 2;
 
-  const selectedIndex = Math.max(
-    0,
-    items.findIndex((item) => item.value === value),
+const clamp = (v: number, lo: number, hi: number) =>
+  Math.max(lo, Math.min(v, hi));
+
+function optionValue(option: WheelPickerOption) {
+  return typeof option === "string" ? option : option.value;
+}
+function optionLabel(option: WheelPickerOption) {
+  return typeof option === "string" ? option : option.label;
+}
+
+export function WheelPicker({
+  options,
+  value,
+  defaultValue,
+  onValueChange,
+  visibleCount = 5,
+  itemHeight = 36,
+  disabled = false,
+  sound = false,
+  className,
+  "aria-label": ariaLabel,
+}: WheelPickerProps) {
+  const reduce = useReducedMotion() ?? false;
+  const controlled = value !== undefined;
+  const last = options.length - 1;
+
+  const indexOf = useCallback(
+    (v: string | undefined) => {
+      const i = options.findIndex((o) => optionValue(o) === v);
+      return i < 0 ? 0 : i;
+    },
+    [options],
   );
 
-  const applyTransforms = useCallback(
-    (center: number) => {
-      for (let index = 0; index < itemRefs.current.length; index += 1) {
-        const element = itemRefs.current[index];
-        if (!element) {
-          continue;
+  const [internal, setInternal] = useState(() => defaultValue ?? value);
+  const currentValue = controlled ? value : internal;
+  const [grabbing, setGrabbing] = useState(false);
+
+  // Cylinder geometry. Each row spans `itemAngle`; `radius` seats the rows on
+  // the drum; rows past `hideBeyond` sit behind the horizon and are dropped.
+  const { itemAngle, radius, height, hideBeyond } = useMemo(() => {
+    const rowsEachSide = Math.max(1, Math.floor(visibleCount / 2));
+    const cutoff = rowsEachSide + 1;
+    const angle = 90 / cutoff;
+    const r = itemHeight / Math.tan(angle * DEG);
+    return {
+      itemAngle: angle,
+      radius: r,
+      hideBeyond: cutoff,
+      height: Math.round(
+        2 * r * Math.sin(rowsEachSide * angle * DEG) + itemHeight,
+      ),
+    };
+  }, [visibleCount, itemHeight]);
+
+  const container = useRef<HTMLDivElement>(null);
+  const drumRef = useRef<HTMLUListElement>(null);
+  const bandRef = useRef<HTMLUListElement>(null);
+  // Scroll position measured in rows (a float index). One source of truth for
+  // both layers: the drum rotates by `itemAngle·scroll`, the crisp band slides
+  // by `itemHeight·scroll`.
+  const scroll = useRef(indexOf(currentValue));
+  const raf = useRef(0);
+  const emitted = useRef(currentValue);
+  const tickPlayer = useRef<ReturnType<typeof createTickPlayer> | null>(null);
+  const lastTick = useRef(indexOf(currentValue));
+
+  const paint = useCallback(
+    (s: number) => {
+      const drum = drumRef.current;
+      const band = bandRef.current;
+      if (drum) {
+        drum.style.transform = `translateZ(${-radius}px) rotateX(${itemAngle * s}deg)`;
+        for (const node of Array.from(drum.children)) {
+          const li = node as HTMLLIElement;
+          const i = Number(li.dataset.index);
+          const want = Math.abs(i - s) > hideBeyond ? "hidden" : "visible";
+          // Write only on change — an unconditional write every frame thrashes
+          // style recalc and is what made the drag feel draggy on mobile.
+          if (li.style.visibility !== want) li.style.visibility = want;
         }
-        const distance = index - center;
-        if (Math.abs(distance) > HALF + 0.5) {
-          element.style.opacity = "0";
-          element.style.transform = "";
-          continue;
+      }
+      // The band is the SAME drum, clipped to the centre row — driven by the
+      // identical transform so the crisp copy sits exactly on the dimmed one,
+      // with no parallax ghost as rows cross the window. It needs the same
+      // horizon cull, or the row on the back of the drum bleeds into the front.
+      if (band) {
+        band.style.transform = `translateZ(${-radius}px) rotateX(${itemAngle * s}deg)`;
+        for (const node of Array.from(band.children)) {
+          const li = node as HTMLLIElement;
+          const i = Number(li.dataset.index);
+          const want = Math.abs(i - s) > hideBeyond ? "hidden" : "visible";
+          if (li.style.visibility !== want) li.style.visibility = want;
         }
-        element.style.opacity = String(Math.max(0, 1 - Math.abs(distance) * 0.24));
-        element.style.transform = reduce
-          ? ""
-          : `rotateX(${distance * -22}deg) scale(${1 - Math.min(Math.abs(distance) * 0.06, 0.24)})`;
       }
     },
-    [reduce],
+    [radius, itemAngle, hideBeyond],
   );
 
-  const handleScroll = useCallback(() => {
-    if (frame.current != null) {
-      return;
-    }
-    frame.current = requestAnimationFrame(() => {
-      frame.current = null;
-      const element = scrollRef.current;
-      if (!element) {
+  const getPlayer = useCallback(() => {
+    if (!tickPlayer.current) tickPlayer.current = createTickPlayer();
+    return tickPlayer.current;
+  }, []);
+
+  const emit = useCallback(
+    (i: number) => {
+      const v = optionValue(options[clamp(i, 0, last)]!);
+      if (v === emitted.current) return;
+      emitted.current = v;
+      // Reduced motion has no drum/glide path to tick from — it's an
+      // onClick straight into emit, so the tick lives here instead.
+      if (sound && reduce) getPlayer().play();
+      if (!controlled) setInternal(v);
+      onValueChange?.(v);
+    },
+    [options, last, controlled, onValueChange, sound, reduce, getPlayer],
+  );
+
+  // Drum path: fires a tick whenever the nearest row changes, independent of
+  // `emit` (which only fires on settle during a glide/fling, not per row
+  // crossed). Gated on `!reduce` since the reduced render never calls this.
+  const maybeTick = useCallback(
+    (pos: number) => {
+      const row = clamp(Math.round(pos), 0, last);
+      if (!sound || reduce) {
+        lastTick.current = row;
         return;
       }
-      const center = element.scrollTop / ITEM_HEIGHT;
-      applyTransforms(center);
-      const index = Math.round(center);
-      if (index === lastIndex.current || index < 0 || index >= items.length) {
+      if (row === lastTick.current) return;
+      lastTick.current = row;
+      getPlayer().play();
+    },
+    [sound, reduce, last, getPlayer],
+  );
+
+  const stop = useCallback(() => cancelAnimationFrame(raf.current), []);
+
+  // Ease `scroll` from where it is to an integer detent over `duration`. The
+  // easing may overshoot (spring bounce) before it resolves exactly on `to`.
+  const glide = useCallback(
+    (
+      to: number,
+      duration: number,
+      ease: (p: number) => number = easeOutCubic,
+    ) => {
+      stop();
+      const from = scroll.current;
+      const dist = to - from;
+      if (!dist || duration <= 0) {
+        scroll.current = to;
+        paint(to);
+        maybeTick(to);
+        emit(to);
         return;
       }
-      const previous = lastIndex.current;
-      lastIndex.current = index;
-      // Skip the settle from a programmatic/initial scroll — only user movement ticks + reports.
-      if (!programmatic.current && previous !== -1) {
-        if (!reduce) {
-          tick();
+      const start = performance.now();
+      const tick = (now: number) => {
+        const p = (now - start) / duration;
+        if (p >= 1) {
+          scroll.current = to;
+          paint(to);
+          maybeTick(to);
+          emit(to);
+          return;
         }
-        onChange(items[index]!.value);
+        scroll.current = from + dist * ease(p);
+        paint(scroll.current);
+        maybeTick(scroll.current);
+        raf.current = requestAnimationFrame(tick);
+      };
+      raf.current = requestAnimationFrame(tick);
+    },
+    [stop, paint, emit, maybeTick],
+  );
+
+  // Project where a flick of `velocity` (rows/ms) coasts to, snap to a row.
+  const fling = useCallback(
+    (velocity: number) => {
+      const from = scroll.current;
+      if (from < 0 || from > last) {
+        glide(clamp(Math.round(from), 0, last), 260); // rubber-band back
+        return;
       }
-    });
-  }, [applyTransforms, items, onChange, reduce, tick]);
-
-  // Center the selected value on mount and whenever it changes from outside (e.g. a clamped day),
-  // without emitting or ticking. The position is set synchronously and re-asserted after the first
-  // paint, since scroll-snap + late layout can otherwise clamp the initial scrollTop back to 0.
-  useLayoutEffect(() => {
-    const element = scrollRef.current;
-    if (!element) {
-      return;
-    }
-    const target = selectedIndex * ITEM_HEIGHT;
-    if (Math.round(element.scrollTop / ITEM_HEIGHT) === selectedIndex) {
-      lastIndex.current = selectedIndex;
-      applyTransforms(element.scrollTop / ITEM_HEIGHT);
-      return;
-    }
-    programmatic.current = true;
-    lastIndex.current = selectedIndex;
-    const settle = () => {
-      element.scrollTop = target;
-      applyTransforms(selectedIndex);
-    };
-    settle();
-    const raf = requestAnimationFrame(settle);
-    const timer = setTimeout(() => {
-      programmatic.current = false;
-    }, 150);
-    return () => {
-      cancelAnimationFrame(raf);
-      clearTimeout(timer);
-    };
-  }, [selectedIndex, applyTransforms, items.length]);
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    const delta =
-      event.key === "ArrowDown" ? 1 : event.key === "ArrowUp" ? -1 : 0;
-    if (delta === 0) {
-      return;
-    }
-    event.preventDefault();
-    const next = Math.min(items.length - 1, Math.max(0, selectedIndex + delta));
-    scrollRef.current?.scrollTo({
-      top: next * ITEM_HEIGHT,
-      behavior: reduce ? "auto" : "smooth",
-    });
-  };
-
-  return (
-    <div className={cn("relative", className)} style={{ height: VISIBLE * ITEM_HEIGHT }}>
-      {showBand ? (
-        <div
-          aria-hidden
-          className="bg-muted/60 pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 rounded-md"
-          style={{ height: ITEM_HEIGHT }}
-        />
-      ) : null}
-      <div
-        ref={scrollRef}
-        role="listbox"
-        aria-label={ariaLabel}
-        tabIndex={0}
-        onScroll={handleScroll}
-        onKeyDown={handleKeyDown}
-        className="focus-visible:ring-ring h-full snap-y snap-mandatory overflow-y-scroll overscroll-contain rounded-md outline-none focus-visible:ring-2 [&::-webkit-scrollbar]:hidden"
-        style={{
-          scrollbarWidth: "none",
-          perspective: reduce ? undefined : 700,
-        }}
-      >
-        <div style={{ height: HALF * ITEM_HEIGHT }} />
-        {items.map((item, index) => (
-          <div
-            key={item.value}
-            ref={(element) => {
-              itemRefs.current[index] = element;
-            }}
-            role="option"
-            aria-selected={index === selectedIndex}
-            className="flex snap-center items-center justify-center text-sm tabular-nums select-none"
-            style={{ height: ITEM_HEIGHT }}
-          >
-            {item.label}
-          </div>
-        ))}
-        <div style={{ height: HALF * ITEM_HEIGHT }} />
-      </div>
-    </div>
-  );
-}
-
-/**
- * A date-of-birth picker: three {@see WheelPicker}s (year / month / day) laid out in the locale's own
- * field order, with the day count clamping to the chosen month/year and years capped at `minAge`.
- * Emits `YYYY-MM-DD` only when the user moves a wheel (a null `value` seeds a sensible default but
- * doesn't emit until touched).
- */
-export function DateWheelPicker({
-  value,
-  onChange,
-  locale,
-  minAge = 13,
-  labels,
-  className,
-}: {
-  value: string | null;
-  onChange: (iso: string) => void;
-  locale: string;
-  minAge?: number;
-  labels: { year: string; month: string; day: string };
-  className?: string;
-}) {
-  const currentYear = new Date().getFullYear();
-  const { min, max } = yearBounds(minAge, currentYear);
-
-  const [parts, setParts] = useState(
-    () => fromISO(value ?? "") ?? { year: max - 12, month: 1, day: 1 },
+      const dir = Math.sign(velocity);
+      const coast = ((velocity * velocity) / (2 * DECELERATION)) * dir;
+      const to = clamp(Math.round(from + coast), 0, last);
+      // Long, spring-tipped settle so a hard flick reads as free momentum
+      // coasting to rest with a gentle bounce, never a clipped stop.
+      const duration = clamp(
+        Math.sqrt(Math.abs(to - from)) * 300 + 240,
+        280,
+        1700,
+      );
+      glide(to, duration, easeOutBack);
+    },
+    [glide, last],
   );
 
-  // Re-seed if the external value changes (e.g. edit form re-opened / reset).
+  const step = useCallback(
+    (by: number) =>
+      glide(clamp(Math.round(scroll.current) + by, 0, last), 300, easeOutBack),
+    [glide, last],
+  );
+
+  // Drag: track recent points for a release velocity; rubber-band past the ends.
+  const drag = useRef<{
+    y: number;
+    scroll: number;
+    pts: [number, number][];
+  } | null>(null);
+  // Coalesce touch/pointer moves to one paint per animation frame — raw move
+  // events fire several times per frame (and off-frame) on high-refresh
+  // screens, and painting each one is what made the drag feel choppy.
+  const dragFrame = useRef(0);
+  const latestY = useRef(0);
+  // Shared drag core, driven by a Y coordinate from either a mouse pointer or a
+  // native touch. Touch is bound with non-passive listeners in the effect below
+  // so the move can preventDefault the page scroll — React's synthetic touch
+  // events are passive and can't, which is why finger-drag did nothing on
+  // mobile.
+  const beginDrag = useCallback(
+    (y: number) => {
+      stop();
+      if (sound) getPlayer().prepare();
+      setGrabbing(true);
+      drag.current = {
+        y,
+        scroll: scroll.current,
+        pts: [[y, performance.now()]],
+      };
+    },
+    [stop, sound, getPlayer],
+  );
+  const moveDrag = useCallback(
+    (y: number) => {
+      const d = drag.current;
+      if (!d) return;
+      // Record every sample for an accurate release velocity, but only render
+      // the newest position once per frame.
+      latestY.current = y;
+      d.pts.push([y, performance.now()]);
+      if (d.pts.length > 8) d.pts.shift();
+      if (dragFrame.current) return;
+      dragFrame.current = requestAnimationFrame(() => {
+        dragFrame.current = 0;
+        const dd = drag.current;
+        if (!dd) return;
+        let next = dd.scroll + (dd.y - latestY.current) / itemHeight;
+        if (next < 0) next *= 0.3;
+        else if (next > last) next = last + (next - last) * 0.3;
+        scroll.current = next;
+        paint(next);
+        maybeTick(next);
+        emit(Math.round(clamp(next, 0, last)));
+      });
+    },
+    [itemHeight, last, paint, emit, maybeTick],
+  );
+  const endDrag = useCallback(() => {
+    const d = drag.current;
+    if (!d) return;
+    if (dragFrame.current) {
+      cancelAnimationFrame(dragFrame.current);
+      dragFrame.current = 0;
+    }
+    drag.current = null;
+    setGrabbing(false);
+    // Average velocity over the last `VELOCITY_WINDOW` ms of movement rather
+    // than the final two samples — a single noisy frame otherwise makes an
+    // even flick feel like it caught or slipped.
+    const pts = d.pts;
+    let v = 0;
+    if (pts.length > 1) {
+      const latest = pts[pts.length - 1]!;
+      let ref = pts[0]!;
+      for (const p of pts) {
+        if (latest[1] - p[1] <= VELOCITY_WINDOW) {
+          ref = p;
+          break;
+        }
+      }
+      const dt = latest[1] - ref[1];
+      if (dt > 0) {
+        const raw = (ref[0] - latest[0]) / itemHeight / dt;
+        v = clamp(raw, -MAX_VELOCITY, MAX_VELOCITY);
+      }
+    }
+    fling(v);
+  }, [itemHeight, fling]);
+
+  // Mouse / pen only — touch runs through the native listeners in the effect.
+  const onPointerDown = useCallback(
+    (event: PointerEvent<HTMLDivElement>) => {
+      if (disabled || reduce || event.pointerType === "touch") return;
+      event.currentTarget.setPointerCapture(event.pointerId);
+      beginDrag(event.clientY);
+    },
+    [disabled, reduce, beginDrag],
+  );
+  const onPointerMove = useCallback(
+    (event: PointerEvent<HTMLDivElement>) => {
+      if (event.pointerType === "touch") return;
+      moveDrag(event.clientY);
+    },
+    [moveDrag],
+  );
+  const onPointerUp = useCallback(
+    (event: PointerEvent<HTMLDivElement>) => {
+      if (event.pointerType === "touch") return;
+      event.currentTarget.releasePointerCapture?.(event.pointerId);
+      endDrag();
+    },
+    [endDrag],
+  );
+
+  // Wheel drives `scroll` continuously — like a drag — then snaps once it goes
+  // idle. Firing a fresh eased step per notch instead stacks overlapping
+  // animations that keep interrupting each other, which read as lag.
+  const wheelSnap = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const onWheel = useCallback(
+    (event: globalThis.WheelEvent) => {
+      // Native (non-passive) so preventDefault actually stops the page from
+      // scrolling behind the wheel — React's synthetic wheel listener is
+      // passive, so a handler on the element cannot cancel the scroll.
+      if (disabled || reduce) return;
+      event.preventDefault();
+      if (sound) getPlayer().prepare();
+      stop();
+      const px = event.deltaMode === 1 ? event.deltaY * 16 : event.deltaY;
+      const next = clamp(scroll.current + px * WHEEL_SENS, 0, last);
+      scroll.current = next;
+      paint(next);
+      maybeTick(next);
+      emit(Math.round(next));
+      if (wheelSnap.current) clearTimeout(wheelSnap.current);
+      wheelSnap.current = setTimeout(() => {
+        glide(clamp(Math.round(scroll.current), 0, last), 240, easeOutBack);
+      }, WHEEL_SETTLE);
+    },
+    [
+      disabled,
+      reduce,
+      sound,
+      last,
+      paint,
+      emit,
+      stop,
+      glide,
+      maybeTick,
+      getPlayer,
+    ],
+  );
+
+  const onKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLDivElement>) => {
+      if (disabled) return;
+      const at = Math.round(scroll.current);
+      const map: Record<string, number> = {
+        ArrowUp: -1,
+        ArrowDown: 1,
+        Home: -at,
+        End: last - at,
+      };
+      if (event.key in map) {
+        event.preventDefault();
+        if (sound) getPlayer().prepare();
+        step(map[event.key]!);
+      }
+    },
+    [disabled, sound, last, step, getPlayer],
+  );
+
+  // Paint the starting frame, and follow controlled/value changes from outside
+  // unless a gesture is mid-flight.
   useEffect(() => {
-    const parsed = fromISO(value ?? "");
-    if (parsed) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setParts(parsed);
+    if (drag.current) return;
+    const target = indexOf(currentValue);
+    emitted.current = currentValue;
+    if (Math.abs(Math.round(scroll.current) - target) < 0.001) {
+      paint(scroll.current);
+      return;
     }
-  }, [value]);
+    glide(target, 260);
+  }, [currentValue, indexOf, paint, glide]);
 
-  const update = (next: Partial<typeof parts>) => {
-    const merged = { ...parts, ...next };
-    merged.day = clampDay(merged.day, merged.year, merged.month);
-    setParts(merged);
-    onChange(toISO(merged));
-  };
-
-  const yearItems = useMemo(() => {
-    const list: WheelItem[] = [];
-    for (let year = max; year >= min; year -= 1) {
-      list.push({ value: String(year), label: String(year) });
-    }
-    return list;
-  }, [max, min]);
-
-  const monthItems = useMemo(
-    () =>
-      monthLabels(locale).map((label, index) => ({
-        value: String(index + 1),
-        label,
-      })),
-    [locale],
+  useEffect(
+    () => () => {
+      cancelAnimationFrame(raf.current);
+      cancelAnimationFrame(dragFrame.current);
+      if (wheelSnap.current) clearTimeout(wheelSnap.current);
+      tickPlayer.current?.dispose();
+    },
+    [],
   );
 
-  const dayItems = useMemo(
-    () =>
-      Array.from({ length: daysInMonth(parts.year, parts.month) }, (_, index) => ({
-        value: String(index + 1),
-        label: String(index + 1),
-      })),
-    [parts.year, parts.month],
-  );
+  // Native touch + wheel listeners, bound non-passively so touchmove and wheel
+  // can block the page from scrolling while the wheel spins. React's synthetic
+  // touch/wheel handlers are passive, so preventDefault there is a no-op and the
+  // gesture scrolls the page instead of driving the drum.
+  useEffect(() => {
+    const el = container.current;
+    if (!el || reduce || disabled) return;
+    const onStart = (e: TouchEvent) => {
+      const t = e.touches[0];
+      if (t) beginDrag(t.clientY);
+    };
+    const onMove = (e: TouchEvent) => {
+      const t = e.touches[0];
+      if (!t || !drag.current) return;
+      e.preventDefault();
+      moveDrag(t.clientY);
+    };
+    const onEnd = () => endDrag();
+    el.addEventListener("touchstart", onStart, { passive: true });
+    el.addEventListener("touchmove", onMove, { passive: false });
+    el.addEventListener("touchend", onEnd);
+    el.addEventListener("touchcancel", onEnd);
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => {
+      el.removeEventListener("touchstart", onStart);
+      el.removeEventListener("touchmove", onMove);
+      el.removeEventListener("touchend", onEnd);
+      el.removeEventListener("touchcancel", onEnd);
+      el.removeEventListener("wheel", onWheel);
+    };
+  }, [reduce, disabled, beginDrag, moveDrag, endDrag, onWheel]);
 
-  const wheels: Record<DateField, ReactNode> = {
-    year: (
-      <WheelPicker
-        key="year"
-        showBand={false}
-        ariaLabel={labels.year}
-        items={yearItems}
-        value={String(parts.year)}
-        onChange={(next) => update({ year: Number(next) })}
-        className="flex-[1.2]"
-      />
-    ),
-    month: (
-      <WheelPicker
-        key="month"
-        showBand={false}
-        ariaLabel={labels.month}
-        items={monthItems}
-        value={String(parts.month)}
-        onChange={(next) => update({ month: Number(next) })}
-        className="flex-[1.6]"
-      />
-    ),
-    day: (
-      <WheelPicker
-        key="day"
-        showBand={false}
-        ariaLabel={labels.day}
-        items={dayItems}
-        value={String(parts.day)}
-        onChange={(next) => update({ day: Number(next) })}
-        className="flex-1"
-      />
-    ),
-  };
+  const maskFade =
+    "[mask-image:linear-gradient(to_bottom,transparent,#000_22%,#000_78%,transparent)]";
+
+  if (reduce) {
+    const pad = (height - itemHeight) / 2;
+    return (
+      <div
+        className={cn(
+          "relative overflow-hidden rounded-2xl border border-border bg-card",
+          disabled && "pointer-events-none opacity-50",
+          className,
+        )}
+        style={{ height }}
+      >
+        <div
+          className="pointer-events-none absolute inset-x-0 top-1/2 z-10 -translate-y-1/2 border-border border-y bg-foreground/[0.04]"
+          style={{ height: itemHeight }}
+        />
+        <ul
+          className={cn(
+            "h-full snap-y snap-mandatory overflow-y-auto scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+            maskFade,
+          )}
+          style={{ paddingTop: pad, paddingBottom: pad }}
+        >
+          {options.map((option) => {
+            const v = optionValue(option);
+            return (
+              <li key={v} className="snap-center">
+                <button
+                  type="button"
+                  disabled={disabled}
+                  onClick={() => emit(options.indexOf(option))}
+                  className={cn(
+                    "flex w-full items-center justify-center font-medium",
+                    v === currentValue
+                      ? "text-foreground"
+                      : "text-muted-foreground",
+                  )}
+                  style={{ height: itemHeight }}
+                >
+                  {optionLabel(option)}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    );
+  }
 
   return (
     <div
+      ref={container}
+      role="listbox"
+      aria-label={ariaLabel}
+      tabIndex={disabled ? -1 : 0}
+      onKeyDown={onKeyDown}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerUp}
       className={cn(
-        "bg-card relative flex overflow-hidden rounded-lg border px-2",
+        "relative touch-none select-none overflow-hidden rounded-2xl border border-border bg-card outline-none focus-visible:ring-2 focus-visible:ring-foreground/20",
+        grabbing ? "cursor-grabbing" : "cursor-grab",
+        disabled && "pointer-events-none opacity-50",
+        maskFade,
         className,
       )}
+      style={{ height, perspective: 1000 }}
     >
-      {/* The selection band across all three wheels. */}
-      <div
+      {/* Curved drum of dimmed rows. */}
+      <ul
+        ref={drumRef}
         aria-hidden
-        className="border-border/70 bg-muted/40 pointer-events-none absolute inset-x-0 top-1/2 z-10 -translate-y-1/2 border-y"
-        style={{ height: ITEM_HEIGHT }}
-      />
-      {/* Edge fades so rows dissolve into the container, iOS-style. */}
+        className="absolute inset-x-0 top-1/2 m-0 h-0 list-none p-0 [backface-visibility:hidden] [transform-style:preserve-3d] [will-change:transform]"
+      >
+        {options.map((option, i) => (
+          <li
+            key={optionValue(option)}
+            data-index={i}
+            className="absolute inset-x-0 flex items-center justify-center font-medium text-muted-foreground"
+            style={{
+              top: -itemHeight / 2,
+              height: itemHeight,
+              transform: `rotateX(${-itemAngle * i}deg) translateZ(${radius}px)`,
+            }}
+          >
+            {optionLabel(option)}
+          </li>
+        ))}
+      </ul>
+
+      {/* Center band: the very same drum, clipped to one row and drawn crisp.
+          Its own perspective, centred on the container middle, matches the main
+          drum's projection so the two copies register exactly. */}
       <div
-        aria-hidden
-        className="from-card pointer-events-none absolute inset-x-0 top-0 z-10 bg-gradient-to-b to-transparent"
-        style={{ height: HALF * ITEM_HEIGHT }}
-      />
-      <div
-        aria-hidden
-        className="to-card pointer-events-none absolute inset-x-0 bottom-0 z-10 bg-gradient-to-b from-transparent"
-        style={{ height: HALF * ITEM_HEIGHT }}
-      />
-      {fieldOrder(locale).map((field) => wheels[field])}
+        className="pointer-events-none absolute inset-x-0 top-1/2 z-10 -translate-y-1/2 overflow-hidden rounded-md bg-foreground/[0.04]"
+        style={{ height: itemHeight, perspective: 1000 }}
+      >
+        <ul
+          ref={bandRef}
+          aria-hidden
+          className="absolute inset-x-0 top-1/2 m-0 h-0 list-none p-0 [backface-visibility:hidden] [transform-style:preserve-3d] [will-change:transform]"
+        >
+          {options.map((option, i) => (
+            <li
+              key={optionValue(option)}
+              data-index={i}
+              className="absolute inset-x-0 flex items-center justify-center font-medium text-foreground"
+              style={{
+                top: -itemHeight / 2,
+                height: itemHeight,
+                transform: `rotateX(${-itemAngle * i}deg) translateZ(${radius}px)`,
+              }}
+            >
+              {optionLabel(option)}
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
