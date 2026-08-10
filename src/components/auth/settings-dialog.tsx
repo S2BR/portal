@@ -199,7 +199,7 @@ function SettingsDialog({
                     "flex items-center gap-2.5 rounded-md px-3 py-2 text-sm whitespace-nowrap transition-colors",
                     isActive
                       ? "bg-muted-foreground/10 font-medium"
-                      : "hover:bg-background/60",
+                      : "hover:bg-muted-foreground/5",
                     isDanger
                       ? "text-destructive"
                       : isActive
