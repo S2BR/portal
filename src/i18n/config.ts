@@ -43,3 +43,10 @@ export type Direction = "ltr" | "rtl";
 export function getDirection(locale: string): Direction {
   return rtlLocales.includes(locale) ? "rtl" : "ltr";
 }
+
+/** Cookie that persists the user's chosen text direction, overriding the locale default. */
+export const DIRECTION_COOKIE = "direction";
+
+export function isDirection(value: unknown): value is Direction {
+  return value === "ltr" || value === "rtl";
+}

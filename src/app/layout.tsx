@@ -14,11 +14,13 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { REFRESH_COOKIE } from "@/lib/auth/cookies";
 import { decodeUser, USER_COOKIE } from "@/lib/auth/user-cookie";
-import { getDirection, type Direction } from "@/i18n/config";
+import {
+  DIRECTION_COOKIE,
+  getDirection,
+  isDirection,
+  type Direction,
+} from "@/i18n/config";
 import "./globals.css";
-
-/** Dev/QA cookie that force-overrides the layout direction. Ignored in production. */
-const DEV_DIR_COOKIE = "DEV_DIR";
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-sans",
@@ -81,12 +83,11 @@ export default async function RootLayout({
   // Seed the header from the display cookie — no API call. The provider (mounted once here, never
   // remounted on navigation) revalidates in the background on this full load.
   const cookieUser = decodeUser(cookieStore.get(USER_COOKIE)?.value);
-  const devDir =
-    process.env.NODE_ENV !== "production"
-      ? cookieStore.get(DEV_DIR_COOKIE)?.value
-      : undefined;
-  const dir: Direction =
-    devDir === "rtl" || devDir === "ltr" ? devDir : getDirection(locale);
+  // The user's chosen direction (Layout settings) overrides the locale default.
+  const dirCookie = cookieStore.get(DIRECTION_COOKIE)?.value;
+  const dir: Direction = isDirection(dirCookie)
+    ? dirCookie
+    : getDirection(locale);
 
   return (
     <html

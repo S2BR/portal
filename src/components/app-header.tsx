@@ -1,7 +1,6 @@
 import { UserMenu } from "@/components/auth/user-menu";
 import { Brand } from "@/components/brand";
 import { BusinessNavToggle } from "@/components/business/business-nav-toggle";
-import { DirectionToggle } from "@/components/dev/direction-toggle";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 
 /** The authenticated app header — used by the (app) shell and the logged-in social home. */
@@ -21,7 +20,6 @@ export function AppHeader() {
         <Brand />
         <BusinessNavToggle />
         <div className="ms-auto flex items-center gap-2">
-          <DirectionToggle />
           <LocaleSwitcher />
           <UserMenu />
         </div>
