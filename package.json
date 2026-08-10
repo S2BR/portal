@@ -16,6 +16,7 @@
     "verify": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm test"
   },
   "dependencies": {
+    "@fragaria/address-formatter": "^7.0.0",
     "@hcaptcha/react-hcaptcha": "^2.0.2",
     "@marsidev/react-turnstile": "^1.5.3",
     "@simplewebauthn/browser": "^13.3.0",

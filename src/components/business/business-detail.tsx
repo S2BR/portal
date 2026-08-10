@@ -91,7 +91,9 @@ import { BusinessFormSkeleton } from "@/components/business/business-skeletons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { apiErrorText } from "@/lib/api/error-text";
+import { formatBusinessAddress } from "@/lib/format-address";
 import { useUnsavedChangesGuard } from "@/lib/use-unsaved-changes-guard";
+import { cn } from "@/lib/utils";
 
 /** A website or email contact: the value plus an optional label. */
 type LinkRow = { value: string; name: string };
@@ -708,7 +710,12 @@ export function BusinessDetail({ slug }: { slug: string }) {
                     onUpdated={(updated) => setBusiness(updated)}
                   />
                 </div>
-                <div className="space-y-5 md:col-span-2">
+                <div
+                  className={cn(
+                    "space-y-5 md:col-span-2",
+                    !editing && "bg-muted/40 rounded-xl p-4",
+                  )}
+                >
                   {editing && edit ? (
                     <>
                       <Field label={fields("name")} error={nameError}>
@@ -763,6 +770,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
               </div>
 
               <FormSection
+                editing={editing}
                 id="section-businessType"
                 title={sections("businessType.title")}
                 description={sections("businessType.description")}
@@ -779,6 +787,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
               </FormSection>
 
               <FormSection
+                editing={editing}
                 id="section-categories"
                 title={sections("categories.title")}
                 description={sections("categories.description")}
@@ -823,6 +832,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
           {/* Amenities */}
           <TabsContent value="amenities">
             <FormSection
+              editing={editing}
               title={sections("amenities.title")}
               description={sections("amenities.description")}
             >
@@ -852,6 +862,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
           <TabsContent value="contact">
             <div>
               <FormSection
+                editing={editing}
                 id="section-website"
                 title={sections("website.title")}
                 description={sections("website.description")}
@@ -894,6 +905,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
               </FormSection>
 
               <FormSection
+                editing={editing}
                 id="section-phone"
                 title={sections("phone.title")}
                 description={sections("phone.description")}
@@ -936,6 +948,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
               </FormSection>
 
               <FormSection
+                editing={editing}
                 id="section-email"
                 title={sections("email.title")}
                 description={sections("email.description")}
@@ -983,6 +996,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
           {/* Addresses */}
           <TabsContent value="address">
             <FormSection
+              editing={editing}
               title={sections("address.title")}
               description={sections("address.description")}
             >
@@ -992,37 +1006,29 @@ export function BusinessDetail({ slug }: { slug: string }) {
                   onChange={(addresses) => patch({ addresses })}
                 />
               ) : business.addresses && business.addresses.length > 0 ? (
-                <div className="space-y-3">
+                <div className="divide-border/60 divide-y">
                   {business.addresses.map((address) => (
                     <div
                       key={address.id}
-                      className="border-b pb-3 text-sm last:border-b-0 last:pb-0"
+                      className="flex gap-3 py-4 first:pt-0 last:pb-0"
                     >
-                      {address.is_main ? (
-                        <Badge variant="outline" className="mb-2">
-                          {t("mainAddress")}
-                        </Badge>
-                      ) : null}
-                      <address className="not-italic">
-                        {[
-                          address.address_1,
-                          address.apartment_suite,
-                          address.address_2,
-                          [address.postal_code, address.city]
-                            .filter(Boolean)
-                            .join(" "),
-                          address.state_province,
-                          address.country,
-                        ]
-                          .filter((line): line is string =>
-                            Boolean(line && line.trim()),
-                          )
-                          .map((line) => (
-                            <span key={line} className="block">
-                              {line}
-                            </span>
-                          ))}
-                      </address>
+                      <span className="bg-background text-muted-foreground mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-lg border">
+                        <MapPin className="size-4" />
+                      </span>
+                      <div className="min-w-0 space-y-1.5">
+                        {address.is_main ? (
+                          <Badge variant="green">{t("mainAddress")}</Badge>
+                        ) : null}
+                        <address className="text-foreground/90 space-y-0.5 text-sm leading-relaxed not-italic">
+                          {formatBusinessAddress(address, locale).map(
+                            (line) => (
+                              <span key={line} className="block">
+                                {line}
+                              </span>
+                            ),
+                          )}
+                        </address>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -1035,6 +1041,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
           {/* Opening hours */}
           <TabsContent value="hours">
             <FormSection
+              editing={editing}
               title={sections("hours.title")}
               description={sections("hours.description")}
             >
@@ -1082,6 +1089,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
           {/* Socials */}
           <TabsContent value="socials">
             <FormSection
+              editing={editing}
               title={sections("socials.title")}
               description={sections("socials.description")}
             >
@@ -1153,6 +1161,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
           <TabsContent value="branding">
             <div>
               <FormSection
+                editing={editing}
                 id="section-branding"
                 title={sections("branding.title")}
                 description={sections("branding.description")}
@@ -1204,6 +1213,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
               </FormSection>
 
               <FormSection
+                editing={editing}
                 id="section-images"
                 title={sections("images.title")}
                 description={sections("images.description")}
