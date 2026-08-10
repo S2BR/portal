@@ -711,8 +711,8 @@ export function BusinessDetail({ slug }: { slug: string }) {
                 </div>
                 <div
                   className={cn(
-                    "bg-muted/40 space-y-5 rounded-xl p-4 md:col-span-2",
-                    editing && "border-ring/50 border",
+                    "space-y-5 md:col-span-2",
+                    !editing && "bg-muted/40 rounded-xl p-4",
                   )}
                 >
                   {editing && edit ? (
