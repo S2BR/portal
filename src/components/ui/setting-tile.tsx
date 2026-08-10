@@ -123,7 +123,12 @@ export function SettingBlock({
   return (
     <div
       className={cn(
+        // Give form controls (inputs, textareas, select/combobox triggers) their
+        // default surface background so they read as real fields against the
+        // muted block instead of blending into it.
         "bg-muted/40 border-ring/50 space-y-3 rounded-xl border p-4",
+        "[&_input]:bg-background [&_textarea]:bg-background [&_[data-slot=select-trigger]]:bg-background [&_[data-slot=combobox-trigger]]:bg-background",
+        "dark:[&_input]:bg-input/30 dark:[&_textarea]:bg-input/30 dark:[&_[data-slot=select-trigger]]:bg-input/30 dark:[&_[data-slot=combobox-trigger]]:bg-input/30",
         className,
       )}
     >
