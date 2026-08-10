@@ -127,7 +127,7 @@ export function ProfileSettings() {
       <CardHeader>
         <CardTitle>{t("title")}</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4">
         {editing ? (
           <form onSubmit={save} className="space-y-4">
             <div className="space-y-2">
@@ -199,51 +199,48 @@ export function ProfileSettings() {
             </div>
           </form>
         ) : (
-          <div className="space-y-4">
-            <div className="flex items-start justify-between gap-4">
-              <dl className="space-y-1 text-sm">
-                <div className="flex gap-2">
-                  <dt className="text-muted-foreground">{fields("name")}</dt>
-                  <dd>{user.name}</dd>
-                </div>
-                <div className="flex gap-2">
-                  <dt className="text-muted-foreground">{t("dateOfBirth")}</dt>
-                  <dd>
-                    {user.date_of_birth ? (
-                      formatDate(user.date_of_birth, locale)
-                    ) : (
-                      <span className="text-muted-foreground italic">
-                        {t("addDateOfBirth")}
-                      </span>
-                    )}
-                  </dd>
-                </div>
-                <div className="flex gap-2">
-                  <dt className="text-muted-foreground">{t("timezone")}</dt>
-                  <dd>{currentZoneLabel}</dd>
-                </div>
-              </dl>
-              <Button variant="outline" size="sm" onClick={startEditing}>
-                {t("edit")}
-              </Button>
-            </div>
-
-            {/* Account-creation tile, mirroring the /portal dashboard's "Member since" stat. */}
-            <div className="bg-muted/40 flex items-center gap-3 rounded-xl p-4">
-              <span className="bg-muted text-muted-foreground flex size-10 shrink-0 items-center justify-center rounded-lg">
-                <CalendarDays className="size-5" />
-              </span>
-              <div className="min-w-0">
-                <p className="text-muted-foreground text-xs">
-                  {t("memberSince")}
-                </p>
-                <p className="truncate text-lg font-semibold">
-                  {formatMonthYear(user.created_at, locale)}
-                </p>
+          <div className="flex items-start justify-between gap-4">
+            <dl className="space-y-1 text-sm">
+              <div className="flex gap-2">
+                <dt className="text-muted-foreground">{fields("name")}</dt>
+                <dd>{user.name}</dd>
               </div>
-            </div>
+              <div className="flex gap-2">
+                <dt className="text-muted-foreground">{t("dateOfBirth")}</dt>
+                <dd>
+                  {user.date_of_birth ? (
+                    formatDate(user.date_of_birth, locale)
+                  ) : (
+                    <span className="text-muted-foreground italic">
+                      {t("addDateOfBirth")}
+                    </span>
+                  )}
+                </dd>
+              </div>
+              <div className="flex gap-2">
+                <dt className="text-muted-foreground">{t("timezone")}</dt>
+                <dd>{currentZoneLabel}</dd>
+              </div>
+            </dl>
+            <Button variant="outline" size="sm" onClick={startEditing}>
+              {t("edit")}
+            </Button>
           </div>
         )}
+
+        {/* Account-creation tile — read-only, so it shows in both view and edit modes. Mirrors the
+            /portal dashboard's "Member since" stat. */}
+        <div className="bg-muted/40 flex items-center gap-3 rounded-xl p-4">
+          <span className="bg-muted text-muted-foreground flex size-10 shrink-0 items-center justify-center rounded-lg">
+            <CalendarDays className="size-5" />
+          </span>
+          <div className="min-w-0">
+            <p className="text-muted-foreground text-xs">{t("memberSince")}</p>
+            <p className="truncate text-lg font-semibold">
+              {formatMonthYear(user.created_at, locale)}
+            </p>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
