@@ -181,8 +181,8 @@ function SettingsDialog({
             shadow on its inner edge (in place of a border) makes the content pane look like it
             overlaps the rail, echoing the login screen's side panel. A black shadow reads poorly on
             dark, so there we add an almost-imperceptible dark hairline divider + a slightly stronger
-            shadow. */}
-        <div className="bg-muted/30 flex shrink-0 flex-col border-b sm:w-56 sm:border-b-0 sm:shadow-[inset_-16px_0_28px_-16px_rgba(0,0,0,0.18)] sm:dark:border-e sm:dark:border-black/25 sm:dark:shadow-[inset_-16px_0_28px_-16px_rgba(0,0,0,0.35)]">
+            shadow. box-shadow has no logical direction, so the x-offset is flipped under rtl. */}
+        <div className="bg-muted/30 flex shrink-0 flex-col border-b sm:w-56 sm:border-b-0 sm:ltr:shadow-[inset_-16px_0_28px_-16px_rgba(0,0,0,0.18)] sm:rtl:shadow-[inset_16px_0_28px_-16px_rgba(0,0,0,0.18)] sm:dark:border-e sm:dark:border-black/25 sm:ltr:dark:shadow-[inset_-16px_0_28px_-16px_rgba(0,0,0,0.35)] sm:rtl:dark:shadow-[inset_16px_0_28px_-16px_rgba(0,0,0,0.35)]">
           <DialogTitle className="px-4 pt-4 pb-1 text-sm font-semibold tracking-tight sm:px-6 sm:pt-5 sm:pb-2">
             {t("settingsTitle")}
           </DialogTitle>
