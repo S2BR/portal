@@ -51,11 +51,14 @@ function PreviewCard({
   selected,
   onClick,
   label,
+  framed = true,
   children,
 }: {
   selected: boolean;
   onClick: () => void;
   label: string;
+  /** Wrap the preview in a bordered box (theme/direction mockups). Off for the round flag. */
+  framed?: boolean;
   children: ReactNode;
 }) {
   return (
@@ -70,7 +73,11 @@ function PreviewCard({
         selected ? "bg-muted-foreground/10" : "bg-muted/40 hover:bg-muted/70",
       )}
     >
-      <div className="overflow-hidden rounded-lg border">{children}</div>
+      {framed ? (
+        <div className="overflow-hidden rounded-lg">{children}</div>
+      ) : (
+        children
+      )}
       <div className="flex items-center gap-1.5 px-1 pt-2 pb-0.5">
         <span className="truncate text-[11px] font-semibold">{label}</span>
         {selected ? (
@@ -162,15 +169,16 @@ function DirectionMock({ dir }: { dir: Direction }) {
 
 function LanguageMock({ locale }: { locale: Locale }) {
   return (
-    <div className="bg-muted/40 flex h-14 items-center justify-center">
-      {/* Decorative — the native name is the card label. A plain <img> paints the cached flag instantly. */}
+    <div className="flex h-14 items-center justify-center">
+      {/* A round flag (no bordered box) so the shape echoes the flag. Decorative — the native
+          name is the card label. A plain <img> paints the cached flag instantly. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={`/images/flags/${locale}.png`}
         alt=""
-        width={32}
-        height={32}
-        className="size-8 rounded-full object-cover shadow-sm"
+        width={44}
+        height={44}
+        className="ring-border/60 size-11 rounded-full object-cover shadow-sm ring-1"
       />
     </div>
   );
@@ -274,6 +282,7 @@ export function LayoutSettings() {
               key={option}
               selected={option === activeLocale}
               onClick={() => selectLocale(option)}
+              framed={false}
               // Drop the parenthetical region (e.g. "Français (Canada)" → "Français")
               // so all four fit on one row — the flag already conveys the region.
               label={localeNames[option].replace(/\s*\(.+\)$/, "")}
