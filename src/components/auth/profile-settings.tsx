@@ -355,12 +355,13 @@ export function ProfileSettings() {
               {currentZoneLabel}
             </SettingTile>
           )}
-        </div>
 
-        {/* Account-creation tile — read-only. */}
-        <SettingTile icon={CalendarDays} label={t("memberSince")}>
-          {formatMonthYear(user.created_at, locale)}
-        </SettingTile>
+          {/* Account-creation tile — read-only. Sits beside the timezone tile so it
+              doesn't hang alone on its own row. */}
+          <SettingTile icon={CalendarDays} label={t("memberSince")}>
+            {formatMonthYear(user.created_at, locale)}
+          </SettingTile>
+        </div>
       </CardContent>
     </Card>
   );
