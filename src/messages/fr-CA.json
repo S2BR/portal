@@ -378,14 +378,17 @@
     "nameLabel": "Nom de l'entreprise",
     "namePlaceholder": "p. ex. Acme Roasters",
     "typeLabel": "De quel type d'entreprise s'agit-il?",
+    "moreInfo": "Plus d'informations",
     "types": {
       "company": {
         "title": "Entreprise",
-        "description": "Une entreprise ou organisation enregistrée."
+        "description": "Une entreprise ou organisation enregistrée.",
+        "info": "Une organisation qui fournit des biens ou services, généralement avec plusieurs employés et une structure formelle."
       },
       "selfEmployed": {
         "title": "Travailleur autonome",
-        "description": "Vous travaillez à votre compte : pigiste, travailleur autonome, indépendant."
+        "description": "Vous travaillez à votre compte : pigiste, travailleur autonome, indépendant.",
+        "info": "Un individu ou professionnel qui travaille pour lui-même et n'est pas employé par une entreprise, offrant souvent des services spécialisés ou du travail à la pige."
       }
     },
     "submit": "Créer l'entreprise",

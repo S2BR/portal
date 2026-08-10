@@ -378,14 +378,17 @@
     "nameLabel": "Nome do negócio",
     "namePlaceholder": "ex.: Acme Roasters",
     "typeLabel": "Que tipo de negócio é este?",
+    "moreInfo": "Mais informações",
     "types": {
       "company": {
         "title": "Empresa",
-        "description": "Um negócio ou organização registrada."
+        "description": "Um negócio ou organização registrada.",
+        "info": "Uma organização que fornece bens ou serviços, tipicamente com múltiplos funcionários e uma estrutura formal."
       },
       "selfEmployed": {
         "title": "Autônomo",
-        "description": "Você trabalha por conta própria — freelancer, autônomo, independente."
+        "description": "Você trabalha por conta própria — freelancer, autônomo, independente.",
+        "info": "Um indivíduo ou profissional que trabalha por conta própria e não é empregado por uma empresa, frequentemente oferecendo serviços especializados ou trabalho freelance."
       }
     },
     "submit": "Criar negócio",
