@@ -70,7 +70,7 @@ function PreviewCard({
     >
       <div className="overflow-hidden rounded-lg border">{children}</div>
       <div className="flex items-center gap-1.5 px-1 pt-2 pb-0.5">
-        <span className="truncate text-sm font-medium">{label}</span>
+        <span className="truncate text-[11px] font-semibold">{label}</span>
         {selected ? (
           <span
             className="bg-brand-green ms-auto size-2 shrink-0 rounded-full"
