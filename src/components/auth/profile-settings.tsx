@@ -1,8 +1,15 @@
 "use client";
 
-import { CalendarDays } from "lucide-react";
+import {
+  Cake,
+  CalendarDays,
+  Clock,
+  Pencil,
+  User,
+  type LucideIcon,
+} from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 
 import type { Timezone } from "@/app/api/auth/timezones/route";
 import { useCurrentUser } from "@/components/auth/current-user";
@@ -13,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DateWheelPicker } from "@/components/ui/date-wheel-picker";
 import { apiErrorText } from "@/lib/api/error-text";
+import { cn } from "@/lib/utils";
 
 /** "March 2026" — the account-creation month, in the active locale. */
 function formatMonthYear(iso: string, locale: string): string {
@@ -199,49 +207,107 @@ export function ProfileSettings() {
             </div>
           </form>
         ) : (
-          <div className="flex items-start justify-between gap-4">
-            <dl className="space-y-1 text-sm">
-              <div className="flex gap-2">
-                <dt className="text-muted-foreground">{fields("name")}</dt>
-                <dd>{user.name}</dd>
-              </div>
-              <div className="flex gap-2">
-                <dt className="text-muted-foreground">{t("dateOfBirth")}</dt>
-                <dd>
-                  {user.date_of_birth ? (
-                    formatDate(user.date_of_birth, locale)
-                  ) : (
-                    <span className="text-muted-foreground italic">
-                      {t("addDateOfBirth")}
-                    </span>
-                  )}
-                </dd>
-              </div>
-              <div className="flex gap-2">
-                <dt className="text-muted-foreground">{t("timezone")}</dt>
-                <dd>{currentZoneLabel}</dd>
-              </div>
-            </dl>
-            <Button variant="outline" size="sm" onClick={startEditing}>
-              {t("edit")}
-            </Button>
+          // Each field is a tile that opens the editor (like the /portal dashboard's stat tiles).
+          <div className="grid gap-3 sm:grid-cols-2">
+            <InfoTile
+              icon={User}
+              label={fields("name")}
+              onClick={startEditing}
+              className="sm:col-span-2"
+            >
+              {user.name}
+            </InfoTile>
+            <InfoTile
+              icon={Cake}
+              label={t("dateOfBirth")}
+              onClick={startEditing}
+            >
+              {user.date_of_birth ? (
+                formatDate(user.date_of_birth, locale)
+              ) : (
+                <span className="text-muted-foreground text-sm font-normal italic">
+                  {t("addDateOfBirth")}
+                </span>
+              )}
+            </InfoTile>
+            <InfoTile
+              icon={Clock}
+              label={t("timezone")}
+              onClick={startEditing}
+            >
+              {currentZoneLabel}
+            </InfoTile>
           </div>
         )}
 
-        {/* Account-creation tile — read-only, so it shows in both view and edit modes. Mirrors the
-            /portal dashboard's "Member since" stat. */}
-        <div className="bg-muted/40 flex items-center gap-3 rounded-xl p-4">
-          <span className="bg-muted text-muted-foreground flex size-10 shrink-0 items-center justify-center rounded-lg">
-            <CalendarDays className="size-5" />
-          </span>
-          <div className="min-w-0">
-            <p className="text-muted-foreground text-xs">{t("memberSince")}</p>
-            <p className="truncate text-lg font-semibold">
-              {formatMonthYear(user.created_at, locale)}
-            </p>
-          </div>
-        </div>
+        {/* Account-creation tile — read-only, so it shows in both view and edit modes. */}
+        <InfoTile icon={CalendarDays} label={t("memberSince")}>
+          {formatMonthYear(user.created_at, locale)}
+        </InfoTile>
       </CardContent>
     </Card>
+  );
+}
+
+/**
+ * A muted rounded tile — an icon, a small label, and a value — matching the /portal dashboard's stat
+ * tiles. With `onClick` it becomes a button (hover highlight + a pencil affordance); without it, a
+ * plain read-only block.
+ */
+function InfoTile({
+  icon: Icon,
+  label,
+  children,
+  onClick,
+  className,
+}: {
+  icon: LucideIcon;
+  label: string;
+  children: ReactNode;
+  onClick?: () => void;
+  className?: string;
+}) {
+  const body = (
+    <>
+      <span className="bg-muted text-muted-foreground flex size-10 shrink-0 items-center justify-center rounded-lg">
+        <Icon className="size-5" />
+      </span>
+      <div className="min-w-0 flex-1">
+        <p className="text-muted-foreground text-xs">{label}</p>
+        <div className="truncate text-base font-semibold">{children}</div>
+      </div>
+      {onClick ? (
+        <Pencil
+          aria-hidden
+          className="text-muted-foreground size-4 shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
+        />
+      ) : null}
+    </>
+  );
+
+  if (!onClick) {
+    return (
+      <div
+        className={cn(
+          "bg-muted/40 flex items-center gap-3 rounded-xl p-4",
+          className,
+        )}
+      >
+        {body}
+      </div>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "group bg-muted/40 hover:bg-muted/70 focus-visible:ring-ring flex items-center gap-3 rounded-xl p-4 text-start transition-colors outline-none focus-visible:ring-2",
+        className,
+      )}
+    >
+      {body}
+    </button>
   );
 }
