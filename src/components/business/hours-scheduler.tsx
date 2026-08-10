@@ -130,7 +130,7 @@ function CopyToDays({
         </TooltipTrigger>
         <TooltipContent>{t("copyTo")}</TooltipContent>
       </Tooltip>
-      <PopoverContent align="start" className="w-56 space-y-1">
+      <PopoverContent align="start" className="w-56 space-y-1 p-2">
         <label className="hover:bg-muted flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 text-sm font-medium">
           <Checkbox
             checked={allChecked}
