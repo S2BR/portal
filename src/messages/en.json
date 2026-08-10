@@ -212,7 +212,17 @@
     "dobYear": "Year",
     "dobMonth": "Month",
     "dobDay": "Day",
-    "memberSince": "Member since"
+    "memberSince": "Member since",
+    "gender": "Gender",
+    "addGender": "Add your gender",
+    "selectGender": "Select…",
+    "genderHint": "Optional. Only you can see this.",
+    "genders": {
+      "male": "Male",
+      "female": "Female",
+      "non_binary": "Non-binary",
+      "prefer_not_to_say": "Prefer not to say"
+    }
   },
   "sessions": {
     "title": "Active sessions",

@@ -1,16 +1,24 @@
 "use client";
 
-import { Cake, CalendarDays, Clock, User } from "lucide-react";
+import { Cake, CalendarDays, Clock, User, VenusAndMars } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 import type { Timezone } from "@/app/api/auth/timezones/route";
 import { useCurrentUser } from "@/components/auth/current-user";
+import type { Gender } from "@/lib/api/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Combobox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
 import { DateWheelPicker } from "@/components/ui/date-wheel-picker";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { SettingBlock, SettingTile } from "@/components/ui/setting-tile";
 import { defaultBirthDate } from "@/lib/date-wheel";
 import { apiErrorText } from "@/lib/api/error-text";
@@ -30,7 +38,15 @@ function formatDate(ymd: string, locale: string): string {
   );
 }
 
-type EditableField = "name" | "timezone" | "dateOfBirth";
+type EditableField = "name" | "timezone" | "dateOfBirth" | "gender";
+
+/** The selectable gender values, matching the api's Gender enum. Labels come from i18n. */
+const GENDER_OPTIONS: Gender[] = [
+  "male",
+  "female",
+  "non_binary",
+  "prefer_not_to_say",
+];
 
 /**
  * The account's low-sensitivity profile fields shown as tiles — display name, date of birth, timezone
@@ -49,6 +65,7 @@ export function ProfileSettings() {
   const [name, setName] = useState("");
   const [timezone, setTimezone] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState<string | null>(null);
+  const [gender, setGender] = useState<Gender | "">("");
   const [timezones, setTimezones] = useState<Timezone[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -80,6 +97,7 @@ export function ProfileSettings() {
     setTimezone(user.timezone ?? "");
     // Always seed a date so the "Born …" preview and wheel have something to show.
     setDateOfBirth(user.date_of_birth ?? defaultBirthDate());
+    setGender(user.gender ?? "");
     setError(null);
     setEditingField(field);
   }
@@ -130,6 +148,8 @@ export function ProfileSettings() {
       await patchAccount({ timezone: timezone === "" ? null : timezone });
     } else if (editingField === "dateOfBirth") {
       await patchAccount({ date_of_birth: dateOfBirth });
+    } else if (editingField === "gender") {
+      await patchAccount({ gender: gender === "" ? null : gender });
     }
   }
 
@@ -250,6 +270,60 @@ export function ProfileSettings() {
             </SettingTile>
           )}
 
+          {/* Gender */}
+          {editingField === "gender" ? (
+            <SettingBlock
+              icon={VenusAndMars}
+              label={t("gender")}
+              className="sm:col-span-2"
+              action={
+                user.gender ? (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    disabled={pending}
+                    onClick={() => void patchAccount({ gender: null })}
+                  >
+                    {t("remove")}
+                  </Button>
+                ) : null
+              }
+            >
+              <Select
+                value={gender === "" ? undefined : gender}
+                onValueChange={(value) => setGender(value as Gender)}
+              >
+                <SelectTrigger aria-label={t("gender")}>
+                  <SelectValue placeholder={t("selectGender")} />
+                </SelectTrigger>
+                <SelectContent>
+                  {GENDER_OPTIONS.map((option) => (
+                    <SelectItem key={option} value={option}>
+                      {t(`genders.${option}`)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-muted-foreground text-xs">{t("genderHint")}</p>
+              {footer}
+            </SettingBlock>
+          ) : (
+            <SettingTile
+              icon={VenusAndMars}
+              label={t("gender")}
+              onClick={() => startEdit("gender")}
+            >
+              {user.gender ? (
+                t(`genders.${user.gender}`)
+              ) : (
+                <span className="text-muted-foreground text-sm font-normal italic">
+                  {t("addGender")}
+                </span>
+              )}
+            </SettingTile>
+          )}
+
           {/* Timezone */}
           {editingField === "timezone" ? (
             <SettingBlock
@@ -282,12 +356,13 @@ export function ProfileSettings() {
               {currentZoneLabel}
             </SettingTile>
           )}
-        </div>
 
-        {/* Account-creation tile — read-only. */}
-        <SettingTile icon={CalendarDays} label={t("memberSince")}>
-          {formatMonthYear(user.created_at, locale)}
-        </SettingTile>
+          {/* Account-creation tile — read-only. Sits beside the timezone tile so it
+              doesn't hang alone on its own row. */}
+          <SettingTile icon={CalendarDays} label={t("memberSince")}>
+            {formatMonthYear(user.created_at, locale)}
+          </SettingTile>
+        </div>
       </CardContent>
     </Card>
   );

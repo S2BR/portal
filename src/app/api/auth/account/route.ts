@@ -16,12 +16,18 @@ const bodySchema = z
       .regex(/^\d{4}-\d{2}-\d{2}$/)
       .nullable()
       .optional(),
+    // One of the allowed gender values, or `null` to clear. The api re-validates the enum.
+    gender: z
+      .enum(["male", "female", "non_binary", "prefer_not_to_say"])
+      .nullable()
+      .optional(),
   })
   .refine(
     (value) =>
       value.name !== undefined ||
       value.timezone !== undefined ||
-      value.date_of_birth !== undefined,
+      value.date_of_birth !== undefined ||
+      value.gender !== undefined,
     { message: "empty" },
   );
 
