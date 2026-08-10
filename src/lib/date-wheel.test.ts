@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   clampDay,
   daysInMonth,
+  defaultBirthDate,
   fieldOrder,
   fromISO,
   monthLabels,
@@ -47,6 +48,12 @@ describe("clampDay", () => {
     expect(clampDay(31, 2023, 2)).toBe(28);
     expect(clampDay(31, 2024, 2)).toBe(29);
     expect(clampDay(15, 2023, 6)).toBe(15);
+  });
+});
+
+describe("defaultBirthDate", () => {
+  it("seeds Jan 1 of a ~25-year-old's birth year", () => {
+    expect(defaultBirthDate(13, 2026)).toBe("2001-01-01");
   });
 });
 

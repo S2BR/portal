@@ -204,6 +204,8 @@
     "noTimezone": "Nenhum fuso horário encontrado.",
     "dateOfBirth": "Data de nascimento",
     "addDateOfBirth": "Adicione sua data de nascimento",
+    "born": "Nascimento: <b>{date}</b>",
+    "remove": "Remover",
     "clear": "Limpar",
     "dobHint": "Você precisa ter pelo menos 13 anos. Somente você pode ver isto.",
     "dobYear": "Ano",

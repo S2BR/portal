@@ -204,6 +204,8 @@
     "noTimezone": "No timezone found.",
     "dateOfBirth": "Date of birth",
     "addDateOfBirth": "Add your date of birth",
+    "born": "Born <b>{date}</b>",
+    "remove": "Remove",
     "clear": "Clear",
     "dobHint": "You must be at least 13 years old. Only you can see this.",
     "dobYear": "Year",

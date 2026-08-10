@@ -18,6 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Combobox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
 import { DateWheelPicker } from "@/components/ui/date-wheel-picker";
+import { defaultBirthDate } from "@/lib/date-wheel";
 import { apiErrorText } from "@/lib/api/error-text";
 import { cn } from "@/lib/utils";
 
@@ -84,7 +85,8 @@ export function ProfileSettings() {
     }
     setName(user.name);
     setTimezone(user.timezone ?? "");
-    setDateOfBirth(user.date_of_birth ?? null);
+    // Always seed a date so the "Born …" preview and wheel have something to show.
+    setDateOfBirth(user.date_of_birth ?? defaultBirthDate());
     setError(null);
     setEditingField(field);
   }
@@ -94,24 +96,8 @@ export function ProfileSettings() {
     setError(null);
   }
 
-  /** Save just the field currently being edited. */
-  async function saveField() {
-    let body: Record<string, unknown>;
-    if (editingField === "name") {
-      const trimmed = name.trim();
-      if (!trimmed) {
-        setError(authErrors("name"));
-        return;
-      }
-      body = { name: trimmed };
-    } else if (editingField === "timezone") {
-      body = { timezone: timezone === "" ? null : timezone };
-    } else if (editingField === "dateOfBirth") {
-      body = { date_of_birth: dateOfBirth };
-    } else {
-      return;
-    }
-
+  /** Send a partial update and, on success, close the editor and refresh the user. */
+  async function patchAccount(body: Record<string, unknown>) {
     setPending(true);
     setError(null);
     try {
@@ -135,6 +121,22 @@ export function ProfileSettings() {
       setError(authErrors("generic"));
     } finally {
       setPending(false);
+    }
+  }
+
+  /** Save just the field currently being edited. */
+  async function saveField() {
+    if (editingField === "name") {
+      const trimmed = name.trim();
+      if (!trimmed) {
+        setError(authErrors("name"));
+        return;
+      }
+      await patchAccount({ name: trimmed });
+    } else if (editingField === "timezone") {
+      await patchAccount({ timezone: timezone === "" ? null : timezone });
+    } else if (editingField === "dateOfBirth") {
+      await patchAccount({ date_of_birth: dateOfBirth });
     }
   }
 
@@ -197,18 +199,31 @@ export function ProfileSettings() {
               label={t("dateOfBirth")}
               className="sm:col-span-2"
               action={
-                dateOfBirth ? (
+                user.date_of_birth ? (
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
-                    onClick={() => setDateOfBirth(null)}
+                    disabled={pending}
+                    onClick={() => void patchAccount({ date_of_birth: null })}
                   >
-                    {t("clear")}
+                    {t("remove")}
                   </Button>
                 ) : null
               }
             >
+              {dateOfBirth ? (
+                <p className="text-muted-foreground text-center text-sm">
+                  {t.rich("born", {
+                    date: formatDate(dateOfBirth, locale),
+                    b: (chunks) => (
+                      <span className="text-foreground ms-1 font-semibold">
+                        {chunks}
+                      </span>
+                    ),
+                  })}
+                </p>
+              ) : null}
               <DateWheelPicker
                 value={dateOfBirth}
                 onChange={setDateOfBirth}

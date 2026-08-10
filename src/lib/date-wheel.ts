@@ -57,6 +57,18 @@ export function toISO({ year, month, day }: DateParts): string {
   return `${year}-${mm}-${dd}`;
 }
 
+/**
+ * A sensible starting birth date when none is set yet — Jan 1 of the birth year of someone ~25,
+ * matching the wheel's own seed so the preview and wheel agree.
+ */
+export function defaultBirthDate(
+  minAge = 13,
+  referenceYear = new Date().getFullYear(),
+): string {
+  const { max } = yearBounds(minAge, referenceYear);
+  return toISO({ year: max - 12, month: 1, day: 1 });
+}
+
 /** Parse `YYYY-MM-DD` into parts, or null if it isn't a real calendar date. */
 export function fromISO(value: string): DateParts | null {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
