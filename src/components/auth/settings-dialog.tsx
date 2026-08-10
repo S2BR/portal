@@ -176,7 +176,7 @@ function SettingsDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex h-[85vh] w-full flex-col gap-0 overflow-hidden p-0 sm:h-[80vh] sm:max-h-[44rem] sm:max-w-4xl sm:flex-row">
+      <DialogContent className="flex h-[85vh] w-full flex-col gap-0 overflow-hidden p-0 ring-0 sm:h-[80vh] sm:max-h-[44rem] sm:max-w-4xl sm:flex-row">
         {/* Category nav — a left rail on desktop, a scrollable row on mobile. On desktop an inset
             shadow on its inner edge (in place of a border) makes the content pane look like it
             overlaps the rail, echoing the login screen's side panel. A black shadow reads poorly on
