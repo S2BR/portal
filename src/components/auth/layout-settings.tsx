@@ -65,7 +65,9 @@ function PreviewCard({
       aria-pressed={selected}
       className={cn(
         "focus-visible:ring-ring flex flex-col rounded-xl p-1.5 text-start transition-colors outline-none focus-visible:ring-2 focus-visible:ring-inset",
-        selected ? "bg-brand-green/10" : "bg-muted/40 hover:bg-muted/70",
+        // Three-step gray: default (muted/40) → hover (muted/70) → selected
+        // (muted-foreground/10). The brand-green dot marks the selection.
+        selected ? "bg-muted-foreground/10" : "bg-muted/40 hover:bg-muted/70",
       )}
     >
       <div className="overflow-hidden rounded-lg border">{children}</div>
