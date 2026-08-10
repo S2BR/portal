@@ -301,7 +301,8 @@ function EditShell({
   return (
     <div
       className={cn(
-        "bg-muted/40 ring-ring/50 space-y-3 rounded-xl p-4 ring-1",
+        // A real border (not a ring) so it isn't clipped by the settings card's overflow-hidden.
+        "bg-muted/40 border-ring/50 space-y-3 rounded-xl border p-4",
         className,
       )}
     >
@@ -371,7 +372,7 @@ function InfoTile({
       type="button"
       onClick={onClick}
       className={cn(
-        "group bg-muted/40 hover:bg-muted/70 focus-visible:ring-ring flex items-center gap-3 rounded-xl p-4 text-start transition-colors outline-none focus-visible:ring-2",
+        "group bg-muted/40 hover:bg-muted/70 focus-visible:ring-ring flex items-center gap-3 rounded-xl p-4 text-start transition-colors outline-none focus-visible:ring-2 focus-visible:ring-inset",
         className,
       )}
     >
