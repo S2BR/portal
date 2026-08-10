@@ -39,8 +39,8 @@ export function FormSection({
         // Desktop: no section-level divider; instead a hairline above the fields
         // column only (last child), with the title padded to line up.
         "md:border-t-0 md:pt-0",
-        "md:[&>div:last-child]:border-border/60 md:[&>div:last-child]:border-t md:[&>div:last-child]:pt-8 md:[&>div:first-child]:pt-8",
-        "md:first:[&>div:last-child]:border-t-0 md:first:[&>div:last-child]:pt-0 md:first:[&>div:first-child]:pt-0",
+        "md:[&>div:last-child]:border-border/60 md:[&>div:first-child]:pt-8 md:[&>div:last-child]:border-t md:[&>div:last-child]:pt-8",
+        "md:first:[&>div:first-child]:pt-0 md:first:[&>div:last-child]:border-t-0 md:first:[&>div:last-child]:pt-0",
         className,
       )}
     >

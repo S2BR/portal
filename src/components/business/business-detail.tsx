@@ -1020,11 +1020,13 @@ export function BusinessDetail({ slug }: { slug: string }) {
                           <Badge variant="green">{t("mainAddress")}</Badge>
                         ) : null}
                         <address className="text-foreground/90 space-y-0.5 text-sm leading-relaxed not-italic">
-                          {formatBusinessAddress(address, locale).map((line) => (
-                            <span key={line} className="block">
-                              {line}
-                            </span>
-                          ))}
+                          {formatBusinessAddress(address, locale).map(
+                            (line) => (
+                              <span key={line} className="block">
+                                {line}
+                              </span>
+                            ),
+                          )}
                         </address>
                       </div>
                     </div>
