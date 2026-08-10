@@ -1,6 +1,6 @@
 "use client";
 
-import { Trash2 } from "lucide-react";
+import { Info, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -42,22 +42,28 @@ export function DeleteAccountSettings() {
 
   return (
     <>
-      <SettingTile
-        icon={Trash2}
-        tone="danger"
-        subtitle={t("description")}
-        action={
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={() => setOpen(true)}
-          >
-            {t("delete")}
-          </Button>
-        }
-      >
-        {t("title")}
-      </SettingTile>
+      <div className="space-y-2">
+        <SettingTile
+          icon={Trash2}
+          tone="danger"
+          subtitle={t("description")}
+          action={
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => setOpen(true)}
+            >
+              {t("delete")}
+            </Button>
+          }
+        >
+          {t("title")}
+        </SettingTile>
+        <p className="text-muted-foreground flex items-start gap-2 px-1 text-xs">
+          <Info className="mt-0.5 size-3.5 shrink-0" aria-hidden />
+          <span>{t("retentionNotice", { days: 30 })}</span>
+        </p>
+      </div>
       <VerifyDialog
         open={open}
         onOpenChange={setOpen}

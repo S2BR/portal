@@ -288,6 +288,7 @@
   "deleteAccount": {
     "title": "Supprimer le compte",
     "description": "Fermez votre compte de façon permanente. Vous serez déconnecté sur tous les appareils.",
+    "retentionNotice": "Pour des raisons de conformité, votre compte est désactivé immédiatement et définitivement supprimé {days} jours plus tard.",
     "delete": "Supprimer le compte",
     "confirm": "Supprimer mon compte",
     "cancel": "Annuler"

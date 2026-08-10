@@ -288,6 +288,7 @@
   "deleteAccount": {
     "title": "Excluir conta",
     "description": "Encerre sua conta permanentemente. Você será desconectado em todos os dispositivos.",
+    "retentionNotice": "Por motivos de conformidade, sua conta é desativada imediatamente e excluída permanentemente {days} dias depois.",
     "delete": "Excluir conta",
     "confirm": "Excluir minha conta",
     "cancel": "Cancelar"

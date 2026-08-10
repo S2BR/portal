@@ -288,6 +288,7 @@
   "deleteAccount": {
     "title": "Eliminar cuenta",
     "description": "Cierra tu cuenta de forma permanente. Se cerrará la sesión en todos los dispositivos.",
+    "retentionNotice": "Por motivos de cumplimiento, tu cuenta se desactiva de inmediato y se elimina de forma permanente {days} días después.",
     "delete": "Eliminar cuenta",
     "confirm": "Eliminar mi cuenta",
     "cancel": "Cancelar"

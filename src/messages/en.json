@@ -288,6 +288,7 @@
   "deleteAccount": {
     "title": "Delete account",
     "description": "Permanently close your account. You'll be signed out on every device.",
+    "retentionNotice": "For compliance reasons, your account is deactivated right away and permanently deleted {days} days later.",
     "delete": "Delete account",
     "confirm": "Delete my account",
     "cancel": "Cancel"
