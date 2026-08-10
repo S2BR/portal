@@ -3,6 +3,7 @@
 import {
   Mail,
   MonitorSmartphone,
+  Palette,
   ShieldCheck,
   TriangleAlert,
   User,
@@ -23,6 +24,7 @@ import { AvatarSettings } from "@/components/auth/avatar-settings";
 import { useCurrentUser } from "@/components/auth/current-user";
 import { DeleteAccountSettings } from "@/components/auth/delete-account-settings";
 import { EmailSettings } from "@/components/auth/email-settings";
+import { LayoutSettings } from "@/components/auth/layout-settings";
 import { PasskeySettings } from "@/components/auth/passkey-settings";
 import { PasswordSettings } from "@/components/auth/password-settings";
 import { ProfileSettings } from "@/components/auth/profile-settings";
@@ -37,7 +39,7 @@ import {
 import { cn } from "@/lib/utils";
 
 export type SectionKey =
-  "profile" | "account" | "security" | "sessions" | "danger";
+  "profile" | "layout" | "account" | "security" | "sessions" | "danger";
 
 /** The settings categories — each renders one or more of the existing settings cards. */
 const SECTIONS: {
@@ -55,6 +57,7 @@ const SECTIONS: {
       </>
     ),
   },
+  { key: "layout", icon: Palette, render: () => <LayoutSettings /> },
   { key: "account", icon: Mail, render: () => <EmailSettings /> },
   {
     key: "security",

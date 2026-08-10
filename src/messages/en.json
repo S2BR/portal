@@ -166,6 +166,7 @@
     "settingsDescription": "Manage your account settings and preferences.",
     "nav": {
       "profile": "Profile",
+      "layout": "Layout",
       "account": "Account",
       "security": "Security",
       "sessions": "Sessions",
@@ -298,6 +299,22 @@
     "light": "Light",
     "dark": "Dark",
     "system": "System"
+  },
+  "layoutSettings": {
+    "theme": {
+      "title": "Theme",
+      "description": "Choose how the interface looks."
+    },
+    "direction": {
+      "title": "Direction",
+      "description": "Set how the layout flows across the page.",
+      "ltr": "Left to right",
+      "rtl": "Right to left"
+    },
+    "language": {
+      "title": "Language",
+      "description": "Pick the language for the interface."
+    }
   },
   "locale": {
     "label": "Language"

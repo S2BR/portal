@@ -166,6 +166,7 @@
     "settingsDescription": "Gérez les paramètres et les préférences de votre compte.",
     "nav": {
       "profile": "Profil",
+      "layout": "Disposition",
       "account": "Compte",
       "security": "Sécurité",
       "sessions": "Sessions",
@@ -298,6 +299,22 @@
     "light": "Clair",
     "dark": "Sombre",
     "system": "Système"
+  },
+  "layoutSettings": {
+    "theme": {
+      "title": "Thème",
+      "description": "Choisissez l'apparence de l'interface."
+    },
+    "direction": {
+      "title": "Direction",
+      "description": "Définissez le sens de lecture de la mise en page.",
+      "ltr": "De gauche à droite",
+      "rtl": "De droite à gauche"
+    },
+    "language": {
+      "title": "Langue",
+      "description": "Choisissez la langue de l'interface."
+    }
   },
   "locale": {
     "label": "Langue"
