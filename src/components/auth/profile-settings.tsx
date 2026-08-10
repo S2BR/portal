@@ -275,6 +275,7 @@ export function ProfileSettings() {
             <SettingBlock
               icon={VenusAndMars}
               label={t("gender")}
+              className="sm:col-span-2"
               action={
                 user.gender ? (
                   <Button
