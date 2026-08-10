@@ -198,8 +198,8 @@ function SettingsDialog({
                   className={cn(
                     "flex items-center gap-2.5 rounded-md px-3 py-2 text-sm whitespace-nowrap transition-colors",
                     isActive
-                      ? "bg-background font-medium shadow-sm"
-                      : "hover:bg-background/60",
+                      ? "bg-muted-foreground/10 font-medium"
+                      : "hover:bg-muted-foreground/5",
                     isDanger
                       ? "text-destructive"
                       : isActive

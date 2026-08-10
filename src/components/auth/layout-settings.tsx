@@ -44,18 +44,21 @@ function Group({
 }
 
 /**
- * A selectable option rendered as a small visual preview (top) plus a label (bottom). The selected
- * card gets a brand-green border + tint (a real border, not a clipping ring inside the dialog).
+ * A selectable option rendered as a small visual preview (top) plus a label (bottom). The cards use
+ * a three-step gray (default → hover → selected); the selected one is marked with a brand-green dot.
  */
 function PreviewCard({
   selected,
   onClick,
   label,
+  framed = true,
   children,
 }: {
   selected: boolean;
   onClick: () => void;
   label: string;
+  /** Wrap the preview in a bordered box (theme/direction mockups). Off for the round flag. */
+  framed?: boolean;
   children: ReactNode;
 }) {
   return (
@@ -65,10 +68,16 @@ function PreviewCard({
       aria-pressed={selected}
       className={cn(
         "focus-visible:ring-ring flex flex-col rounded-xl p-1.5 text-start transition-colors outline-none focus-visible:ring-2 focus-visible:ring-inset",
-        selected ? "bg-brand-green/10" : "bg-muted/40 hover:bg-muted/70",
+        // Three-step gray: default (muted/40) → hover (muted/70) → selected
+        // (muted-foreground/10). The brand-green dot marks the selection.
+        selected ? "bg-muted-foreground/10" : "bg-muted/40 hover:bg-muted/70",
       )}
     >
-      <div className="overflow-hidden rounded-lg border">{children}</div>
+      {framed ? (
+        <div className="overflow-hidden rounded-lg">{children}</div>
+      ) : (
+        children
+      )}
       <div className="flex items-center gap-1.5 px-1 pt-2 pb-0.5">
         <span className="truncate text-[11px] font-semibold">{label}</span>
         {selected ? (
@@ -93,25 +102,25 @@ function ThemePane({ dark }: { dark: boolean }) {
     >
       <div
         className={cn(
-          "h-1 w-6 rounded-full",
+          "h-1 w-6 animate-pulse rounded-full motion-reduce:animate-none",
           dark ? "bg-neutral-600" : "bg-neutral-300",
         )}
       />
       <div
         className={cn(
-          "h-1 w-full rounded-full",
+          "h-1 w-full animate-pulse rounded-full [animation-delay:150ms] motion-reduce:animate-none",
           dark ? "bg-neutral-700" : "bg-neutral-200",
         )}
       />
       <div
         className={cn(
-          "h-1 w-4/5 rounded-full",
+          "h-1 w-4/5 animate-pulse rounded-full [animation-delay:300ms] motion-reduce:animate-none",
           dark ? "bg-neutral-700" : "bg-neutral-200",
         )}
       />
       <div
         className={cn(
-          "mt-auto h-2.5 w-8 rounded",
+          "mt-auto h-2.5 w-8 animate-pulse rounded [animation-delay:450ms] motion-reduce:animate-none",
           dark ? "bg-neutral-100" : "bg-neutral-800",
         )}
       />
@@ -121,15 +130,20 @@ function ThemePane({ dark }: { dark: boolean }) {
 
 function ThemeMock({ mode }: { mode: ThemeSelection }) {
   if (mode === "system") {
-    // A diagonal light/dark split: light fills, dark overlays the bottom-right triangle.
+    // A diagonal light/dark split. Dark fills the whole box so every edge is fully covered
+    // (no antialiased sliver of the pane beneath showing at the right/bottom), and the light
+    // half is overlaid as the top-left triangle.
     return (
       <div className="relative h-14 w-full">
-        <ThemePane dark={false} />
+        <ThemePane dark />
         <div
           className="absolute inset-0"
-          style={{ clipPath: "polygon(100% 0, 100% 100%, 0% 100%)" }}
+          // Diagonal stays exactly corner-to-corner (top-right → bottom-left); the top-left vertex
+          // is pushed far outside so the light half's straight edges never sit on a container edge
+          // (no antialiased sliver of the dark base showing through at the top/left).
+          style={{ clipPath: "polygon(-50% -50%, 100% 0, 0% 100%)" }}
         >
-          <ThemePane dark />
+          <ThemePane dark={false} />
         </div>
       </div>
     );
@@ -148,11 +162,11 @@ function DirectionMock({ dir }: { dir: Direction }) {
       dir={dir}
       className="bg-background flex h-14 w-full items-stretch gap-1.5 p-2"
     >
-      <div className="bg-muted-foreground/25 h-full w-2.5 shrink-0 rounded" />
+      <div className="bg-muted-foreground/25 h-full w-2.5 shrink-0 animate-pulse rounded motion-reduce:animate-none" />
       <div className="flex flex-1 flex-col justify-center gap-1.5">
-        <div className="bg-muted-foreground/20 h-1 w-full rounded-full" />
-        <div className="bg-muted-foreground/20 h-1 w-4/5 rounded-full" />
-        <div className="bg-muted-foreground/20 h-1 w-3/5 rounded-full" />
+        <div className="bg-muted-foreground/20 h-1 w-full animate-pulse rounded-full [animation-delay:150ms] motion-reduce:animate-none" />
+        <div className="bg-muted-foreground/20 h-1 w-4/5 animate-pulse rounded-full [animation-delay:300ms] motion-reduce:animate-none" />
+        <div className="bg-muted-foreground/20 h-1 w-3/5 animate-pulse rounded-full [animation-delay:450ms] motion-reduce:animate-none" />
       </div>
     </div>
   );
@@ -160,15 +174,16 @@ function DirectionMock({ dir }: { dir: Direction }) {
 
 function LanguageMock({ locale }: { locale: Locale }) {
   return (
-    <div className="bg-muted/40 flex h-14 items-center justify-center">
-      {/* Decorative — the native name is the card label. A plain <img> paints the cached flag instantly. */}
+    <div className="flex h-14 items-center justify-center">
+      {/* A round flag (no bordered box) so the shape echoes the flag. Decorative — the native
+          name is the card label. A plain <img> paints the cached flag instantly. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={`/images/flags/${locale}.png`}
         alt=""
-        width={32}
-        height={32}
-        className="size-8 rounded-full object-cover shadow-sm"
+        width={44}
+        height={44}
+        className="ring-border/60 size-11 rounded-full object-cover shadow-sm ring-1"
       />
     </div>
   );
@@ -272,6 +287,7 @@ export function LayoutSettings() {
               key={option}
               selected={option === activeLocale}
               onClick={() => selectLocale(option)}
+              framed={false}
               // Drop the parenthetical region (e.g. "Français (Canada)" → "Français")
               // so all four fit on one row — the flag already conveys the region.
               label={localeNames[option].replace(/\s*\(.+\)$/, "")}
