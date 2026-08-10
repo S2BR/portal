@@ -176,13 +176,13 @@ function SettingsDialog({
       <DialogContent className="flex h-[85vh] w-full flex-col gap-0 overflow-hidden p-0 sm:h-[80vh] sm:max-h-[44rem] sm:max-w-4xl sm:flex-row">
         {/* Category nav — a left rail on desktop, a scrollable row on mobile. */}
         <div className="bg-muted/30 flex shrink-0 flex-col border-b sm:w-56 sm:border-e sm:border-b-0">
-          <DialogTitle className="px-4 pt-4 pb-1 text-sm font-semibold tracking-tight sm:px-3">
+          <DialogTitle className="px-4 pt-4 pb-1 text-sm font-semibold tracking-tight sm:px-6 sm:pt-5 sm:pb-2">
             {t("settingsTitle")}
           </DialogTitle>
           <DialogDescription className="sr-only">
             {t("settingsDescription")}
           </DialogDescription>
-          <nav className="flex gap-1 overflow-x-auto p-2 sm:flex-1 sm:flex-col sm:overflow-x-visible sm:overflow-y-auto">
+          <nav className="flex gap-1 overflow-x-auto p-2 sm:flex-1 sm:flex-col sm:gap-1 sm:overflow-x-visible sm:overflow-y-auto sm:p-3">
             {SECTIONS.map((section) => {
               const isActive = section.key === active;
               const isDanger = section.key === "danger";
