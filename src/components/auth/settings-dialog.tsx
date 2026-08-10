@@ -176,9 +176,13 @@ function SettingsDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex h-[85vh] w-full flex-col gap-0 overflow-hidden p-0 sm:h-[80vh] sm:max-h-[44rem] sm:max-w-4xl sm:flex-row">
-        {/* Category nav — a left rail on desktop, a scrollable row on mobile. */}
-        <div className="bg-muted/30 flex shrink-0 flex-col border-b sm:w-56 sm:border-e sm:border-b-0">
+      <DialogContent className="flex h-[85vh] w-full flex-col gap-0 overflow-hidden p-0 ring-0 sm:h-[80vh] sm:max-h-[44rem] sm:max-w-4xl sm:flex-row">
+        {/* Category nav — a left rail on desktop, a scrollable row on mobile. On desktop an inset
+            shadow on its inner edge (in place of a border) makes the content pane look like it
+            overlaps the rail, echoing the login screen's side panel. A black shadow reads poorly on
+            dark, so there we add an almost-imperceptible dark hairline divider + a slightly stronger
+            shadow. box-shadow has no logical direction, so the x-offset is flipped under rtl. */}
+        <div className="bg-muted/30 flex shrink-0 flex-col border-b sm:w-56 sm:border-b-0 sm:ltr:shadow-[inset_-16px_0_28px_-16px_rgba(0,0,0,0.18)] sm:rtl:shadow-[inset_16px_0_28px_-16px_rgba(0,0,0,0.18)] sm:dark:border-e sm:dark:border-black/25 sm:ltr:dark:shadow-[inset_-16px_0_28px_-16px_rgba(0,0,0,0.35)] sm:rtl:dark:shadow-[inset_16px_0_28px_-16px_rgba(0,0,0,0.35)]">
           <DialogTitle className="px-4 pt-4 pb-1 text-sm font-semibold tracking-tight sm:px-6 sm:pt-5 sm:pb-2">
             {t("settingsTitle")}
           </DialogTitle>
@@ -217,7 +221,9 @@ function SettingsDialog({
 
         {/* Active section content. */}
         <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-          <div className="flex h-14 shrink-0 items-center border-b px-6 sm:px-8">
+          {/* Smooth header divider: a hairline that fades to transparent at both ends
+              (symmetric, so it's the same in LTR/RTL) — softer than a full-width border. */}
+          <div className="after:via-border relative flex h-14 shrink-0 items-center px-6 after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-gradient-to-r after:from-transparent after:to-transparent sm:px-8">
             <h2
               className={cn(
                 "font-heading text-base font-semibold tracking-tight",
