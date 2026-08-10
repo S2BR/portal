@@ -92,6 +92,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { apiErrorText } from "@/lib/api/error-text";
 import { useUnsavedChangesGuard } from "@/lib/use-unsaved-changes-guard";
+import { cn } from "@/lib/utils";
 
 /** A website or email contact: the value plus an optional label. */
 type LinkRow = { value: string; name: string };
@@ -708,7 +709,12 @@ export function BusinessDetail({ slug }: { slug: string }) {
                     onUpdated={(updated) => setBusiness(updated)}
                   />
                 </div>
-                <div className="space-y-5 md:col-span-2">
+                <div
+                  className={cn(
+                    "bg-muted/40 space-y-5 rounded-xl p-4 md:col-span-2",
+                    editing && "border-ring/50 border",
+                  )}
+                >
                   {editing && edit ? (
                     <>
                       <Field label={fields("name")} error={nameError}>
@@ -763,6 +769,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
               </div>
 
               <FormSection
+                editing={editing}
                 id="section-businessType"
                 title={sections("businessType.title")}
                 description={sections("businessType.description")}
@@ -779,6 +786,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
               </FormSection>
 
               <FormSection
+                editing={editing}
                 id="section-categories"
                 title={sections("categories.title")}
                 description={sections("categories.description")}
@@ -823,6 +831,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
           {/* Amenities */}
           <TabsContent value="amenities">
             <FormSection
+              editing={editing}
               title={sections("amenities.title")}
               description={sections("amenities.description")}
             >
@@ -852,6 +861,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
           <TabsContent value="contact">
             <div>
               <FormSection
+                editing={editing}
                 id="section-website"
                 title={sections("website.title")}
                 description={sections("website.description")}
@@ -894,6 +904,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
               </FormSection>
 
               <FormSection
+                editing={editing}
                 id="section-phone"
                 title={sections("phone.title")}
                 description={sections("phone.description")}
@@ -936,6 +947,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
               </FormSection>
 
               <FormSection
+                editing={editing}
                 id="section-email"
                 title={sections("email.title")}
                 description={sections("email.description")}
@@ -983,6 +995,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
           {/* Addresses */}
           <TabsContent value="address">
             <FormSection
+              editing={editing}
               title={sections("address.title")}
               description={sections("address.description")}
             >
@@ -1035,6 +1048,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
           {/* Opening hours */}
           <TabsContent value="hours">
             <FormSection
+              editing={editing}
               title={sections("hours.title")}
               description={sections("hours.description")}
             >
@@ -1082,6 +1096,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
           {/* Socials */}
           <TabsContent value="socials">
             <FormSection
+              editing={editing}
               title={sections("socials.title")}
               description={sections("socials.description")}
             >
@@ -1153,6 +1168,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
           <TabsContent value="branding">
             <div>
               <FormSection
+                editing={editing}
                 id="section-branding"
                 title={sections("branding.title")}
                 description={sections("branding.description")}
@@ -1204,6 +1220,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
               </FormSection>
 
               <FormSection
+                editing={editing}
                 id="section-images"
                 title={sections("images.title")}
                 description={sections("images.description")}
