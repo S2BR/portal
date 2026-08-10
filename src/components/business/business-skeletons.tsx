@@ -22,7 +22,7 @@ function SectionSkeleton({ fields = 2 }: { fields?: number }) {
         "grid gap-x-8 gap-y-4 md:grid-cols-3",
         "border-border/60 border-t pt-10",
         "md:border-t-0 md:pt-0",
-        "md:[&>div:last-child]:border-border/60 md:[&>div:last-child]:border-t md:[&>div:last-child]:pt-10 md:[&>div:first-child]:pt-10",
+        "md:[&>div:last-child]:border-border/60 md:[&>div:first-child]:pt-10 md:[&>div:last-child]:border-t md:[&>div:last-child]:pt-10",
       )}
     >
       <div className="space-y-2 md:col-span-1">

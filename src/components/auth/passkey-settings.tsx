@@ -217,9 +217,12 @@ export function PasskeySettings() {
                   subtitle={
                     passkey.last_used_at
                       ? t("lastUsed", {
-                          date: format.dateTime(new Date(passkey.last_used_at), {
-                            dateStyle: "medium",
-                          }),
+                          date: format.dateTime(
+                            new Date(passkey.last_used_at),
+                            {
+                              dateStyle: "medium",
+                            },
+                          ),
                         })
                       : t("neverUsed")
                   }

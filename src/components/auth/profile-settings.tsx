@@ -11,10 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Combobox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
 import { DateWheelPicker } from "@/components/ui/date-wheel-picker";
-import {
-  SettingBlock,
-  SettingTile,
-} from "@/components/ui/setting-tile";
+import { SettingBlock, SettingTile } from "@/components/ui/setting-tile";
 import { defaultBirthDate } from "@/lib/date-wheel";
 import { apiErrorText } from "@/lib/api/error-text";
 
@@ -162,7 +159,11 @@ export function ProfileSettings() {
         <div className="grid gap-3 sm:grid-cols-2">
           {/* Name */}
           {editingField === "name" ? (
-            <SettingBlock icon={User} label={fields("name")} className="sm:col-span-2">
+            <SettingBlock
+              icon={User}
+              label={fields("name")}
+              className="sm:col-span-2"
+            >
               <Input
                 aria-label={fields("name")}
                 autoComplete="name"
@@ -291,4 +292,3 @@ export function ProfileSettings() {
     </Card>
   );
 }
-
