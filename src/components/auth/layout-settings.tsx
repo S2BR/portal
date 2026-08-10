@@ -130,15 +130,17 @@ function ThemePane({ dark }: { dark: boolean }) {
 
 function ThemeMock({ mode }: { mode: ThemeSelection }) {
   if (mode === "system") {
-    // A diagonal light/dark split: light fills, dark overlays the bottom-right triangle.
+    // A diagonal light/dark split. Dark fills the whole box so every edge is fully covered
+    // (no antialiased sliver of the pane beneath showing at the right/bottom), and the light
+    // half is overlaid as the top-left triangle.
     return (
       <div className="relative h-14 w-full">
-        <ThemePane dark={false} />
+        <ThemePane dark />
         <div
           className="absolute inset-0"
-          style={{ clipPath: "polygon(100% 0, 100% 100%, 0% 100%)" }}
+          style={{ clipPath: "polygon(0 0, 100% 0, 0% 100%)" }}
         >
-          <ThemePane dark />
+          <ThemePane dark={false} />
         </div>
       </div>
     );
