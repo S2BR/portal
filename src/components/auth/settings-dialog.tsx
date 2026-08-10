@@ -221,7 +221,9 @@ function SettingsDialog({
 
         {/* Active section content. */}
         <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-          <div className="flex h-14 shrink-0 items-center border-b px-6 sm:px-8">
+          {/* Smooth header divider: a hairline that fades to transparent at both ends
+              (symmetric, so it's the same in LTR/RTL) — softer than a full-width border. */}
+          <div className="after:via-border relative flex h-14 shrink-0 items-center px-6 after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-gradient-to-r after:from-transparent after:to-transparent sm:px-8">
             <h2
               className={cn(
                 "font-heading text-base font-semibold tracking-tight",
