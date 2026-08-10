@@ -44,8 +44,8 @@ function Group({
 }
 
 /**
- * A selectable option rendered as a small visual preview (top) plus a label (bottom). The selected
- * card gets a brand-green border + tint (a real border, not a clipping ring inside the dialog).
+ * A selectable option rendered as a small visual preview (top) plus a label (bottom). The cards use
+ * a three-step gray (default → hover → selected); the selected one is marked with a brand-green dot.
  */
 function PreviewCard({
   selected,
