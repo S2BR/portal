@@ -59,7 +59,7 @@ export function BusinessDashboard({ slug }: { slug: string }) {
             name={business?.name ?? ""}
             src={business?.logo}
             className="size-14 rounded-xl"
-            fallbackClassName="text-lg"
+            fallbackClassName="text-2xl"
           />
         )}
         <div className="min-w-0">

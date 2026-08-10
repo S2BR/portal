@@ -138,6 +138,7 @@ export function BusinessSidebar({ slug }: { slug: string }) {
                 name={current.name}
                 src={current.logo}
                 className="size-8 rounded-md"
+                fallbackClassName="rounded-md text-sm"
               />
             ) : (
               <Skeleton className="size-8 shrink-0 rounded-md" />
@@ -175,6 +176,7 @@ export function BusinessSidebar({ slug }: { slug: string }) {
                     name={business.name}
                     src={business.logo}
                     className="size-5 rounded"
+                    fallbackClassName="rounded text-[9px]"
                   />
                   <span className="truncate">{business.name}</span>
                   {business.slug === slug ? (
