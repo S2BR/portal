@@ -9,7 +9,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 import type { Timezone } from "@/app/api/auth/timezones/route";
 import { useCurrentUser } from "@/components/auth/current-user";
@@ -17,7 +17,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Combobox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { DateWheelPicker } from "@/components/ui/date-wheel-picker";
 import { apiErrorText } from "@/lib/api/error-text";
 import { cn } from "@/lib/utils";
@@ -37,11 +36,13 @@ function formatDate(ymd: string, locale: string): string {
   );
 }
 
+type EditableField = "name" | "timezone" | "dateOfBirth";
+
 /**
- * Edit the account's low-sensitivity profile fields — display name, timezone
- * preference, and date of birth — via `PATCH /account`, and show when the account
- * was created. Timestamps stay UTC on the api; the chosen zone is what the app
- * formats them in. An empty zone means "device default".
+ * The account's low-sensitivity profile fields shown as tiles — display name, date of birth, timezone
+ * — plus a read-only "member since". Clicking a tile expands just that one field into an inline editor
+ * (the others stay put) and saves it on its own via `PATCH /account`. Timestamps stay UTC on the api;
+ * the chosen zone is what the app formats them in. An empty zone means "device default".
  */
 export function ProfileSettings() {
   const t = useTranslations("profileSettings");
@@ -50,7 +51,7 @@ export function ProfileSettings() {
   const locale = useLocale();
   const { user, refresh } = useCurrentUser();
 
-  const [editing, setEditing] = useState(false);
+  const [editingField, setEditingField] = useState<EditableField | null>(null);
   const [name, setName] = useState("");
   const [timezone, setTimezone] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState<string | null>(null);
@@ -77,7 +78,7 @@ export function ProfileSettings() {
     return null;
   }
 
-  function startEditing() {
+  function startEdit(field: EditableField) {
     if (!user) {
       return;
     }
@@ -85,27 +86,39 @@ export function ProfileSettings() {
     setTimezone(user.timezone ?? "");
     setDateOfBirth(user.date_of_birth ?? null);
     setError(null);
-    setEditing(true);
+    setEditingField(field);
   }
 
-  async function save(event: FormEvent) {
-    event.preventDefault();
-    const trimmedName = name.trim();
-    if (!trimmedName) {
-      setError(authErrors("name"));
+  function cancel() {
+    setEditingField(null);
+    setError(null);
+  }
+
+  /** Save just the field currently being edited. */
+  async function saveField() {
+    let body: Record<string, unknown>;
+    if (editingField === "name") {
+      const trimmed = name.trim();
+      if (!trimmed) {
+        setError(authErrors("name"));
+        return;
+      }
+      body = { name: trimmed };
+    } else if (editingField === "timezone") {
+      body = { timezone: timezone === "" ? null : timezone };
+    } else if (editingField === "dateOfBirth") {
+      body = { date_of_birth: dateOfBirth };
+    } else {
       return;
     }
+
     setPending(true);
     setError(null);
     try {
       const response = await fetch("/api/auth/account", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: trimmedName,
-          timezone: timezone === "" ? null : timezone,
-          date_of_birth: dateOfBirth,
-        }),
+        body: JSON.stringify(body),
       });
       const data = (await response.json()) as {
         status?: string;
@@ -113,7 +126,7 @@ export function ProfileSettings() {
         errors?: Record<string, string[]>;
       };
       if (data.status === "ok") {
-        setEditing(false);
+        setEditingField(null);
         await refresh();
       } else {
         setError(apiErrorText(data) ?? authErrors("generic"));
@@ -130,28 +143,109 @@ export function ProfileSettings() {
     user.timezone ??
     t("deviceDefault");
 
+  const footer = (
+    <div className="flex items-center gap-2 pt-1">
+      <Button size="sm" onClick={saveField} disabled={pending}>
+        {t("save")}
+      </Button>
+      <Button size="sm" variant="ghost" onClick={cancel} disabled={pending}>
+        {t("cancel")}
+      </Button>
+      {error ? <span className="text-destructive text-sm">{error}</span> : null}
+    </div>
+  );
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>{t("title")}</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        {editing ? (
-          <form onSubmit={save} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="profile-name">{fields("name")}</Label>
+      <CardContent className="space-y-3">
+        <div className="grid gap-3 sm:grid-cols-2">
+          {/* Name */}
+          {editingField === "name" ? (
+            <EditShell icon={User} label={fields("name")} className="sm:col-span-2">
               <Input
-                id="profile-name"
+                aria-label={fields("name")}
                 autoComplete="name"
                 value={name}
                 onChange={(event) => setName(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    void saveField();
+                  }
+                }}
                 autoFocus
               />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="profile-timezone">{t("timezone")}</Label>
+              {footer}
+            </EditShell>
+          ) : (
+            <InfoTile
+              icon={User}
+              label={fields("name")}
+              onClick={() => startEdit("name")}
+              className="sm:col-span-2"
+            >
+              {user.name}
+            </InfoTile>
+          )}
+
+          {/* Date of birth */}
+          {editingField === "dateOfBirth" ? (
+            <EditShell
+              icon={Cake}
+              label={t("dateOfBirth")}
+              className="sm:col-span-2"
+              action={
+                dateOfBirth ? (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setDateOfBirth(null)}
+                  >
+                    {t("clear")}
+                  </Button>
+                ) : null
+              }
+            >
+              <DateWheelPicker
+                value={dateOfBirth}
+                onChange={setDateOfBirth}
+                locale={locale}
+                labels={{
+                  year: t("dobYear"),
+                  month: t("dobMonth"),
+                  day: t("dobDay"),
+                }}
+              />
+              <p className="text-muted-foreground text-xs">{t("dobHint")}</p>
+              {footer}
+            </EditShell>
+          ) : (
+            <InfoTile
+              icon={Cake}
+              label={t("dateOfBirth")}
+              onClick={() => startEdit("dateOfBirth")}
+            >
+              {user.date_of_birth ? (
+                formatDate(user.date_of_birth, locale)
+              ) : (
+                <span className="text-muted-foreground text-sm font-normal italic">
+                  {t("addDateOfBirth")}
+                </span>
+              )}
+            </InfoTile>
+          )}
+
+          {/* Timezone */}
+          {editingField === "timezone" ? (
+            <EditShell
+              icon={Clock}
+              label={t("timezone")}
+              className="sm:col-span-2"
+            >
               <Combobox
-                id="profile-timezone"
                 value={timezone}
                 onChange={setTimezone}
                 options={[
@@ -165,87 +259,61 @@ export function ProfileSettings() {
                 searchPlaceholder={t("searchTimezone")}
                 emptyText={t("noTimezone")}
               />
-            </div>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label>{t("dateOfBirth")}</Label>
-                {dateOfBirth ? (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setDateOfBirth(null)}
-                  >
-                    {t("clear")}
-                  </Button>
-                ) : null}
-              </div>
-              <DateWheelPicker
-                value={dateOfBirth}
-                onChange={setDateOfBirth}
-                locale={locale}
-                labels={{
-                  year: t("dobYear"),
-                  month: t("dobMonth"),
-                  day: t("dobDay"),
-                }}
-              />
-              <p className="text-muted-foreground text-xs">{t("dobHint")}</p>
-            </div>
-            {error ? <p className="text-destructive text-sm">{error}</p> : null}
-            <div className="flex gap-2">
-              <Button type="submit" disabled={pending}>
-                {t("save")}
-              </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => setEditing(false)}
-              >
-                {t("cancel")}
-              </Button>
-            </div>
-          </form>
-        ) : (
-          // Each field is a tile that opens the editor (like the /portal dashboard's stat tiles).
-          <div className="grid gap-3 sm:grid-cols-2">
-            <InfoTile
-              icon={User}
-              label={fields("name")}
-              onClick={startEditing}
-              className="sm:col-span-2"
-            >
-              {user.name}
-            </InfoTile>
-            <InfoTile
-              icon={Cake}
-              label={t("dateOfBirth")}
-              onClick={startEditing}
-            >
-              {user.date_of_birth ? (
-                formatDate(user.date_of_birth, locale)
-              ) : (
-                <span className="text-muted-foreground text-sm font-normal italic">
-                  {t("addDateOfBirth")}
-                </span>
-              )}
-            </InfoTile>
+              {footer}
+            </EditShell>
+          ) : (
             <InfoTile
               icon={Clock}
               label={t("timezone")}
-              onClick={startEditing}
+              onClick={() => startEdit("timezone")}
             >
               {currentZoneLabel}
             </InfoTile>
-          </div>
-        )}
+          )}
+        </div>
 
-        {/* Account-creation tile — read-only, so it shows in both view and edit modes. */}
+        {/* Account-creation tile — read-only. */}
         <InfoTile icon={CalendarDays} label={t("memberSince")}>
           {formatMonthYear(user.created_at, locale)}
         </InfoTile>
       </CardContent>
     </Card>
+  );
+}
+
+/**
+ * The expanded state of a field tile: the same muted block, with an icon + label header (and an
+ * optional header action), the field's control, and its save/cancel footer.
+ */
+function EditShell({
+  icon: Icon,
+  label,
+  action,
+  children,
+  className,
+}: {
+  icon: LucideIcon;
+  label: string;
+  action?: ReactNode;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "bg-muted/40 ring-ring/50 space-y-3 rounded-xl p-4 ring-1",
+        className,
+      )}
+    >
+      <div className="flex items-center justify-between gap-2">
+        <div className="text-muted-foreground flex items-center gap-2">
+          <Icon className="size-4" />
+          <span className="text-xs font-medium">{label}</span>
+        </div>
+        {action}
+      </div>
+      {children}
+    </div>
   );
 }
 
