@@ -1006,35 +1006,48 @@ export function BusinessDetail({ slug }: { slug: string }) {
                 />
               ) : business.addresses && business.addresses.length > 0 ? (
                 <div className="divide-border/60 -my-4 divide-y">
-                  {business.addresses.map((address) => (
-                    <div key={address.id} className="py-4 text-sm first:pt-0 last:pb-0">
-                      {address.is_main ? (
-                        <Badge variant="outline" className="mb-3">
-                          {t("mainAddress")}
-                        </Badge>
-                      ) : null}
-                      <address className="text-foreground/90 space-y-1 leading-relaxed not-italic">
-                        {[
-                          address.address_1,
-                          address.apartment_suite,
-                          address.address_2,
-                          [address.postal_code, address.city]
-                            .filter(Boolean)
-                            .join(" "),
-                          address.state_province,
-                          address.country,
-                        ]
-                          .filter((line): line is string =>
-                            Boolean(line && line.trim()),
-                          )
-                          .map((line) => (
-                            <span key={line} className="block">
-                              {line}
-                            </span>
-                          ))}
-                      </address>
-                    </div>
-                  ))}
+                  {business.addresses.map((address) => {
+                    const [street, ...rest] = [
+                      address.address_1,
+                      address.apartment_suite,
+                      address.address_2,
+                      [address.postal_code, address.city]
+                        .filter(Boolean)
+                        .join(" "),
+                      address.state_province,
+                      address.country,
+                    ].filter((line): line is string =>
+                      Boolean(line && line.trim()),
+                    );
+
+                    return (
+                      <div
+                        key={address.id}
+                        className="flex gap-3 py-4 first:pt-0 last:pb-0"
+                      >
+                        <span className="bg-background text-muted-foreground mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-lg border">
+                          <MapPin className="size-4" />
+                        </span>
+                        <div className="min-w-0 space-y-1">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="font-medium">{street}</span>
+                            {address.is_main ? (
+                              <Badge variant="green">{t("mainAddress")}</Badge>
+                            ) : null}
+                          </div>
+                          {rest.length > 0 ? (
+                            <address className="text-muted-foreground space-y-0.5 text-sm leading-relaxed not-italic">
+                              {rest.map((line) => (
+                                <span key={line} className="block">
+                                  {line}
+                                </span>
+                              ))}
+                            </address>
+                          ) : null}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               ) : (
                 <Muted>{blank("address")}</Muted>
