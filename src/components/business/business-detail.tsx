@@ -1005,7 +1005,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
                   onChange={(addresses) => patch({ addresses })}
                 />
               ) : business.addresses && business.addresses.length > 0 ? (
-                <div className="divide-border/60 -my-4 divide-y">
+                <div className="divide-border/60 divide-y">
                   {business.addresses.map((address) => {
                     const [street, ...rest] = [
                       address.address_1,
