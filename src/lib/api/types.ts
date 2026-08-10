@@ -23,6 +23,9 @@ export interface AppConfig {
 }
 
 /** The authenticated user returned by the api (`{ user: … }`). */
+/** The account's self-selected gender (matches the api's Gender enum), or null if unset. */
+export type Gender = "male" | "female" | "non_binary" | "prefer_not_to_say";
+
 export interface AuthUser {
   id: number;
   name: string;
@@ -33,6 +36,8 @@ export interface AuthUser {
   two_factor_enabled: boolean;
   // The account's date of birth as `YYYY-MM-DD`, or null if unset.
   date_of_birth: string | null;
+  // The account's self-selected gender, or null if unset.
+  gender: Gender | null;
   created_at: string;
 }
 
