@@ -201,7 +201,17 @@
     "timezone": "Fuso horário",
     "deviceDefault": "Padrão do dispositivo",
     "searchTimezone": "Pesquisar fusos horários…",
-    "noTimezone": "Nenhum fuso horário encontrado."
+    "noTimezone": "Nenhum fuso horário encontrado.",
+    "dateOfBirth": "Data de nascimento",
+    "addDateOfBirth": "Adicione sua data de nascimento",
+    "born": "Nascimento: <b>{date}</b>",
+    "remove": "Remover",
+    "clear": "Limpar",
+    "dobHint": "Você precisa ter pelo menos 13 anos. Somente você pode ver isto.",
+    "dobYear": "Ano",
+    "dobMonth": "Mês",
+    "dobDay": "Dia",
+    "memberSince": "Membro desde"
   },
   "sessions": {
     "title": "Sessões ativas",
@@ -278,6 +288,7 @@
   "deleteAccount": {
     "title": "Excluir conta",
     "description": "Encerre sua conta permanentemente. Você será desconectado em todos os dispositivos.",
+    "retentionNotice": "Por motivos de conformidade, sua conta é desativada imediatamente e excluída permanentemente {days} dias depois.",
     "delete": "Excluir conta",
     "confirm": "Excluir minha conta",
     "cancel": "Cancelar"

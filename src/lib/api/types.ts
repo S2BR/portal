@@ -31,6 +31,8 @@ export interface AuthUser {
   // A short-lived presigned URL for the avatar image, or null.
   avatar: string | null;
   two_factor_enabled: boolean;
+  // The account's date of birth as `YYYY-MM-DD`, or null if unset.
+  date_of_birth: string | null;
   created_at: string;
 }
 

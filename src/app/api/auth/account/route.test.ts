@@ -63,6 +63,45 @@ describe("PATCH /api/auth/account", () => {
     });
   });
 
+  it("passes a date of birth through to the api", async () => {
+    vi.mocked(callWithAuth).mockResolvedValue({
+      ok: true,
+      status: 200,
+      data: {},
+    });
+
+    await PATCH(request({ date_of_birth: "1990-05-15" }));
+
+    expect(callWithAuth).toHaveBeenCalledWith({
+      method: "PATCH",
+      path: "/account",
+      body: { date_of_birth: "1990-05-15" },
+    });
+  });
+
+  it("passes a null date of birth through to clear it", async () => {
+    vi.mocked(callWithAuth).mockResolvedValue({
+      ok: true,
+      status: 200,
+      data: {},
+    });
+
+    await PATCH(request({ date_of_birth: null }));
+
+    expect(callWithAuth).toHaveBeenCalledWith({
+      method: "PATCH",
+      path: "/account",
+      body: { date_of_birth: null },
+    });
+  });
+
+  it("rejects a malformed date of birth without calling the api", async () => {
+    const res = await PATCH(request({ date_of_birth: "05/15/1990" }));
+
+    expect(res.status).toBe(422);
+    expect(callWithAuth).not.toHaveBeenCalled();
+  });
+
   it("surfaces field errors from the api", async () => {
     vi.mocked(callWithAuth).mockResolvedValue({
       ok: false,

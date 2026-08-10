@@ -11,7 +11,7 @@ const badgeVariants = cva(
       variant: {
         neutral: "border-transparent bg-muted text-muted-foreground",
         green:
-          "border-transparent bg-primary/10 text-primary dark:bg-primary/15",
+          "border-transparent bg-brand-green/15 text-brand-green-deep dark:bg-brand-green/15 dark:text-brand-green",
         // The one sanctioned place the brand gold appears (status highlights).
         gold: "border-transparent bg-brand-gold/15 text-brand-gold-deep dark:bg-brand-gold/15 dark:text-brand-gold",
         outline: "text-foreground border-border",

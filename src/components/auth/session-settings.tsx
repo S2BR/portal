@@ -1,5 +1,6 @@
 "use client";
 
+import { MonitorSmartphone } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -7,7 +8,7 @@ import { toast } from "sonner";
 import type { Session } from "@/app/api/auth/sessions/route";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { SettingTile } from "@/components/ui/setting-tile";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNow } from "@/lib/use-now";
 
@@ -92,47 +93,37 @@ export function SessionSettings() {
   const hasOthers = (sessions ?? []).some((session) => !session.current);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("title")}</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {sessions === null ? (
-          <div className="space-y-2">
-            <Skeleton className="h-12 w-full" />
-            <Skeleton className="h-12 w-full" />
-          </div>
-        ) : sessions.length === 0 ? (
-          <p className="text-muted-foreground text-sm">{t("empty")}</p>
-        ) : (
-          <ul className="divide-border divide-y">
-            {sessions.map((session) => (
-              <li
-                key={session.id}
-                className="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0"
-              >
-                <div className="min-w-0 space-y-0.5">
-                  <p className="flex items-center gap-2 text-sm font-medium">
-                    <span className="truncate">
-                      {session.device_name ?? t("unknownDevice")}
-                    </span>
-                    {session.current ? (
-                      <Badge variant="green">{t("current")}</Badge>
-                    ) : null}
-                  </p>
-                  <p className="text-muted-foreground text-xs">
-                    {session.ip_address ?? t("unknownIp")}
-                    {session.last_used_at
-                      ? ` · ${t("lastActive", {
-                          when: format.relativeTime(
-                            new Date(session.last_used_at),
-                            now,
-                          ),
-                        })}`
-                      : ""}
-                  </p>
-                </div>
-                {session.current ? null : (
+    <div className="space-y-3">
+      {sessions === null ? (
+        <div className="space-y-2">
+          <Skeleton className="h-16 w-full rounded-xl" />
+          <Skeleton className="h-16 w-full rounded-xl" />
+        </div>
+      ) : sessions.length === 0 ? (
+        <p className="text-muted-foreground text-sm">{t("empty")}</p>
+      ) : (
+        <div className="space-y-2">
+          {sessions.map((session) => (
+            <SettingTile
+              key={session.id}
+              icon={MonitorSmartphone}
+              subtitle={
+                <>
+                  {session.ip_address ?? t("unknownIp")}
+                  {session.last_used_at
+                    ? ` · ${t("lastActive", {
+                        when: format.relativeTime(
+                          new Date(session.last_used_at),
+                          now,
+                        ),
+                      })}`
+                    : ""}
+                </>
+              }
+              action={
+                session.current ? (
+                  <Badge variant="green">{t("current")}</Badge>
+                ) : (
                   <Button
                     variant="outline"
                     size="sm"
@@ -141,22 +132,24 @@ export function SessionSettings() {
                   >
                     {t("signOut")}
                   </Button>
-                )}
-              </li>
-            ))}
-          </ul>
-        )}
-        {hasOthers ? (
-          <Button
-            variant="destructive"
-            size="sm"
-            disabled={pending !== null}
-            onClick={revokeOthers}
-          >
-            {t("signOutOthers")}
-          </Button>
-        ) : null}
-      </CardContent>
-    </Card>
+                )
+              }
+            >
+              {session.device_name ?? t("unknownDevice")}
+            </SettingTile>
+          ))}
+        </div>
+      )}
+      {hasOthers ? (
+        <Button
+          variant="destructive"
+          size="sm"
+          disabled={pending !== null}
+          onClick={revokeOthers}
+        >
+          {t("signOutOthers")}
+        </Button>
+      ) : null}
+    </div>
   );
 }

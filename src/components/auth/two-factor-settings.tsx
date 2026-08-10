@@ -1,5 +1,6 @@
 "use client";
 
+import { ShieldCheck } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { QRCodeSVG } from "qrcode.react";
 import { useState, type FormEvent } from "react";
@@ -9,15 +10,9 @@ import { useCurrentUser } from "@/components/auth/current-user";
 import { VerifyDialog } from "@/components/auth/verify-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { SettingBlock, SettingTile } from "@/components/ui/setting-tile";
 import { apiErrorText } from "@/lib/api/error-text";
 
 type Mode = "idle" | "enrolling" | "recovery";
@@ -167,13 +162,9 @@ export function TwoFactorSettings() {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("title")}</CardTitle>
-        <CardDescription>{t("description")}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        {mode === "recovery" ? (
+    <>
+      {mode === "recovery" ? (
+        <SettingBlock icon={ShieldCheck} label={t("title")}>
           <div className="space-y-4">
             <div className="space-y-1">
               <p className="font-medium">{t("recoveryTitle")}</p>
@@ -188,7 +179,9 @@ export function TwoFactorSettings() {
             </ul>
             <Button onClick={reset}>{t("done")}</Button>
           </div>
-        ) : mode === "enrolling" ? (
+        </SettingBlock>
+      ) : mode === "enrolling" ? (
+        <SettingBlock icon={ShieldCheck} label={t("title")}>
           <form onSubmit={startConfirmEnroll} className="space-y-4">
             <p className="text-sm">{t("scan")}</p>
             <div className="flex justify-center">
@@ -220,14 +213,15 @@ export function TwoFactorSettings() {
               </Button>
             </div>
           </form>
-        ) : (
-          <div className="space-y-3">
-            <div className="flex items-center justify-between gap-4">
-              <Badge variant={user.two_factor_enabled ? "green" : "gold"}>
-                {user.two_factor_enabled ? t("statusOn") : t("statusOff")}
-              </Badge>
-              {user.two_factor_enabled ? (
-                <div className="flex gap-2">
+        </SettingBlock>
+      ) : (
+        <div className="space-y-3">
+          <SettingTile
+            icon={ShieldCheck}
+            label={t("title")}
+            action={
+              user.two_factor_enabled ? (
+                <>
                   <Button
                     variant="outline"
                     size="sm"
@@ -242,17 +236,21 @@ export function TwoFactorSettings() {
                   >
                     {t("disable")}
                   </Button>
-                </div>
+                </>
               ) : (
                 <Button size="sm" onClick={startEnroll} disabled={pending}>
                   {t("enable")}
                 </Button>
-              )}
-            </div>
-            {error ? <p className="text-destructive text-sm">{error}</p> : null}
-          </div>
-        )}
-      </CardContent>
+              )
+            }
+          >
+            <Badge variant={user.two_factor_enabled ? "green" : "gold"}>
+              {user.two_factor_enabled ? t("statusOn") : t("statusOff")}
+            </Badge>
+          </SettingTile>
+          {error ? <p className="text-destructive text-sm">{error}</p> : null}
+        </div>
+      )}
       <VerifyDialog
         open={passwordAction !== null}
         onOpenChange={(open) => {
@@ -285,6 +283,6 @@ export function TwoFactorSettings() {
         }
         destructive={passwordAction === "disable"}
       />
-    </Card>
+    </>
   );
 }

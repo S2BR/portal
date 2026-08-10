@@ -1,18 +1,13 @@
 "use client";
 
+import { Info, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { VerifyDialog } from "@/components/auth/verify-dialog";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { SettingTile } from "@/components/ui/setting-tile";
 import { apiErrorText } from "@/lib/api/error-text";
 
 /**
@@ -46,16 +41,29 @@ export function DeleteAccountSettings() {
   }
 
   return (
-    <Card className="border-destructive/40">
-      <CardHeader>
-        <CardTitle>{t("title")}</CardTitle>
-        <CardDescription>{t("description")}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Button variant="destructive" size="sm" onClick={() => setOpen(true)}>
-          {t("delete")}
-        </Button>
-      </CardContent>
+    <>
+      <div className="space-y-2">
+        <SettingTile
+          icon={Trash2}
+          tone="danger"
+          subtitle={t("description")}
+          action={
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => setOpen(true)}
+            >
+              {t("delete")}
+            </Button>
+          }
+        >
+          {t("title")}
+        </SettingTile>
+        <p className="text-muted-foreground flex items-start gap-2 px-1 text-xs">
+          <Info className="mt-0.5 size-3.5 shrink-0" aria-hidden />
+          <span>{t("retentionNotice", { days: 30 })}</span>
+        </p>
+      </div>
       <VerifyDialog
         open={open}
         onOpenChange={setOpen}
@@ -66,6 +74,6 @@ export function DeleteAccountSettings() {
         confirmLabel={t("confirm")}
         destructive
       />
-    </Card>
+    </>
   );
 }

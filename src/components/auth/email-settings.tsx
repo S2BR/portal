@@ -1,5 +1,6 @@
 "use client";
 
+import { Mail } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState, type FormEvent } from "react";
 
@@ -7,9 +8,9 @@ import { useCurrentUser } from "@/components/auth/current-user";
 import { OtpInput } from "@/components/auth/otp-input";
 import { VerifyDialog } from "@/components/auth/verify-dialog";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { SettingBlock, SettingTile } from "@/components/ui/setting-tile";
 import { apiErrorText } from "@/lib/api/error-text";
 import { useOtpLength } from "@/lib/config/use-app-config";
 
@@ -107,12 +108,9 @@ export function EmailSettings() {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("title")}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        {mode === "verifying" ? (
+    <>
+      {mode === "verifying" ? (
+        <SettingBlock icon={Mail} label={t("title")}>
           <form onSubmit={verifyChange} className="space-y-4">
             <p className="text-sm">{t("verifyTitle")}</p>
             <p className="text-muted-foreground text-sm">
@@ -139,7 +137,9 @@ export function EmailSettings() {
               </Button>
             </div>
           </form>
-        ) : mode === "changing" ? (
+        </SettingBlock>
+      ) : mode === "changing" ? (
+        <SettingBlock icon={Mail} label={t("title")}>
           <form onSubmit={startChange} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="new-email">{t("newEmail")}</Label>
@@ -160,23 +160,20 @@ export function EmailSettings() {
               </Button>
             </div>
           </form>
-        ) : (
-          <div className="flex items-center justify-between gap-4">
-            <span className="truncate text-sm">{user.email}</span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                setNewEmail("");
-                setError(null);
-                setMode("changing");
-              }}
-            >
-              {t("change")}
-            </Button>
-          </div>
-        )}
-      </CardContent>
+        </SettingBlock>
+      ) : (
+        <SettingTile
+          icon={Mail}
+          label={t("title")}
+          onClick={() => {
+            setNewEmail("");
+            setError(null);
+            setMode("changing");
+          }}
+        >
+          {user.email}
+        </SettingTile>
+      )}
       <VerifyDialog
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
@@ -185,6 +182,6 @@ export function EmailSettings() {
         onVerified={requestChange}
         confirmLabel={t("submit")}
       />
-    </Card>
+    </>
   );
 }

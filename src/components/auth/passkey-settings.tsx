@@ -1,21 +1,16 @@
 "use client";
 
+import { KeyRound, Plus } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 
 import { VerifyDialog } from "@/components/auth/verify-dialog";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { SettingBlock, SettingTile } from "@/components/ui/setting-tile";
 import { apiErrorText } from "@/lib/api/error-text";
 import {
   browserSupportsWebAuthn,
@@ -175,15 +170,15 @@ export function PasskeySettings() {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("title")}</CardTitle>
-        <CardDescription>{t("description")}</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {!supported ? (
-          <p className="text-muted-foreground text-sm">{t("unsupported")}</p>
-        ) : mode === "adding" ? (
+    <>
+      {!supported ? (
+        <SettingTile icon={KeyRound} label={t("title")}>
+          <span className="text-muted-foreground text-sm font-normal">
+            {t("unsupported")}
+          </span>
+        </SettingTile>
+      ) : mode === "adding" ? (
+        <SettingBlock icon={KeyRound} label={t("title")}>
           <form onSubmit={startAdd} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="passkey-name">{t("nameLabel")}</Label>
@@ -202,34 +197,33 @@ export function PasskeySettings() {
               </Button>
             </div>
           </form>
-        ) : (
-          <div className="space-y-4">
-            {passkeys === null ? (
-              <Skeleton className="h-10 w-full" />
-            ) : passkeys.length === 0 ? (
-              <p className="text-muted-foreground text-sm">{t("empty")}</p>
-            ) : (
-              <ul className="divide-border divide-y rounded-md border">
-                {passkeys.map((passkey) => (
-                  <li
-                    key={passkey.id}
-                    className="flex items-center justify-between gap-4 px-3 py-2"
-                  >
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-medium">
-                        {passkey.name}
-                      </p>
-                      <p className="text-muted-foreground text-xs">
-                        {passkey.last_used_at
-                          ? t("lastUsed", {
-                              date: format.dateTime(
-                                new Date(passkey.last_used_at),
-                                { dateStyle: "medium" },
-                              ),
-                            })
-                          : t("neverUsed")}
-                      </p>
-                    </div>
+        </SettingBlock>
+      ) : (
+        <div className="space-y-3">
+          <div>
+            <h3 className="text-sm font-medium">{t("title")}</h3>
+            <p className="text-muted-foreground text-xs">{t("description")}</p>
+          </div>
+          {passkeys === null ? (
+            <Skeleton className="h-16 w-full rounded-xl" />
+          ) : passkeys.length === 0 ? (
+            <p className="text-muted-foreground text-sm">{t("empty")}</p>
+          ) : (
+            <div className="space-y-2">
+              {passkeys.map((passkey) => (
+                <SettingTile
+                  key={passkey.id}
+                  icon={KeyRound}
+                  subtitle={
+                    passkey.last_used_at
+                      ? t("lastUsed", {
+                          date: format.dateTime(new Date(passkey.last_used_at), {
+                            dateStyle: "medium",
+                          }),
+                        })
+                      : t("neverUsed")
+                  }
+                  action={
                     <Button
                       type="button"
                       variant="ghost"
@@ -241,23 +235,27 @@ export function PasskeySettings() {
                     >
                       {t("remove")}
                     </Button>
-                  </li>
-                ))}
-              </ul>
-            )}
-            <Button
-              type="button"
-              size="sm"
-              onClick={() => {
-                setName("");
-                setMode("adding");
-              }}
-            >
-              {t("add")}
-            </Button>
-          </div>
-        )}
-      </CardContent>
+                  }
+                >
+                  {passkey.name}
+                </SettingTile>
+              ))}
+            </div>
+          )}
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              setName("");
+              setMode("adding");
+            }}
+          >
+            <Plus className="size-4" />
+            {t("add")}
+          </Button>
+        </div>
+      )}
       <VerifyDialog
         open={passwordAction !== null}
         onOpenChange={(open) => {
@@ -279,6 +277,6 @@ export function PasskeySettings() {
         confirmLabel={passwordAction === "remove" ? t("remove") : t("add")}
         destructive={passwordAction === "remove"}
       />
-    </Card>
+    </>
   );
 }
