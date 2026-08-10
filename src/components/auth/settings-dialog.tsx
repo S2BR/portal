@@ -177,8 +177,10 @@ function SettingsDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="flex h-[85vh] w-full flex-col gap-0 overflow-hidden p-0 sm:h-[80vh] sm:max-h-[44rem] sm:max-w-4xl sm:flex-row">
-        {/* Category nav — a left rail on desktop, a scrollable row on mobile. */}
-        <div className="bg-muted/30 flex shrink-0 flex-col border-b sm:w-56 sm:border-e sm:border-b-0">
+        {/* Category nav — a left rail on desktop, a scrollable row on mobile. On desktop an inset
+            shadow on its inner edge (in place of a border) makes the content pane look like it
+            overlaps the rail, echoing the login screen's side panel. */}
+        <div className="bg-muted/30 flex shrink-0 flex-col border-b sm:w-56 sm:border-b-0 sm:shadow-[inset_-16px_0_28px_-16px_rgba(0,0,0,0.18)]">
           <DialogTitle className="px-4 pt-4 pb-1 text-sm font-semibold tracking-tight sm:px-6 sm:pt-5 sm:pb-2">
             {t("settingsTitle")}
           </DialogTitle>
