@@ -51,7 +51,6 @@ export function ThemeToggle({
       theme={theme as ThemeSelection | undefined}
       resolvedTheme={resolvedTheme as Resolved | undefined}
       setTheme={setTheme}
-      direction="ltr"
     >
       {({ effective, toggleTheme }) => (
         <DropdownMenu>
