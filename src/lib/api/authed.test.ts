@@ -99,6 +99,40 @@ describe("callWithAuth", () => {
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
+  it("does NOT clear the session on a transient 5xx refresh failure", async () => {
+    // An upstream blip (e.g. the API restarting during a dev rebuild) must not sign the user out
+    // — the refresh token is still live. Keep the cookies so the next attempt recovers.
+    fetchMock
+      .mockResolvedValueOnce(jsonResponse(401, { message: "Unauthenticated." }))
+      .mockResolvedValueOnce(
+        jsonResponse(503, { message: "Service Unavailable" }),
+      );
+
+    const res = await callWithAuth({ path: "/auth/me" });
+
+    expect(res.status).toBe(401);
+    expect(clearSessionCookies).not.toHaveBeenCalled();
+    expect(setSessionCookies).not.toHaveBeenCalled();
+  });
+
+  it("does NOT clear the session when the refresh response is not JSON", async () => {
+    // A non-JSON body (an HTML outage page, or a mispointed PORTAL_API_URL) fails closed with a
+    // non-401 status — it's transient/misconfig, not a dead refresh token, so keep the session.
+    fetchMock
+      .mockResolvedValueOnce(jsonResponse(401, { message: "Unauthenticated." }))
+      .mockResolvedValueOnce(
+        new Response("<html>outage</html>", {
+          status: 200,
+          headers: { "content-type": "text/html" },
+        }),
+      );
+
+    const res = await callWithAuth({ path: "/auth/me" });
+
+    expect(clearSessionCookies).not.toHaveBeenCalled();
+    expect(setSessionCookies).not.toHaveBeenCalled();
+  });
+
   it("single-flights concurrent refreshes of the same token", async () => {
     // Two authed calls fire at once with an expired access token — as a page mounting several
     // components does. They must rotate the single-use refresh token ONCE between them, not race.

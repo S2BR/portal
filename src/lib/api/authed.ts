@@ -67,7 +67,14 @@ export async function callWithAuth<T = unknown>(
   const refreshed = await refreshTokenPair(refreshToken);
 
   if (!refreshed.ok) {
-    await clearSessionCookies();
+    // Only sign out on a DEFINITIVE auth failure: the API returns a generic 401 when the refresh
+    // token is invalid / expired / revoked (including a detected reuse). A transient failure — a
+    // 5xx, or a non-JSON fail-closed body (an upstream hiccup or a dev rebuild) — must NOT clear
+    // the session, or the user is spuriously logged out AND the still-live token is abandoned as
+    // an orphaned server session. Keep the cookies so the next attempt recovers.
+    if (refreshed.status === 401) {
+      await clearSessionCookies();
+    }
     return first;
   }
 
