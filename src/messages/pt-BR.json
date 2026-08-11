@@ -581,6 +581,10 @@
       "reorder": "Reordenar",
       "makeMainQuestion": "Tornar este o endereço principal?",
       "setAsMain": "Definir como principal",
+      "linkedin": {
+        "person": "Sou um profissional",
+        "company": "Sou uma empresa"
+      },
       "addAddress": "Adicionar endereço",
       "removeAddress": "Remover endereço",
       "categoriesEmpty": "Ainda não há categorias disponíveis.",

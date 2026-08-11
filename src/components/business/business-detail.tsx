@@ -1456,6 +1456,7 @@ function LinkedinInput({
   onChange: (value: string) => void;
   placeholder?: string;
 }) {
+  const t = useTranslations("businesses.detail.linkedin");
   const match = value.match(/^(in|company)\/(.*)$/i);
   const kind = (match?.[1]?.toLowerCase() ?? "in") as "in" | "company";
   const name = match?.[2] ?? value.replace(/^\/+/, "");
@@ -1463,18 +1464,30 @@ function LinkedinInput({
     onChange(`${nextKind}/${nextName}`);
   };
 
+  // The green dot matches the selection marker used in the menus (instead of a check).
+  const greenDot = (
+    <span className="bg-brand-green block size-2 rounded-full" aria-hidden />
+  );
+
   return (
     <div className="border-input focus-within:border-ring focus-within:ring-ring/50 dark:bg-input/30 flex h-11 w-full min-w-0 flex-1 items-center rounded-lg border bg-transparent transition-colors focus-within:ring-3">
       <span className="text-muted-foreground shrink-0 ps-3.5 text-base select-none">
         https://linkedin.com/
       </span>
       <Select value={kind} onValueChange={(nextKind) => set(nextKind, name)}>
-        <SelectTrigger className="text-foreground h-auto w-auto shrink-0 gap-1 border-0 bg-transparent px-0 py-0 font-medium dark:bg-transparent">
-          <SelectValue />
+        {/* Collapsed, the trigger shows the URL segment (`in`/`company`); open, the options read as
+            plain-language choices so the user knows which to pick. Styled as a highlighted chip (muted
+            fill, chevron, hover/open accent) so it reads as a switcher, not static URL text. */}
+        <SelectTrigger className="text-foreground bg-muted hover:bg-accent data-[state=open]:bg-accent dark:bg-input/50 dark:hover:bg-accent mx-1 h-auto w-auto shrink-0 gap-1 rounded-md border-0 px-1.5 py-0.5 font-medium transition-colors [&>svg]:opacity-80">
+          {kind}
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="in">in</SelectItem>
-          <SelectItem value="company">company</SelectItem>
+          <SelectItem value="in" indicator={greenDot}>
+            {t("person")}
+          </SelectItem>
+          <SelectItem value="company" indicator={greenDot}>
+            {t("company")}
+          </SelectItem>
         </SelectContent>
       </Select>
       <span className="text-muted-foreground shrink-0 text-base select-none">
