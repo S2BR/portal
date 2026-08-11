@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { flushSync } from "react-dom";
+import { Direction as RadixDirection } from "radix-ui";
 
 export type ThemeSelection = "light" | "dark" | "system";
 export type Resolved = "light" | "dark";
@@ -78,9 +79,13 @@ export function ThemeToggler({
   resolvedTheme,
   setTheme,
   onImmediateChange,
-  direction = "ltr",
+  direction,
   children,
 }: ThemeTogglerProps) {
+  // Default the wipe to the page's text direction (from the DirectionProvider) so it runs right→left
+  // in RTL, mirroring the reading direction; an explicit `direction` (e.g. a vertical wipe) wins.
+  const contextDirection = RadixDirection.useDirection();
+  const resolvedDirection = direction ?? contextDirection;
   const [preview, setPreview] = React.useState<null | {
     effective: ThemeSelection;
     resolved: Resolved;
@@ -97,7 +102,7 @@ export function ThemeToggler({
     setMounted(true);
   }, []);
 
-  const [fromClip, toClip] = getClipKeyframes(direction);
+  const [fromClip, toClip] = getClipKeyframes(resolvedDirection);
 
   const toggleTheme = React.useCallback(
     async (next: ThemeSelection) => {
