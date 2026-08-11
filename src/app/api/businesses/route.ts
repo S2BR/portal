@@ -133,6 +133,40 @@ export async function GET(): Promise<NextResponse> {
   return NextResponse.json({ businesses: [] }, { status: response.status });
 }
 
+const reorderSchema = z.object({
+  slugs: z.array(z.string()).min(1).max(200),
+});
+
+/**
+ * BFF: persist the signed-in user's chosen order of their businesses. A collection-level PATCH (the
+ * API deliberately keeps reorder off the `/businesses/{slug}` space so a business slugged "reorder"
+ * can't collide). Forwards the ordered slug list; a slug the user doesn't own is a 404 relayed as-is.
+ */
+export async function PATCH(request: Request): Promise<NextResponse> {
+  const parsed = reorderSchema.safeParse(
+    await request.json().catch(() => null),
+  );
+  if (!parsed.success) {
+    return NextResponse.json({ status: "invalid" }, { status: 422 });
+  }
+
+  const response = await callWithAuth<{ status?: string }>({
+    method: "PATCH",
+    path: "/businesses",
+    body: parsed.data,
+  });
+
+  if (response.ok) {
+    return NextResponse.json({ status: "ok" });
+  }
+
+  if (response.status === 404) {
+    return NextResponse.json({ status: "not_found" }, { status: 404 });
+  }
+
+  return NextResponse.json({ status: "error" }, { status: 502 });
+}
+
 /**
  * BFF: create a business owned by the signed-in user. Forwards to the API's token-scoped
  * `POST /businesses` and returns the created business (the API's flat `{business}` envelope) so

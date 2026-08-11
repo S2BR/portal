@@ -3,15 +3,24 @@
 import { Building2, ChevronRight, Plus, User2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { toast } from "sonner";
 
 import type { Business } from "@/app/api/businesses/route";
 import { Button } from "@/components/ui/button";
+import {
+  DragHandle,
+  overlayClass,
+  placeholderClass,
+} from "@/components/ui/drag-handle";
+import { SortableList } from "@/components/ui/sortable-list";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 /**
  * The signed-in user's businesses as a clean hairline-divided list, each row linking to its detail
- * page. Shows a skeleton while loading and an empty state (with a create link) when there are none.
+ * page — and drag-to-reorderable (the order persists per-user via the API). Shows a skeleton while
+ * loading and an empty state (with a create link) when there are none.
  */
 export function BusinessList() {
   const t = useTranslations("businesses");
@@ -34,6 +43,70 @@ export function BusinessList() {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     void load();
   }, [load]);
+
+  const typeLabel = (business: Business) =>
+    business.type === "company"
+      ? types("company.title")
+      : types("selfEmployed.title");
+
+  /** A row's content: the drag handle + the link (logo, name, type, chevron). */
+  const rowBody = (business: Business, handle: ReactNode) => {
+    const Icon = business.type === "company" ? Building2 : User2;
+    return (
+      <>
+        {handle}
+        <Link
+          href={`/portal/businesses/${business.slug}`}
+          className="hover:bg-muted/50 focus-visible:bg-muted/50 flex flex-1 items-center gap-3 rounded-lg px-2 py-3 transition-colors outline-none"
+        >
+          <span className="bg-muted text-muted-foreground flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg">
+            {business.logo ? (
+              // eslint-disable-next-line @next/next/no-img-element -- presigned S3 url, not a bundled asset
+              <img
+                src={business.logo}
+                alt=""
+                className="size-full object-cover"
+              />
+            ) : (
+              <Icon className="size-5" />
+            )}
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="truncate font-medium">{business.name}</p>
+            {business.headline ? (
+              <p className="text-muted-foreground truncate text-sm">
+                {business.headline}
+              </p>
+            ) : null}
+          </div>
+          <span className="text-muted-foreground hidden text-sm sm:inline">
+            {typeLabel(business)}
+          </span>
+          <ChevronRight className="text-muted-foreground size-4 shrink-0" />
+        </Link>
+      </>
+    );
+  };
+
+  // Drop fires once (dnd-kit) and only on an actual move, so the API PATCH goes out here directly.
+  const reorder = (next: Business[]) => {
+    const previous = businesses ?? [];
+    setBusinesses(next);
+    void fetch("/api/businesses", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ slugs: next.map((business) => business.slug) }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("reorder failed");
+        }
+      })
+      .catch(() => {
+        setBusinesses(previous);
+        toast.error(t("reorderError"));
+      });
+  };
 
   if (businesses === null) {
     return (
@@ -68,46 +141,56 @@ export function BusinessList() {
     );
   }
 
+  // A single business isn't reorderable — render it without a drag handle.
+  if (businesses.length === 1) {
+    const business = businesses[0]!;
+    return (
+      <div className="border-border/60 flex items-center gap-1 border-b">
+        {rowBody(business, null)}
+      </div>
+    );
+  }
+
   return (
-    <ul className="divide-y">
-      {businesses.map((business) => {
-        const Icon = business.type === "company" ? Building2 : User2;
-        return (
-          <li key={business.id}>
-            <Link
-              href={`/portal/businesses/${business.slug}`}
-              className="hover:bg-muted/50 focus-visible:bg-muted/50 flex items-center gap-3 rounded-lg px-2 py-3 transition-colors outline-none"
-            >
-              <span className="bg-muted text-muted-foreground flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg">
-                {business.logo ? (
-                  // eslint-disable-next-line @next/next/no-img-element -- presigned S3 url, not a bundled asset
-                  <img
-                    src={business.logo}
-                    alt=""
-                    className="size-full object-cover"
-                  />
-                ) : (
-                  <Icon className="size-5" />
-                )}
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="truncate font-medium">{business.name}</p>
-                {business.headline ? (
-                  <p className="text-muted-foreground truncate text-sm">
-                    {business.headline}
-                  </p>
-                ) : null}
-              </div>
-              <span className="text-muted-foreground hidden text-sm sm:inline">
-                {business.type === "company"
-                  ? types("company.title")
-                  : types("selfEmployed.title")}
-              </span>
-              <ChevronRight className="text-muted-foreground size-4 shrink-0" />
-            </Link>
-          </li>
-        );
-      })}
-    </ul>
+    <SortableList
+      items={businesses}
+      getId={(business) => String(business.id)}
+      onReorder={reorder}
+      renderItem={(business, { setNodeRef, style, isDragging, handle }) => (
+        <div
+          ref={setNodeRef}
+          style={style}
+          className={cn(
+            "flex items-center gap-1",
+            isDragging
+              ? cn(placeholderClass, "py-3")
+              : "border-border/60 border-b last:border-b-0",
+          )}
+        >
+          <div
+            className={cn(
+              "flex flex-1 items-center gap-1",
+              isDragging && "invisible",
+            )}
+          >
+            {rowBody(
+              business,
+              <DragHandle
+                ref={handle.ref}
+                label={t("reorder")}
+                className="ms-1"
+                {...handle.attributes}
+                {...handle.listeners}
+              />,
+            )}
+          </div>
+        </div>
+      )}
+      renderOverlay={(business) => (
+        <div className={cn("flex items-center gap-1 py-1", overlayClass)}>
+          {rowBody(business, <DragHandle label={t("reorder")} className="ms-1" />)}
+        </div>
+      )}
+    />
   );
 }
