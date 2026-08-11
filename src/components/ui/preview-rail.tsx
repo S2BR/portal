@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { Direction as RadixDirection } from "radix-ui";
 import { useEffect, useState } from "react";
 
 import { cn } from "@/lib/utils";
@@ -105,12 +106,18 @@ export function PreviewRail({
   className?: string;
 }) {
   const reduce = useReducedMotion();
+  const dir = RadixDirection.useDirection();
   const activeId = useActiveSection(items.map((item) => item.id));
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
   if (items.length === 0) {
     return null;
   }
+
+  // The rail hugs the inline-end screen edge (right in LTR, left in RTL). Logical Tailwind classes
+  // (end-*, me-*) handle the CSS mirroring; the two JS-side transforms below flip by hand.
+  const enterX = dir === "rtl" ? -8 : 8;
+  const barOrigin = dir === "rtl" ? "left center" : "right center";
 
   const activeIndex = items.findIndex((item) => item.id === activeId);
   const previewItem = hoverIndex !== null ? items[hoverIndex] : null;
@@ -125,7 +132,7 @@ export function PreviewRail({
   return (
     <div
       className={cn(
-        "fixed top-1/2 right-3 z-30 hidden -translate-y-1/2 items-center lg:flex",
+        "fixed top-1/2 end-3 z-30 hidden -translate-y-1/2 items-center lg:flex",
         className,
       )}
     >
@@ -133,19 +140,21 @@ export function PreviewRail({
         {previewItem ? (
           <motion.div
             key={previewItem.id}
-            initial={reduce ? false : { opacity: 0, x: 8, filter: "blur(6px)" }}
+            initial={
+              reduce ? false : { opacity: 0, x: enterX, filter: "blur(6px)" }
+            }
             animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
             exit={
               reduce
                 ? { opacity: 0 }
-                : { opacity: 0, x: 8, filter: "blur(4px)" }
+                : { opacity: 0, x: enterX, filter: "blur(4px)" }
             }
             transition={
               reduce
                 ? { duration: 0 }
                 : { type: "spring", stiffness: 400, damping: 32 }
             }
-            className="bg-popover/80 text-popover-foreground ring-foreground/10 pointer-events-none absolute right-full mr-3 w-56 rounded-lg p-3 shadow-md ring-1 backdrop-blur-xl"
+            className="bg-popover/80 text-popover-foreground ring-foreground/10 pointer-events-none absolute end-full me-3 w-56 rounded-lg p-3 shadow-md ring-1 backdrop-blur-xl"
           >
             <p className="truncate text-sm font-medium">{previewItem.label}</p>
             {previewItem.description ? (
@@ -185,7 +194,7 @@ export function PreviewRail({
                     "block h-0.5 w-6 rounded-full",
                     isActive ? "bg-foreground" : "bg-muted-foreground/40",
                   )}
-                  style={{ transformOrigin: "right center" }}
+                  style={{ transformOrigin: barOrigin }}
                   animate={{ scaleX }}
                   transition={
                     reduce
