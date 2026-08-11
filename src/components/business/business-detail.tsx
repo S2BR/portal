@@ -6,6 +6,7 @@ import {
   Check,
   Clock,
   Contact,
+  ExternalLink,
   Info,
   MapPin,
   Palette,
@@ -39,8 +40,11 @@ import type {
 } from "@/app/api/businesses/route";
 import {
   DAYS,
+  SOCIAL_BASE_URL,
   SOCIAL_NETWORKS,
+  socialDisplay,
   socialLabel,
+  socialUrl,
 } from "@/components/business/business-constants";
 import type { PlaceAddress } from "@/app/api/addresses/place/[id]/route";
 import type { Amenity } from "@/app/api/amenities/route";
@@ -80,6 +84,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { LinkPreview } from "@/components/ui/link-preview";
 import {
   Select,
   SelectContent,
@@ -674,7 +679,10 @@ export function BusinessDetail({ slug }: { slug: string }) {
         />
       </div>
 
-      <form onSubmit={save}>
+      {/* While editing, the Save/Cancel bar floats fixed at the bottom of the viewport; pad the form
+          so its last content (e.g. the "add social" button) can scroll clear of the bar instead of
+          hiding behind it. */}
+      <form onSubmit={save} className={editing ? "pb-28" : undefined}>
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="mx-auto h-auto w-fit max-w-full p-1.5">
             {tabItems.map((tab) => (
@@ -876,13 +884,11 @@ export function BusinessDetail({ slug }: { slug: string }) {
                     makeRow={(): LinkRow => ({ value: "", name: "" })}
                     renderRow={(row, update) => (
                       <>
-                        <Input
+                        <PrefixInput
+                          prefix="https://"
                           value={row.value}
-                          onChange={(event) =>
-                            update({ value: event.target.value })
-                          }
+                          onChange={(value) => update({ value })}
                           placeholder={fields("contactValue")}
-                          className="flex-1"
                         />
                         <Input
                           value={row.name}
@@ -1125,14 +1131,20 @@ export function BusinessDetail({ slug }: { slug: string }) {
                           ))}
                         </SelectContent>
                       </Select>
-                      <Input
-                        value={row.handle}
-                        onChange={(event) =>
-                          update({ handle: event.target.value })
-                        }
-                        placeholder={fields("handle")}
-                        className="flex-1"
-                      />
+                      {row.platform === "linkedin" ? (
+                        <LinkedinInput
+                          value={row.handle}
+                          onChange={(handle) => update({ handle })}
+                          placeholder={fields("handle")}
+                        />
+                      ) : (
+                        <PrefixInput
+                          prefix={`https://${SOCIAL_BASE_URL[row.platform]}`}
+                          value={row.handle}
+                          onChange={(handle) => update({ handle })}
+                          placeholder={fields("handle")}
+                        />
+                      )}
                     </>
                   )}
                 />
@@ -1141,14 +1153,20 @@ export function BusinessDetail({ slug }: { slug: string }) {
                   {business.socials.map((social, index) => (
                     <li
                       key={index}
-                      className="flex items-center justify-between py-3 text-sm"
+                      className="flex items-center justify-between gap-3 py-3 text-sm"
                     >
-                      <span className="font-medium">
+                      <span className="shrink-0 font-medium">
                         {socialLabel(social.platform)}
                       </span>
-                      <span className="text-muted-foreground">
-                        {social.handle}
-                      </span>
+                      <LinkPreview
+                        url={socialUrl(social.platform, social.handle)}
+                        className="text-foreground group inline-flex min-w-0 items-center gap-1"
+                      >
+                        <span className="truncate underline underline-offset-4 group-hover:no-underline">
+                          {socialDisplay(social.platform, social.handle)}
+                        </span>
+                        <ExternalLink className="size-3 shrink-0" aria-hidden />
+                      </LinkPreview>
                     </li>
                   ))}
                 </ul>
@@ -1322,7 +1340,100 @@ function Muted({ children }: { children: ReactNode }) {
   return <p className="text-muted-foreground text-sm italic">{children}</p>;
 }
 
-/** Read-only list for one contact section (website/phone/email); phones show flag + formatted. */
+/** An input with a fixed, non-editable text prefix (e.g. `https://` or `instagram.com/`) — the user
+ *  types only the part that follows, and the prefix is stripped from the stored value. */
+function PrefixInput({
+  prefix,
+  value,
+  onChange,
+  placeholder,
+}: {
+  prefix: string;
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+}) {
+  return (
+    <div className="border-input focus-within:border-ring focus-within:ring-ring/50 dark:bg-input/30 flex h-11 w-full min-w-0 flex-1 items-center rounded-lg border bg-transparent transition-colors focus-within:ring-3">
+      <span className="text-muted-foreground shrink-0 ps-3.5 text-base select-none">
+        {prefix}
+      </span>
+      <input
+        type="text"
+        inputMode="url"
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        placeholder={placeholder}
+        className="placeholder:text-muted-foreground h-full min-w-0 flex-1 bg-transparent py-2 pe-3.5 ps-1 text-base outline-none"
+      />
+    </div>
+  );
+}
+
+/** LinkedIn profiles live under two different paths — `/in/` for a person and `/company/` for an
+ *  organization — so the handle is stored as `<kind>/<name>` and this field surfaces the kind as an
+ *  inline selector right after the `linkedin.com/` prefix. */
+function LinkedinInput({
+  value,
+  onChange,
+  placeholder,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+}) {
+  const match = value.match(/^(in|company)\/(.*)$/i);
+  const kind = (match?.[1]?.toLowerCase() ?? "in") as "in" | "company";
+  const name = match?.[2] ?? value.replace(/^\/+/, "");
+  const set = (nextKind: string, nextName: string) => {
+    onChange(`${nextKind}/${nextName}`);
+  };
+
+  return (
+    <div className="border-input focus-within:border-ring focus-within:ring-ring/50 dark:bg-input/30 flex h-11 w-full min-w-0 flex-1 items-center rounded-lg border bg-transparent transition-colors focus-within:ring-3">
+      <span className="text-muted-foreground shrink-0 ps-3.5 text-base select-none">
+        https://linkedin.com/
+      </span>
+      <Select value={kind} onValueChange={(nextKind) => set(nextKind, name)}>
+        <SelectTrigger className="text-foreground h-auto w-auto shrink-0 gap-1 border-0 bg-transparent px-0 py-0 font-medium dark:bg-transparent">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="in">in</SelectItem>
+          <SelectItem value="company">company</SelectItem>
+        </SelectContent>
+      </Select>
+      <span className="text-muted-foreground shrink-0 text-base select-none">
+        /
+      </span>
+      <input
+        type="text"
+        inputMode="url"
+        value={name}
+        onChange={(event) => set(kind, event.target.value)}
+        placeholder={placeholder}
+        className="placeholder:text-muted-foreground h-full min-w-0 flex-1 bg-transparent py-2 pe-3.5 ps-1 text-base outline-none"
+      />
+    </div>
+  );
+}
+
+/** The clickable target for a contact value: `tel:`/`mailto:` for phone/email, an `http://`-schemed URL otherwise. */
+function contactHref(contact: BusinessContact): string {
+  if (contact.type === "phone") {
+    return `tel:${contact.value.replace(/[^\d+]/g, "")}`;
+  }
+  if (contact.type === "email") {
+    return `mailto:${contact.value}`;
+  }
+  return /^https?:\/\//i.test(contact.value)
+    ? contact.value
+    : `https://${contact.value}`;
+}
+
+/** Read-only list for one contact section (website/phone/email); phones show flag + formatted. Each
+ *  value is a link — website opens in a new tab (external glyph), phone dials (`tel:`), email composes
+ *  (`mailto:`). */
 function ContactValues({
   items,
   empty,
@@ -1335,23 +1446,46 @@ function ContactValues({
   }
   return (
     <ul className="divide-y">
-      {items.map((contact, index) => (
-        <li
-          key={index}
-          className="flex items-center justify-between gap-3 py-3 text-sm"
-        >
-          <span className="min-w-0 flex-1 truncate">
-            {contact.type === "phone"
-              ? `${contact.meta?.country ? `${flagEmoji(contact.meta.country)} ` : ""}${formatPhone(contact.value, contact.meta?.country)}`
-              : contact.value}
+      {items.map((contact, index) => {
+        const isWebsite = contact.type === "website";
+        const display =
+          contact.type === "phone"
+            ? `${contact.meta?.country ? `${flagEmoji(contact.meta.country)} ` : ""}${formatPhone(contact.value, contact.meta?.country)}`
+            : isWebsite
+              ? contactHref(contact)
+              : contact.value;
+        // The underline lives on the inner text span, not the flex anchor: `text-decoration` on an
+        // `inline-flex` box doesn't reach its (blockified) flex-item children, so it would vanish.
+        const linkClass =
+          "text-foreground group inline-flex min-w-0 items-center gap-1 font-medium";
+        const text = (
+          <span className="truncate underline underline-offset-4 group-hover:no-underline">
+            {display}
           </span>
-          {contact.name ? (
-            <span className="text-muted-foreground shrink-0">
-              {contact.name}
-            </span>
-          ) : null}
-        </li>
-      ))}
+        );
+        return (
+          <li
+            key={index}
+            className="flex items-center justify-between gap-3 py-3 text-sm"
+          >
+            {isWebsite ? (
+              <LinkPreview url={contactHref(contact)} className={linkClass}>
+                {text}
+                <ExternalLink className="size-3 shrink-0" aria-hidden />
+              </LinkPreview>
+            ) : (
+              <a href={contactHref(contact)} className={linkClass}>
+                {text}
+              </a>
+            )}
+            {contact.name ? (
+              <span className="text-muted-foreground shrink-0">
+                {contact.name}
+              </span>
+            ) : null}
+          </li>
+        );
+      })}
     </ul>
   );
 }
