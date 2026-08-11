@@ -48,7 +48,21 @@ export function ExpandableActionBar({
   // The bar opens with its labels showing, then collapses to icons after a beat (unless the pointer is
   // over it), so people first see what the actions are before it settles to a compact row of icons.
   const [autoOpen, setAutoOpen] = useState(false);
-  const expanded = hovering || autoOpen;
+  // Force a collapse when closing (`open` false) even if the pointer is still over it, so clicking
+  // an action "closes" the labels back to icons before the pill disappears.
+  const expanded = open && (hovering || autoOpen);
+
+  // Keep the non-floating pill mounted through its close so the label collapse (a CSS width
+  // transition) actually runs — AnimatePresence would freeze the exiting subtree and skip it. We
+  // unmount only once the fade-out completes.
+  const [mounted, setMounted] = useState(open);
+
+  useEffect(() => {
+    if (open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setMounted(true);
+    }
+  }, [open]);
 
   useEffect(() => {
     if (!open) {
@@ -71,7 +85,6 @@ export function ExpandableActionBar({
         "flex items-center gap-1 rounded-full p-1.5 ring-1 backdrop-blur-xl",
         floating && "shadow-md",
         inverted ? "bg-foreground/95 ring-black/10" : "bg-card ring-border",
-        !floating && className,
       )}
     >
       {items.map((item) => {
@@ -142,7 +155,43 @@ export function ExpandableActionBar({
   );
 
   if (!floating) {
-    return pill;
+    // Driven by `open` so it has a real enter AND finish: flipping `open` false collapses the labels
+    // (see `expanded`), and only after that collapse does the pill fade out — instead of vanishing
+    // instantly. It stays mounted (so the collapse animates) until the fade-out completes.
+    if (!mounted) {
+      return null;
+    }
+    return (
+      <motion.div
+        className={className}
+        initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.92 }}
+        animate={
+          open
+            ? {
+                opacity: 1,
+                scale: 1,
+                transition: reduce
+                  ? { duration: 0 }
+                  : { duration: 0.2, ease: "easeOut" },
+              }
+            : {
+                opacity: 0,
+                scale: 0.92,
+                // Hold while the labels collapse, then fade the whole pill out.
+                transition: reduce
+                  ? { duration: 0 }
+                  : { delay: 0.24, duration: 0.18, ease: "easeIn" },
+              }
+        }
+        onAnimationComplete={() => {
+          if (!open) {
+            setMounted(false);
+          }
+        }}
+      >
+        {pill}
+      </motion.div>
+    );
   }
 
   return (
@@ -180,12 +229,13 @@ export function ExpandableActionBar({
                       aria-hidden
                       className="border-foreground pointer-events-none absolute inset-0 -z-10 rounded-full border-[0.5px]"
                       initial={{ scale: 1, opacity: 0 }}
-                      animate={{ scale: [1, 2], opacity: [0.5, 0] }}
+                      // Softer (lower peak opacity) and quicker than before.
+                      animate={{ scale: [1, 2], opacity: [0.22, 0] }}
                       transition={{
-                        delay: 0.3 + ring * 0.25,
-                        duration: 0.85,
+                        delay: 0.15 + ring * 0.16,
+                        duration: 0.6,
                         repeat: 2,
-                        repeatDelay: 0.4,
+                        repeatDelay: 0.2,
                         ease: "easeOut",
                       }}
                     />
