@@ -67,13 +67,16 @@ export function CurrentUserProvider({
           const data = (await response.json()) as { user: AuthUser };
           setUser(data.user);
           writeUserCookie(data.user);
-        } else {
+        } else if (response.status === 401) {
+          // Definitive sign-out: the session (and any vaulted account) is gone.
           setUser(null);
           clearUserCookie();
           if (redirect) {
             router.replace("/login");
           }
         }
+        // A non-401 failure (e.g. the route's soft 503 on an upstream blip) is transient — keep
+        // whatever we already show rather than signing the user out on a hiccup.
       } catch {
         // Network hiccup — keep whatever we already show rather than blanking the header.
       } finally {

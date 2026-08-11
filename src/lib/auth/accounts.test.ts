@@ -9,6 +9,7 @@ vi.mock("@/lib/auth/session", () => ({
   setUserCookie: vi.fn(),
   addToVault: vi.fn(),
   removeFromVault: vi.fn(),
+  readAccounts: vi.fn(),
   getRefreshToken: vi.fn(),
 }));
 
@@ -17,6 +18,7 @@ import { portalFetch } from "@/lib/api/client";
 import {
   addToVault,
   getRefreshToken,
+  readAccounts,
   removeFromVault,
   setSessionCookies,
 } from "@/lib/auth/session";
@@ -24,6 +26,7 @@ import {
 import {
   activateRefreshToken,
   establishSession,
+  promoteVaultedAccount,
   revokeVaultedAccount,
 } from "./accounts";
 
@@ -122,5 +125,38 @@ describe("revokeVaultedAccount", () => {
     await revokeVaultedAccount("r");
 
     expect(portalFetch).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("promoteVaultedAccount", () => {
+  it("activates the newest valid vaulted account and returns its user", async () => {
+    vi.mocked(readAccounts).mockResolvedValue([
+      { id: 2, name: "Grace", email: "g@x.co", refresh_token: "r2" },
+    ]);
+    // activateRefreshToken → the refresh call succeeds and mints a new pair.
+    vi.mocked(portalFetch).mockResolvedValue(apiResponse(true, tokens));
+    // The follow-up /account read returns the promoted account's user.
+    vi.mocked(callWithAuth).mockResolvedValue(
+      apiResponse(true, { user: { id: 2, name: "Grace", email: "g@x.co" } }),
+    );
+
+    const result = await promoteVaultedAccount();
+
+    expect(result).toMatchObject({ id: 2, name: "Grace" });
+    expect(setSessionCookies).toHaveBeenCalledWith(tokens);
+    expect(removeFromVault).toHaveBeenCalledWith(2);
+  });
+
+  it("drops dead vaulted tokens and returns null when none activate", async () => {
+    vi.mocked(readAccounts).mockResolvedValue([
+      { id: 2, name: "Grace", email: "g@x.co", refresh_token: "dead" },
+    ]);
+    vi.mocked(portalFetch).mockResolvedValue(apiResponse(false, {}));
+
+    const result = await promoteVaultedAccount();
+
+    expect(result).toBeNull();
+    expect(removeFromVault).toHaveBeenCalledWith(2);
+    expect(setSessionCookies).not.toHaveBeenCalled();
   });
 });

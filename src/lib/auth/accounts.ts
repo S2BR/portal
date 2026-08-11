@@ -10,6 +10,7 @@ import { ADD_COOKIE } from "./cookies";
 import {
   addToVault,
   getRefreshToken,
+  readAccounts,
   removeFromVault,
   setSessionCookies,
   setUserCookie,
@@ -71,6 +72,32 @@ export async function activateRefreshToken(
 
   await setSessionCookies(refreshed.data);
   return true;
+}
+
+/**
+ * When the active session is definitively gone, fall back to the switcher vault: activate the most
+ * recently-used still-valid vaulted account and return its user, so one account's expired/revoked
+ * session doesn't sign the visitor out entirely (the OTHER account stays logged in). Dead vaulted
+ * tokens are dropped as they're tried. Returns null when no vaulted account can be activated.
+ */
+export async function promoteVaultedAccount(): Promise<AuthUser | null> {
+  // Newest last in the vault, so try from the end — the most recently used account first.
+  for (const account of (await readAccounts()).slice().reverse()) {
+    if (await activateRefreshToken(account.refresh_token)) {
+      await removeFromVault(account.id);
+      const me = await callWithAuth<{ user: AuthUser }>({ path: "/account" });
+      if (me.ok) {
+        await setUserCookie(me.data.user);
+        return me.data.user;
+      }
+      // Activated (tokens are valid) but the immediate /account read hiccupped — the account is
+      // now active, so stop here rather than churning through more of the vault.
+      return null;
+    }
+    // A dead vaulted token — drop it so it isn't retried.
+    await removeFromVault(account.id);
+  }
+  return null;
 }
 
 /**
