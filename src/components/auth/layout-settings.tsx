@@ -183,7 +183,7 @@ function LanguageMock({ locale }: { locale: Locale }) {
         alt=""
         width={44}
         height={44}
-        className="ring-border/60 size-11 rounded-full object-cover shadow-sm ring-1"
+        className="size-11 rounded-full object-cover"
       />
     </div>
   );
