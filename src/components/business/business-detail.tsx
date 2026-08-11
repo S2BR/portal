@@ -76,6 +76,15 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
+  DragHandle,
+  overlayClass,
+  placeholderClass,
+} from "@/components/ui/drag-handle";
+import {
+  SortableList,
+  type SortableItemRender,
+} from "@/components/ui/sortable-list";
+import {
   Dialog,
   DialogClose,
   DialogContent,
@@ -103,11 +112,12 @@ import { formatBusinessAddress } from "@/lib/format-address";
 import { useUnsavedChangesGuard } from "@/lib/use-unsaved-changes-guard";
 import { cn } from "@/lib/utils";
 
-/** A website or email contact: the value plus an optional label. */
-type LinkRow = { value: string; name: string };
+/** A website or email contact: the value plus an optional label. `key` is a stable client id for
+ *  list rendering + drag reordering. */
+type LinkRow = { key: string; value: string; name: string };
 /** A phone contact: adds the ISO 3166-1 alpha-2 country (kept in meta so +1 stays CA vs US). */
-type PhoneRow = { value: string; name: string; country?: string };
-type SocialRow = { platform: BusinessSocialNetwork; handle: string };
+type PhoneRow = { key: string; value: string; name: string; country?: string };
+type SocialRow = { key: string; platform: BusinessSocialNetwork; handle: string };
 type AddressEntry = {
   key: string; // stable client key for the list
   address_1: string;
@@ -179,18 +189,28 @@ function toEditState(business: Business): EditState {
     // Contacts arrive as one typed list; split them into the three sections the form shows.
     websites: (business.contacts ?? [])
       .filter((contact) => contact.type === "website")
-      .map((contact) => ({ value: contact.value, name: contact.name ?? "" })),
+      .map((contact) => ({
+        key: crypto.randomUUID(),
+        value: contact.value,
+        name: contact.name ?? "",
+      })),
     phones: (business.contacts ?? [])
       .filter((contact) => contact.type === "phone")
       .map((contact) => ({
+        key: crypto.randomUUID(),
         value: contact.value,
         name: contact.name ?? "",
         country: contact.meta?.country,
       })),
     emails: (business.contacts ?? [])
       .filter((contact) => contact.type === "email")
-      .map((contact) => ({ value: contact.value, name: contact.name ?? "" })),
+      .map((contact) => ({
+        key: crypto.randomUUID(),
+        value: contact.value,
+        name: contact.name ?? "",
+      })),
     socials: (business.socials ?? []).map((social) => ({
+      key: crypto.randomUUID(),
       platform: social.platform,
       handle: social.handle,
     })),
@@ -934,7 +954,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
                     rows={edit.websites}
                     onChange={(websites) => patch({ websites })}
                     addLabel={t("addWebsite")}
-                    makeRow={(): LinkRow => ({ value: "", name: "" })}
+                    makeRow={(): LinkRow => ({ key: crypto.randomUUID(), value: "", name: "" })}
                     renderRow={(row, update) => (
                       <>
                         <PrefixInput
@@ -975,7 +995,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
                     rows={edit.phones}
                     onChange={(phones) => patch({ phones })}
                     addLabel={t("addPhone")}
-                    makeRow={(): PhoneRow => ({ value: "", name: "" })}
+                    makeRow={(): PhoneRow => ({ key: crypto.randomUUID(), value: "", name: "" })}
                     renderRow={(row, update) => (
                       <>
                         <PhoneField
@@ -1018,7 +1038,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
                     rows={edit.emails}
                     onChange={(emails) => patch({ emails })}
                     addLabel={t("addEmail")}
-                    makeRow={(): LinkRow => ({ value: "", name: "" })}
+                    makeRow={(): LinkRow => ({ key: crypto.randomUUID(), value: "", name: "" })}
                     renderRow={(row, update) => (
                       <>
                         <Input
@@ -1159,6 +1179,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
                   onChange={(socials) => patch({ socials })}
                   addLabel={t("addSocial")}
                   makeRow={(): SocialRow => ({
+                    key: crypto.randomUUID(),
                     platform: "instagram",
                     handle: "",
                   })}
@@ -1547,7 +1568,7 @@ function ContactValues({
  * A minimal add/remove repeater over rows of shape `TRow`. `renderRow` draws a row's controls and
  * receives an `update` that merges a partial into that row; `makeRow` seeds a new row on add.
  */
-function RepeaterEditor<TRow>({
+function RepeaterEditor<TRow extends { key: string }>({
   rows,
   onChange,
   addLabel,
@@ -1560,30 +1581,91 @@ function RepeaterEditor<TRow>({
   makeRow: () => TRow;
   renderRow: (row: TRow, update: (changes: Partial<TRow>) => void) => ReactNode;
 }) {
+  const t = useTranslations("businesses.detail");
+  // The drag handle only appears once there's something to reorder.
+  const sortable = rows.length > 1;
+
+  const update = (key: string, changes: Partial<TRow>) =>
+    onChange(rows.map((r) => (r.key === key ? { ...r, ...changes } : r)));
+  const remove = (key: string) =>
+    onChange(rows.filter((r) => r.key !== key));
+
+  /** The interactive body of a row (drag handle + the caller's fields + a remove button). */
+  const rowBody = (row: TRow, handle: ReactNode) => (
+    <>
+      {handle}
+      {renderRow(row, (changes) => update(row.key, changes))}
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        aria-label="remove"
+        onClick={() => remove(row.key)}
+      >
+        <X className="size-4" />
+      </Button>
+    </>
+  );
+
   return (
     <div className="space-y-3">
-      {rows.map((row, index) => (
-        <div key={index} className="flex flex-wrap items-center gap-2">
-          {renderRow(row, (changes) =>
-            onChange(
-              rows.map((current, position) =>
-                position === index ? { ...current, ...changes } : current,
-              ),
-            ),
+      {sortable ? (
+        <SortableList
+          items={rows}
+          getId={(r) => r.key}
+          onReorder={onChange}
+          className="space-y-3"
+          renderItem={(row, { setNodeRef, style, isDragging, handle }) => (
+            <div
+              ref={setNodeRef}
+              style={style}
+              className={cn(
+                "flex flex-wrap items-center gap-2 rounded-md p-1",
+                isDragging && placeholderClass,
+              )}
+            >
+              {/* While dragging, this row is just the gray drop slot — its content rides the overlay. */}
+              <div
+                className={cn(
+                  "flex flex-1 flex-wrap items-center gap-2",
+                  isDragging && "invisible",
+                )}
+              >
+                {rowBody(
+                  row,
+                  <DragHandle
+                    ref={handle.ref}
+                    label={t("reorder")}
+                    {...handle.attributes}
+                    {...handle.listeners}
+                  />,
+                )}
+              </div>
+            </div>
           )}
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            aria-label="remove"
-            onClick={() =>
-              onChange(rows.filter((_, position) => position !== index))
-            }
-          >
-            <X className="size-4" />
-          </Button>
+          renderOverlay={(row) => (
+            <div
+              className={cn(
+                "flex w-full flex-wrap items-center gap-2 p-1",
+                overlayClass,
+              )}
+            >
+              {rowBody(row, <DragHandle label={t("reorder")} />)}
+            </div>
+          )}
+        />
+      ) : (
+        <div className="space-y-3">
+          {rows.map((row) => (
+            <div
+              key={row.key}
+              className="flex flex-wrap items-center gap-2 p-1"
+            >
+              {rowBody(row, null)}
+            </div>
+          ))}
         </div>
-      ))}
+      )}
       <Button
         type="button"
         variant="outline"
@@ -1606,29 +1688,27 @@ function AddressesEditor({
   value: AddressEntry[];
   onChange: (value: AddressEntry[]) => void;
 }) {
-  const fields = useTranslations("businesses.detail.fields");
   const t = useTranslations("businesses.detail");
+  const fields = useTranslations("businesses.detail.fields");
+  const locale = useLocale();
+  // While an address is being dragged, every row shows as a compact summary so a long list (the user
+  // keeps ~10) is short enough to reorder without scrolling the whole page.
+  const [dragging, setDragging] = useState(false);
+  const sortable = value.length > 1;
 
-  function update(index: number, changes: Partial<AddressEntry>) {
+  const update = (key: string, changes: Partial<AddressEntry>) =>
+    onChange(value.map((e) => (e.key === key ? { ...e, ...changes } : e)));
+  const remove = (key: string) => onChange(value.filter((e) => e.key !== key));
+  // Exactly one address is main: setting one unsets the rest.
+  const setMain = (key: string, main: boolean) =>
     onChange(
-      value.map((entry, position) =>
-        position === index ? { ...entry, ...changes } : entry,
-      ),
-    );
-  }
-
-  // Exactly one address is main: checking one unchecks the rest.
-  function setMain(index: number, main: boolean) {
-    onChange(
-      value.map((entry, position) => ({
-        ...entry,
-        isMain: position === index ? main : main ? false : entry.isMain,
+      value.map((e) => ({
+        ...e,
+        isMain: e.key === key ? main : main ? false : e.isMain,
       })),
     );
-  }
-
-  function fill(index: number, place: PlaceAddress) {
-    update(index, {
+  const fill = (key: string, place: PlaceAddress) =>
+    update(key, {
       address_1: place.address_1 ?? "",
       apartment_suite: place.apartment_suite ?? "",
       city: place.city ?? "",
@@ -1638,113 +1718,248 @@ function AddressesEditor({
       latitude: place.latitude?.toString() ?? "",
       longitude: place.longitude?.toString() ?? "",
     });
-  }
-
   const set =
-    (index: number, key: AddressStringField) =>
+    (key: string, field: AddressStringField) =>
     (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-      update(index, { [key]: event.target.value });
+      update(key, { [field]: event.target.value });
+
+  // The same country-aware, multi-line formatting used in read mode.
+  const summaryLines = (entry: AddressEntry): string[] => {
+    const lines = formatBusinessAddress(
+      {
+        id: 0,
+        address_1: entry.address_1,
+        address_2: entry.address_2 || null,
+        apartment_suite: entry.apartment_suite || null,
+        city: entry.city,
+        state_province: entry.state_province || null,
+        postal_code: entry.postal_code || null,
+        country: entry.country,
+        latitude: null,
+        longitude: null,
+        notes: null,
+        is_main: entry.isMain,
+      },
+      locale,
+    );
+    return lines.length > 0 ? lines : [fields("line1")];
+  };
+
+  const reorderHandle = (handle: SortableItemRender["handle"]) => (
+    <DragHandle
+      ref={handle.ref}
+      label={t("reorder")}
+      {...handle.attributes}
+      {...handle.listeners}
+    />
+  );
+
+  /** The read-mode-style address block shown while dragging (and in the overlay). */
+  const compactBody = (entry: AddressEntry, index: number, handle: ReactNode) => (
+    <>
+      {handle}
+      <span className="text-muted-foreground mt-0.5 w-5 shrink-0 text-center text-xs tabular-nums">
+        {index + 1}
+      </span>
+      <address className="text-foreground/90 min-w-0 flex-1 space-y-0.5 text-sm leading-snug not-italic">
+        {summaryLines(entry).map((line) => (
+          <span key={line} className="block truncate">
+            {line}
+          </span>
+        ))}
+      </address>
+      {entry.isMain ? (
+        <span
+          className="bg-brand-green mt-1 size-2 shrink-0 rounded-full"
+          aria-label={t("mainAddress")}
+        />
+      ) : null}
+    </>
+  );
+
+  /** The full editable address form. */
+  const fullBody = (entry: AddressEntry, index: number, handle: ReactNode) => (
+    <>
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          {handle}
+          <label className="flex items-center gap-2 text-sm font-medium">
+            <Checkbox
+              checked={entry.isMain}
+              onCheckedChange={(checked) => setMain(entry.key, checked === true)}
+            />
+            {t("mainAddress")}
+          </label>
+        </div>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          aria-label={t("removeAddress")}
+          onClick={() => remove(entry.key)}
+        >
+          <X className="size-4" />
+        </Button>
+      </div>
+
+      {/* The main address is a flag, not a position — a non-main address on top gets a gentle nudge. */}
+      {index === 0 && !entry.isMain ? (
+        <div className="bg-muted/40 flex flex-wrap items-center justify-between gap-2 rounded-lg px-3 py-2">
+          <span className="text-muted-foreground text-sm">
+            {t("makeMainQuestion")}
+          </span>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setMain(entry.key, true)}
+          >
+            {t("setAsMain")}
+          </Button>
+        </div>
+      ) : null}
+
+      <AddressAutocomplete onSelect={(place) => fill(entry.key, place)} />
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="sm:col-span-2">
+          <Field label={fields("line1")}>
+            <Input value={entry.address_1} onChange={set(entry.key, "address_1")} />
+          </Field>
+        </div>
+        <Field label={fields("apartmentSuite")}>
+          <Input
+            value={entry.apartment_suite}
+            onChange={set(entry.key, "apartment_suite")}
+          />
+        </Field>
+        <Field label={fields("line2")}>
+          <Input value={entry.address_2} onChange={set(entry.key, "address_2")} />
+        </Field>
+        <Field label={fields("city")}>
+          <Input value={entry.city} onChange={set(entry.key, "city")} />
+        </Field>
+        <Field label={fields("stateProvince")}>
+          <Input
+            value={entry.state_province}
+            onChange={set(entry.key, "state_province")}
+          />
+        </Field>
+        <Field label={fields("postalCode")}>
+          <Input
+            value={entry.postal_code}
+            onChange={set(entry.key, "postal_code")}
+          />
+        </Field>
+        <Field label={fields("country")}>
+          <Input
+            value={entry.country}
+            onChange={set(entry.key, "country")}
+            maxLength={2}
+            className="uppercase"
+          />
+        </Field>
+        <Field label={fields("latitude")}>
+          <Input
+            value={entry.latitude}
+            onChange={set(entry.key, "latitude")}
+            inputMode="decimal"
+          />
+        </Field>
+        <Field label={fields("longitude")}>
+          <Input
+            value={entry.longitude}
+            onChange={set(entry.key, "longitude")}
+            inputMode="decimal"
+          />
+        </Field>
+        <div className="sm:col-span-2">
+          <Field label={fields("notes")}>
+            <Textarea
+              value={entry.notes}
+              onChange={set(entry.key, "notes")}
+              rows={2}
+            />
+          </Field>
+        </div>
+      </div>
+    </>
+  );
 
   return (
     <div className="space-y-4">
-      {value.map((entry, index) => (
-        <div
-          key={entry.key}
-          className="space-y-4 border-b pb-6 last:border-b-0 last:pb-0"
-        >
-          <div className="flex items-center justify-between gap-2">
-            <label className="flex items-center gap-2 text-sm font-medium">
-              <Checkbox
-                checked={entry.isMain}
-                onCheckedChange={(checked) => setMain(index, checked === true)}
-              />
-              {t("mainAddress")}
-            </label>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              aria-label={t("removeAddress")}
-              onClick={() =>
-                onChange(value.filter((_, position) => position !== index))
-              }
+      {sortable ? (
+        <SortableList
+          items={value}
+          getId={(e) => e.key}
+          onReorder={onChange}
+          onDragStart={() => setDragging(true)}
+          onDragEnd={() => setDragging(false)}
+          className="space-y-4"
+          renderItem={(entry, { setNodeRef, style, isDragging, handle }) => {
+            const index = value.indexOf(entry);
+            if (isDragging) {
+              // The gray drop slot — compact, content invisible (it rides the overlay).
+              return (
+                <div
+                  ref={setNodeRef}
+                  style={style}
+                  className={cn(
+                    "flex items-start gap-2 px-1 py-2",
+                    placeholderClass,
+                  )}
+                >
+                  <div className="invisible flex flex-1 items-start gap-2">
+                    {compactBody(entry, index, reorderHandle(handle))}
+                  </div>
+                </div>
+              );
+            }
+            if (dragging) {
+              // Another row is being dragged → collapse to a compact summary.
+              return (
+                <div
+                  ref={setNodeRef}
+                  style={style}
+                  className="bg-muted-foreground/10 flex items-start gap-2 rounded-lg px-1 py-2"
+                >
+                  {compactBody(entry, index, reorderHandle(handle))}
+                </div>
+              );
+            }
+            return (
+              <div
+                ref={setNodeRef}
+                style={style}
+                className="space-y-4 border-b pb-6 last:border-b-0 last:pb-0"
+              >
+                {fullBody(entry, index, reorderHandle(handle))}
+              </div>
+            );
+          }}
+          renderOverlay={(entry) => (
+            <div
+              className={cn(
+                "flex w-full items-start gap-2 px-1 py-2",
+                overlayClass,
+              )}
             >
-              <X className="size-4" />
-            </Button>
-          </div>
-
-          <AddressAutocomplete onSelect={(place) => fill(index, place)} />
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="sm:col-span-2">
-              <Field label={fields("line1")}>
-                <Input
-                  value={entry.address_1}
-                  onChange={set(index, "address_1")}
-                />
-              </Field>
+              {compactBody(entry, value.indexOf(entry), <DragHandle label={t("reorder")} />)}
             </div>
-            <Field label={fields("apartmentSuite")}>
-              <Input
-                value={entry.apartment_suite}
-                onChange={set(index, "apartment_suite")}
-              />
-            </Field>
-            <Field label={fields("line2")}>
-              <Input
-                value={entry.address_2}
-                onChange={set(index, "address_2")}
-              />
-            </Field>
-            <Field label={fields("city")}>
-              <Input value={entry.city} onChange={set(index, "city")} />
-            </Field>
-            <Field label={fields("stateProvince")}>
-              <Input
-                value={entry.state_province}
-                onChange={set(index, "state_province")}
-              />
-            </Field>
-            <Field label={fields("postalCode")}>
-              <Input
-                value={entry.postal_code}
-                onChange={set(index, "postal_code")}
-              />
-            </Field>
-            <Field label={fields("country")}>
-              <Input
-                value={entry.country}
-                onChange={set(index, "country")}
-                maxLength={2}
-                className="uppercase"
-              />
-            </Field>
-            <Field label={fields("latitude")}>
-              <Input
-                value={entry.latitude}
-                onChange={set(index, "latitude")}
-                inputMode="decimal"
-              />
-            </Field>
-            <Field label={fields("longitude")}>
-              <Input
-                value={entry.longitude}
-                onChange={set(index, "longitude")}
-                inputMode="decimal"
-              />
-            </Field>
-            <div className="sm:col-span-2">
-              <Field label={fields("notes")}>
-                <Textarea
-                  value={entry.notes}
-                  onChange={set(index, "notes")}
-                  rows={2}
-                />
-              </Field>
+          )}
+        />
+      ) : (
+        <div className="space-y-4">
+          {value.map((entry, index) => (
+            <div
+              key={entry.key}
+              className="space-y-4 border-b pb-6 last:border-b-0 last:pb-0"
+            >
+              {fullBody(entry, index, null)}
             </div>
-          </div>
+          ))}
         </div>
-      ))}
+      )}
 
       <Button
         type="button"

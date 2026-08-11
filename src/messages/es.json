@@ -428,6 +428,8 @@
   "businesses": {
     "title": "Mis negocios",
     "subtitle": "Los negocios que gestionas. Selecciona uno para verlo o editarlo.",
+    "reorder": "Reordenar",
+    "reorderError": "No se pudo guardar el nuevo orden. Inténtalo de nuevo.",
     "empty": "Aún no has añadido ningún negocio.",
     "createFirst": "Crea tu primer negocio",
     "createAnother": "Añadir negocio",
@@ -576,6 +578,9 @@
         "placeholder": "Busca una dirección…"
       },
       "mainAddress": "Dirección principal",
+      "reorder": "Reordenar",
+      "makeMainQuestion": "¿Hacer esta la dirección principal?",
+      "setAsMain": "Definir como principal",
       "addAddress": "Añadir dirección",
       "removeAddress": "Quitar dirección",
       "categoriesEmpty": "Aún no hay categorías disponibles.",

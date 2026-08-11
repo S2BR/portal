@@ -428,6 +428,8 @@
   "businesses": {
     "title": "My businesses",
     "subtitle": "The businesses you own. Select one to view or edit it.",
+    "reorder": "Reorder",
+    "reorderError": "Couldn't save the new order. Please try again.",
     "empty": "You haven't added a business yet.",
     "createFirst": "Create your first business",
     "createAnother": "Add business",
@@ -576,6 +578,9 @@
         "placeholder": "Search for an address…"
       },
       "mainAddress": "Main address",
+      "reorder": "Reorder",
+      "makeMainQuestion": "Make this the main address?",
+      "setAsMain": "Set as main",
       "addAddress": "Add address",
       "removeAddress": "Remove address",
       "categoriesEmpty": "No categories available yet.",

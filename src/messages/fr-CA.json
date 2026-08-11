@@ -428,6 +428,8 @@
   "businesses": {
     "title": "Mes entreprises",
     "subtitle": "Les entreprises que vous gérez. Sélectionnez-en une pour la consulter ou la modifier.",
+    "reorder": "Réorganiser",
+    "reorderError": "Impossible d'enregistrer le nouvel ordre. Veuillez réessayer.",
     "empty": "Vous n'avez pas encore ajouté d'entreprise.",
     "createFirst": "Créer votre première entreprise",
     "createAnother": "Ajouter une entreprise",
@@ -576,6 +578,9 @@
         "placeholder": "Rechercher une adresse…"
       },
       "mainAddress": "Adresse principale",
+      "reorder": "Réorganiser",
+      "makeMainQuestion": "En faire l'adresse principale?",
+      "setAsMain": "Définir comme principale",
       "addAddress": "Ajouter une adresse",
       "removeAddress": "Supprimer l’adresse",
       "categoriesEmpty": "Aucune catégorie disponible pour l'instant.",
