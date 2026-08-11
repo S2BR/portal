@@ -559,6 +559,16 @@
         "sunday": "Dimanche"
       },
       "categoryHint": "Vous ne trouvez pas votre catégorie? Dites-nous ce qui convient et nous y jetterons un œil.",
+      "categorySuggest": {
+        "trigger": "Ne trouvez pas votre catégorie?",
+      "helper": "Si vous ne trouvez pas de catégorie appropriée, décrivez-la et notre équipe l'examinera et l'ajoutera au besoin.",
+        "label": "Votre suggestion",
+        "prompt": "Ex : \"Catégorie : Cafés, Sous-catégorie : Cafés Végétaliens\"",
+        "submit": "Sauvegarder la suggestion",
+      "remove": "Retirer",
+        "successTitle": "Suggestion sauvegardée",
+        "successDescription": "Notre équipe l'examinera et mettra à jour votre fiche s'il y a lieu."
+      },
       "closedAllDay": "Fermé",
       "colorHint": "La couleur principale de votre marque.",
       "addSocial": "Ajouter un réseau social",

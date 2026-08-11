@@ -559,6 +559,16 @@
         "sunday": "Domingo"
       },
       "categoryHint": "¿No encuentras tu categoría? Dinos cuál encaja y le echamos un vistazo.",
+      "categorySuggest": {
+        "trigger": "¿No encuentras tu categoría?",
+      "helper": "Si no encuentras una categoría adecuada, descríbela y nuestro equipo la revisará y la añadirá cuando corresponda.",
+        "label": "Tu sugerencia",
+        "prompt": "Ej. \"Categoría: Cafeterías, Subcategoría: Cafeterías Veganas\"",
+        "submit": "Guardar sugerencia",
+      "remove": "Quitar",
+        "successTitle": "Sugerencia guardada",
+        "successDescription": "Nuestro equipo la revisará y actualizará tu ficha si corresponde."
+      },
       "closedAllDay": "Cerrado",
       "colorHint": "El color principal de tu marca.",
       "addSocial": "Añadir red social",
