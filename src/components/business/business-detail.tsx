@@ -709,7 +709,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
               {/* Basics: the logo takes the left column (like Filament), the fields the right. */}
               <div
                 id="section-basics"
-                className="grid gap-x-8 gap-y-4 md:grid-cols-3"
+                className="grid scroll-mt-24 gap-x-8 gap-y-4 md:grid-cols-3"
               >
                 <div className="md:col-span-1">
                   <BusinessImageField

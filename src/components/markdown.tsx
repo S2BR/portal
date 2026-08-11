@@ -13,19 +13,23 @@ export function Markdown({ children }: { children: string }) {
       // Give headings stable id slugs so the preview rail can anchor to and scroll-spy them.
       rehypePlugins={[rehypeSlug]}
       components={{
+        // Every heading gets a slug id (rehype-slug) and can be a rail/anchor jump target, so offset
+        // its scroll position to clear the sticky site header (h-16) instead of landing beneath it.
         h1: (props) => (
           <h1
-            className="font-heading mb-3 text-3xl font-semibold tracking-tight"
+            className="font-heading mb-3 scroll-mt-24 text-3xl font-semibold tracking-tight"
             {...props}
           />
         ),
         h2: (props) => (
           <h2
-            className="mt-10 mb-3 text-xl font-semibold tracking-tight"
+            className="mt-10 mb-3 scroll-mt-24 text-xl font-semibold tracking-tight"
             {...props}
           />
         ),
-        h3: (props) => <h3 className="mt-6 mb-2 font-semibold" {...props} />,
+        h3: (props) => (
+          <h3 className="mt-6 mb-2 scroll-mt-24 font-semibold" {...props} />
+        ),
         p: (props) => (
           <p
             className="text-muted-foreground my-4 leading-relaxed"

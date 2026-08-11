@@ -34,6 +34,9 @@ export function FormSection({
         "grid gap-x-8 md:grid-cols-3",
         editing ? "mt-10 gap-y-4" : "mt-8 gap-y-3",
         "first:mt-0",
+        // When it's a preview-rail anchor, offset jump-scrolls so the section clears the sticky
+        // app header (h-16) instead of landing beneath it.
+        id && "scroll-mt-24",
         // Mobile (stacked): a full-width divider above the section.
         "border-border/60 border-t pt-8 first:border-t-0 first:pt-0",
         // Desktop: no section-level divider; instead a hairline above the fields

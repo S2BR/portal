@@ -32,53 +32,62 @@ export function scaleForDistance(distance: number): number {
 const RESTING_SCALE = 0.5;
 
 /**
- * Tracks which of `ids` is the section currently in view (top-biased), for scroll-spy. Re-observes
- * whenever the set of ids changes.
+ * Tracks which of `ids` is the section currently being read, for scroll-spy: the last section (in
+ * document order) whose top has scrolled above a reading line just under the sticky header. This is
+ * position-based rather than an IntersectionObserver band, so it works for thin targets (legal-page
+ * headings) as well as tall ones (business form sections) — a clicked target that lands at its
+ * `scroll-mt` offset is immediately the active one, instead of the band skipping past it.
+ *
+ * `offsetTop` is the reading line, matched to the sections' `scroll-mt` so a just-clicked heading
+ * counts as active. Recomputes on scroll/resize and whenever the set of ids changes.
  */
-export function useActiveSection(ids: string[]): string | null {
+export function useActiveSection(ids: string[], offsetTop = 100): string | null {
   const key = ids.join("|");
   const [active, setActive] = useState<string | null>(null);
 
   useEffect(() => {
     const sectionIds = key ? key.split("|") : [];
-    // Re-seed the active section when the set of ids changes (e.g. a new tab's blocks).
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setActive((previous) =>
-      previous && sectionIds.includes(previous)
-        ? previous
-        : (sectionIds[0] ?? null),
-    );
     if (sectionIds.length === 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setActive(null);
       return;
     }
 
-    const visible = new Set<string>();
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            visible.add(entry.target.id);
-          } else {
-            visible.delete(entry.target.id);
-          }
-        }
-        // The first section (in document order) that's currently in the viewport band.
-        const current = sectionIds.find((id) => visible.has(id));
-        if (current) {
-          setActive(current);
-        }
-      },
-      { rootMargin: "-15% 0px -70% 0px", threshold: [0, 0.5, 1] },
-    );
-
-    for (const id of sectionIds) {
-      const element = document.getElementById(id);
-      if (element) {
-        observer.observe(element);
+    const compute = () => {
+      // At (or near) the bottom of the page the last section can't reach the reading line, so pin it
+      // active — otherwise the tail sections are never selectable.
+      const atBottom =
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 2;
+      if (atBottom) {
+        setActive(sectionIds[sectionIds.length - 1] ?? null);
+        return;
       }
-    }
-    return () => observer.disconnect();
-  }, [key]);
+
+      let current = sectionIds[0] ?? null;
+      for (const id of sectionIds) {
+        const element = document.getElementById(id);
+        if (!element) {
+          continue;
+        }
+        if (element.getBoundingClientRect().top <= offsetTop) {
+          current = id;
+        } else {
+          // Ids are in document order, so once one sits below the line the rest do too.
+          break;
+        }
+      }
+      setActive(current);
+    };
+
+    compute();
+    window.addEventListener("scroll", compute, { passive: true });
+    window.addEventListener("resize", compute);
+    return () => {
+      window.removeEventListener("scroll", compute);
+      window.removeEventListener("resize", compute);
+    };
+  }, [key, offsetTop]);
 
   return active;
 }
