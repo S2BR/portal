@@ -1,4 +1,11 @@
 {
+  "rateLimit": {
+    "title": "Too many requests",
+    "body": "Trying again in {seconds}s…",
+    "retrying": "Trying again…",
+    "actionCountdown": "Try again in {seconds}s",
+    "ready": "You can try again now"
+  },
   "brand": {
     "name": "S2BR"
   },

@@ -22,12 +22,27 @@ export interface PortalResponse<T> {
   status: number;
   data: T;
   /**
+   * Seconds to wait before retrying, parsed from the `Retry-After` header on a 429. A fallback
+   * for the machine-readable `retry_after` the API also puts in the rate-limit body — so a BFF
+   * route can surface the wait even if the body ever lacks it.
+   */
+  retryAfter?: number;
+  /**
    * Set only when the API response body was not valid JSON (a failed-closed
    * call — e.g. an HTML outage page or a mispointed `PORTAL_API_URL`). Holds a
    * short snippet of the raw body so callers can surface a real diagnostic
    * instead of masking it as a generic error.
    */
   nonJson?: string;
+}
+
+/** Parse a `Retry-After` header (we only ever emit the delta-seconds form) into a positive integer. */
+function parseRetryAfter(header: string | null): number | undefined {
+  if (header === null) {
+    return undefined;
+  }
+  const seconds = Number.parseInt(header, 10);
+  return Number.isFinite(seconds) && seconds > 0 ? seconds : undefined;
 }
 
 /**
@@ -98,6 +113,8 @@ export async function portalFetch<T = unknown>(
   // successful API call — e.g. an HTML outage page, or a PORTAL_API_URL that
   // (mis)points at the web app itself, which would otherwise let the auth
   // handlers mint a session from an empty body. Such a response fails closed.
+  const retryAfter = parseRetryAfter(response.headers.get("Retry-After"));
+
   const raw = await response.text();
   let data: T;
   try {
@@ -113,11 +130,12 @@ export async function portalFetch<T = unknown>(
       ok: false,
       status: response.status,
       data: {} as T,
+      retryAfter,
       nonJson: raw.slice(0, 300),
     };
   }
 
-  return { ok: response.ok, status: response.status, data };
+  return { ok: response.ok, status: response.status, data, retryAfter };
 }
 
 /**

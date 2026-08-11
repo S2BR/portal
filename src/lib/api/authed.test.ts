@@ -69,6 +69,8 @@ describe("callWithAuth", () => {
         access_token: "access-2",
         refresh_token: "refresh-2",
       }),
+      // A plain refresh keeps the display cookie so the header survives a follow-up throttle.
+      { keepUserCookie: true },
     );
     const retryInit = fetchMock.mock.calls[2]![1];
     expect(retryInit.headers.Authorization).toBe("Bearer access-2");

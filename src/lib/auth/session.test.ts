@@ -23,6 +23,13 @@ it("clears the display cookie when the active session changes (login / add / swi
   expect(cookieStore.delete).toHaveBeenCalledWith(USER_COOKIE);
 });
 
+it("keeps the display cookie on a same-account refresh", async () => {
+  await setSessionCookies(tokens, { keepUserCookie: true });
+  // A plain token refresh is the same user — keep the cookie so the header still renders from it
+  // even if a follow-up call is throttled and `/me` can't repopulate it.
+  expect(cookieStore.delete).not.toHaveBeenCalledWith(USER_COOKIE);
+});
+
 it("clears the display cookie on sign-out", async () => {
   await clearSessionCookies();
   expect(cookieStore.delete).toHaveBeenCalledWith(USER_COOKIE);

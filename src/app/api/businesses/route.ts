@@ -4,6 +4,7 @@ import { z } from "zod";
 import type { Amenity } from "@/app/api/amenities/route";
 import type { Category } from "@/app/api/categories/route";
 import { callWithAuth } from "@/lib/api/authed";
+import { rateLimitedResponse } from "@/lib/api/rate-limit";
 
 export type BusinessType = "company" | "self_employed";
 export type BusinessContactType = "website" | "phone" | "email";
@@ -121,13 +122,23 @@ const createSchema = z.object({
  * its empty state rather than crash.
  */
 export async function GET(): Promise<NextResponse> {
-  const response = await callWithAuth<{ businesses?: Business[] }>({
+  const response = await callWithAuth<{
+    businesses?: Business[];
+    retry_after?: number | null;
+    message?: string;
+  }>({
     method: "GET",
     path: "/businesses",
   });
 
   if (response.ok) {
     return NextResponse.json({ businesses: response.data.businesses ?? [] });
+  }
+
+  // Surface throttling as a real 429 (with the wait) rather than an empty list — an empty list
+  // reads as "you have no businesses", which is exactly the dead screen the user hit.
+  if (response.status === 429) {
+    return rateLimitedResponse(response);
   }
 
   return NextResponse.json({ businesses: [] }, { status: response.status });
@@ -150,7 +161,11 @@ export async function PATCH(request: Request): Promise<NextResponse> {
     return NextResponse.json({ status: "invalid" }, { status: 422 });
   }
 
-  const response = await callWithAuth<{ status?: string }>({
+  const response = await callWithAuth<{
+    status?: string;
+    retry_after?: number | null;
+    message?: string;
+  }>({
     method: "PATCH",
     path: "/businesses",
     body: parsed.data,
@@ -158,6 +173,10 @@ export async function PATCH(request: Request): Promise<NextResponse> {
 
   if (response.ok) {
     return NextResponse.json({ status: "ok" });
+  }
+
+  if (response.status === 429) {
+    return rateLimitedResponse(response);
   }
 
   if (response.status === 404) {
@@ -183,6 +202,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     business?: Business;
     message?: string;
     errors?: Record<string, string[]>;
+    retry_after?: number | null;
   }>({
     method: "POST",
     path: "/businesses",
@@ -194,6 +214,10 @@ export async function POST(request: Request): Promise<NextResponse> {
       status: "ok",
       business: response.data.business,
     });
+  }
+
+  if (response.status === 429) {
+    return rateLimitedResponse(response);
   }
 
   return NextResponse.json(
