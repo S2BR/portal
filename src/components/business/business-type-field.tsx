@@ -61,24 +61,27 @@ export function BusinessTypeField({
                 onClick={() => onChange(option.value)}
                 aria-pressed={selected}
                 className={cn(
-                  "focus-visible:ring-ring flex h-full w-full items-start gap-3 rounded-xl border p-4 text-left transition-colors outline-none focus-visible:ring-2",
+                  // Borderless, three-step gray like the profile popup blocks: default → hover →
+                  // selected, with the selection marked by the brand-green dot (below).
+                  "focus-visible:ring-ring flex h-full w-full items-start gap-3 rounded-xl p-4 text-left transition-colors outline-none focus-visible:ring-2 focus-visible:ring-inset",
                   selected
-                    ? "border-primary bg-primary/5 ring-primary/20 ring-1"
-                    : "hover:border-primary/40",
+                    ? "bg-muted-foreground/10"
+                    : "bg-muted/40 hover:bg-muted/70",
                 )}
               >
-                <span
-                  className={cn(
-                    "flex size-10 shrink-0 items-center justify-center rounded-lg",
-                    selected
-                      ? "bg-primary/10 text-primary"
-                      : "bg-muted text-muted-foreground",
-                  )}
-                >
+                <span className="bg-background text-muted-foreground flex size-10 shrink-0 items-center justify-center rounded-lg">
                   <option.Icon className="size-5" />
                 </span>
                 <span className="min-w-0 pe-6">
-                  <span className="block font-medium">{option.title}</span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="font-medium">{option.title}</span>
+                    {selected ? (
+                      <span
+                        className="bg-brand-green size-2 shrink-0 rounded-full"
+                        aria-hidden
+                      />
+                    ) : null}
+                  </span>
                   <span className="text-muted-foreground block text-sm">
                     {option.description}
                   </span>
