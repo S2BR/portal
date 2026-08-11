@@ -177,7 +177,11 @@ export function BusinessSidebar({ slug }: { slug: string }) {
               {(businesses ?? []).map((business) => (
                 <CommandItem
                   key={business.slug}
-                  value={displayName(business)}
+                  // cmdk keys selection/highlight off `value`; use the unique slug so two businesses
+                  // that share a name don't collapse into one highlighted item. The name goes to
+                  // `keywords` so search still matches it.
+                  value={business.slug}
+                  keywords={[displayName(business)]}
                   onSelect={() => {
                     setSwitcherOpen(false);
                     router.push(`/portal/businesses/${business.slug}`);
