@@ -1,16 +1,36 @@
 "use client";
 
 import { MonitorSmartphone } from "lucide-react";
-import { useFormatter, useTranslations } from "next-intl";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import type { Session } from "@/app/api/auth/sessions/route";
+import type { Session, SessionLocation } from "@/app/api/auth/sessions/route";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SettingTile } from "@/components/ui/setting-tile";
 import { Skeleton } from "@/components/ui/skeleton";
+import { regionName } from "@/lib/format-address";
 import { useNow } from "@/lib/use-now";
+
+/**
+ * "City, Region, Country" for a session's origin — the country code localized to a name (e.g.
+ * `BR` → "Brasil"), region shown as its code (e.g. `SP`). Null when nothing could be resolved.
+ */
+function formatLocation(
+  location: SessionLocation | null,
+  locale: string,
+): string | null {
+  if (!location) {
+    return null;
+  }
+  const country = location.country
+    ? regionName(location.country, locale)
+    : null;
+  const parts = [location.city, location.region, country].filter(Boolean);
+
+  return parts.length > 0 ? parts.join(", ") : null;
+}
 
 /**
  * List the account's active sessions (one per device / login lineage) and let
@@ -20,6 +40,7 @@ import { useNow } from "@/lib/use-now";
 export function SessionSettings() {
   const t = useTranslations("sessions");
   const format = useFormatter();
+  const locale = useLocale();
   // Ticks every 30s (paused while the tab is hidden) so "last active …" updates live.
   const now = useNow();
 
@@ -103,41 +124,57 @@ export function SessionSettings() {
         <p className="text-muted-foreground text-sm">{t("empty")}</p>
       ) : (
         <div className="space-y-2">
-          {sessions.map((session) => (
-            <SettingTile
-              key={session.id}
-              icon={MonitorSmartphone}
-              subtitle={
-                <>
-                  {session.ip_address ?? t("unknownIp")}
-                  {session.last_used_at
-                    ? ` · ${t("lastActive", {
-                        when: format.relativeTime(
-                          new Date(session.last_used_at),
-                          now,
-                        ),
-                      })}`
-                    : ""}
-                </>
-              }
-              action={
-                session.current ? (
-                  <Badge variant="green">{t("current")}</Badge>
-                ) : (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled={pending !== null}
-                    onClick={() => revoke(session.id)}
-                  >
-                    {t("signOut")}
-                  </Button>
-                )
-              }
-            >
-              {session.device_name ?? t("unknownDevice")}
-            </SettingTile>
-          ))}
+          {sessions.map((session) => {
+            const place = formatLocation(session.location, locale);
+            const lastActive = session.last_used_at
+              ? t("lastActive", {
+                  when: format.relativeTime(
+                    new Date(session.last_used_at),
+                    now,
+                  ),
+                })
+              : null;
+            // Primary line is "where" (falling back to the IP, then "unknown"); the IP moves to the
+            // secondary line only when it isn't already the primary, alongside "last active".
+            const primary = place ?? session.ip_address ?? t("unknownIp");
+            const details = [
+              place && session.ip_address ? session.ip_address : null,
+              lastActive,
+            ].filter(Boolean);
+
+            return (
+              <SettingTile
+                key={session.id}
+                icon={MonitorSmartphone}
+                subtitle={
+                  <>
+                    <span className="block truncate">{primary}</span>
+                    {details.length > 0 ? (
+                      <span className="block truncate opacity-80">
+                        {details.join(" · ")}
+                      </span>
+                    ) : null}
+                  </>
+                }
+                action={
+                  session.current ? (
+                    <Badge variant="green">{t("current")}</Badge>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={pending !== null}
+                      onClick={() => revoke(session.id)}
+                    >
+                      {t("signOut")}
+                    </Button>
+                  )
+                }
+              >
+                {session.device_name ?? t("unknownDevice")}
+              </SettingTile>
+            );
+          })}
         </div>
       )}
       {hasOthers ? (

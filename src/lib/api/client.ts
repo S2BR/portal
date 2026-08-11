@@ -80,6 +80,53 @@ async function clientDeviceHeaders(): Promise<Record<string, string>> {
   }
 }
 
+/** Vercel edge geolocation headers → the API's generic, provider-agnostic `X-Client-*` contract. */
+const GEO_HEADER_MAP: ReadonlyArray<readonly [source: string, target: string]> =
+  [
+    ["x-vercel-ip-city", "X-Client-City"],
+    ["x-vercel-ip-country-region", "X-Client-Region"],
+    ["x-vercel-ip-country", "X-Client-Country"],
+    ["x-vercel-ip-latitude", "X-Client-Latitude"],
+    ["x-vercel-ip-longitude", "X-Client-Longitude"],
+    ["x-vercel-ip-timezone", "X-Client-Timezone"],
+    ["x-vercel-ip-postal-code", "X-Client-Postal"],
+  ];
+
+/**
+ * The real client IP + edge-resolved geolocation, forwarded so the API can stamp a session's login
+ * origin (city/region/country) — otherwise, with no trusted proxies, it only sees the BFF's egress
+ * IP and no location. Re-emits Vercel's `x-vercel-ip-*` / `x-forwarded-for` under the API's generic
+ * `X-Client-*` contract, so the API never depends on Vercel and the mobile app can send the same set
+ * later. Values are forwarded verbatim (the edge percent-encodes text like "São Paulo", which keeps
+ * the header ASCII-safe; the API URL-decodes). Best-effort: only present headers are forwarded, so
+ * local dev — with no edge — simply omits them.
+ */
+async function clientGeoHeaders(): Promise<Record<string, string>> {
+  try {
+    const incoming = await headers();
+    const forwarded: Record<string, string> = {};
+
+    const clientIp = (
+      incoming.get("x-forwarded-for")?.split(",")[0] ??
+      incoming.get("x-real-ip")
+    )?.trim();
+    if (clientIp) {
+      forwarded["X-Client-Ip"] = clientIp;
+    }
+
+    for (const [source, target] of GEO_HEADER_MAP) {
+      const value = incoming.get(source)?.trim();
+      if (value) {
+        forwarded[target] = value;
+      }
+    }
+
+    return forwarded;
+  } catch {
+    return {};
+  }
+}
+
 /**
  * Low-level call to the portal API. Server-only — never import from a client
  * component. Returns the status so callers can branch on the auth flow's
@@ -100,6 +147,7 @@ export async function portalFetch<T = unknown>(
     requestHeaders["Accept-Language"] = acceptLanguage;
   }
   Object.assign(requestHeaders, await clientDeviceHeaders());
+  Object.assign(requestHeaders, await clientGeoHeaders());
 
   const response = await fetch(`${env.PORTAL_API_URL}${request.path}`, {
     method: request.method ?? "GET",

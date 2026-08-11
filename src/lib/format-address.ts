@@ -47,9 +47,9 @@ const countryComponentRules: Record<
 
 /**
  * Resolve an ISO 3166-1 alpha-2 country code to its name in the given locale
- * (e.g. `"CA"` → "Canada" / "Canadá"), falling back to the raw code.
+ * (e.g. `"BR"` → "Brazil" / "Brasil"), falling back to the raw code.
  */
-function regionName(countryCode: string, locale: string): string {
+export function regionName(countryCode: string, locale: string): string {
   try {
     return (
       new Intl.DisplayNames([locale], { type: "region" }).of(countryCode) ??
