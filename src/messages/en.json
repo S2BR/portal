@@ -581,6 +581,10 @@
       "reorder": "Reorder",
       "makeMainQuestion": "Make this the main address?",
       "setAsMain": "Set as main",
+      "linkedin": {
+        "person": "I'm a professional",
+        "company": "I'm a company"
+      },
       "addAddress": "Add address",
       "removeAddress": "Remove address",
       "categoriesEmpty": "No categories available yet.",
