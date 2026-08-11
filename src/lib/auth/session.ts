@@ -42,7 +42,10 @@ function cookieOptions(maxAge: number) {
  * Persist the token pair in httpOnly cookies. Only callable where cookies are
  * writable — a route handler or server action — not during a render.
  */
-export async function setSessionCookies(tokens: TokenPair): Promise<void> {
+export async function setSessionCookies(
+  tokens: TokenPair,
+  options: { keepUserCookie?: boolean } = {},
+): Promise<void> {
   // Defense in depth: never mint a session from a response that lacks a real
   // token pair (e.g. a non-JSON 200 that slipped through). Fail closed.
   if (
@@ -73,9 +76,14 @@ export async function setSessionCookies(tokens: TokenPair): Promise<void> {
     tokens.refresh_token,
     cookieOptions(REFRESH_MAX_AGE_SECONDS),
   );
-  // The active account just changed (login / add / switch / refresh) — drop the stale display
-  // cookie so it can't show the previous user; the next `/me` repopulates it for the new one.
-  store.delete(USER_COOKIE);
+  // The active account just changed (login / add / switch) — drop the stale display cookie so it
+  // can't show the previous user; the next `/me` repopulates it for the new one. On a plain token
+  // REFRESH (same account) the caller passes `keepUserCookie` so the header keeps rendering the user
+  // from the cookie even when the follow-up call is throttled or briefly unavailable — otherwise a
+  // refresh that races a 429 would blank the header on the next reload with nothing to reseed from.
+  if (!options.keepUserCookie) {
+    store.delete(USER_COOKIE);
+  }
 }
 
 /**

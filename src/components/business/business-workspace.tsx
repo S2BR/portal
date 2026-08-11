@@ -7,6 +7,8 @@ import {
   BusinessDashboardSkeleton,
   BusinessFormSkeleton,
 } from "@/components/business/business-skeletons";
+import { RateLimited } from "@/components/ui/rate-limited";
+import { parseRateLimit } from "@/lib/rate-limit";
 
 /**
  * Gates the business content on access. The dashboard and placeholder pages would otherwise render
@@ -15,6 +17,10 @@ import {
  * business the account can't see) and, when denied, render the not-found page. While checking we show
  * a skeleton of the page (the sidebar, which only lists the account's own companies, renders
  * immediately from the layout) — no business data appears until access is granted.
+ *
+ * A rate-limited check is NOT a denial: throttling must never render the 404 page (it did, because
+ * any non-ok was treated as denied). On a 429 we show the wait with an auto-retry instead, and only a
+ * real 404 sends the visitor to not-found.
  */
 export function BusinessWorkspace({
   slug,
@@ -27,9 +33,14 @@ export function BusinessWorkspace({
   const [access, setAccess] = useState<"checking" | "granted" | "denied">(
     "checking",
   );
+  const [rateLimited, setRateLimited] = useState<number | null>(null);
+  // Bumped to re-run the access check (auto-retry when the rate-limit wait elapses).
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let active = true;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reset before each (re)check
+    setRateLimited(null);
     void (async () => {
       try {
         const response = await fetch(
@@ -38,12 +49,22 @@ export function BusinessWorkspace({
         if (!active) {
           return;
         }
+        const data = (await response.json().catch(() => null)) as {
+          business?: unknown;
+          status?: string;
+          retry_after?: number | null;
+        } | null;
+        // Throttled — show the wait + auto-retry, never the 404 page.
+        const limit = parseRateLimit(response.status, data);
+        if (limit) {
+          setRateLimited(limit.retryAfter);
+          return;
+        }
         if (!response.ok) {
           setAccess("denied");
           return;
         }
-        const data = (await response.json()) as { business?: unknown };
-        setAccess(data.business ? "granted" : "denied");
+        setAccess(data?.business ? "granted" : "denied");
       } catch {
         if (active) {
           setAccess("denied");
@@ -53,7 +74,17 @@ export function BusinessWorkspace({
     return () => {
       active = false;
     };
-  }, [slug]);
+  }, [slug, attempt]);
+
+  // Rate limited — a transient wait, not a denial. Show the countdown and re-check when it elapses.
+  if (rateLimited !== null) {
+    return (
+      <RateLimited
+        retryAfter={rateLimited}
+        onRetry={() => setAttempt((value) => value + 1)}
+      />
+    );
+  }
 
   // A business this account can't see (e.g. after a profile switch) renders the 404 page.
   if (access === "denied") {

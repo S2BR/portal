@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { callWithAuth } from "@/lib/api/authed";
+import { rateLimitedResponse } from "@/lib/api/rate-limit";
 
 import type { Business } from "../route";
 
@@ -68,13 +69,21 @@ export async function GET(
 ): Promise<NextResponse> {
   const { slug } = await params;
 
-  const response = await callWithAuth<{ business?: Business }>({
+  const response = await callWithAuth<{
+    business?: Business;
+    retry_after?: number | null;
+    message?: string;
+  }>({
     method: "GET",
     path: `/businesses/${encodeURIComponent(slug)}`,
   });
 
   if (response.ok) {
     return NextResponse.json({ business: response.data.business });
+  }
+
+  if (response.status === 429) {
+    return rateLimitedResponse(response);
   }
 
   return NextResponse.json(
@@ -103,6 +112,7 @@ export async function PATCH(
     business?: Business;
     message?: string;
     errors?: Record<string, string[]>;
+    retry_after?: number | null;
   }>({
     method: "PATCH",
     path: `/businesses/${encodeURIComponent(slug)}`,
@@ -114,6 +124,10 @@ export async function PATCH(
       status: "ok",
       business: response.data.business,
     });
+  }
+
+  if (response.status === 429) {
+    return rateLimitedResponse(response);
   }
 
   if (response.status === 404) {
@@ -140,13 +154,20 @@ export async function DELETE(
 ): Promise<NextResponse> {
   const { slug } = await params;
 
-  const response = await callWithAuth<{ message?: string }>({
+  const response = await callWithAuth<{
+    message?: string;
+    retry_after?: number | null;
+  }>({
     method: "DELETE",
     path: `/businesses/${encodeURIComponent(slug)}`,
   });
 
   if (response.ok) {
     return NextResponse.json({ status: "ok" });
+  }
+
+  if (response.status === 429) {
+    return rateLimitedResponse(response);
   }
 
   return NextResponse.json(

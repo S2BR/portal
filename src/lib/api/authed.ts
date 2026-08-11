@@ -78,6 +78,8 @@ export async function callWithAuth<T = unknown>(
     return first;
   }
 
-  await setSessionCookies(refreshed.data);
+  // A plain refresh is the SAME account — keep the display cookie so the header still renders the
+  // user even if this (or a follow-up) call is throttled and `/me` can't repopulate it.
+  await setSessionCookies(refreshed.data, { keepUserCookie: true });
   return portalFetch<T>({ ...request, token: refreshed.data.access_token });
 }

@@ -97,6 +97,7 @@ import { FeedbackPopover } from "@/components/ui/feedback-popover";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { LinkPreview } from "@/components/ui/link-preview";
+import { RateLimited, useRateLimitToast } from "@/components/ui/rate-limited";
 import {
   Select,
   SelectContent,
@@ -109,6 +110,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { apiErrorText } from "@/lib/api/error-text";
 import { formatBusinessAddress } from "@/lib/format-address";
+import { parseRateLimit } from "@/lib/rate-limit";
 import { useUnsavedChangesGuard } from "@/lib/use-unsaved-changes-guard";
 import { cn } from "@/lib/utils";
 
@@ -370,6 +372,8 @@ export function BusinessDetail({ slug }: { slug: string }) {
   const [business, setBusiness] = useState<Business | null>(null);
   const [missing, setMissing] = useState(false);
   const [loadFailed, setLoadFailed] = useState(false);
+  const [rateLimited, setRateLimited] = useState<number | null>(null);
+  const notifyRateLimited = useRateLimitToast();
   const [editing, setEditing] = useState(false);
   const [edit, setEdit] = useState<EditState | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -448,6 +452,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
 
   const load = useCallback(async () => {
     setLoadFailed(false);
+    setRateLimited(null);
     try {
       const response = await fetch(
         `/api/businesses/${encodeURIComponent(slug)}`,
@@ -458,11 +463,21 @@ export function BusinessDetail({ slug }: { slug: string }) {
         setMissing(true);
         return;
       }
+      const data = (await response.json()) as {
+        business?: Business;
+        status?: string;
+        retry_after?: number | null;
+      };
+      const limit = parseRateLimit(response.status, data);
+      if (limit) {
+        // Show the wait + auto-retry rather than the generic "couldn't load" panel.
+        setRateLimited(limit.retryAfter);
+        return;
+      }
       if (!response.ok) {
         setLoadFailed(true);
         return;
       }
-      const data = (await response.json()) as { business?: Business };
       if (data.business) {
         setBusiness(data.business);
       } else {
@@ -552,6 +567,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
         business?: Business;
         message?: string;
         errors?: Record<string, string[]>;
+        retry_after?: number | null;
       };
 
       if (data.status === "ok" && data.business) {
@@ -562,6 +578,12 @@ export function BusinessDetail({ slug }: { slug: string }) {
       }
       if (response.status === 404) {
         setMissing(true);
+        return;
+      }
+      const limit = parseRateLimit(response.status, data);
+      if (limit) {
+        // Keep the user's edits intact — just tell them how long to wait before saving again.
+        notifyRateLimited(limit.retryAfter);
         return;
       }
       setNameError(data.errors?.name?.[0] ?? null);
@@ -587,7 +609,16 @@ export function BusinessDetail({ slug }: { slug: string }) {
         router.push("/portal/businesses");
         return;
       }
-      toast.error(create("errorGeneric"));
+      const data = (await response.json().catch(() => null)) as {
+        status?: string;
+        retry_after?: number | null;
+      } | null;
+      const limit = parseRateLimit(response.status, data);
+      if (limit) {
+        notifyRateLimited(limit.retryAfter);
+      } else {
+        toast.error(create("errorGeneric"));
+      }
       setDeleting(false);
     } catch {
       toast.error(create("errorGeneric"));
@@ -612,6 +643,15 @@ export function BusinessDetail({ slug }: { slug: string }) {
         <p className="text-muted-foreground p-8 text-center text-sm">
           {t("notFound")}
         </p>
+      </div>
+    );
+  }
+
+  if (rateLimited !== null) {
+    return (
+      <div className="space-y-6">
+        {backLink}
+        <RateLimited retryAfter={rateLimited} onRetry={() => void load()} />
       </div>
     );
   }

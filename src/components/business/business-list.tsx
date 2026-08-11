@@ -13,8 +13,10 @@ import {
   overlayClass,
   placeholderClass,
 } from "@/components/ui/drag-handle";
+import { RateLimited, useRateLimitToast } from "@/components/ui/rate-limited";
 import { SortableList } from "@/components/ui/sortable-list";
 import { Skeleton } from "@/components/ui/skeleton";
+import { parseRateLimit } from "@/lib/rate-limit";
 import { cn } from "@/lib/utils";
 
 /**
@@ -27,11 +29,24 @@ export function BusinessList() {
   const types = useTranslations("businessNew.types");
 
   const [businesses, setBusinesses] = useState<Business[] | null>(null);
+  const [rateLimited, setRateLimited] = useState<number | null>(null);
+  const notifyRateLimited = useRateLimitToast();
 
   const load = useCallback(async () => {
     try {
       const response = await fetch("/api/businesses");
-      const data = (await response.json()) as { businesses?: Business[] };
+      const data = (await response.json()) as {
+        businesses?: Business[];
+        status?: string;
+        retry_after?: number | null;
+      };
+      const limit = parseRateLimit(response.status, data);
+      if (limit) {
+        // Show the wait (with an auto-retry) instead of a silent empty list.
+        setRateLimited(limit.retryAfter);
+        return;
+      }
+      setRateLimited(null);
       setBusinesses(data.businesses ?? []);
     } catch {
       setBusinesses([]);
@@ -97,9 +112,20 @@ export function BusinessList() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ slugs: next.map((business) => business.slug) }),
     })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("reorder failed");
+      .then(async (response) => {
+        if (response.ok) {
+          return;
+        }
+        setBusinesses(previous);
+        const data = (await response.json().catch(() => null)) as {
+          status?: string;
+          retry_after?: number | null;
+        } | null;
+        const limit = parseRateLimit(response.status, data);
+        if (limit) {
+          notifyRateLimited(limit.retryAfter);
+        } else {
+          toast.error(t("reorderError"));
         }
       })
       .catch(() => {
@@ -109,6 +135,18 @@ export function BusinessList() {
   };
 
   if (businesses === null) {
+    // Rate limited before the first load resolved — show the wait + auto-retry, not a forever skeleton.
+    if (rateLimited !== null) {
+      return (
+        <RateLimited
+          retryAfter={rateLimited}
+          onRetry={() => {
+            setRateLimited(null);
+            void load();
+          }}
+        />
+      );
+    }
     return (
       <ul className="divide-y">
         {[0, 1, 2].map((index) => (

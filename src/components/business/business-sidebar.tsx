@@ -12,7 +12,7 @@ import {
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { Business } from "@/app/api/businesses/route";
 import { UserAvatar } from "@/components/auth/user-avatar";
@@ -32,6 +32,7 @@ import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useBusinessIdentity } from "@/components/business/business-identity-context";
 import { useBusinessNav } from "@/components/business/business-nav-context";
+import { parseRateLimit } from "@/lib/rate-limit";
 import { cn } from "@/lib/utils";
 
 type NavKey = "dashboard" | "information" | "products" | "services";
@@ -79,15 +80,31 @@ export function BusinessSidebar({ slug }: { slug: string }) {
     setNavOpen?.(false);
   }, [pathname, setNavOpen]);
 
+  const loadRef = useRef<() => void>(() => {});
   const load = useCallback(async () => {
     try {
       const response = await fetch("/api/businesses");
-      const data = (await response.json()) as { businesses?: Business[] };
+      const data = (await response.json()) as {
+        businesses?: Business[];
+        status?: string;
+        retry_after?: number | null;
+      };
+      const limit = parseRateLimit(response.status, data);
+      if (limit) {
+        // Don't collapse the switcher to "no businesses" on a throttle — the detail/list surfaces
+        // already tell the user; here we just self-heal once the wait passes.
+        setTimeout(() => loadRef.current(), limit.retryAfter * 1000);
+        return;
+      }
       setBusinesses(data.businesses ?? []);
     } catch {
       setBusinesses([]);
     }
   }, []);
+
+  useEffect(() => {
+    loadRef.current = load;
+  }, [load]);
 
   useEffect(() => {
     // One-off fetch on mount; setState runs only after the async response resolves.
