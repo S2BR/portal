@@ -649,28 +649,29 @@ export function BusinessDetail({ slug }: { slug: string }) {
           </div>
         </div>
 
-        {!editing ? (
-          <ExpandableActionBar
-            align="end"
-            items={
-              [
-                {
-                  id: "edit",
-                  label: t("edit"),
-                  icon: <Pencil />,
-                  onClick: startEditing,
-                },
-                {
-                  id: "delete",
-                  label: t("delete"),
-                  icon: <Trash2 />,
-                  tone: "danger",
-                  onClick: () => setConfirmingDelete(true),
-                },
-              ] satisfies ActionBarItem[]
-            }
-          />
-        ) : null}
+        {/* Persistently mounted and driven by `open` so it can play its "close then disappear"
+            exit when editing starts (rather than vanishing instantly). */}
+        <ExpandableActionBar
+          open={!editing}
+          align="end"
+          items={
+            [
+              {
+                id: "edit",
+                label: t("edit"),
+                icon: <Pencil />,
+                onClick: startEditing,
+              },
+              {
+                id: "delete",
+                label: t("delete"),
+                icon: <Trash2 />,
+                tone: "danger",
+                onClick: () => setConfirmingDelete(true),
+              },
+            ] satisfies ActionBarItem[]
+          }
+        />
       </div>
 
       <form onSubmit={save}>
