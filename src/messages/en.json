@@ -559,6 +559,16 @@
         "sunday": "Sunday"
       },
       "categoryHint": "Can't find your category? Tell us what fits and we'll take a look.",
+      "categorySuggest": {
+        "trigger": "Can't find your category?",
+      "helper": "If you cannot find a suitable category, describe it and our team will review and add it when it fits.",
+        "label": "Your suggestion",
+        "prompt": "E.g. \"Category: Coffee Shops, Subcategory: Vegan Coffee Shops\"",
+        "submit": "Save suggestion",
+      "remove": "Remove",
+        "successTitle": "Suggestion saved",
+        "successDescription": "Our team will review it and update your listing if it fits."
+      },
       "closedAllDay": "Closed",
       "colorHint": "Your brand's primary color.",
       "addSocial": "Add social link",

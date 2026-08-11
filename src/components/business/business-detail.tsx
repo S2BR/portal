@@ -84,6 +84,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { FeedbackPopover } from "@/components/ui/feedback-popover";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { LinkPreview } from "@/components/ui/link-preview";
@@ -337,6 +338,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
   const tabs = useTranslations("businesses.detail.tabs");
   const sections = useTranslations("businesses.detail.sections");
   const fields = useTranslations("businesses.detail.fields");
+  const suggest = useTranslations("businesses.detail.categorySuggest");
   const days = useTranslations("businesses.detail.days");
   const blank = useTranslations("businesses.detail.empty");
   const types = useTranslations("businessNew.types");
@@ -842,18 +844,37 @@ export function BusinessDetail({ slug }: { slug: string }) {
                         onChange={(categoryIds) => patch({ categoryIds })}
                       />
                     </Field>
-                    <Field
-                      label={fields("categorySuggestion")}
-                      hint={t("categoryHint")}
-                    >
-                      <Input
-                        value={edit.categorySuggestion}
-                        onChange={(event) =>
-                          patch({ categorySuggestion: event.target.value })
+                    {/* "Can't find your category?" — the context sits as a small line beside the
+                        trigger; the popover stays light. Submitting captures the suggestion into the
+                        edit state; it persists (into the business metadata bag) with the form's Save. */}
+                    <div className="space-y-1.5">
+                      <FeedbackPopover
+                        triggerLabel={suggest("trigger")}
+                        indicator={
+                          edit.categorySuggestion.trim() ? (
+                            <span
+                              className="bg-brand-gold size-1.5 shrink-0 rounded-full"
+                              aria-hidden
+                            />
+                          ) : null
                         }
-                        maxLength={500}
+                        textareaLabel={suggest("label")}
+                        prompt={suggest("prompt")}
+                        defaultValue={edit.categorySuggestion}
+                        submitLabel={suggest("submit")}
+                        clearLabel={suggest("remove")}
+                        successTitle={suggest("successTitle")}
+                        successDescription={suggest("successDescription")}
+                        loadingDuration={350}
+                        onSubmit={(feedback) =>
+                          patch({ categorySuggestion: feedback })
+                        }
+                        onClear={() => patch({ categorySuggestion: "" })}
                       />
-                    </Field>
+                      <p className="text-muted-foreground text-xs leading-relaxed text-pretty">
+                        {suggest("helper")}
+                      </p>
+                    </div>
                   </>
                 ) : business.categories && business.categories.length > 0 ? (
                   <div className="flex flex-wrap gap-1.5">

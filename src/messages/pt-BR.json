@@ -559,6 +559,16 @@
         "sunday": "Domingo"
       },
       "categoryHint": "Não encontrou sua categoria? Diga-nos qual se encaixa e vamos verificar.",
+      "categorySuggest": {
+        "trigger": "Não encontra sua categoria?",
+      "helper": "Se não encontrar uma categoria adequada, descreva-a e nossa equipe vai revisar e adicionar quando fizer sentido.",
+        "label": "Sua sugestão",
+        "prompt": "Ex: \"Categoria: Cafeterias, Subcategoria: Cafeterias Veganas\"",
+        "submit": "Salvar sugestão",
+      "remove": "Remover",
+        "successTitle": "Sugestão salva",
+        "successDescription": "Nossa equipe vai revisar e atualizar seu perfil se fizer sentido."
+      },
       "closedAllDay": "Fechado",
       "colorHint": "A cor principal da sua marca.",
       "addSocial": "Adicionar rede social",
