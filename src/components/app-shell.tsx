@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 
 import { AccountBoundary } from "@/components/auth/account-boundary";
 import { AppHeader } from "@/components/app-header";
+import { BusinessIdentityProvider } from "@/components/business/business-identity-context";
 import { BusinessNavProvider } from "@/components/business/business-nav-context";
 
 /**
@@ -16,12 +17,14 @@ import { BusinessNavProvider } from "@/components/business/business-nav-context"
 export function AppShell({ children }: { children: ReactNode }) {
   return (
     <BusinessNavProvider>
-      <div className="flex min-h-svh flex-col">
-        <AppHeader />
-        <main className="mx-auto w-full max-w-[90rem] flex-1 px-4 py-10 sm:px-6">
-          <AccountBoundary>{children}</AccountBoundary>
-        </main>
-      </div>
+      <BusinessIdentityProvider>
+        <div className="flex min-h-svh flex-col">
+          <AppHeader />
+          <main className="mx-auto w-full max-w-[90rem] flex-1 px-4 py-10 sm:px-6">
+            <AccountBoundary>{children}</AccountBoundary>
+          </main>
+        </div>
+      </BusinessIdentityProvider>
     </BusinessNavProvider>
   );
 }

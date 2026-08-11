@@ -25,6 +25,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ChangeEvent,
   type FormEvent,
@@ -46,6 +47,7 @@ import {
   socialLabel,
   socialUrl,
 } from "@/components/business/business-constants";
+import { useBusinessIdentity } from "@/components/business/business-identity-context";
 import type { PlaceAddress } from "@/app/api/addresses/place/[id]/route";
 import type { Amenity } from "@/app/api/amenities/route";
 import type { Category } from "@/app/api/categories/route";
@@ -341,6 +343,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
   const create = useTranslations("businessNew");
   const locale = useLocale();
   const router = useRouter();
+  const identity = useBusinessIdentity();
 
   const [business, setBusiness] = useState<Business | null>(null);
   const [missing, setMissing] = useState(false);
@@ -355,6 +358,31 @@ export function BusinessDetail({ slug }: { slug: string }) {
   const [amenityGroups, setAmenityGroups] = useState<Amenity[]>([]);
   const [activeTab, setActiveTab] = useState("general");
   const [confirmingDelete, setConfirmingDelete] = useState(false);
+
+  // Keep the sidebar switcher's name for this business in sync with the page in realtime: the live
+  // edit value while editing, otherwise the saved name. Sibling surfaces (the switcher) fetched their
+  // own copy, so without this a rename only shows there after a reload. `setName` is stable.
+  const setSharedName = identity?.setName;
+  useEffect(() => {
+    if (!business || !setSharedName) {
+      return;
+    }
+    setSharedName(slug, editing && edit ? edit.name : business.name);
+  }, [editing, edit, business, slug, setSharedName]);
+
+  // On leaving the page, drop any unsaved live name so the switcher falls back to the saved one.
+  const businessRef = useRef<Business | null>(null);
+  useEffect(() => {
+    businessRef.current = business;
+  }, [business]);
+  useEffect(() => {
+    return () => {
+      const saved = businessRef.current?.name;
+      if (saved != null) {
+        setSharedName?.(slug, saved);
+      }
+    };
+  }, [slug, setSharedName]);
 
   // The saved record's payload, serialized per tab. Built once per loaded record (not per keystroke),
   // so typing only has to serialize the current edit and string-compare — no baseline rebuild.
@@ -648,7 +676,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
           </span>
           <div className="space-y-1">
             <h1 className="font-heading text-2xl font-semibold tracking-tight">
-              {business.name}
+              {editing && edit ? edit.name : business.name}
             </h1>
             <Badge variant="outline">{typeLabel}</Badge>
           </div>
@@ -716,7 +744,11 @@ export function BusinessDetail({ slug }: { slug: string }) {
                     slug={slug}
                     kind="logo"
                     value={business.logo}
-                    onUpdated={(updated) => setBusiness(updated)}
+                    onUpdated={(updated) => {
+                      setBusiness(updated);
+                      // Reflect the new/removed logo in the sidebar switcher right away too.
+                      identity?.setLogo(slug, updated.logo);
+                    }}
                   />
                 </div>
                 <div

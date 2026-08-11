@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/popover";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useBusinessIdentity } from "@/components/business/business-identity-context";
 import { useBusinessNav } from "@/components/business/business-nav-context";
 import { cn } from "@/lib/utils";
 
@@ -48,8 +49,18 @@ export function BusinessSidebar({ slug }: { slug: string }) {
   const pathname = usePathname();
   const router = useRouter();
   const nav = useBusinessNav();
+  const identity = useBusinessIdentity();
   const setNavPresent = nav?.setPresent;
   const setNavOpen = nav?.setOpen;
+  // Prefer optimistic overrides (a live rename or a just-uploaded logo from the business page) over
+  // what this sidebar fetched, so changes show here instantly instead of after a reload.
+  const displayName = (business: Business) =>
+    identity?.overrides[business.slug]?.name ?? business.name;
+  const displayLogo = (business: Business) => {
+    const override = identity?.overrides[business.slug];
+    // Distinguish "no override" (undefined → keep fetched logo) from "logo removed" (null).
+    return override && "logo" in override ? override.logo : business.logo;
+  };
   const [switcherOpen, setSwitcherOpen] = useState(false);
   const [businesses, setBusinesses] = useState<Business[] | null>(null);
 
@@ -135,8 +146,8 @@ export function BusinessSidebar({ slug }: { slug: string }) {
           >
             {current ? (
               <UserAvatar
-                name={current.name}
-                src={current.logo}
+                name={displayName(current)}
+                src={displayLogo(current)}
                 className="size-8 rounded-md"
                 fallbackClassName="rounded-md text-sm"
               />
@@ -144,7 +155,7 @@ export function BusinessSidebar({ slug }: { slug: string }) {
               <Skeleton className="size-8 shrink-0 rounded-md" />
             )}
             <span className="min-w-0 flex-1 truncate font-medium">
-              {current?.name ?? <Skeleton className="h-4 w-24" />}
+              {current ? displayName(current) : <Skeleton className="h-4 w-24" />}
             </span>
             <ChevronsUpDown
               className="text-muted-foreground size-4 shrink-0"
@@ -166,19 +177,19 @@ export function BusinessSidebar({ slug }: { slug: string }) {
               {(businesses ?? []).map((business) => (
                 <CommandItem
                   key={business.slug}
-                  value={business.name}
+                  value={displayName(business)}
                   onSelect={() => {
                     setSwitcherOpen(false);
                     router.push(`/portal/businesses/${business.slug}`);
                   }}
                 >
                   <UserAvatar
-                    name={business.name}
-                    src={business.logo}
+                    name={displayName(business)}
+                    src={displayLogo(business)}
                     className="size-5 rounded"
                     fallbackClassName="rounded text-[9px]"
                   />
-                  <span className="truncate">{business.name}</span>
+                  <span className="truncate">{displayName(business)}</span>
                   {business.slug === slug ? (
                     <span
                       className="bg-brand-green ms-auto size-2 shrink-0 rounded-full"
