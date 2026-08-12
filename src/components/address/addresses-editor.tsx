@@ -1,10 +1,20 @@
 "use client";
 
-import { EyeOff, Info, Maximize2, Plus, X } from "lucide-react";
+import {
+  ChevronUp,
+  EyeOff,
+  Info,
+  MapPin,
+  Maximize2,
+  Plus,
+  X,
+} from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState, type ChangeEvent, type ReactNode } from "react";
 
 import type { PlaceAddress } from "@/app/api/addresses/place/[id]/route";
+import { AddressLines } from "@/components/address/address-lines";
+import { AddressMapPreview } from "@/components/address/address-map-preview";
 import { LocationMap } from "@/components/address/location-map";
 import { AddressAutocomplete } from "@/components/business/address-autocomplete";
 import { Button } from "@/components/ui/button";
@@ -91,21 +101,31 @@ export function AddressesEditor({
   // keeps ~10) is short enough to reorder without scrolling the whole page.
   const [dragging, setDragging] = useState(false);
   const sortable = value.length > 1;
-  // A brand-new (empty) address shows only the search field until an address is picked (or the user
-  // chooses to fill it in by hand) — so adding one doesn't drop a big empty form on the page.
-  const [manualKeys, setManualKeys] = useState<Set<string>>(new Set());
-  const revealManual = (key: string) =>
-    setManualKeys((previous) => new Set(previous).add(key));
+  // With more than one address, all but the one being edited collapse to a faded "peek" so the page
+  // stays short (users keep ~10). Exactly one is expanded at a time; a lone address is always open.
+  const [openKey, setOpenKey] = useState<string | null>(null);
+  const isOpen = (entry: AddressEntry) => !sortable || openKey === entry.key;
+  // A brand-new (empty) address shows only the place search until a place is picked — so adding one
+  // doesn't drop a big empty form on the page, and every address comes from a real geocoded place.
   const isSearchOnly = (entry: AddressEntry) =>
-    entry.address_1.trim() === "" &&
-    entry.city.trim() === "" &&
-    !manualKeys.has(entry.key);
+    entry.address_1.trim() === "" && entry.city.trim() === "";
   // Which address's map (if any) is currently enlarged in the dialog, for a better look while relocating.
   const [expandedKey, setExpandedKey] = useState<string | null>(null);
 
   const update = (key: string, changes: Partial<AddressEntry>) =>
     onChange(value.map((e) => (e.key === key ? { ...e, ...changes } : e)));
-  const remove = (key: string) => onChange(value.filter((e) => e.key !== key));
+  const remove = (key: string) => {
+    if (openKey === key) {
+      setOpenKey(null);
+    }
+    onChange(value.filter((e) => e.key !== key));
+  };
+  // Add a fresh address and open it straight away for editing.
+  const addAddress = () => {
+    const entry = blankAddress();
+    onChange([...value, entry]);
+    setOpenKey(entry.key);
+  };
   // Exactly one address is main: setting one unsets the rest.
   const setMain = (key: string, main: boolean) =>
     onChange(
@@ -219,36 +239,116 @@ export function AddressesEditor({
     />
   );
 
-  /** The read-mode-style address block shown while dragging (and in the overlay). */
-  const compactBody = (entry: AddressEntry, index: number, handle: ReactNode) => (
-    <>
-      {handle}
-      <span className="text-muted-foreground mt-0.5 w-5 shrink-0 text-center text-xs tabular-nums">
-        {index + 1}
-      </span>
-      <address className="text-foreground/90 min-w-0 flex-1 space-y-0.5 text-sm leading-snug not-italic">
-        {summaryLines(entry).map((line) => (
-          <span key={line} className="block truncate">
-            {line}
-          </span>
-        ))}
-      </address>
-      {entry.isMain ? (
+  /** A small location thumbnail for the peek, matching read mode: interactive (opens the map on click)
+   *  at rest, a plain image while dragging, and a pin/eye box when the address has no coordinates. */
+  const peekMap = (entry: AddressEntry, interactive: boolean) => {
+    const point = coordinate(entry);
+    if (!point) {
+      return (
         <span
-          className="bg-brand-green mt-1 size-2 shrink-0 rounded-full"
-          aria-label={t("mainAddress")}
+          className={cn(
+            "flex h-20 w-24 shrink-0 items-center justify-center rounded-lg border",
+            entry.isHidden
+              ? "border-dashed text-muted-foreground/70"
+              : "bg-background text-muted-foreground",
+          )}
+        >
+          {entry.isHidden ? (
+            <EyeOff className="size-4" />
+          ) : (
+            <MapPin className="size-4" />
+          )}
+        </span>
+      );
+    }
+    if (interactive) {
+      return (
+        <AddressMapPreview
+          latitude={point.lat}
+          longitude={point.lng}
+          label={summaryLines(entry).join(", ")}
+          dimmed={entry.isHidden}
+          className="h-20 w-24"
         />
-      ) : null}
-      {entry.isHidden ? (
-        <EyeOff
-          className="text-muted-foreground mt-0.5 size-3.5 shrink-0"
-          aria-label={t("addressHidden")}
+      );
+    }
+    return (
+      <span
+        className={cn(
+          "h-20 w-24 shrink-0 overflow-hidden rounded-lg",
+          entry.isHidden && "opacity-60",
+        )}
+      >
+        <LocationMap
+          latitude={point.lat}
+          longitude={point.lng}
+          interactive={false}
+          className="h-full w-full"
         />
-      ) : null}
-    </>
-  );
+      </span>
+    );
+  };
 
-  /** A brand-new address: just the place search, plus an escape hatch to fill it in by hand. */
+  /** The collapsed "peek" card for a filled address: a small map plus the same country-aware address
+   *  format read mode uses (bold street, gray rest). The interactive variant (resting) lifts on hover
+   *  and expands on click; the `static` variant (drag overlay/placeholder) is the identical card
+   *  without the button/hover, so picking an address up doesn't change how it looks. */
+  const peekCard = (
+    entry: AddressEntry,
+    handle: ReactNode,
+    options?: { static?: boolean },
+  ) => {
+    const text = (
+      <>
+        <AddressLines
+          lines={summaryLines(entry)}
+          truncate
+          className="min-w-0 flex-1"
+        />
+        {entry.isMain ? (
+          <span
+            className="bg-brand-green size-2 shrink-0 rounded-full"
+            aria-label={t("mainAddress")}
+          />
+        ) : null}
+        {entry.isHidden ? (
+          <EyeOff
+            className="text-muted-foreground size-3.5 shrink-0"
+            aria-label={t("addressHidden")}
+          />
+        ) : null}
+      </>
+    );
+
+    return (
+      <div
+        className={cn(
+          "bg-card flex items-center gap-3 rounded-lg border p-3",
+          !options?.static &&
+            "group hover:border-foreground/20 transition-all hover:-translate-y-px hover:shadow-md",
+        )}
+      >
+        <div className="flex items-center">{handle}</div>
+        {peekMap(entry, !options?.static)}
+        {options?.static ? (
+          <div className="flex min-w-0 flex-1 items-center gap-2">{text}</div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setOpenKey(entry.key)}
+            aria-expanded={false}
+            aria-label={t("editAddress")}
+            className="focus-visible:ring-ring flex min-w-0 flex-1 items-center gap-2 rounded-md text-start focus-visible:ring-2 focus-visible:outline-none"
+          >
+            {text}
+          </button>
+        )}
+      </div>
+    );
+  };
+
+  /** A brand-new address: just the place search. Addresses can only come from a searched place, so
+   *  they always carry coordinates (for the map and timezone). */
   const searchBody = (entry: AddressEntry, handle: ReactNode) => (
     <>
       <div className="flex items-center justify-between gap-2">
@@ -267,13 +367,6 @@ export function AddressesEditor({
         </Button>
       </div>
       <AddressAutocomplete onSelect={(place) => fill(entry.key, place)} />
-      <button
-        type="button"
-        className="text-muted-foreground hover:text-foreground text-xs underline underline-offset-2 transition-colors"
-        onClick={() => revealManual(entry.key)}
-      >
-        {t("enterManually")}
-      </button>
     </>
   );
 
@@ -297,15 +390,28 @@ export function AddressesEditor({
             </span>
           ) : null}
         </div>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          aria-label={t("removeAddress")}
-          onClick={() => remove(entry.key)}
-        >
-          <X className="size-4" />
-        </Button>
+        <div className="flex items-center gap-1">
+          {sortable ? (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label={t("collapseAddress")}
+              onClick={() => setOpenKey(null)}
+            >
+              <ChevronUp className="size-4" />
+            </Button>
+          ) : null}
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            aria-label={t("removeAddress")}
+            onClick={() => remove(entry.key)}
+          >
+            <X className="size-4" />
+          </Button>
+        </div>
       </div>
 
       {/* Visibility is a setting, not address data — surfaced at the top of the block. */}
@@ -420,56 +526,58 @@ export function AddressesEditor({
           renderItem={(entry, { setNodeRef, style, isDragging, handle }) => {
             const index = value.indexOf(entry);
             if (isDragging) {
-              // The gray drop slot — compact, content invisible (it rides the overlay).
+              // The drop slot — a peek-card-sized gap, content invisible (it rides the overlay).
               return (
                 <div
                   ref={setNodeRef}
                   style={style}
-                  className={cn(
-                    "flex items-start gap-2 px-1 py-2",
-                    placeholderClass,
-                  )}
+                  className={cn("rounded-lg", placeholderClass)}
                 >
-                  <div className="invisible flex flex-1 items-start gap-2">
-                    {compactBody(entry, index, reorderHandle(handle))}
+                  <div className="invisible">
+                    {peekCard(entry, reorderHandle(handle), {
+                      static: true,
+                    })}
                   </div>
                 </div>
               );
             }
             if (dragging) {
-              // Another row is being dragged → collapse to a compact summary.
+              // Another row is being dragged → collapse to the same peek card (no hover/click).
+              return (
+                <div ref={setNodeRef} style={style}>
+                  {peekCard(entry, reorderHandle(handle), {
+                    static: true,
+                  })}
+                </div>
+              );
+            }
+            if (isSearchOnly(entry) || isOpen(entry)) {
               return (
                 <div
                   ref={setNodeRef}
                   style={style}
-                  className="bg-muted-foreground/10 flex items-start gap-2 rounded-lg px-1 py-2"
+                  // A slight gray on hover (the business-type selector's unselected tone) helps tell
+                  // one address's form from the next.
+                  className="hover:bg-muted/40 space-y-4 rounded-lg p-3 transition-colors"
                 >
-                  {compactBody(entry, index, reorderHandle(handle))}
+                  {isSearchOnly(entry)
+                    ? searchBody(entry, reorderHandle(handle))
+                    : fullBody(entry, index, reorderHandle(handle))}
                 </div>
               );
             }
+            // Collapsed: the peek card that expands on click.
             return (
-              <div
-                ref={setNodeRef}
-                style={style}
-                // A slight gray on hover (the business-type selector's unselected tone) helps tell one
-                // address's form from the next.
-                className="hover:bg-muted/40 space-y-4 rounded-lg p-3 transition-colors"
-              >
-                {isSearchOnly(entry)
-                  ? searchBody(entry, reorderHandle(handle))
-                  : fullBody(entry, index, reorderHandle(handle))}
+              <div ref={setNodeRef} style={style}>
+                {peekCard(entry, reorderHandle(handle))}
               </div>
             );
           }}
           renderOverlay={(entry) => (
-            <div
-              className={cn(
-                "flex w-full items-start gap-2 px-1 py-2",
-                overlayClass,
-              )}
-            >
-              {compactBody(entry, value.indexOf(entry), <DragHandle label={t("reorder")} />)}
+            <div className={cn("w-full", overlayClass)}>
+              {peekCard(entry, <DragHandle label={t("reorder")} />, {
+                static: true,
+              })}
             </div>
           )}
         />
@@ -492,7 +600,7 @@ export function AddressesEditor({
         type="button"
         variant="outline"
         size="sm"
-        onClick={() => onChange([...value, blankAddress()])}
+        onClick={addAddress}
       >
         <Plus className="size-4" />
         {t("addAddress")}
