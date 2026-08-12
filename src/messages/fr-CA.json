@@ -616,6 +616,7 @@
     "mapPreviewHint": "Déplacez-vous et zoomez pour explorer cet emplacement.",
       "removeAddress": "Supprimer l’adresse",
       "categoriesEmpty": "Aucune catégorie disponible pour l'instant.",
+    "categoriesSelectedCount": "{count, plural, one {# sélectionnée} other {# sélectionnées}}",
       "searchAmenities": "Rechercher des commodités…",
       "amenitiesEmpty": "Aucune commodité ne correspond; choisissez une catégorie pour en voir plus.",
       "media": {

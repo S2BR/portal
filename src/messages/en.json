@@ -616,6 +616,7 @@
     "mapPreviewHint": "Pan and zoom to explore this location.",
       "removeAddress": "Remove address",
       "categoriesEmpty": "No categories available yet.",
+    "categoriesSelectedCount": "{count, plural, one {# selected} other {# selected}}",
       "searchAmenities": "Search amenities…",
       "amenitiesEmpty": "No amenities match — pick a category to see more.",
       "media": {

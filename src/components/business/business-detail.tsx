@@ -55,8 +55,14 @@ import {
   type AddressEntry,
 } from "@/components/address/addresses-editor";
 import { AddressMapPreview } from "@/components/address/address-map-preview";
-import { AmenitiesPicker } from "@/components/business/amenities-picker";
-import { CategoryPicker } from "@/components/business/category-picker";
+import {
+  AmenitiesPicker,
+  AmenityReadout,
+} from "@/components/business/amenities-picker";
+import {
+  CategoryPicker,
+  CategoryReadout,
+} from "@/components/business/category-picker";
 import { BusinessTypeField } from "@/components/business/business-type-field";
 import { FormSection } from "@/components/business/form-section";
 import {
@@ -660,6 +666,10 @@ export function BusinessDetail({ slug }: { slug: string }) {
     business.type === "company"
       ? types("company.title")
       : types("selfEmployed.title");
+  const typeDescription =
+    business.type === "company"
+      ? types("company.description")
+      : types("selfEmployed.description");
 
   const tabItems = [
     { value: "general", label: tabs("general"), icon: Info },
@@ -866,7 +876,17 @@ export function BusinessDetail({ slug }: { slug: string }) {
                     label={create("typeLabel")}
                   />
                 ) : (
-                  <Badge variant="outline">{typeLabel}</Badge>
+                  <div className="bg-muted/40 flex items-start gap-3 rounded-xl p-4">
+                    <span className="bg-background text-muted-foreground flex size-10 shrink-0 items-center justify-center rounded-lg">
+                      <TypeIcon className="size-5" />
+                    </span>
+                    <div className="min-w-0">
+                      <p className="font-medium">{typeLabel}</p>
+                      <p className="text-muted-foreground text-sm text-pretty">
+                        {typeDescription}
+                      </p>
+                    </div>
+                  </div>
                 )}
               </FormSection>
 
@@ -918,13 +938,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
                     </div>
                   </>
                 ) : business.categories && business.categories.length > 0 ? (
-                  <div className="flex flex-wrap gap-1.5">
-                    {business.categories.map((category) => (
-                      <Badge key={category.id} variant="outline">
-                        {category.name}
-                      </Badge>
-                    ))}
-                  </div>
+                  <CategoryReadout categories={business.categories} />
                 ) : (
                   <Muted>{blank("categories")}</Muted>
                 )}
@@ -948,13 +962,10 @@ export function BusinessDetail({ slug }: { slug: string }) {
                   onChange={(amenityIds) => patch({ amenityIds })}
                 />
               ) : business.amenities && business.amenities.length > 0 ? (
-                <div className="flex flex-wrap gap-1.5">
-                  {business.amenities.map((amenity) => (
-                    <Badge key={amenity.id} variant="outline">
-                      {amenity.name}
-                    </Badge>
-                  ))}
-                </div>
+                <AmenityReadout
+                  amenities={business.amenities}
+                  groups={amenityGroups}
+                />
               ) : (
                 <Muted>{blank("amenities")}</Muted>
               )}
