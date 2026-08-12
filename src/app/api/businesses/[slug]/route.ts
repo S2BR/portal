@@ -9,6 +9,8 @@ import type { Business } from "../route";
 // Loose shape only — the API owns format validation (email, url, 2-letter country) and returns
 // field-level messages, so the BFF stays a thin guard rather than masking them as a generic 422.
 const contactSchema = z.object({
+  // Public code of an existing row (round-tripped to update it in place); absent for a new row.
+  id: z.string().optional(),
   type: z.string(),
   value: z.string(),
   name: z.string().nullish(),
@@ -16,6 +18,7 @@ const contactSchema = z.object({
 });
 
 const socialSchema = z.object({
+  id: z.string().optional(),
   platform: z.string(),
   handle: z.string(),
 });
@@ -28,6 +31,7 @@ const openingHourSchema = z.object({
 });
 
 const closureSchema = z.object({
+  id: z.string().optional(),
   name: z.string().nullish(),
   start_date: z.string(),
   end_date: z.string(),
@@ -38,6 +42,7 @@ const closureSchema = z.object({
 });
 
 const addressSchema = z.object({
+  id: z.string().optional(),
   address_1: z.string().optional(),
   address_2: z.string().nullish(),
   apartment_suite: z.string().nullish(),

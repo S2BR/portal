@@ -38,6 +38,8 @@ export type BusinessSocialNetwork =
   | "wechat";
 
 export interface BusinessContact {
+  /** Stable public code; round-tripped on save to update this row in place. */
+  id: string;
   type: BusinessContactType;
   value: string;
   name: string | null;
@@ -46,6 +48,7 @@ export interface BusinessContact {
 }
 
 export interface BusinessSocial {
+  id: string;
   platform: BusinessSocialNetwork;
   handle: string;
 }
@@ -60,6 +63,7 @@ export interface BusinessOpeningHour {
 /** A closed date — a single day (start == end) or an inclusive range; `is_recurring` repeats it every
  *  year (matched by month + day). Dates are `YYYY-MM-DD`. */
 export interface BusinessClosure {
+  id: string;
   name: string | null;
   start_date: string;
   end_date: string;
@@ -69,7 +73,8 @@ export interface BusinessClosure {
 }
 
 export interface BusinessAddress {
-  id: number;
+  /** Stable public code (never the raw integer); round-tripped on save. */
+  id: string;
   address_1: string;
   address_2: string | null;
   apartment_suite: string | null;
@@ -91,7 +96,7 @@ export interface BusinessColors {
 }
 
 export interface BusinessImage {
-  id: number;
+  id: string;
   url: string;
 }
 
@@ -100,7 +105,8 @@ export interface BusinessImage {
  * collections and address are present on single-business responses and omitted from the list.
  */
 export interface Business {
-  id: number;
+  /** The opaque public code (stable across renames); `slug` is the canonical `name-slug-<code>`. */
+  id: string;
   slug: string;
   name: string;
   type: BusinessType;

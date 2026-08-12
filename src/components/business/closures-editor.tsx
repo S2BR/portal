@@ -22,6 +22,8 @@ import { cn } from "@/lib/utils";
  *  startDate == endDate; `hours` empty ⇒ closed all day, otherwise open those ranges. */
 export type ClosureEntry = {
   key: string;
+  /** Server public code (present for existing rows, absent for new ones). */
+  id?: string;
   name: string;
   startDate: string;
   endDate: string;

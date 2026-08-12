@@ -5,7 +5,7 @@ import type { BusinessAddress } from "@/app/api/businesses/route";
 import { formatBusinessAddress } from "./format-address";
 
 const address = (overrides: Partial<BusinessAddress>): BusinessAddress => ({
-  id: 1,
+  id: "addr-1",
   address_1: "",
   address_2: null,
   apartment_suite: null,

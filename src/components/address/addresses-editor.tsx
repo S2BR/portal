@@ -46,6 +46,7 @@ import { cn } from "@/lib/utils";
  *  drag reordering; every field is a string (empty when absent) so it maps straight to `<input>`s. */
 export type AddressEntry = {
   key: string; // stable client key for the list
+  id?: string; // server public code (present for existing rows, absent for new ones)
   address_1: string;
   address_2: string;
   apartment_suite: string;
@@ -154,7 +155,7 @@ export function AddressesEditor({
   const summaryLines = (entry: AddressEntry): string[] => {
     const lines = formatBusinessAddress(
       {
-        id: 0,
+        id: "",
         address_1: entry.address_1,
         address_2: entry.address_2 || null,
         apartment_suite: entry.apartment_suite || null,

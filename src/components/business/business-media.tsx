@@ -281,7 +281,7 @@ export function BusinessGallery({
 
   const [phase, setPhase] = useState<Phase>("idle");
   const [progress, setProgress] = useState(0);
-  const [removingId, setRemovingId] = useState<number | null>(null);
+  const [removingId, setRemovingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const gallery = images ?? [];
@@ -332,7 +332,7 @@ export function BusinessGallery({
     }
   }
 
-  async function remove(imageId: number) {
+  async function remove(imageId: string) {
     setRemovingId(imageId);
     const result = await removeUpload<BusinessPayload>("business-gallery", {
       business: slug,

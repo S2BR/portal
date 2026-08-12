@@ -2,9 +2,11 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
 
 const notFound = vi.fn();
+const replace = vi.fn();
 vi.mock("next/navigation", () => ({
   notFound: () => notFound(),
   usePathname: () => "/portal/businesses/acme",
+  useRouter: () => ({ replace }),
 }));
 
 // Avoid pulling the intl provider into the test — we only care that the gate CHOSE the panel.
