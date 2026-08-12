@@ -373,3 +373,34 @@
   stroke: #c9ffdf;
   filter: none;
 }
+
+/* Leaflet: keep the map chrome (loading backdrop, zoom + attribution controls) on-theme. The
+   CARTO basemap already follows light/dark; these style the widgets Leaflet draws over it. */
+.leaflet-container {
+  background: var(--muted);
+  font-family: inherit;
+  z-index: 0;
+}
+/* Strip the faint green (parks) / blue (water) from the CARTO Positron tiles so the basemap reads as
+   a neutral gray, matching the app's map. Only the tiles are desaturated — the pin marker sits on a
+   separate layer and keeps its brand color. */
+.leaflet-tile {
+  filter: grayscale(1);
+}
+/* Scoped under .dark (and thus higher specificity than Leaflet's own `.leaflet-bar a`) so the
+   widgets pick up the dark surface; light mode keeps Leaflet's white, which suits the light basemap. */
+.dark .leaflet-bar a {
+  background: var(--card);
+  color: var(--foreground);
+  border-color: var(--border);
+}
+.dark .leaflet-bar a:hover {
+  background: var(--accent);
+}
+.dark .leaflet-control-attribution {
+  background: color-mix(in oklab, var(--card) 78%, transparent);
+  color: var(--muted-foreground);
+}
+.dark .leaflet-control-attribution a {
+  color: var(--muted-foreground);
+}
