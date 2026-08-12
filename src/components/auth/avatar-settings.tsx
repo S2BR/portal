@@ -14,14 +14,8 @@ import { AvatarCropDialog } from "@/components/auth/avatar-crop-dialog";
 import { useCurrentUser } from "@/components/auth/current-user";
 import { UserAvatar } from "@/components/auth/user-avatar";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { SettingGroup } from "@/components/ui/setting-tile";
 import { uploadFile } from "@/lib/uploads/upload";
 import { cn } from "@/lib/utils";
 
@@ -226,12 +220,8 @@ export function AvatarSettings() {
   const maxLabel = `${Math.round(MAX_BYTES / 1024 / 1024)} MB`;
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("title")}</CardTitle>
-        <CardDescription>{t("hint")}</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
+    <SettingGroup title={t("title")} description={t("hint")}>
+      <div className="space-y-4">
         <div
           onDragOver={onDragOver}
           onDragLeave={onDragLeave}
@@ -304,7 +294,7 @@ export function AvatarSettings() {
             {error}
           </p>
         ) : null}
-      </CardContent>
+      </div>
 
       <AvatarCropDialog
         src={cropSrc}
@@ -312,7 +302,7 @@ export function AvatarSettings() {
         onCancel={closeCrop}
         onCropped={runUpload}
       />
-    </Card>
+    </SettingGroup>
   );
 }
 

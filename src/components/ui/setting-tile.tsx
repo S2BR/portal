@@ -103,9 +103,39 @@ export function SettingTile({
 }
 
 /**
- * The expanded state of a setting tile: the same muted block with a 1px border (a real border, not a
- * ring, so the settings card's overflow-hidden can't clip it), an icon + label header with an
- * optional header `action`, then the field's control(s).
+ * A settings **group**: a plain header (title + description) over its content — the standard section
+ * header used across every tab (Profile details, Passkeys, Password, …). The title/description live
+ * OUTSIDE the gray blocks; the blocks below just carry the value/controls.
+ */
+export function SettingGroup({
+  title,
+  description,
+  children,
+  className,
+}: {
+  title: string;
+  description: string;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <section className={cn("space-y-3", className)}>
+      <div>
+        <h3 className="text-sm font-semibold tracking-tight">{title}</h3>
+        <p className="text-muted-foreground mt-0.5 text-xs text-pretty">
+          {description}
+        </p>
+      </div>
+      {children}
+    </section>
+  );
+}
+
+/**
+ * The expanded state of a setting: a muted block with a 1px border (a real border, not a ring, so the
+ * settings card's overflow-hidden can't clip it), then the field's control(s). An optional icon +
+ * label header (with an optional `action`) — usually omitted now, since the {@link SettingGroup} above
+ * already carries the title.
  */
 export function SettingBlock({
   icon: Icon,
@@ -114,8 +144,8 @@ export function SettingBlock({
   children,
   className,
 }: {
-  icon: LucideIcon;
-  label: string;
+  icon?: LucideIcon;
+  label?: string;
   action?: ReactNode;
   children: ReactNode;
   className?: string;
@@ -132,13 +162,15 @@ export function SettingBlock({
         className,
       )}
     >
-      <div className="flex items-center justify-between gap-2">
-        <div className="text-muted-foreground flex items-center gap-2">
-          <Icon className="size-4" />
-          <span className="text-xs font-medium">{label}</span>
+      {label ? (
+        <div className="flex items-center justify-between gap-2">
+          <div className="text-muted-foreground flex items-center gap-2">
+            {Icon ? <Icon className="size-4" /> : null}
+            <span className="text-xs font-medium">{label}</span>
+          </div>
+          {action}
         </div>
-        {action}
-      </div>
+      ) : null}
       {children}
     </div>
   );

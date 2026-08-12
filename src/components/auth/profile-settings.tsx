@@ -8,7 +8,6 @@ import type { Timezone } from "@/app/api/auth/timezones/route";
 import { useCurrentUser } from "@/components/auth/current-user";
 import type { Gender } from "@/lib/api/types";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Combobox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
 import { DateWheelPicker } from "@/components/ui/date-wheel-picker";
@@ -19,7 +18,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { SettingBlock, SettingTile } from "@/components/ui/setting-tile";
+import {
+  SettingBlock,
+  SettingGroup,
+  SettingTile,
+} from "@/components/ui/setting-tile";
 import { defaultBirthDate } from "@/lib/date-wheel";
 import { apiErrorText } from "@/lib/api/error-text";
 
@@ -171,12 +174,8 @@ export function ProfileSettings() {
   );
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("title")}</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <div className="grid gap-3 sm:grid-cols-2">
+    <SettingGroup title={t("title")} description={t("subtitle")}>
+      <div className="grid gap-3 sm:grid-cols-2">
           {/* Name */}
           {editingField === "name" ? (
             <SettingBlock
@@ -363,7 +362,6 @@ export function ProfileSettings() {
             {formatMonthYear(user.created_at, locale)}
           </SettingTile>
         </div>
-      </CardContent>
-    </Card>
+    </SettingGroup>
   );
 }

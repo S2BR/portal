@@ -10,7 +10,11 @@ import { VerifyDialog } from "@/components/auth/verify-dialog";
 import { Button } from "@/components/ui/button";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
-import { SettingBlock, SettingTile } from "@/components/ui/setting-tile";
+import {
+  SettingBlock,
+  SettingGroup,
+  SettingTile,
+} from "@/components/ui/setting-tile";
 import { apiErrorText } from "@/lib/api/error-text";
 import { checkPassword } from "@/lib/auth/password";
 import { useAppConfig } from "@/lib/config/use-app-config";
@@ -78,9 +82,9 @@ export function PasswordSettings() {
   }
 
   return (
-    <>
+    <SettingGroup title={t("title")} description={t("hint")}>
       {editing ? (
-        <SettingBlock icon={Lock} label={t("title")}>
+        <SettingBlock>
           <form onSubmit={startChange} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="new-password">{t("newPassword")}</Label>
@@ -121,11 +125,7 @@ export function PasswordSettings() {
           </form>
         </SettingBlock>
       ) : (
-        <SettingTile
-          icon={Lock}
-          label={t("title")}
-          onClick={() => setEditing(true)}
-        >
+        <SettingTile icon={Lock} onClick={() => setEditing(true)}>
           ••••••••
         </SettingTile>
       )}
@@ -137,6 +137,6 @@ export function PasswordSettings() {
         onVerified={submitChange}
         confirmLabel={t("submit")}
       />
-    </>
+    </SettingGroup>
   );
 }

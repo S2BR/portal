@@ -210,6 +210,7 @@
   },
   "profileSettings": {
     "title": "Renseignements du profil",
+    "subtitle": "Votre nom, votre date de naissance et vos préférences.",
     "edit": "Modifier",
     "save": "Enregistrer les modifications",
     "cancel": "Annuler",
@@ -274,6 +275,7 @@
   },
   "emailSettings": {
     "title": "Adresse courriel",
+    "hint": "Le courriel que vous utilisez pour vous connecter et recevoir des notifications.",
     "change": "Changer de courriel",
     "newEmail": "Nouveau courriel",
     "submit": "Envoyer le code de vérification",
