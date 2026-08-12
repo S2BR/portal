@@ -107,19 +107,53 @@ export function BusinessFormSkeleton() {
 }
 
 /**
- * Loading placeholder for the business dashboard (the workspace home). Mirrors its header (logo +
- * name + subtitle) and the row of quick-link tiles.
+ * Loading placeholder for the business dashboard (the workspace home). Mirrors the real overview —
+ * header, the insights banner, the row of stat cards, the trend chart, and the manage quick-links —
+ * so the designed page shows immediately and only fills in.
  */
 export function BusinessDashboardSkeleton() {
   return (
     <div className="space-y-8">
+      {/* Header */}
       <div className="flex items-center gap-4">
-        <Skeleton className="size-14 shrink-0 rounded-xl" />
+        <Skeleton className="size-16 shrink-0 rounded-xl" />
         <div className="space-y-2">
-          <Skeleton className="h-7 w-40" />
+          <Skeleton className="h-8 w-48" />
           <Skeleton className="h-4 w-56" />
         </div>
       </div>
+
+      {/* Insights banner */}
+      <div className="bg-muted/40 flex items-start gap-4 rounded-xl p-5">
+        <Skeleton className="size-11 shrink-0 rounded-lg" />
+        <div className="flex-1 space-y-2">
+          <Skeleton className="h-4 w-40" />
+          <Skeleton className="h-3.5 w-full max-w-md" />
+        </div>
+      </div>
+
+      {/* Stat cards */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, index) => (
+          <Skeleton key={index} className="h-[74px] rounded-xl" />
+        ))}
+      </div>
+
+      {/* Trend chart */}
+      <div className="bg-muted/40 space-y-6 rounded-xl p-5">
+        <Skeleton className="h-4 w-32" />
+        <div className="flex h-40 items-end gap-2">
+          {Array.from({ length: 16 }).map((_, index) => (
+            <Skeleton
+              key={index}
+              className="flex-1 rounded-t-md"
+              style={{ height: `${40 + ((index * 37) % 55)}%` }}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Manage links */}
       <div className="grid gap-4 sm:grid-cols-3">
         {Array.from({ length: 3 }).map((_, index) => (
           <Skeleton key={index} className="h-[72px] rounded-xl" />
