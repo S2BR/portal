@@ -604,6 +604,8 @@
       "addAddress": "Add address",
     "newAddress": "New address",
     "enterManually": "Enter it manually",
+    "addressNoteTitle": "Why is my address required?",
+    "addressNoteBody": "Even if your business operates remotely or does not have a physical storefront, your address is necessary to be added to the correct listing and ensure that your business appears in relevant search results. If you do not have a physical address, you can use your home address or a nearby landmark as a reference point.",
       "removeAddress": "Remove address",
       "categoriesEmpty": "No categories available yet.",
       "searchAmenities": "Search amenities…",
