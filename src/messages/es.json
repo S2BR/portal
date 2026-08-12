@@ -658,7 +658,23 @@
         "subtitle": "Esta sección estará disponible pronto."
       },
       "dashboard": {
-        "subtitle": "Gestiona todo sobre tu empresa desde aquí."
+        "subtitle": "Gestiona todo sobre tu empresa desde aquí.",
+        "soon": "Pronto",
+        "yourCompany": "tu empresa",
+        "insights": {
+          "title": "Las estadísticas están en camino",
+          "body": "Pronto verás cómo las personas descubren e interactúan con {name}: vistas del perfil, favoritos, reseñas y más."
+        },
+        "stats": {
+          "views": "Vistas del perfil",
+          "favorites": "Favoritos",
+          "reviews": "Reseñas",
+          "rating": "Valoración"
+        },
+        "chart": {
+          "title": "Vistas del perfil",
+          "period": "Últimos 30 días"
+        }
       },
       "searchPlaceholder": "Buscar empresas…",
       "noResults": "No se encontraron empresas",

@@ -658,7 +658,23 @@
         "subtitle": "Cette section arrive bientôt."
       },
       "dashboard": {
-        "subtitle": "Gérez tout ce qui concerne votre entreprise ici."
+        "subtitle": "Gérez tout ce qui concerne votre entreprise ici.",
+        "soon": "Bientôt",
+        "yourCompany": "votre entreprise",
+        "insights": {
+          "title": "Les statistiques arrivent bientôt",
+          "body": "Bientôt, vous verrez comment les gens découvrent {name} et interagissent avec — vues du profil, favoris, avis et plus encore."
+        },
+        "stats": {
+          "views": "Vues du profil",
+          "favorites": "Favoris",
+          "reviews": "Avis",
+          "rating": "Note"
+        },
+        "chart": {
+          "title": "Vues du profil",
+          "period": "30 derniers jours"
+        }
       },
       "searchPlaceholder": "Rechercher une entreprise…",
       "noResults": "Aucune entreprise trouvée",

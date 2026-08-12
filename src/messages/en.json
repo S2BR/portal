@@ -658,7 +658,23 @@
         "subtitle": "This area is coming soon."
       },
       "dashboard": {
-        "subtitle": "Manage everything about your company here."
+        "subtitle": "Manage everything about your company here.",
+        "soon": "Soon",
+        "yourCompany": "your company",
+        "insights": {
+          "title": "Insights are on the way",
+          "body": "Soon you'll see how people discover and engage with {name} — profile views, favorites, reviews and more."
+        },
+        "stats": {
+          "views": "Profile views",
+          "favorites": "Favorites",
+          "reviews": "Reviews",
+          "rating": "Rating"
+        },
+        "chart": {
+          "title": "Profile views",
+          "period": "Last 30 days"
+        }
       },
       "searchPlaceholder": "Search companies…",
       "noResults": "No companies found",
