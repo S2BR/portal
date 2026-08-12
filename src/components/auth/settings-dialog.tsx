@@ -221,24 +221,27 @@ function SettingsDialog({
 
         {/* Active section content. */}
         <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-          {/* Smooth header divider: a hairline that fades to transparent at both ends
-              (symmetric, so it's the same in LTR/RTL) — softer than a full-width border. */}
-          <div className="after:via-border relative flex h-14 shrink-0 items-center px-6 after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-gradient-to-r after:from-transparent after:to-transparent sm:px-8">
-            <h2
-              className={cn(
-                "font-heading text-base font-semibold tracking-tight",
-                active === "danger" && "text-destructive",
-              )}
-            >
-              {t(`nav.${active}`)}
-            </h2>
-          </div>
-          {/* Strip the card chrome (ring + shadow) for the sections in here so they blend into the
-              dialog and read as one panel — they're already bg-card, same as this pane. */}
-          {/* Sections are borderless here, so strip the cards' own box padding (py + header/content
-              px) — content aligns flush to the panel and the space-y-8 does the separation. */}
-          <div className="flex-1 space-y-8 overflow-y-auto px-6 py-6 sm:px-8 [&_[data-slot=card-content]]:px-0 [&_[data-slot=card-header]]:px-0 [&_[data-slot=card]]:gap-4 [&_[data-slot=card]]:py-0 [&_[data-slot=card]]:shadow-none [&_[data-slot=card]]:ring-0">
-            {user && current ? current.render() : null}
+          <div className="min-h-0 flex-1 overflow-y-auto">
+            {/* Frosted, sticky section header: the content scrolls (blurred) beneath it. A hairline
+                that fades to transparent at both ends (symmetric, so it's the same in LTR/RTL)
+                separates it — softer than a full-width border. */}
+            <div className="bg-card/70 supports-[backdrop-filter]:bg-card/60 after:via-border sticky top-0 z-10 flex h-14 items-center px-6 backdrop-blur-md after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-gradient-to-r after:from-transparent after:to-transparent sm:px-8">
+              <h2
+                className={cn(
+                  "font-heading text-base font-semibold tracking-tight",
+                  active === "danger" && "text-destructive",
+                )}
+              >
+                {t(`nav.${active}`)}
+              </h2>
+            </div>
+            {/* Strip the card chrome (ring + shadow) for the sections in here so they blend into the
+                dialog and read as one panel — they're already bg-card, same as this pane. Sections
+                are borderless, so strip the cards' own box padding (py + header/content px) — content
+                aligns flush to the panel and the space-y-8 does the separation. */}
+            <div className="space-y-8 px-6 pt-6 pb-6 sm:px-8 [&_[data-slot=card-content]]:px-0 [&_[data-slot=card-header]]:px-0 [&_[data-slot=card]]:gap-4 [&_[data-slot=card]]:py-0 [&_[data-slot=card]]:shadow-none [&_[data-slot=card]]:ring-0">
+              {user && current ? current.render() : null}
+            </div>
           </div>
         </div>
       </DialogContent>
