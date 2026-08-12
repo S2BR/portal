@@ -108,3 +108,74 @@ export function AmenitiesPicker({
     </div>
   );
 }
+
+/**
+ * The read-only view of a business's amenities: the flat selected list grouped back under its
+ * amenity group (resolved from the reference `groups`), matching the category readout — a green
+ * accent heading per group with its amenities as soft chips. Any amenity whose group isn't in the
+ * reference (e.g. it's still loading) falls back to a plain chip row so nothing is dropped.
+ */
+export function AmenityReadout({
+  amenities,
+  groups,
+}: {
+  amenities: Amenity[];
+  groups: Amenity[];
+}) {
+  const groupIds = new Set(groups.map((group) => group.id));
+  const byGroup = new Map<number, Amenity[]>();
+  const ungrouped: Amenity[] = [];
+  for (const amenity of amenities) {
+    if (amenity.parent_id !== null && groupIds.has(amenity.parent_id)) {
+      const items = byGroup.get(amenity.parent_id) ?? [];
+      items.push(amenity);
+      byGroup.set(amenity.parent_id, items);
+    } else if (amenity.parent_id !== null) {
+      ungrouped.push(amenity);
+    }
+  }
+
+  return (
+    <div className="space-y-4">
+      {groups.map((group) => {
+        const items = byGroup.get(group.id) ?? [];
+        if (items.length === 0) {
+          return null;
+        }
+        return (
+          <div key={group.id}>
+            <div className="flex items-center gap-2">
+              <span
+                className="bg-brand-green h-3.5 w-1 rounded-full"
+                aria-hidden
+              />
+              <span className="text-sm font-medium">{group.name}</span>
+            </div>
+            <div className="mt-2 flex flex-wrap gap-1.5 ps-3">
+              {items.map((amenity) => (
+                <span
+                  key={amenity.id}
+                  className="bg-muted/60 text-foreground/80 rounded-full px-2.5 py-1 text-xs"
+                >
+                  {amenity.name}
+                </span>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+      {ungrouped.length > 0 ? (
+        <div className="flex flex-wrap gap-1.5">
+          {ungrouped.map((amenity) => (
+            <span
+              key={amenity.id}
+              className="bg-muted/60 text-foreground/80 rounded-full px-2.5 py-1 text-xs"
+            >
+              {amenity.name}
+            </span>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}

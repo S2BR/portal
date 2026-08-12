@@ -616,6 +616,7 @@
     "mapPreviewHint": "Desplázate y haz zoom para explorar esta ubicación.",
       "removeAddress": "Quitar dirección",
       "categoriesEmpty": "Aún no hay categorías disponibles.",
+    "categoriesSelectedCount": "{count, plural, one {# seleccionada} other {# seleccionadas}}",
       "searchAmenities": "Buscar servicios…",
       "amenitiesEmpty": "Ningún servicio coincide; elige una categoría para ver más.",
       "media": {
