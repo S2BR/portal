@@ -602,6 +602,10 @@
         "company": "Soy una empresa"
       },
       "addAddress": "Añadir dirección",
+    "newAddress": "Nueva dirección",
+    "enterManually": "Introdúcela manualmente",
+    "addressNoteTitle": "¿Por qué se requiere mi dirección?",
+    "addressNoteBody": "Incluso si tu empresa opera de forma remota o no tiene una tienda física, tu dirección es necesaria para ser agregada al listado correcto y asegurar que tu empresa aparezca en los resultados de búsqueda relevantes. Si no tienes una dirección física, puedes usar tu dirección de casa o un punto de referencia cercano como referencia.",
       "removeAddress": "Quitar dirección",
       "categoriesEmpty": "Aún no hay categorías disponibles.",
       "searchAmenities": "Buscar servicios…",

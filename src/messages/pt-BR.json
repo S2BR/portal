@@ -602,6 +602,10 @@
         "company": "Sou uma empresa"
       },
       "addAddress": "Adicionar endereço",
+    "newAddress": "Novo endereço",
+    "enterManually": "Digite manualmente",
+    "addressNoteTitle": "Por que meu endereço é obrigatório?",
+    "addressNoteBody": "Mesmo que sua empresa opere remotamente ou não tenha uma loja física, seu endereço é necessário para ser adicionado à listagem correta e garantir que sua empresa apareça nos resultados de pesquisa relevantes. Se você não tiver um endereço físico, pode usar seu endereço residencial ou um ponto de referência próximo como referência.",
       "removeAddress": "Remover endereço",
       "categoriesEmpty": "Ainda não há categorias disponíveis.",
       "searchAmenities": "Buscar comodidades…",

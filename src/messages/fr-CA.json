@@ -602,6 +602,10 @@
         "company": "Je suis une entreprise"
       },
       "addAddress": "Ajouter une adresse",
+    "newAddress": "Nouvelle adresse",
+    "enterManually": "Saisissez-la manuellement",
+    "addressNoteTitle": "Pourquoi mon adresse est-elle requise?",
+    "addressNoteBody": "Même si votre entreprise fonctionne à distance ou n’a pas de vitrine physique, votre adresse est nécessaire pour être ajoutée à la bonne fiche et s’assurer que votre entreprise apparaît dans les résultats de recherche pertinents. Si vous n’avez pas d’adresse physique, vous pouvez utiliser votre adresse domiciliaire ou un point de repère proche comme référence.",
       "removeAddress": "Supprimer l’adresse",
       "categoriesEmpty": "Aucune catégorie disponible pour l'instant.",
       "searchAmenities": "Rechercher des commodités…",
