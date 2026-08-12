@@ -130,10 +130,23 @@ import { cn } from "@/lib/utils";
 
 /** A website or email contact: the value plus an optional label. `key` is a stable client id for
  *  list rendering + drag reordering. */
-type LinkRow = { key: string; value: string; name: string };
+// `id` is the server row's public code (present for existing rows, absent for new ones); `key` is the
+// client-only list/drag key.
+type LinkRow = { key: string; id?: string; value: string; name: string };
 /** A phone contact: adds the ISO 3166-1 alpha-2 country (kept in meta so +1 stays CA vs US). */
-type PhoneRow = { key: string; value: string; name: string; country?: string };
-type SocialRow = { key: string; platform: BusinessSocialNetwork; handle: string };
+type PhoneRow = {
+  key: string;
+  id?: string;
+  value: string;
+  name: string;
+  country?: string;
+};
+type SocialRow = {
+  key: string;
+  id?: string;
+  platform: BusinessSocialNetwork;
+  handle: string;
+};
 type EditState = {
   name: string;
   type: BusinessType | null;
@@ -204,6 +217,7 @@ function toEditState(business: Business): EditState {
       .filter((contact) => contact.type === "website")
       .map((contact) => ({
         key: crypto.randomUUID(),
+        id: contact.id,
         value: contact.value,
         name: contact.name ?? "",
       })),
@@ -211,6 +225,7 @@ function toEditState(business: Business): EditState {
       .filter((contact) => contact.type === "phone")
       .map((contact) => ({
         key: crypto.randomUUID(),
+        id: contact.id,
         value: contact.value,
         name: contact.name ?? "",
         country: contact.meta?.country,
@@ -219,11 +234,13 @@ function toEditState(business: Business): EditState {
       .filter((contact) => contact.type === "email")
       .map((contact) => ({
         key: crypto.randomUUID(),
+        id: contact.id,
         value: contact.value,
         name: contact.name ?? "",
       })),
     socials: (business.socials ?? []).map((social) => ({
       key: crypto.randomUUID(),
+      id: social.id,
       platform: social.platform,
       handle: social.handle,
     })),
@@ -237,6 +254,7 @@ function toEditState(business: Business): EditState {
       )
       .map((closure) => ({
         key: crypto.randomUUID(),
+        id: closure.id,
         name: closure.name ?? "",
         startDate: closure.start_date,
         endDate: closure.end_date,
@@ -245,6 +263,7 @@ function toEditState(business: Business): EditState {
       })),
     addresses: (business.addresses ?? []).map((address) => ({
       key: crypto.randomUUID(),
+      id: address.id,
       address_1: address.address_1 ?? "",
       address_2: address.address_2 ?? "",
       apartment_suite: address.apartment_suite ?? "",
@@ -294,6 +313,7 @@ function buildPayload(edit: EditState) {
       ...edit.websites
         .filter((row) => row.value.trim() !== "")
         .map((row) => ({
+          id: row.id,
           type: "website" as const,
           value: row.value.trim(),
           name: trimOrNull(row.name),
@@ -302,6 +322,7 @@ function buildPayload(edit: EditState) {
       ...edit.phones
         .filter((row) => row.value.trim() !== "")
         .map((row) => ({
+          id: row.id,
           type: "phone" as const,
           value: row.value.trim(),
           name: trimOrNull(row.name),
@@ -311,6 +332,7 @@ function buildPayload(edit: EditState) {
       ...edit.emails
         .filter((row) => row.value.trim() !== "")
         .map((row) => ({
+          id: row.id,
           type: "email" as const,
           value: row.value.trim(),
           name: trimOrNull(row.name),
@@ -320,6 +342,7 @@ function buildPayload(edit: EditState) {
     socials: edit.socials
       .filter((social) => social.handle.trim() !== "")
       .map((social) => ({
+        id: social.id,
         platform: social.platform,
         handle: social.handle.trim(),
       })),
@@ -339,6 +362,7 @@ function buildPayload(edit: EditState) {
     }),
     timezone: trimOrNull(edit.timezone),
     closures: edit.closures.map((closure) => ({
+      id: closure.id,
       name: trimOrNull(closure.name),
       start_date: closure.startDate,
       end_date: closure.endDate,
@@ -351,6 +375,7 @@ function buildPayload(edit: EditState) {
           address.address_1.trim() !== "" || address.city.trim() !== "",
       )
       .map((address) => ({
+        id: address.id,
         address_1: address.address_1.trim(),
         address_2: trimOrNull(address.address_2),
         apartment_suite: trimOrNull(address.apartment_suite),

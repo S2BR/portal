@@ -1,6 +1,6 @@
 "use client";
 
-import { notFound, usePathname } from "next/navigation";
+import { notFound, usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 
 import {
@@ -31,9 +31,13 @@ export function BusinessWorkspace({
   children: ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [access, setAccess] = useState<"checking" | "granted" | "denied">(
     "checking",
   );
+  // The business's canonical `name-slug-<code>`; when the url uses a stale name (after a rename), we
+  // 301-style replace to it — the code still resolves, so old links/QRs never break.
+  const [canonicalSlug, setCanonicalSlug] = useState<string | null>(null);
   const [rateLimited, setRateLimited] = useState<number | null>(null);
   const [unavailable, setUnavailable] = useState(false);
   // Bumped to re-run the access check (an auto-retry from either transient state).
@@ -76,7 +80,9 @@ export function BusinessWorkspace({
         }
         setRateLimited(null);
         setUnavailable(false);
-        setAccess(data?.business ? "granted" : "denied");
+        const business = data?.business as { slug?: string } | undefined;
+        setCanonicalSlug(business?.slug ?? null);
+        setAccess(business ? "granted" : "denied");
       } catch {
         if (active) {
           setRateLimited(null);
@@ -88,6 +94,15 @@ export function BusinessWorkspace({
       active = false;
     };
   }, [slug, attempt]);
+
+  // Self-healing url: once we know the canonical slug, replace a stale-name url with it (keeping the
+  // current sub-path). Separate from the access fetch so ordinary sub-navigation doesn't re-fetch.
+  useEffect(() => {
+    if (canonicalSlug && canonicalSlug !== slug) {
+      const rest = pathname.slice(`/portal/businesses/${slug}`.length);
+      router.replace(`/portal/businesses/${canonicalSlug}${rest}`);
+    }
+  }, [canonicalSlug, slug, pathname, router]);
 
   const recheck = () => setAttempt((value) => value + 1);
 
