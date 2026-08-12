@@ -98,6 +98,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { LinkPreview } from "@/components/ui/link-preview";
 import { RateLimited, useRateLimitToast } from "@/components/ui/rate-limited";
+import { ServiceUnavailable } from "@/components/ui/service-unavailable";
 import {
   Select,
   SelectContent,
@@ -451,8 +452,9 @@ export function BusinessDetail({ slug }: { slug: string }) {
   );
 
   const load = useCallback(async () => {
-    setLoadFailed(false);
-    setRateLimited(null);
+    // Note: the error states are cleared on the SUCCESS/branch paths, not up front — so the
+    // ServiceUnavailable panel stays mounted across a failed retry and its backoff counter persists
+    // (re-setting the same value is a no-op).
     try {
       const response = await fetch(
         `/api/businesses/${encodeURIComponent(slug)}`,
@@ -471,19 +473,25 @@ export function BusinessDetail({ slug }: { slug: string }) {
       const limit = parseRateLimit(response.status, data);
       if (limit) {
         // Show the wait + auto-retry rather than the generic "couldn't load" panel.
+        setLoadFailed(false);
         setRateLimited(limit.retryAfter);
         return;
       }
       if (!response.ok) {
+        setRateLimited(null);
         setLoadFailed(true);
         return;
       }
       if (data.business) {
+        setRateLimited(null);
+        setLoadFailed(false);
         setBusiness(data.business);
       } else {
+        setRateLimited(null);
         setLoadFailed(true);
       }
     } catch {
+      setRateLimited(null);
       setLoadFailed(true);
     }
   }, [slug]);
@@ -660,12 +668,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
     return (
       <div className="space-y-6">
         {backLink}
-        <div className="space-y-4 p-8 text-center">
-          <p className="text-muted-foreground text-sm">{t("loadError")}</p>
-          <Button variant="outline" onClick={() => void load()}>
-            {t("retry")}
-          </Button>
-        </div>
+        <ServiceUnavailable onRetry={() => void load()} />
       </div>
     );
   }

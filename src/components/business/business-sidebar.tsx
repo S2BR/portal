@@ -96,9 +96,15 @@ export function BusinessSidebar({ slug }: { slug: string }) {
         setTimeout(() => loadRef.current(), limit.retryAfter * 1000);
         return;
       }
+      if (!response.ok) {
+        // API unavailable — same idea: don't blank the switcher, quietly self-heal (the main content
+        // area shows the visible retry state). A fixed short delay is enough for this secondary rail.
+        setTimeout(() => loadRef.current(), 15000);
+        return;
+      }
       setBusinesses(data.businesses ?? []);
     } catch {
-      setBusinesses([]);
+      setTimeout(() => loadRef.current(), 15000);
     }
   }, []);
 

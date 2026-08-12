@@ -13,6 +13,9 @@ vi.mock("@/components/ui/rate-limited", () => ({
     <div data-testid="rate-limited">{retryAfter}</div>
   ),
 }));
+vi.mock("@/components/ui/service-unavailable", () => ({
+  ServiceUnavailable: () => <div data-testid="service-unavailable" />,
+}));
 
 import { BusinessWorkspace } from "./business-workspace";
 
@@ -55,6 +58,33 @@ it("renders the 404 page when the business is genuinely not accessible", async (
 
   await waitFor(() => expect(notFound).toHaveBeenCalled());
   expect(screen.queryByTestId("child")).toBeNull();
+});
+
+it("shows the service-unavailable panel on a 5xx, never the 404 page", async () => {
+  fetchMock.mockResolvedValue(jsonResponse(503, {}));
+
+  render(
+    <BusinessWorkspace slug="acme">
+      <div data-testid="child" />
+    </BusinessWorkspace>,
+  );
+
+  expect(await screen.findByTestId("service-unavailable")).toBeTruthy();
+  expect(notFound).not.toHaveBeenCalled();
+  expect(screen.queryByTestId("child")).toBeNull();
+});
+
+it("shows the service-unavailable panel when the fetch throws (network down)", async () => {
+  fetchMock.mockRejectedValue(new Error("network"));
+
+  render(
+    <BusinessWorkspace slug="acme">
+      <div data-testid="child" />
+    </BusinessWorkspace>,
+  );
+
+  expect(await screen.findByTestId("service-unavailable")).toBeTruthy();
+  expect(notFound).not.toHaveBeenCalled();
 });
 
 it("renders the content once access is granted", async () => {

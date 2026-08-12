@@ -1,4 +1,11 @@
 {
+  "serviceUnavailable": {
+    "title": "Algo salió mal",
+    "body": "Estamos teniendo problemas para conectar con el servicio. Seguiremos intentándolo automáticamente.",
+    "attempt": "Intento {current} de {total}",
+    "retryingIn": "reintentando en {when}",
+    "retry": "Intentar de nuevo"
+  },
   "rateLimit": {
     "title": "Demasiadas solicitudes",
     "body": "Reintentando en {seconds} s…",

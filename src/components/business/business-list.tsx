@@ -14,6 +14,7 @@ import {
   placeholderClass,
 } from "@/components/ui/drag-handle";
 import { RateLimited, useRateLimitToast } from "@/components/ui/rate-limited";
+import { ServiceUnavailable } from "@/components/ui/service-unavailable";
 import { SortableList } from "@/components/ui/sortable-list";
 import { Skeleton } from "@/components/ui/skeleton";
 import { parseRateLimit } from "@/lib/rate-limit";
@@ -30,6 +31,7 @@ export function BusinessList() {
 
   const [businesses, setBusinesses] = useState<Business[] | null>(null);
   const [rateLimited, setRateLimited] = useState<number | null>(null);
+  const [unavailable, setUnavailable] = useState(false);
   const notifyRateLimited = useRateLimitToast();
 
   const load = useCallback(async () => {
@@ -43,13 +45,23 @@ export function BusinessList() {
       const limit = parseRateLimit(response.status, data);
       if (limit) {
         // Show the wait (with an auto-retry) instead of a silent empty list.
+        setUnavailable(false);
         setRateLimited(limit.retryAfter);
         return;
       }
+      // A non-ok status is the API being unavailable — show the retry state, not a fake empty list
+      // (a real "you have no businesses" is a 200 with an empty array, handled below).
+      if (!response.ok) {
+        setRateLimited(null);
+        setUnavailable(true);
+        return;
+      }
       setRateLimited(null);
+      setUnavailable(false);
       setBusinesses(data.businesses ?? []);
     } catch {
-      setBusinesses([]);
+      setRateLimited(null);
+      setUnavailable(true);
     }
   }, []);
 
@@ -146,6 +158,10 @@ export function BusinessList() {
           }}
         />
       );
+    }
+    // API unavailable on the first load — retry with backoff instead of a forever skeleton.
+    if (unavailable) {
+      return <ServiceUnavailable onRetry={() => void load()} />;
     }
     return (
       <ul className="divide-y">
