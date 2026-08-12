@@ -54,6 +54,7 @@ import {
   AddressesEditor,
   type AddressEntry,
 } from "@/components/address/addresses-editor";
+import { AddressMapPreview } from "@/components/address/address-map-preview";
 import { AmenitiesPicker } from "@/components/business/amenities-picker";
 import { CategoryPicker } from "@/components/business/category-picker";
 import { BusinessTypeField } from "@/components/business/business-type-field";
@@ -1112,20 +1113,33 @@ export function BusinessDetail({ slug }: { slug: string }) {
                       key={address.id}
                       className="flex gap-3 py-4 first:pt-0 last:pb-0"
                     >
-                      <span
-                        className={cn(
-                          "mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-lg border",
-                          address.is_hidden
-                            ? "border-dashed bg-transparent text-muted-foreground/70"
-                            : "bg-background text-muted-foreground",
-                        )}
-                      >
-                        {address.is_hidden ? (
-                          <EyeOff className="size-4" />
-                        ) : (
-                          <MapPin className="size-4" />
-                        )}
-                      </span>
+                      {address.latitude != null &&
+                      address.longitude != null ? (
+                        <AddressMapPreview
+                          latitude={address.latitude}
+                          longitude={address.longitude}
+                          label={formatBusinessAddress(address, locale).join(
+                            ", ",
+                          )}
+                          dimmed={address.is_hidden}
+                          className="mt-0.5 h-20 w-24 sm:h-24 sm:w-32"
+                        />
+                      ) : (
+                        <span
+                          className={cn(
+                            "mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-lg border",
+                            address.is_hidden
+                              ? "border-dashed bg-transparent text-muted-foreground/70"
+                              : "bg-background text-muted-foreground",
+                          )}
+                        >
+                          {address.is_hidden ? (
+                            <EyeOff className="size-4" />
+                          ) : (
+                            <MapPin className="size-4" />
+                          )}
+                        </span>
+                      )}
                       <div className="min-w-0 space-y-1.5">
                         {address.is_main || address.is_hidden ? (
                           <div className="flex flex-wrap items-center gap-1.5">

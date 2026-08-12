@@ -1,13 +1,21 @@
 "use client";
 
-import { EyeOff, Info, Plus, X } from "lucide-react";
+import { EyeOff, Info, Maximize2, Plus, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState, type ChangeEvent, type ReactNode } from "react";
 
 import type { PlaceAddress } from "@/app/api/addresses/place/[id]/route";
+import { LocationMap } from "@/components/address/location-map";
 import { AddressAutocomplete } from "@/components/business/address-autocomplete";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   DragHandle,
   overlayClass,
@@ -92,6 +100,8 @@ export function AddressesEditor({
     entry.address_1.trim() === "" &&
     entry.city.trim() === "" &&
     !manualKeys.has(entry.key);
+  // Which address's map (if any) is currently enlarged in the dialog, for a better look while relocating.
+  const [expandedKey, setExpandedKey] = useState<string | null>(null);
 
   const update = (key: string, changes: Partial<AddressEntry>) =>
     onChange(value.map((e) => (e.key === key ? { ...e, ...changes } : e)));
@@ -141,6 +151,62 @@ export function AddressesEditor({
       locale,
     );
     return lines.length > 0 ? lines : [fields("line1")];
+  };
+
+  /** A read-only value shown in place of an input (region, country) — plain text, no edit affordance. */
+  const readOnlyValue = (value: string) => (
+    <p className="text-foreground/90 flex min-h-9 items-center text-sm">
+      {value.trim() || "—"}
+    </p>
+  );
+
+  /** The coordinate as a finite point, or null when the address has none yet. */
+  const coordinate = (entry: AddressEntry): { lat: number; lng: number } | null => {
+    if (entry.latitude.trim() === "" || entry.longitude.trim() === "") {
+      return null;
+    }
+    const lat = Number(entry.latitude);
+    const lng = Number(entry.longitude);
+    return Number.isFinite(lat) && Number.isFinite(lng) ? { lat, lng } : null;
+  };
+
+  const setCoordinate = (key: string, lat: number, lng: number) =>
+    update(key, { latitude: lat.toFixed(7), longitude: lng.toFixed(7) });
+
+  /** The map (with a draggable pin) once the address has coordinates, else a hint to pick one. An
+   *  expand button opens the same editable map larger in a dialog for a closer look while relocating. */
+  const locationField = (entry: AddressEntry) => {
+    const point = coordinate(entry);
+    if (!point) {
+      return (
+        <p className="text-muted-foreground flex min-h-9 items-center text-sm">
+          {t("locationEmpty")}
+        </p>
+      );
+    }
+    return (
+      <div className="space-y-1.5">
+        <div className="relative">
+          <LocationMap
+            latitude={point.lat}
+            longitude={point.lng}
+            onChange={(lat, lng) => setCoordinate(entry.key, lat, lng)}
+            className="h-56 w-full"
+          />
+          <button
+            type="button"
+            onClick={() => setExpandedKey(entry.key)}
+            aria-label={t("openMap")}
+            className="bg-card/90 text-muted-foreground hover:text-foreground hover:bg-card focus-visible:ring-ring absolute end-2 top-2 rounded-md border p-1.5 shadow-sm backdrop-blur transition-colors focus-visible:ring-2 focus-visible:outline-none"
+          >
+            <Maximize2 className="size-4" />
+          </button>
+        </div>
+        <p className="text-muted-foreground text-xs">
+          {point.lat.toFixed(6)}, {point.lng.toFixed(6)} · {t("locationHint")}
+        </p>
+      </div>
+    );
   };
 
   const reorderHandle = (handle: SortableItemRender["handle"]) => (
@@ -241,6 +307,25 @@ export function AddressesEditor({
         </Button>
       </div>
 
+      {/* Visibility is a setting, not address data — surfaced at the top of the block. */}
+      <label className="bg-muted/40 flex items-start justify-between gap-3 rounded-lg p-4">
+        <span className="flex items-start gap-2.5">
+          <EyeOff className="text-muted-foreground mt-0.5 size-4 shrink-0" />
+          <span className="space-y-0.5">
+            <span className="block text-sm font-medium">
+              {t("hideAddress")}
+            </span>
+            <span className="text-muted-foreground block text-xs text-pretty">
+              {t("hideAddressHint")}
+            </span>
+          </span>
+        </span>
+        <Switch
+          checked={entry.isHidden}
+          onCheckedChange={(checked) => update(entry.key, { isHidden: checked })}
+        />
+      </label>
+
       {/* The main address is a flag, not a position — a non-main address on top gets a gentle nudge. */}
       {index === 0 && !entry.isMain ? (
         <div className="bg-muted/40 flex flex-wrap items-center justify-between gap-2 rounded-lg px-3 py-2">
@@ -278,40 +363,23 @@ export function AddressesEditor({
         <Field label={fields("city")}>
           <Input value={entry.city} onChange={set(entry.key, "city")} />
         </Field>
-        <Field label={fields("stateProvince")}>
-          <Input
-            value={entry.state_province}
-            onChange={set(entry.key, "state_province")}
-          />
-        </Field>
         <Field label={fields("postalCode")}>
           <Input
             value={entry.postal_code}
             onChange={set(entry.key, "postal_code")}
           />
         </Field>
+        {/* Region and country come from the address search — shown as read-only text. */}
+        <Field label={fields("stateProvince")}>
+          {readOnlyValue(entry.state_province)}
+        </Field>
         <Field label={fields("country")}>
-          <Input
-            value={entry.country}
-            onChange={set(entry.key, "country")}
-            maxLength={2}
-            className="uppercase"
-          />
+          {readOnlyValue(entry.country.toUpperCase())}
         </Field>
-        <Field label={fields("latitude")}>
-          <Input
-            value={entry.latitude}
-            onChange={set(entry.key, "latitude")}
-            inputMode="decimal"
-          />
-        </Field>
-        <Field label={fields("longitude")}>
-          <Input
-            value={entry.longitude}
-            onChange={set(entry.key, "longitude")}
-            inputMode="decimal"
-          />
-        </Field>
+        {/* Coordinates are read-only too, but shown on a map: drag the pin to correct them. */}
+        <div className="sm:col-span-2">
+          <Field label={fields("location")}>{locationField(entry)}</Field>
+        </div>
         <div className="sm:col-span-2">
           <Field label={fields("notes")}>
             <Textarea
@@ -323,29 +391,11 @@ export function AddressesEditor({
         </div>
       </div>
 
-      {/* Visibility is a setting, not address data — kept in its own row below the fields. */}
-      <label className="bg-muted/40 flex items-start justify-between gap-3 rounded-lg p-4">
-        <span className="flex items-start gap-2.5">
-          <EyeOff className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-          <span className="space-y-0.5">
-            <span className="block text-sm font-medium">
-              {t("hideAddress")}
-            </span>
-            <span className="text-muted-foreground block text-xs text-pretty">
-              {t("hideAddressHint")}
-            </span>
-          </span>
-        </span>
-        <Switch
-          checked={entry.isHidden}
-          onCheckedChange={(checked) => update(entry.key, { isHidden: checked })}
-        />
-      </label>
     </>
   );
 
   return (
-    <div className="[&_input]:bg-background [&_textarea]:bg-background [&_[data-slot=select-trigger]]:bg-background [&_[data-slot=combobox-trigger]]:bg-background dark:[&_input]:bg-input/30 dark:[&_textarea]:bg-input/30 dark:[&_[data-slot=select-trigger]]:bg-input/30 dark:[&_[data-slot=combobox-trigger]]:bg-input/30 space-y-4">
+    <div className="space-y-4">
       <div className="bg-muted/40 flex items-start gap-3 rounded-lg p-4">
         <Info
           aria-hidden
@@ -446,6 +496,39 @@ export function AddressesEditor({
         <Plus className="size-4" />
         {t("addAddress")}
       </Button>
+
+      {/* The enlarged, still-editable map — drag the pin here for a closer look while relocating. */}
+      <Dialog
+        open={expandedKey !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setExpandedKey(null);
+          }
+        }}
+      >
+        <DialogContent
+          overlayClassName="bg-black/10 backdrop-blur-[3px]"
+          className="sm:max-w-2xl"
+        >
+          <DialogHeader>
+            <DialogTitle>{fields("location")}</DialogTitle>
+            <DialogDescription>{t("locationHint")}</DialogDescription>
+          </DialogHeader>
+          {(() => {
+            const expanded = value.find((entry) => entry.key === expandedKey);
+            const point = expanded ? coordinate(expanded) : null;
+            return expanded && point ? (
+              <LocationMap
+                latitude={point.lat}
+                longitude={point.lng}
+                onChange={(lat, lng) => setCoordinate(expanded.key, lat, lng)}
+                interactive
+                className="h-[60vh] w-full"
+              />
+            ) : null;
+          })()}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
