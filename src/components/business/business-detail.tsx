@@ -54,6 +54,7 @@ import {
   AddressesEditor,
   type AddressEntry,
 } from "@/components/address/addresses-editor";
+import { AddressLines } from "@/components/address/address-lines";
 import { AddressMapPreview } from "@/components/address/address-map-preview";
 import {
   ClosuresEditor,
@@ -1181,7 +1182,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
                   {business.addresses.map((address) => (
                     <div
                       key={address.id}
-                      className="flex gap-3 py-4 first:pt-0 last:pb-0"
+                      className="flex items-center gap-3 py-4 first:pt-0 last:pb-0"
                     >
                       {address.latitude != null &&
                       address.longitude != null ? (
@@ -1192,12 +1193,12 @@ export function BusinessDetail({ slug }: { slug: string }) {
                             ", ",
                           )}
                           dimmed={address.is_hidden}
-                          className="mt-0.5 h-20 w-24 sm:h-24 sm:w-32"
+                          className="h-20 w-24 sm:h-24 sm:w-32"
                         />
                       ) : (
                         <span
                           className={cn(
-                            "mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-lg border",
+                            "flex size-9 shrink-0 items-center justify-center rounded-lg border",
                             address.is_hidden
                               ? "border-dashed bg-transparent text-muted-foreground/70"
                               : "bg-background text-muted-foreground",
@@ -1224,22 +1225,12 @@ export function BusinessDetail({ slug }: { slug: string }) {
                             ) : null}
                           </div>
                         ) : null}
-                        <address
-                          className={cn(
-                            "space-y-0.5 text-sm leading-relaxed not-italic",
-                            address.is_hidden
-                              ? "text-muted-foreground"
-                              : "text-foreground/90",
-                          )}
-                        >
-                          {formatBusinessAddress(address, locale).map(
-                            (line) => (
-                              <span key={line} className="block">
-                                {line}
-                              </span>
-                            ),
-                          )}
-                        </address>
+                        <AddressLines
+                          lines={formatBusinessAddress(address, locale)}
+                          className={
+                            address.is_hidden ? "opacity-60" : undefined
+                          }
+                        />
                       </div>
                     </div>
                   ))}
