@@ -70,6 +70,7 @@ export interface BusinessAddress {
   longitude: number | null;
   notes: string | null;
   is_main: boolean;
+  is_hidden: boolean;
 }
 
 export interface BusinessColors {

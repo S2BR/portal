@@ -14,6 +14,7 @@ const badgeVariants = cva(
           "border-transparent bg-brand-green/15 text-brand-green-deep dark:bg-brand-green/15 dark:text-brand-green",
         // The one sanctioned place the brand gold appears (status highlights).
         gold: "border-transparent bg-brand-gold/15 text-brand-gold-deep dark:bg-brand-gold/15 dark:text-brand-gold",
+        red: "border-transparent bg-destructive/10 text-destructive dark:bg-destructive/20",
         outline: "text-foreground border-border",
       },
     },
