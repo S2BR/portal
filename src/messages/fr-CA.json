@@ -507,6 +507,10 @@
           "title": "Heures d'Ouverture de l'Entreprise",
           "description": "Définissez les heures d'ouverture de votre entreprise pour chaque jour de la semaine. Vous pouvez spécifier plusieurs plages horaires pour chaque jour (ex: 9h00 - 12h00, 13h00 - 17h00) pour accommoder les pauses ou les quarts de travail divisés. Cette information aidera les clients à savoir quand votre entreprise est ouverte."
         },
+        "closures": {
+          "title": "Congés et horaires spéciaux",
+          "description": "Indiquez les jours où votre entreprise est fermée — ou ouverte avec un horaire spécial — jours fériés, fermeture ponctuelle ou demi-journée. Choisissez la ou les dates sur le calendrier, nommez-les et cochez celles qui reviennent chaque année."
+        },
         "socials": {
           "title": "Liens de Réseaux Sociaux",
           "description": "Ajoutez des liens vers vos profils de réseaux sociaux. Cela aidera les clients à vous trouver et vous suivre sur les réseaux sociaux."
@@ -557,7 +561,8 @@
         "socials": "Aucun réseau social pour l'instant.",
         "branding": "Aucune couleur de marque pour l'instant.",
         "categories": "Aucune catégorie choisie pour l'instant.",
-        "amenities": "Aucune commodité sélectionnée pour l'instant."
+        "amenities": "Aucune commodité sélectionnée pour l'instant.",
+        "closures": "Aucune date de fermeture pour l'instant."
       },
       "tabs": {
         "general": "Général",
@@ -589,6 +594,21 @@
         "successDescription": "Notre équipe l'examinera et mettra à jour votre fiche s'il y a lieu."
       },
       "closedAllDay": "Fermé",
+      "previousMonth": "Mois précédent",
+      "nextMonth": "Mois suivant",
+      "closuresHint": "Cliquez sur un jour pour le fermer, ou sur un jour de début et de fin pour fermer une plage.",
+      "cancelSelection": "Annuler",
+      "closureName": "Nom de la fermeture",
+      "closureNamePlaceholder": "Nom (facultatif) — p. ex. Noël",
+      "repeatsYearly": "Se répète chaque année",
+      "everyYear": "Chaque année",
+      "removeClosure": "Retirer la date de fermeture",
+      "addClosedDate": "Ajouter une date",
+      "specialHours": "Ouvrir avec un horaire spécial",
+      "save": "Enregistrer",
+      "delete": "Supprimer",
+      "closuresGroupSingle": "Uniques",
+      "closuresGroupRecurring": "Récurrentes",
       "colorHint": "La couleur principale de votre marque.",
       "addSocial": "Ajouter un réseau social",
       "lookup": {

@@ -507,6 +507,10 @@
           "title": "Business Opening Hours",
           "description": "Set your business opening hours for each day of the week. You can specify multiple time ranges for each day (e.g., 9:00 AM - 12:00 PM, 1:00 PM - 5:00 PM) to accommodate breaks or split shifts. This information will help customers know when your business is open."
         },
+        "closures": {
+          "title": "Holidays & special hours",
+          "description": "Mark the days your business is closed — or open with special hours — like holidays, a one-off closure, or a half-day. Pick date(s) on the calendar, name them, and mark any that repeat every year."
+        },
         "socials": {
           "title": "Social Media Links",
           "description": "Add links to your social media profiles. This will help customers find and follow you on social media."
@@ -557,7 +561,8 @@
         "socials": "No social links yet.",
         "branding": "No brand color yet.",
         "categories": "No categories chosen yet.",
-        "amenities": "No amenities selected yet."
+        "amenities": "No amenities selected yet.",
+        "closures": "No closed dates yet."
       },
       "tabs": {
         "general": "General",
@@ -589,6 +594,21 @@
         "successDescription": "Our team will review it and update your listing if it fits."
       },
       "closedAllDay": "Closed",
+      "previousMonth": "Previous month",
+      "nextMonth": "Next month",
+      "closuresHint": "Click a day to close it, or click a start and end day to close a range.",
+      "cancelSelection": "Cancel",
+      "closureName": "Closure name",
+      "closureNamePlaceholder": "Name (optional) — e.g. Christmas",
+      "repeatsYearly": "Repeats yearly",
+      "everyYear": "Every year",
+      "removeClosure": "Remove closed date",
+      "addClosedDate": "Add date",
+      "specialHours": "Open with special hours",
+      "save": "Save",
+      "delete": "Delete",
+      "closuresGroupSingle": "Single",
+      "closuresGroupRecurring": "Recurring",
       "colorHint": "Your brand's primary color.",
       "addSocial": "Add social link",
       "lookup": {

@@ -507,6 +507,10 @@
           "title": "Horário de Funcionamento da Empresa",
           "description": "Defina o horário de funcionamento da sua empresa para cada dia da semana. Você pode especificar múltiplos intervalos de tempo para cada dia (ex: 9:00 - 12:00, 13:00 - 17:00) para acomodar pausas ou turnos divididos. Essa informação ajudará os clientes a saber quando sua empresa está aberta."
         },
+        "closures": {
+          "title": "Feriados e horários especiais",
+          "description": "Marque os dias em que sua empresa fica fechada — ou aberta com horário especial — como feriados, um fechamento pontual ou meio período. Escolha a(s) data(s) no calendário, dê um nome e marque as que se repetem todos os anos."
+        },
         "socials": {
           "title": "Links de Redes Sociais",
           "description": "Adicione links para seus perfis de redes sociais. Isso ajudará os clientes a encontrá-lo e segui-lo nas redes sociais."
@@ -557,7 +561,8 @@
         "socials": "Ainda sem redes sociais.",
         "branding": "Ainda sem cor de marca.",
         "categories": "Ainda sem categorias escolhidas.",
-        "amenities": "Ainda sem comodidades selecionadas."
+        "amenities": "Ainda sem comodidades selecionadas.",
+        "closures": "Nenhuma data fechada ainda."
       },
       "tabs": {
         "general": "Geral",
@@ -589,6 +594,21 @@
         "successDescription": "Nossa equipe vai revisar e atualizar seu perfil se fizer sentido."
       },
       "closedAllDay": "Fechado",
+      "previousMonth": "Mês anterior",
+      "nextMonth": "Próximo mês",
+      "closuresHint": "Clique em um dia para fechá-lo, ou em um dia inicial e final para fechar um período.",
+      "cancelSelection": "Cancelar",
+      "closureName": "Nome do fechamento",
+      "closureNamePlaceholder": "Nome (opcional) — ex.: Natal",
+      "repeatsYearly": "Repete todo ano",
+      "everyYear": "Todo ano",
+      "removeClosure": "Remover data fechada",
+      "addClosedDate": "Adicionar data",
+      "specialHours": "Abrir com horário especial",
+      "save": "Salvar",
+      "delete": "Excluir",
+      "closuresGroupSingle": "Únicas",
+      "closuresGroupRecurring": "Recorrentes",
       "colorHint": "A cor principal da sua marca.",
       "addSocial": "Adicionar rede social",
       "lookup": {

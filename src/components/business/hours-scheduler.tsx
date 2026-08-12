@@ -1,11 +1,17 @@
 "use client";
 
 import { Copy, Plus, X } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import type { DayOfWeek } from "@/app/api/businesses/route";
 import { DAYS } from "@/components/business/business-constants";
+import {
+  DEFAULT_SLOT,
+  oneHourLater,
+  TimeSelect,
+  type HourSlot,
+} from "@/components/business/time-ranges";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -13,13 +19,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import {
   Tooltip,
@@ -27,60 +26,12 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-export type HourSlot = { open: string; close: string };
+// Time helpers now live in time-ranges; re-export so existing consumers keep importing from here.
+export { formatTime } from "@/components/business/time-ranges";
+export type { HourSlot } from "@/components/business/time-ranges";
+
 export type DaySchedule = { enabled: boolean; slots: HourSlot[] };
 export type WeekSchedule = Record<DayOfWeek, DaySchedule>;
-
-/** Every half hour of the day, "HH:MM" (48 options) — matches the beui scheduler's 30-min step. */
-const TIME_OPTIONS: string[] = Array.from({ length: 48 }, (_, index) => {
-  const hour = Math.floor(index / 2);
-  const minute = index % 2 === 0 ? "00" : "30";
-  return `${String(hour).padStart(2, "0")}:${minute}`;
-});
-
-const DEFAULT_SLOT: HourSlot = { open: "09:00", close: "17:00" };
-
-/** "HH:MM" → the viewer's localized time label (e.g. "9:00 AM" or "09:00"). */
-export function formatTime(value: string, locale: string): string {
-  const [hour, minute] = value.split(":").map(Number);
-  return new Intl.DateTimeFormat(locale, {
-    hour: "numeric",
-    minute: "2-digit",
-  }).format(new Date(2000, 0, 1, hour ?? 0, minute ?? 0));
-}
-
-/** One hour after "HH:MM", wrapping at midnight — the default end for a freshly added range. */
-function oneHourLater(value: string): string {
-  const [hour, minute] = value.split(":").map(Number);
-  const next = ((hour ?? 0) + 1) % 24;
-  return `${String(next).padStart(2, "0")}:${String(minute ?? 0).padStart(2, "0")}`;
-}
-
-function TimeSelect({
-  value,
-  onChange,
-  label,
-}: {
-  value: string;
-  onChange: (value: string) => void;
-  label: string;
-}) {
-  const locale = useLocale();
-  return (
-    <Select value={value} onValueChange={onChange}>
-      <SelectTrigger className="w-28" aria-label={label}>
-        <SelectValue />
-      </SelectTrigger>
-      <SelectContent className="max-h-64">
-        {TIME_OPTIONS.map((option) => (
-          <SelectItem key={option} value={option}>
-            {formatTime(option, locale)}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
-  );
-}
 
 /** Copy this day's hours to other days — a popover with per-day checkboxes + "Every day". */
 function CopyToDays({
