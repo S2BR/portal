@@ -27,6 +27,16 @@ const openingHourSchema = z.object({
   closed_all_day: z.boolean(),
 });
 
+const closureSchema = z.object({
+  name: z.string().nullish(),
+  start_date: z.string(),
+  end_date: z.string(),
+  is_recurring: z.boolean().optional(),
+  hours: z
+    .array(z.object({ open: z.string(), close: z.string() }))
+    .optional(),
+});
+
 const addressSchema = z.object({
   address_1: z.string().optional(),
   address_2: z.string().nullish(),
@@ -53,6 +63,7 @@ const updateSchema = z
     contacts: z.array(contactSchema).optional(),
     socials: z.array(socialSchema).optional(),
     opening_hours: z.array(openingHourSchema).optional(),
+    closures: z.array(closureSchema).optional(),
     addresses: z.array(addressSchema).optional(),
     category_ids: z.array(z.number()).optional(),
     amenity_ids: z.array(z.number()).optional(),

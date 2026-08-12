@@ -56,6 +56,11 @@ import {
 } from "@/components/address/addresses-editor";
 import { AddressMapPreview } from "@/components/address/address-map-preview";
 import {
+  ClosuresEditor,
+  ClosuresReadout,
+  type ClosureEntry,
+} from "@/components/business/closures-editor";
+import {
   AmenitiesPicker,
   AmenityReadout,
 } from "@/components/business/amenities-picker";
@@ -115,6 +120,7 @@ import { BusinessFormSkeleton } from "@/components/business/business-skeletons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { apiErrorText } from "@/lib/api/error-text";
+import { todayISO } from "@/lib/calendar";
 import { formatBusinessAddress } from "@/lib/format-address";
 import { parseRateLimit } from "@/lib/rate-limit";
 import { useUnsavedChangesGuard } from "@/lib/use-unsaved-changes-guard";
@@ -138,6 +144,7 @@ type EditState = {
   emails: LinkRow[];
   socials: SocialRow[];
   hours: WeekSchedule;
+  closures: ClosureEntry[];
   addresses: AddressEntry[];
   categoryIds: number[];
   amenityIds: number[];
@@ -192,6 +199,20 @@ function toEditState(business: Business): EditState {
       handle: social.handle,
     })),
     hours,
+    // Past one-off closures are read-only history (shown in read mode, pruned server-side); the
+    // editor only loads upcoming + recurring so you can't re-save or re-add a retroactive date.
+    closures: (business.closures ?? [])
+      .filter(
+        (closure) => closure.is_recurring || closure.end_date >= todayISO(),
+      )
+      .map((closure) => ({
+        key: crypto.randomUUID(),
+        name: closure.name ?? "",
+        startDate: closure.start_date,
+        endDate: closure.end_date,
+        isRecurring: closure.is_recurring,
+        hours: closure.hours ?? [],
+      })),
     addresses: (business.addresses ?? []).map((address) => ({
       key: crypto.randomUUID(),
       address_1: address.address_1 ?? "",
@@ -286,6 +307,13 @@ function buildPayload(edit: EditState) {
           closed_all_day: false,
         }));
     }),
+    closures: edit.closures.map((closure) => ({
+      name: trimOrNull(closure.name),
+      start_date: closure.startDate,
+      end_date: closure.endDate,
+      is_recurring: closure.isRecurring,
+      hours: closure.hours,
+    })),
     addresses: edit.addresses
       .filter(
         (address) =>
@@ -329,7 +357,7 @@ const TAB_PAYLOAD_KEYS: Record<
   contact: ["contacts"],
   amenities: ["amenity_ids"],
   address: ["addresses"],
-  hours: ["opening_hours"],
+  hours: ["opening_hours", "closures"],
   socials: ["socials"],
   branding: ["colors"],
 };
@@ -686,6 +714,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
   const railBlocks: Record<string, string[]> = {
     general: ["basics", "businessType", "categories"],
     contact: ["website", "phone", "email"],
+    hours: ["hours", "closures"],
     branding: ["branding", "images"],
   };
   const railItems = (railBlocks[activeTab] ?? []).map((key) => ({
@@ -1195,6 +1224,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
           <TabsContent value="hours">
             <FormSection
               editing={editing}
+              id="section-hours"
               title={sections("hours.title")}
               description={sections("hours.description")}
             >
@@ -1235,6 +1265,25 @@ export function BusinessDetail({ slug }: { slug: string }) {
                 </ul>
               ) : (
                 <Muted>{blank("hours")}</Muted>
+              )}
+            </FormSection>
+
+            {/* Closed dates — date-specific exceptions to the weekly hours above. */}
+            <FormSection
+              editing={editing}
+              id="section-closures"
+              title={sections("closures.title")}
+              description={sections("closures.description")}
+            >
+              {editing && edit ? (
+                <ClosuresEditor
+                  value={edit.closures}
+                  onChange={(closures) => patch({ closures })}
+                />
+              ) : business.closures && business.closures.length > 0 ? (
+                <ClosuresReadout closures={business.closures} />
+              ) : (
+                <Muted>{blank("closures")}</Muted>
               )}
             </FormSection>
           </TabsContent>

@@ -57,6 +57,17 @@ export interface BusinessOpeningHour {
   closed_all_day: boolean;
 }
 
+/** A closed date — a single day (start == end) or an inclusive range; `is_recurring` repeats it every
+ *  year (matched by month + day). Dates are `YYYY-MM-DD`. */
+export interface BusinessClosure {
+  name: string | null;
+  start_date: string;
+  end_date: string;
+  is_recurring: boolean;
+  /** Open/close ranges on the date(s); empty ⇒ closed all day. */
+  hours: { open: string; close: string }[];
+}
+
 export interface BusinessAddress {
   id: number;
   address_1: string;
@@ -102,6 +113,7 @@ export interface Business {
   contacts?: BusinessContact[];
   socials?: BusinessSocial[];
   opening_hours?: BusinessOpeningHour[];
+  closures?: BusinessClosure[];
   addresses?: BusinessAddress[];
   categories?: Category[];
   amenities?: Amenity[];
