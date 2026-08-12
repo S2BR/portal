@@ -602,6 +602,8 @@
         "company": "Sou uma empresa"
       },
       "addAddress": "Adicionar endereço",
+    "newAddress": "Novo endereço",
+    "enterManually": "Digite manualmente",
       "removeAddress": "Remover endereço",
       "categoriesEmpty": "Ainda não há categorias disponíveis.",
       "searchAmenities": "Buscar comodidades…",

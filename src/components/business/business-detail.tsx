@@ -1751,6 +1751,15 @@ function AddressesEditor({
   // keeps ~10) is short enough to reorder without scrolling the whole page.
   const [dragging, setDragging] = useState(false);
   const sortable = value.length > 1;
+  // A brand-new (empty) address shows only the search field until an address is picked (or the user
+  // chooses to fill it in by hand) — so adding one doesn't drop a big empty form on the page.
+  const [manualKeys, setManualKeys] = useState<Set<string>>(new Set());
+  const revealManual = (key: string) =>
+    setManualKeys((previous) => new Set(previous).add(key));
+  const isSearchOnly = (entry: AddressEntry) =>
+    entry.address_1.trim() === "" &&
+    entry.city.trim() === "" &&
+    !manualKeys.has(entry.key);
 
   const update = (key: string, changes: Partial<AddressEntry>) =>
     onChange(value.map((e) => (e.key === key ? { ...e, ...changes } : e)));
@@ -1830,6 +1839,35 @@ function AddressesEditor({
           aria-label={t("mainAddress")}
         />
       ) : null}
+    </>
+  );
+
+  /** A brand-new address: just the place search, plus an escape hatch to fill it in by hand. */
+  const searchBody = (entry: AddressEntry, handle: ReactNode) => (
+    <>
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          {handle}
+          <span className="text-sm font-medium">{t("newAddress")}</span>
+        </div>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          aria-label={t("removeAddress")}
+          onClick={() => remove(entry.key)}
+        >
+          <X className="size-4" />
+        </Button>
+      </div>
+      <AddressAutocomplete onSelect={(place) => fill(entry.key, place)} />
+      <button
+        type="button"
+        className="text-muted-foreground hover:text-foreground text-xs underline underline-offset-2 transition-colors"
+        onClick={() => revealManual(entry.key)}
+      >
+        {t("enterManually")}
+      </button>
     </>
   );
 
@@ -1987,9 +2025,13 @@ function AddressesEditor({
               <div
                 ref={setNodeRef}
                 style={style}
-                className="space-y-4 border-b pb-6 last:border-b-0 last:pb-0"
+                // A slight gray on hover (the business-type selector's unselected tone) helps tell one
+                // address's form from the next.
+                className="hover:bg-muted/40 space-y-4 rounded-lg p-3 transition-colors"
               >
-                {fullBody(entry, index, reorderHandle(handle))}
+                {isSearchOnly(entry)
+                  ? searchBody(entry, reorderHandle(handle))
+                  : fullBody(entry, index, reorderHandle(handle))}
               </div>
             );
           }}
@@ -2009,9 +2051,11 @@ function AddressesEditor({
           {value.map((entry, index) => (
             <div
               key={entry.key}
-              className="space-y-4 border-b pb-6 last:border-b-0 last:pb-0"
+              className="hover:bg-muted/40 space-y-4 rounded-lg p-3 transition-colors"
             >
-              {fullBody(entry, index, null)}
+              {isSearchOnly(entry)
+                ? searchBody(entry, null)
+                : fullBody(entry, index, null)}
             </div>
           ))}
         </div>
