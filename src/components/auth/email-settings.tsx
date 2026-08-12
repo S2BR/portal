@@ -10,7 +10,11 @@ import { VerifyDialog } from "@/components/auth/verify-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { SettingBlock, SettingTile } from "@/components/ui/setting-tile";
+import {
+  SettingBlock,
+  SettingGroup,
+  SettingTile,
+} from "@/components/ui/setting-tile";
 import { apiErrorText } from "@/lib/api/error-text";
 import { useOtpLength } from "@/lib/config/use-app-config";
 
@@ -108,9 +112,9 @@ export function EmailSettings() {
   }
 
   return (
-    <>
+    <SettingGroup title={t("title")} description={t("hint")}>
       {mode === "verifying" ? (
-        <SettingBlock icon={Mail} label={t("title")}>
+        <SettingBlock>
           <form onSubmit={verifyChange} className="space-y-4">
             <p className="text-sm">{t("verifyTitle")}</p>
             <p className="text-muted-foreground text-sm">
@@ -139,7 +143,7 @@ export function EmailSettings() {
           </form>
         </SettingBlock>
       ) : mode === "changing" ? (
-        <SettingBlock icon={Mail} label={t("title")}>
+        <SettingBlock>
           <form onSubmit={startChange} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="new-email">{t("newEmail")}</Label>
@@ -164,7 +168,6 @@ export function EmailSettings() {
       ) : (
         <SettingTile
           icon={Mail}
-          label={t("title")}
           onClick={() => {
             setNewEmail("");
             setError(null);
@@ -182,6 +185,6 @@ export function EmailSettings() {
         onVerified={requestChange}
         confirmLabel={t("submit")}
       />
-    </>
+    </SettingGroup>
   );
 }

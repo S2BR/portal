@@ -12,7 +12,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { SettingBlock, SettingTile } from "@/components/ui/setting-tile";
+import {
+  SettingBlock,
+  SettingGroup,
+  SettingTile,
+} from "@/components/ui/setting-tile";
 import { apiErrorText } from "@/lib/api/error-text";
 
 type Mode = "idle" | "enrolling" | "recovery";
@@ -162,9 +166,9 @@ export function TwoFactorSettings() {
   }
 
   return (
-    <>
+    <SettingGroup title={t("title")} description={t("description")}>
       {mode === "recovery" ? (
-        <SettingBlock icon={ShieldCheck} label={t("title")}>
+        <SettingBlock>
           <div className="space-y-4">
             <div className="space-y-1">
               <p className="font-medium">{t("recoveryTitle")}</p>
@@ -181,7 +185,7 @@ export function TwoFactorSettings() {
           </div>
         </SettingBlock>
       ) : mode === "enrolling" ? (
-        <SettingBlock icon={ShieldCheck} label={t("title")}>
+        <SettingBlock>
           <form onSubmit={startConfirmEnroll} className="space-y-4">
             <p className="text-sm">{t("scan")}</p>
             <div className="flex justify-center">
@@ -218,7 +222,6 @@ export function TwoFactorSettings() {
         <div className="space-y-3">
           <SettingTile
             icon={ShieldCheck}
-            label={t("title")}
             action={
               user.two_factor_enabled ? (
                 <>
@@ -283,6 +286,6 @@ export function TwoFactorSettings() {
         }
         destructive={passwordAction === "disable"}
       />
-    </>
+    </SettingGroup>
   );
 }

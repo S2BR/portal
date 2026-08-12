@@ -7,7 +7,7 @@ import { useState } from "react";
 
 import { VerifyDialog } from "@/components/auth/verify-dialog";
 import { Button } from "@/components/ui/button";
-import { SettingTile } from "@/components/ui/setting-tile";
+import { SettingGroup } from "@/components/ui/setting-tile";
 import { apiErrorText } from "@/lib/api/error-text";
 
 /**
@@ -41,25 +41,17 @@ export function DeleteAccountSettings() {
   }
 
   return (
-    <>
-      <div className="space-y-2">
-        <SettingTile
-          icon={Trash2}
-          tone="danger"
-          subtitle={t("description")}
-          action={
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => setOpen(true)}
-            >
-              {t("delete")}
-            </Button>
-          }
+    <SettingGroup title={t("title")} description={t("description")}>
+      <div className="space-y-3">
+        <Button
+          variant="destructive"
+          size="sm"
+          onClick={() => setOpen(true)}
         >
-          {t("title")}
-        </SettingTile>
-        <p className="text-muted-foreground flex items-start gap-2 px-1 text-xs">
+          <Trash2 className="size-4" />
+          {t("delete")}
+        </Button>
+        <p className="text-muted-foreground flex items-start gap-2 text-xs">
           <Info className="mt-0.5 size-3.5 shrink-0" aria-hidden />
           <span>{t("retentionNotice", { days: 30 })}</span>
         </p>
@@ -74,6 +66,6 @@ export function DeleteAccountSettings() {
         confirmLabel={t("confirm")}
         destructive
       />
-    </>
+    </SettingGroup>
   );
 }

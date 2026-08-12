@@ -10,7 +10,11 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { SettingBlock, SettingTile } from "@/components/ui/setting-tile";
+import {
+  SettingBlock,
+  SettingGroup,
+  SettingTile,
+} from "@/components/ui/setting-tile";
 import { apiErrorText } from "@/lib/api/error-text";
 import {
   browserSupportsWebAuthn,
@@ -170,15 +174,15 @@ export function PasskeySettings() {
   }
 
   return (
-    <>
+    <SettingGroup title={t("title")} description={t("description")}>
       {!supported ? (
-        <SettingTile icon={KeyRound} label={t("title")}>
+        <SettingTile icon={KeyRound}>
           <span className="text-muted-foreground text-sm font-normal">
             {t("unsupported")}
           </span>
         </SettingTile>
       ) : mode === "adding" ? (
-        <SettingBlock icon={KeyRound} label={t("title")}>
+        <SettingBlock>
           <form onSubmit={startAdd} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="passkey-name">{t("nameLabel")}</Label>
@@ -200,10 +204,6 @@ export function PasskeySettings() {
         </SettingBlock>
       ) : (
         <div className="space-y-3">
-          <div>
-            <h3 className="text-sm font-medium">{t("title")}</h3>
-            <p className="text-muted-foreground text-xs">{t("description")}</p>
-          </div>
           {passkeys === null ? (
             <Skeleton className="h-16 w-full rounded-xl" />
           ) : passkeys.length === 0 ? (
@@ -280,6 +280,6 @@ export function PasskeySettings() {
         confirmLabel={passwordAction === "remove" ? t("remove") : t("add")}
         destructive={passwordAction === "remove"}
       />
-    </>
+    </SettingGroup>
   );
 }

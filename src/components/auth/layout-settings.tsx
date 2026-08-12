@@ -33,8 +33,8 @@ function Group({
   return (
     <section className="space-y-3">
       <div>
-        <h3 className="font-medium tracking-tight">{title}</h3>
-        <p className="text-muted-foreground mt-0.5 text-sm text-pretty">
+        <h3 className="text-sm font-semibold tracking-tight">{title}</h3>
+        <p className="text-muted-foreground mt-0.5 text-xs text-pretty">
           {description}
         </p>
       </div>
