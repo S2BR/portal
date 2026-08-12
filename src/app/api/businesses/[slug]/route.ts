@@ -65,6 +65,8 @@ const updateSchema = z
     description: z.string().max(5000).nullable().optional(),
     // IANA zone governing the business's hours; the API validates it against the system zone list.
     timezone: z.string().max(64).nullable().optional(),
+    // Owner visibility toggle.
+    published: z.boolean().optional(),
     category_suggestion: z.string().max(500).nullable().optional(),
     colors: z.object({ primary: z.string().nullish() }).nullable().optional(),
     contacts: z.array(contactSchema).optional(),

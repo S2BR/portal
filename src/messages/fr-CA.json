@@ -449,6 +449,10 @@
     "empty": "Vous n'avez pas encore ajouté d'entreprise.",
     "createFirst": "Créer votre première entreprise",
     "createAnother": "Ajouter une entreprise",
+    "locked": {
+      "title": "Cette entreprise est verrouillée",
+      "body": "Un opérateur a verrouillé cette entreprise; elle ne peut pas être modifiée ni affichée publiquement pour le moment. Pour toute question, veuillez contacter le soutien."
+    },
     "detail": {
       "back": "Retour à mes entreprises",
       "edit": "Modifier",
@@ -615,6 +619,11 @@
       "searchTimezone": "Rechercher des fuseaux horaires…",
       "noTimezone": "Aucun fuseau horaire trouvé",
       "timezoneReadout": "Heures affichées selon le fuseau {zone}.",
+      "published": "Publié",
+      "draft": "Brouillon",
+      "publishToggle": "Activer ou désactiver la publication",
+      "publishedToast": "Fiche publiée",
+      "unpublishedToast": "Fiche dépubliée",
       "colorHint": "La couleur principale de votre marque.",
       "addSocial": "Ajouter un réseau social",
       "lookup": {

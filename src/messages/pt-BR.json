@@ -449,6 +449,10 @@
     "empty": "Você ainda não adicionou nenhum negócio.",
     "createFirst": "Crie seu primeiro negócio",
     "createAnother": "Adicionar negócio",
+    "locked": {
+      "title": "Este negócio está bloqueado",
+      "body": "Um operador bloqueou este negócio, então ele não pode ser editado nem exibido publicamente no momento. Em caso de dúvidas, entre em contato com o suporte."
+    },
     "detail": {
       "back": "Voltar aos meus negócios",
       "edit": "Editar",
@@ -615,6 +619,11 @@
       "searchTimezone": "Buscar fusos horários…",
       "noTimezone": "Nenhum fuso horário encontrado",
       "timezoneReadout": "Horários exibidos no fuso {zone}.",
+      "published": "Publicado",
+      "draft": "Rascunho",
+      "publishToggle": "Ativar ou desativar a publicação",
+      "publishedToast": "Negócio publicado",
+      "unpublishedToast": "Negócio despublicado",
       "colorHint": "A cor principal da sua marca.",
       "addSocial": "Adicionar rede social",
       "lookup": {
