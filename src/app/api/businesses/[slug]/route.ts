@@ -39,6 +39,7 @@ const addressSchema = z.object({
   longitude: z.number().nullish(),
   notes: z.string().nullish(),
   is_main: z.boolean().optional(),
+  is_hidden: z.boolean().optional(),
 });
 
 const updateSchema = z

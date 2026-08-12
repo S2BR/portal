@@ -7,6 +7,7 @@ import {
   Clock,
   Contact,
   ExternalLink,
+  EyeOff,
   Info,
   MapPin,
   Palette,
@@ -196,7 +197,10 @@ function toEditState(business: Business): EditState {
       latitude: address.latitude?.toString() ?? "",
       longitude: address.longitude?.toString() ?? "",
       notes: address.notes ?? "",
-      isMain: address.is_main,
+      // Normalize to booleans so the saved baseline is stable — an absent flag (undefined) must
+      // serialize the same as an explicit false, or toggling it and back would look dirty forever.
+      isMain: address.is_main ?? false,
+      isHidden: address.is_hidden ?? false,
     })),
     categoryIds: (business.categories ?? []).map((category) => category.id),
     amenityIds: (business.amenities ?? []).map((amenity) => amenity.id),
@@ -292,6 +296,7 @@ function buildPayload(edit: EditState) {
         longitude: numberOrNull(address.longitude),
         notes: trimOrNull(address.notes),
         is_main: address.isMain,
+        is_hidden: address.isHidden,
       })),
     category_ids: edit.categoryIds,
     amenity_ids: edit.amenityIds,
@@ -560,10 +565,16 @@ export function BusinessDetail({ slug }: { slug: string }) {
         notifyRateLimited(limit.retryAfter);
         return;
       }
+      // Any other failure (422 validation, 500, …): keep the user's edits and tell them loudly with
+      // a toast — the inline footer message alone is easy to miss on a long, scrolled tab.
+      const message = apiErrorText(data) ?? create("errorGeneric");
       setNameError(data.errors?.name?.[0] ?? null);
-      setError(apiErrorText(data) ?? create("errorGeneric"));
+      setError(message);
+      toast.error(message);
     } catch {
-      setError(create("errorGeneric"));
+      const message = create("errorGeneric");
+      setError(message);
+      toast.error(message);
     } finally {
       setSaving(false);
     }
@@ -1101,14 +1112,42 @@ export function BusinessDetail({ slug }: { slug: string }) {
                       key={address.id}
                       className="flex gap-3 py-4 first:pt-0 last:pb-0"
                     >
-                      <span className="bg-background text-muted-foreground mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-lg border">
-                        <MapPin className="size-4" />
+                      <span
+                        className={cn(
+                          "mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-lg border",
+                          address.is_hidden
+                            ? "border-dashed bg-transparent text-muted-foreground/70"
+                            : "bg-background text-muted-foreground",
+                        )}
+                      >
+                        {address.is_hidden ? (
+                          <EyeOff className="size-4" />
+                        ) : (
+                          <MapPin className="size-4" />
+                        )}
                       </span>
                       <div className="min-w-0 space-y-1.5">
-                        {address.is_main ? (
-                          <Badge variant="green">{t("mainAddress")}</Badge>
+                        {address.is_main || address.is_hidden ? (
+                          <div className="flex flex-wrap items-center gap-1.5">
+                            {address.is_main ? (
+                              <Badge variant="green">{t("mainAddress")}</Badge>
+                            ) : null}
+                            {address.is_hidden ? (
+                              <Badge variant="red">
+                                <EyeOff />
+                                {t("addressHidden")}
+                              </Badge>
+                            ) : null}
+                          </div>
                         ) : null}
-                        <address className="text-foreground/90 space-y-0.5 text-sm leading-relaxed not-italic">
+                        <address
+                          className={cn(
+                            "space-y-0.5 text-sm leading-relaxed not-italic",
+                            address.is_hidden
+                              ? "text-muted-foreground"
+                              : "text-foreground/90",
+                          )}
+                        >
                           {formatBusinessAddress(address, locale).map(
                             (line) => (
                               <span key={line} className="block">

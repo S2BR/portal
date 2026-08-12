@@ -1,6 +1,6 @@
 "use client";
 
-import { Info, Plus, X } from "lucide-react";
+import { EyeOff, Info, Plus, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState, type ChangeEvent, type ReactNode } from "react";
 
@@ -19,6 +19,7 @@ import {
   SortableList,
   type SortableItemRender,
 } from "@/components/ui/sortable-list";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { formatBusinessAddress } from "@/lib/format-address";
 import { cn } from "@/lib/utils";
@@ -38,6 +39,7 @@ export type AddressEntry = {
   longitude: string;
   notes: string;
   isMain: boolean;
+  isHidden: boolean;
 };
 
 type AddressStringField = Exclude<keyof AddressEntry, "isMain" | "key">;
@@ -57,6 +59,7 @@ export function blankAddress(): AddressEntry {
     longitude: "",
     notes: "",
     isMain: false,
+    isHidden: false,
   };
 }
 
@@ -133,6 +136,7 @@ export function AddressesEditor({
         longitude: null,
         notes: null,
         is_main: entry.isMain,
+        is_hidden: entry.isHidden,
       },
       locale,
     );
@@ -166,6 +170,12 @@ export function AddressesEditor({
         <span
           className="bg-brand-green mt-1 size-2 shrink-0 rounded-full"
           aria-label={t("mainAddress")}
+        />
+      ) : null}
+      {entry.isHidden ? (
+        <EyeOff
+          className="text-muted-foreground mt-0.5 size-3.5 shrink-0"
+          aria-label={t("addressHidden")}
         />
       ) : null}
     </>
@@ -213,6 +223,12 @@ export function AddressesEditor({
             />
             {t("mainAddress")}
           </label>
+          {entry.isHidden ? (
+            <span className="text-destructive inline-flex items-center gap-1 text-xs font-medium">
+              <EyeOff className="size-3.5" />
+              {t("addressHidden")}
+            </span>
+          ) : null}
         </div>
         <Button
           type="button"
@@ -306,6 +322,25 @@ export function AddressesEditor({
           </Field>
         </div>
       </div>
+
+      {/* Visibility is a setting, not address data — kept in its own row below the fields. */}
+      <label className="bg-muted/40 flex items-start justify-between gap-3 rounded-lg p-4">
+        <span className="flex items-start gap-2.5">
+          <EyeOff className="text-muted-foreground mt-0.5 size-4 shrink-0" />
+          <span className="space-y-0.5">
+            <span className="block text-sm font-medium">
+              {t("hideAddress")}
+            </span>
+            <span className="text-muted-foreground block text-xs text-pretty">
+              {t("hideAddressHint")}
+            </span>
+          </span>
+        </span>
+        <Switch
+          checked={entry.isHidden}
+          onCheckedChange={(checked) => update(entry.key, { isHidden: checked })}
+        />
+      </label>
     </>
   );
 
