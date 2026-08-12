@@ -609,6 +609,12 @@
       "delete": "Excluir",
       "closuresGroupSingle": "Únicas",
       "closuresGroupRecurring": "Recorrentes",
+      "timezoneLabel": "Fuso horário",
+      "timezoneHint": "Todos os horários abaixo — semanais e feriados — são exibidos neste fuso. Ele vem do seu endereço principal.",
+      "timezonePlaceholder": "Selecione um fuso horário",
+      "searchTimezone": "Buscar fusos horários…",
+      "noTimezone": "Nenhum fuso horário encontrado",
+      "timezoneReadout": "Horários exibidos no fuso {zone}.",
       "colorHint": "A cor principal da sua marca.",
       "addSocial": "Adicionar rede social",
       "lookup": {

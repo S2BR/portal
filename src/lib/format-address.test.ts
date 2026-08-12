@@ -15,6 +15,7 @@ const address = (overrides: Partial<BusinessAddress>): BusinessAddress => ({
   country: "",
   latitude: null,
   longitude: null,
+  timezone: null,
   notes: null,
   is_main: true,
   is_hidden: false,

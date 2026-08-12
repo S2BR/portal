@@ -119,6 +119,7 @@ import {
 import { BusinessFormSkeleton } from "@/components/business/business-skeletons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { TimezoneCombobox } from "@/components/ui/timezone-combobox";
 import { apiErrorText } from "@/lib/api/error-text";
 import { todayISO } from "@/lib/calendar";
 import { formatBusinessAddress } from "@/lib/format-address";
@@ -144,11 +145,32 @@ type EditState = {
   emails: LinkRow[];
   socials: SocialRow[];
   hours: WeekSchedule;
+  timezone: string;
   closures: ClosureEntry[];
   addresses: AddressEntry[];
   categoryIds: number[];
   amenityIds: number[];
 };
+
+/** The viewer's device IANA zone, used as the last-resort default for a business with no address. */
+function deviceTimezone(): string {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+  } catch {
+    return "UTC";
+  }
+}
+
+/** The zone a business's hours read in: its explicit choice, else the main (or first) address's. */
+function displayTimezone(business: Business): string | null {
+  const addresses = business.addresses ?? [];
+  return (
+    business.timezone ??
+    addresses.find((address) => address.is_main)?.timezone ??
+    addresses[0]?.timezone ??
+    null
+  );
+}
 
 function toEditState(business: Business): EditState {
   const hours = Object.fromEntries(
@@ -162,6 +184,12 @@ function toEditState(business: Business): EditState {
       return [day, { enabled: slots.length > 0, slots }];
     }),
   ) as WeekSchedule;
+
+  // The governing zone: the owner's explicit choice, else the main address's resolved zone, else the
+  // editor's device zone — so the picker always opens on a sensible value.
+  const mainAddress =
+    (business.addresses ?? []).find((address) => address.is_main) ??
+    (business.addresses ?? [])[0];
 
   return {
     name: business.name,
@@ -199,6 +227,7 @@ function toEditState(business: Business): EditState {
       handle: social.handle,
     })),
     hours,
+    timezone: business.timezone ?? mainAddress?.timezone ?? deviceTimezone(),
     // Past one-off closures are read-only history (shown in read mode, pruned server-side); the
     // editor only loads upcoming + recurring so you can't re-save or re-add a retroactive date.
     closures: (business.closures ?? [])
@@ -307,6 +336,7 @@ function buildPayload(edit: EditState) {
           closed_all_day: false,
         }));
     }),
+    timezone: trimOrNull(edit.timezone),
     closures: edit.closures.map((closure) => ({
       name: trimOrNull(closure.name),
       start_date: closure.startDate,
@@ -357,7 +387,7 @@ const TAB_PAYLOAD_KEYS: Record<
   contact: ["contacts"],
   amenities: ["amenity_ids"],
   address: ["addresses"],
-  hours: ["opening_hours", "closures"],
+  hours: ["timezone", "opening_hours", "closures"],
   socials: ["socials"],
   branding: ["colors"],
 };
@@ -1228,6 +1258,33 @@ export function BusinessDetail({ slug }: { slug: string }) {
               title={sections("hours.title")}
               description={sections("hours.description")}
             >
+              {/* The zone every time below (weekly + holidays) is read in; defaults from the main
+                  address, editable as a company setting. */}
+              {editing && edit ? (
+                <div className="mb-5 flex flex-col gap-1.5">
+                  <span className="text-sm font-medium">
+                    {t("timezoneLabel")}
+                  </span>
+                  <p className="text-muted-foreground text-xs">
+                    {t("timezoneHint")}
+                  </p>
+                  <TimezoneCombobox
+                    value={edit.timezone}
+                    onChange={(timezone) => patch({ timezone })}
+                    placeholder={t("timezonePlaceholder")}
+                    searchPlaceholder={t("searchTimezone")}
+                    emptyText={t("noTimezone")}
+                    className="sm:max-w-sm"
+                  />
+                </div>
+              ) : displayTimezone(business) ? (
+                <p className="text-muted-foreground mb-5 text-sm">
+                  {t("timezoneReadout", {
+                    zone: displayTimezone(business)!.replace(/_/g, " "),
+                  })}
+                </p>
+              ) : null}
+
               {editing && edit ? (
                 <HoursScheduler
                   value={edit.hours}
