@@ -82,6 +82,26 @@ describe("PATCH /api/businesses/[slug]", () => {
     });
   });
 
+  it("forwards the business timezone", async () => {
+    vi.mocked(callWithAuth).mockResolvedValue({
+      ok: true,
+      status: 200,
+      data: { business: { id: 1, slug: "acme-roasters", name: "Acme" } },
+    });
+
+    const res = await PATCH(
+      req("PATCH", { timezone: "America/Sao_Paulo" }),
+      params("acme-roasters"),
+    );
+
+    expect(res.status).toBe(200);
+    expect(callWithAuth).toHaveBeenCalledWith({
+      method: "PATCH",
+      path: "/businesses/acme-roasters",
+      body: { timezone: "America/Sao_Paulo" },
+    });
+  });
+
   it("rejects an empty patch before ever calling the API", async () => {
     const res = await PATCH(req("PATCH", {}), params("acme-roasters"));
 

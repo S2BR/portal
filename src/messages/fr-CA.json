@@ -609,6 +609,12 @@
       "delete": "Supprimer",
       "closuresGroupSingle": "Uniques",
       "closuresGroupRecurring": "Récurrentes",
+      "timezoneLabel": "Fuseau horaire",
+      "timezoneHint": "Toutes les heures ci-dessous — hebdomadaires et jours fériés — sont affichées dans ce fuseau. Il provient de votre adresse principale.",
+      "timezonePlaceholder": "Choisir un fuseau horaire",
+      "searchTimezone": "Rechercher des fuseaux horaires…",
+      "noTimezone": "Aucun fuseau horaire trouvé",
+      "timezoneReadout": "Heures affichées selon le fuseau {zone}.",
       "colorHint": "La couleur principale de votre marque.",
       "addSocial": "Ajouter un réseau social",
       "lookup": {

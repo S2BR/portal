@@ -144,6 +144,7 @@ export function AddressesEditor({
         country: entry.country,
         latitude: null,
         longitude: null,
+        timezone: null,
         notes: null,
         is_main: entry.isMain,
         is_hidden: entry.isHidden,

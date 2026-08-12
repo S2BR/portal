@@ -609,6 +609,12 @@
       "delete": "Delete",
       "closuresGroupSingle": "Single",
       "closuresGroupRecurring": "Recurring",
+      "timezoneLabel": "Timezone",
+      "timezoneHint": "All hours below — weekly and holidays — are read in this zone. It defaults from your main address.",
+      "timezonePlaceholder": "Select a timezone",
+      "searchTimezone": "Search timezones…",
+      "noTimezone": "No timezone found",
+      "timezoneReadout": "Hours shown in {zone} time.",
       "colorHint": "Your brand's primary color.",
       "addSocial": "Add social link",
       "lookup": {

@@ -79,6 +79,8 @@ export interface BusinessAddress {
   country: string;
   latitude: number | null;
   longitude: number | null;
+  // IANA zone resolved from the coordinates; null when it has none or Google couldn't resolve it.
+  timezone: string | null;
   notes: string | null;
   is_main: boolean;
   is_hidden: boolean;
@@ -104,6 +106,8 @@ export interface Business {
   type: BusinessType;
   headline: string | null;
   description: string | null;
+  // IANA zone governing all of the business's hours; defaults from the main address.
+  timezone: string | null;
   colors: BusinessColors | null;
   category_suggestion: string | null;
   // Presigned GET urls (short-lived) for the single logo + banner; null when unset. Always

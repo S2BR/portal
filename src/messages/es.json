@@ -609,6 +609,12 @@
       "delete": "Eliminar",
       "closuresGroupSingle": "Únicas",
       "closuresGroupRecurring": "Recurrentes",
+      "timezoneLabel": "Zona horaria",
+      "timezoneHint": "Todos los horarios de abajo —semanales y festivos— se muestran en esta zona. Se toma de tu dirección principal.",
+      "timezonePlaceholder": "Selecciona una zona horaria",
+      "searchTimezone": "Buscar zonas horarias…",
+      "noTimezone": "No se encontró ninguna zona horaria",
+      "timezoneReadout": "Horarios mostrados en la hora de {zone}.",
       "colorHint": "El color principal de tu marca.",
       "addSocial": "Añadir red social",
       "lookup": {
