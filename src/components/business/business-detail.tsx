@@ -876,7 +876,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
                     label={create("typeLabel")}
                   />
                 ) : (
-                  <div className="bg-muted/40 flex items-start gap-3 rounded-xl p-4">
+                  <div className="flex items-start gap-3">
                     <span className="bg-background text-muted-foreground flex size-10 shrink-0 items-center justify-center rounded-lg">
                       <TypeIcon className="size-5" />
                     </span>

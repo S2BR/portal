@@ -89,16 +89,32 @@ export function BusinessFormSkeleton() {
         </div>
       </div>
 
-      {/* Business type: a badge in its tile. */}
+      {/* Business type: an icon square + title/description, matching the read card. */}
       <ReadSectionSkeleton>
-        <Skeleton className="h-6 w-24 rounded-full" />
+        <div className="flex items-start gap-3">
+          <Skeleton className="size-10 shrink-0 rounded-lg" />
+          <div className="min-w-0 flex-1 space-y-2 pt-0.5">
+            <Skeleton className="h-4 w-28" />
+            <Skeleton className="h-3.5 w-full max-w-64" />
+          </div>
+        </div>
       </ReadSectionSkeleton>
 
-      {/* Categories: a few chips in the tile. */}
+      {/* Categories: grouped headings (green accent + label) over soft chips. */}
       <ReadSectionSkeleton>
-        <div className="flex flex-wrap gap-2">
-          {Array.from({ length: 3 }).map((_, index) => (
-            <Skeleton key={index} className="h-6 w-20 rounded-full" />
+        <div className="space-y-4">
+          {Array.from({ length: 2 }).map((_, group) => (
+            <div key={group} className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Skeleton className="h-3.5 w-1 rounded-full" />
+                <Skeleton className="h-4 w-24" />
+              </div>
+              <div className="flex flex-wrap gap-1.5 ps-3">
+                {Array.from({ length: group === 0 ? 3 : 2 }).map((_, chip) => (
+                  <Skeleton key={chip} className="h-6 w-16 rounded-full" />
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       </ReadSectionSkeleton>
