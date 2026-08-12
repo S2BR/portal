@@ -2,42 +2,11 @@
 
 import { Clock } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback } from "react";
 import { toast } from "sonner";
 
+import { useCooldown } from "@/lib/use-cooldown";
 import { cn } from "@/lib/utils";
-
-/**
- * Ticks a countdown from `seconds` down to 0 (one timeout re-armed each second, the pattern used
- * for the sign-in resend cooldown). Restarts if `seconds` changes, and calls `onElapsed` exactly
- * once when it reaches 0 — pass a STABLE callback (e.g. a `useCallback`) so it isn't restarted on
- * every render.
- */
-export function useCooldown(seconds: number, onElapsed?: () => void): number {
-  const [remaining, setRemaining] = useState(seconds);
-  const firedRef = useRef(false);
-
-  // A new wait (a fresh 429) resets the countdown and re-arms the one-shot elapsed callback.
-  useEffect(() => {
-    firedRef.current = false;
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- resetting the timer for a new duration
-    setRemaining(seconds);
-  }, [seconds]);
-
-  useEffect(() => {
-    if (remaining <= 0) {
-      if (!firedRef.current) {
-        firedRef.current = true;
-        onElapsed?.();
-      }
-      return;
-    }
-    const timer = setTimeout(() => setRemaining((value) => value - 1), 1000);
-    return () => clearTimeout(timer);
-  }, [remaining, onElapsed]);
-
-  return remaining;
-}
 
 /**
  * The inline "you're rate limited" panel for a page-load surface: a live countdown of the wait, and

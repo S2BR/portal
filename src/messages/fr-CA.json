@@ -1,4 +1,11 @@
 {
+  "serviceUnavailable": {
+    "title": "Une erreur s'est produite",
+    "body": "Nous avons du mal à joindre le service. Nous continuerons d'essayer automatiquement.",
+    "attempt": "Tentative {current} sur {total}",
+    "retryingIn": "nouvelle tentative dans {when}",
+    "retry": "Réessayer"
+  },
   "rateLimit": {
     "title": "Trop de requêtes",
     "body": "Nouvelle tentative dans {seconds} s…",

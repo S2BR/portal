@@ -1,4 +1,11 @@
 {
+  "serviceUnavailable": {
+    "title": "Algo deu errado",
+    "body": "Estamos com dificuldade para acessar o serviço. Vamos continuar tentando automaticamente.",
+    "attempt": "Tentativa {current} de {total}",
+    "retryingIn": "tentando novamente em {when}",
+    "retry": "Tentar novamente"
+  },
   "rateLimit": {
     "title": "Muitas solicitações",
     "body": "Tentando novamente em {seconds} s…",

@@ -8,6 +8,7 @@ import {
   BusinessFormSkeleton,
 } from "@/components/business/business-skeletons";
 import { RateLimited } from "@/components/ui/rate-limited";
+import { ServiceUnavailable } from "@/components/ui/service-unavailable";
 import { parseRateLimit } from "@/lib/rate-limit";
 
 /**
@@ -18,9 +19,9 @@ import { parseRateLimit } from "@/lib/rate-limit";
  * a skeleton of the page (the sidebar, which only lists the account's own companies, renders
  * immediately from the layout) — no business data appears until access is granted.
  *
- * A rate-limited check is NOT a denial: throttling must never render the 404 page (it did, because
- * any non-ok was treated as denied). On a 429 we show the wait with an auto-retry instead, and only a
- * real 404 sends the visitor to not-found.
+ * The outcome is triaged so only a genuine 404 reaches the not-found page: a 429 shows the rate-limit
+ * wait, and an unavailable API (5xx / network) shows the service-unavailable state with backoff — a
+ * down API must never masquerade as "this business doesn't exist".
  */
 export function BusinessWorkspace({
   slug,
@@ -34,13 +35,12 @@ export function BusinessWorkspace({
     "checking",
   );
   const [rateLimited, setRateLimited] = useState<number | null>(null);
-  // Bumped to re-run the access check (auto-retry when the rate-limit wait elapses).
+  const [unavailable, setUnavailable] = useState(false);
+  // Bumped to re-run the access check (an auto-retry from either transient state).
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let active = true;
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- reset before each (re)check
-    setRateLimited(null);
     void (async () => {
       try {
         const response = await fetch(
@@ -57,17 +57,30 @@ export function BusinessWorkspace({
         // Throttled — show the wait + auto-retry, never the 404 page.
         const limit = parseRateLimit(response.status, data);
         if (limit) {
+          setUnavailable(false);
           setRateLimited(limit.retryAfter);
           return;
         }
-        if (!response.ok) {
+        // Only a genuine 404 means "not yours / gone".
+        if (response.status === 404) {
           setAccess("denied");
           return;
         }
+        // Any other failure is the API being unavailable, not a denial. Don't reset `unavailable`
+        // to false first — keeping it true holds the ServiceUnavailable panel mounted so its backoff
+        // counter persists across retries (setting the same value is a no-op).
+        if (!response.ok) {
+          setRateLimited(null);
+          setUnavailable(true);
+          return;
+        }
+        setRateLimited(null);
+        setUnavailable(false);
         setAccess(data?.business ? "granted" : "denied");
       } catch {
         if (active) {
-          setAccess("denied");
+          setRateLimited(null);
+          setUnavailable(true);
         }
       }
     })();
@@ -76,14 +89,16 @@ export function BusinessWorkspace({
     };
   }, [slug, attempt]);
 
+  const recheck = () => setAttempt((value) => value + 1);
+
   // Rate limited — a transient wait, not a denial. Show the countdown and re-check when it elapses.
   if (rateLimited !== null) {
-    return (
-      <RateLimited
-        retryAfter={rateLimited}
-        onRetry={() => setAttempt((value) => value + 1)}
-      />
-    );
+    return <RateLimited retryAfter={rateLimited} onRetry={recheck} />;
+  }
+
+  // The API is unavailable (5xx / network) — retry behind the scenes with backoff, never the 404 page.
+  if (unavailable) {
+    return <ServiceUnavailable onRetry={recheck} />;
   }
 
   // A business this account can't see (e.g. after a profile switch) renders the 404 page.
