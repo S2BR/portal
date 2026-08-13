@@ -52,6 +52,19 @@ describe("GET /api/businesses/[slug]", () => {
 
     expect(res.status).toBe(404);
   });
+
+  it("relays a locked business as 403 business_locked (not a generic error)", async () => {
+    vi.mocked(callWithAuth).mockResolvedValue({
+      ok: false,
+      status: 403,
+      data: { status: "business_locked" },
+    });
+
+    const res = await GET(req("GET"), params("padaria-abc"));
+
+    expect(res.status).toBe(403);
+    expect(await res.json()).toEqual({ status: "business_locked" });
+  });
 });
 
 describe("PATCH /api/businesses/[slug]", () => {
