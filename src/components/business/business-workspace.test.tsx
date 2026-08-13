@@ -105,10 +105,8 @@ it("renders the content once access is granted", async () => {
   expect(notFound).not.toHaveBeenCalled();
 });
 
-it("shows the locked notice instead of content when the business is locked", async () => {
-  fetchMock.mockResolvedValue(
-    jsonResponse(200, { business: { id: "abc", is_locked: true } }),
-  );
+it("shows the locked notice on a 403 business_locked (the API serves no data)", async () => {
+  fetchMock.mockResolvedValue(jsonResponse(403, { status: "business_locked" }));
 
   render(
     <BusinessWorkspace slug="acme">

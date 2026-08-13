@@ -451,7 +451,8 @@
     "createAnother": "Ajouter une entreprise",
     "locked": {
       "title": "Cette entreprise est verrouillée",
-      "body": "Un opérateur a verrouillé cette entreprise; elle ne peut pas être modifiée ni affichée publiquement pour le moment. Pour toute question, veuillez contacter le soutien."
+      "body": "Un opérateur a verrouillé cette entreprise; elle ne peut pas être modifiée ni affichée publiquement pour le moment. Pour toute question, veuillez contacter le soutien.",
+      "badge": "Verrouillé"
     },
     "detail": {
       "back": "Retour à mes entreprises",
