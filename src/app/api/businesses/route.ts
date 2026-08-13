@@ -130,6 +130,10 @@ export interface Business {
   images?: BusinessImage[];
   is_claimed: boolean;
   claimed_at: string | null;
+  /** Owner-set visibility. */
+  is_published: boolean;
+  /** Operator lock (moderation override): frozen for the owner + hidden from public. */
+  is_locked: boolean;
   created_at: string | null;
   updated_at: string | null;
 }

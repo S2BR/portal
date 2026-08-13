@@ -18,6 +18,9 @@ vi.mock("@/components/ui/rate-limited", () => ({
 vi.mock("@/components/ui/service-unavailable", () => ({
   ServiceUnavailable: () => <div data-testid="service-unavailable" />,
 }));
+vi.mock("@/components/business/business-locked", () => ({
+  BusinessLocked: () => <div data-testid="business-locked" />,
+}));
 
 import { BusinessWorkspace } from "./business-workspace";
 
@@ -99,5 +102,21 @@ it("renders the content once access is granted", async () => {
   );
 
   expect(await screen.findByTestId("child")).toBeTruthy();
+  expect(notFound).not.toHaveBeenCalled();
+});
+
+it("shows the locked notice instead of content when the business is locked", async () => {
+  fetchMock.mockResolvedValue(
+    jsonResponse(200, { business: { id: "abc", is_locked: true } }),
+  );
+
+  render(
+    <BusinessWorkspace slug="acme">
+      <div data-testid="child" />
+    </BusinessWorkspace>,
+  );
+
+  expect(await screen.findByTestId("business-locked")).toBeTruthy();
+  expect(screen.queryByTestId("child")).toBeNull();
   expect(notFound).not.toHaveBeenCalled();
 });

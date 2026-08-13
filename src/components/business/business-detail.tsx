@@ -119,6 +119,7 @@ import {
 } from "@/components/ui/select";
 import { BusinessFormSkeleton } from "@/components/business/business-skeletons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { TimezoneCombobox } from "@/components/ui/timezone-combobox";
 import { apiErrorText } from "@/lib/api/error-text";
@@ -702,6 +703,37 @@ export function BusinessDetail({ slug }: { slug: string }) {
     }
   }
 
+  // Publish/unpublish is a quick, independent toggle — optimistic, reverting on failure.
+  async function togglePublished(next: boolean) {
+    if (!business) {
+      return;
+    }
+    setBusiness({ ...business, is_published: next });
+    try {
+      const response = await fetch(
+        `/api/businesses/${encodeURIComponent(slug)}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ published: next }),
+        },
+      );
+      const data = await response.json().catch(() => null);
+      if (!response.ok) {
+        setBusiness({ ...business, is_published: !next });
+        toast.error(apiErrorText(data) ?? create("errorGeneric"));
+        return;
+      }
+      if (data?.business) {
+        setBusiness(data.business);
+      }
+      toast.success(next ? t("publishedToast") : t("unpublishedToast"));
+    } catch {
+      setBusiness({ ...business, is_published: !next });
+      toast.error(create("errorGeneric"));
+    }
+  }
+
   const backLink = (
     <Link
       href="/portal/businesses"
@@ -816,7 +848,21 @@ export function BusinessDetail({ slug }: { slug: string }) {
             <h1 className="font-heading text-2xl font-semibold tracking-tight">
               {editing && edit ? edit.name : business.name}
             </h1>
-            <Badge variant="outline">{typeLabel}</Badge>
+            <div className="flex flex-wrap items-center gap-3">
+              <Badge variant="outline">{typeLabel}</Badge>
+              {/* Publish toggle — visibility is independent of editing the form, so it acts on its own. */}
+              <label className="flex items-center gap-2 text-sm">
+                <Switch
+                  checked={business.is_published}
+                  onCheckedChange={togglePublished}
+                  disabled={editing}
+                  aria-label={t("publishToggle")}
+                />
+                <span className="text-muted-foreground">
+                  {business.is_published ? t("published") : t("draft")}
+                </span>
+              </label>
+            </div>
           </div>
         </div>
 

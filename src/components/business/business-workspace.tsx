@@ -3,6 +3,7 @@
 import { notFound, usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 
+import { BusinessLocked } from "@/components/business/business-locked";
 import {
   BusinessDashboardSkeleton,
   BusinessFormSkeleton,
@@ -38,6 +39,8 @@ export function BusinessWorkspace({
   // The business's canonical `name-slug-<code>`; when the url uses a stale name (after a rename), we
   // 301-style replace to it — the code still resolves, so old links/QRs never break.
   const [canonicalSlug, setCanonicalSlug] = useState<string | null>(null);
+  // An operator-locked listing: the owner sees a notice instead of the workspace and can't edit.
+  const [locked, setLocked] = useState(false);
   const [rateLimited, setRateLimited] = useState<number | null>(null);
   const [unavailable, setUnavailable] = useState(false);
   // Bumped to re-run the access check (an auto-retry from either transient state).
@@ -80,8 +83,11 @@ export function BusinessWorkspace({
         }
         setRateLimited(null);
         setUnavailable(false);
-        const business = data?.business as { slug?: string } | undefined;
+        const business = data?.business as
+          | { slug?: string; is_locked?: boolean }
+          | undefined;
         setCanonicalSlug(business?.slug ?? null);
+        setLocked(business?.is_locked ?? false);
         setAccess(business ? "granted" : "denied");
       } catch {
         if (active) {
@@ -131,6 +137,11 @@ export function BusinessWorkspace({
     ) : (
       <BusinessDashboardSkeleton />
     );
+  }
+
+  // Locked by an operator — freeze the whole workspace behind the notice (the API refuses edits too).
+  if (locked) {
+    return <BusinessLocked />;
   }
 
   return <>{children}</>;
