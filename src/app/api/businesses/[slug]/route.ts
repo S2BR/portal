@@ -92,6 +92,7 @@ export async function GET(
 
   const response = await callWithAuth<{
     business?: Business;
+    status?: string;
     retry_after?: number | null;
     message?: string;
   }>({
@@ -105,6 +106,15 @@ export async function GET(
 
   if (response.status === 429) {
     return rateLimitedResponse(response);
+  }
+
+  // An operator-locked listing (403) — relay the marker so the workspace shows the lock notice
+  // rather than the generic "something went wrong". The API serves no business data here.
+  if (
+    response.status === 403 &&
+    response.data?.status === "business_locked"
+  ) {
+    return NextResponse.json({ status: "business_locked" }, { status: 403 });
   }
 
   return NextResponse.json(
