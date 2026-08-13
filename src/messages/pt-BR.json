@@ -451,7 +451,8 @@
     "createAnother": "Adicionar negócio",
     "locked": {
       "title": "Este negócio está bloqueado",
-      "body": "Um operador bloqueou este negócio, então ele não pode ser editado nem exibido publicamente no momento. Em caso de dúvidas, entre em contato com o suporte."
+      "body": "Um operador bloqueou este negócio, então ele não pode ser editado nem exibido publicamente no momento. Em caso de dúvidas, entre em contato com o suporte.",
+      "badge": "Bloqueado"
     },
     "detail": {
       "back": "Voltar aos meus negócios",

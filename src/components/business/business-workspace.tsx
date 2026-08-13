@@ -73,6 +73,13 @@ export function BusinessWorkspace({
           setAccess("denied");
           return;
         }
+        // Operator-locked — the API refuses the data (403) and returns no business; show the notice.
+        if (response.status === 403 && data?.status === "business_locked") {
+          setRateLimited(null);
+          setUnavailable(false);
+          setLocked(true);
+          return;
+        }
         // Any other failure is the API being unavailable, not a denial. Don't reset `unavailable`
         // to false first — keeping it true holds the ServiceUnavailable panel mounted so its backoff
         // counter persists across retries (setting the same value is a no-op).
@@ -122,6 +129,12 @@ export function BusinessWorkspace({
     return <ServiceUnavailable onRetry={recheck} />;
   }
 
+  // Locked by an operator — the API served no data (403), so show the notice regardless of the
+  // access state (it never reaches "granted" for a locked listing).
+  if (locked) {
+    return <BusinessLocked />;
+  }
+
   // A business this account can't see (e.g. after a profile switch) renders the 404 page.
   if (access === "denied") {
     notFound();
@@ -137,11 +150,6 @@ export function BusinessWorkspace({
     ) : (
       <BusinessDashboardSkeleton />
     );
-  }
-
-  // Locked by an operator — freeze the whole workspace behind the notice (the API refuses edits too).
-  if (locked) {
-    return <BusinessLocked />;
   }
 
   return <>{children}</>;

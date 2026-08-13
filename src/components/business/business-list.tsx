@@ -7,6 +7,7 @@ import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 
 import type { Business } from "@/app/api/businesses/route";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DragHandle,
@@ -106,9 +107,15 @@ export function BusinessList() {
               </p>
             ) : null}
           </div>
-          <span className="text-muted-foreground hidden text-sm sm:inline">
-            {typeLabel(business)}
-          </span>
+          {business.is_locked ? (
+            <Badge variant="red" className="shrink-0">
+              {t("locked.badge")}
+            </Badge>
+          ) : (
+            <span className="text-muted-foreground hidden text-sm sm:inline">
+              {typeLabel(business)}
+            </span>
+          )}
           <ChevronRight className="text-muted-foreground size-4 shrink-0" />
         </Link>
       </>
