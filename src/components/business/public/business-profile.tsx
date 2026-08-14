@@ -54,9 +54,9 @@ export async function BusinessProfile({
   const firstWebsite = websites[0];
 
   return (
-    <article className="mx-auto w-full max-w-5xl px-4 pb-16 sm:px-6">
-      {/* Banner + logo */}
-      <div className="relative mt-4 h-40 overflow-hidden rounded-2xl bg-gradient-to-br from-brand-green to-brand-green-deep sm:h-52">
+    <article className="mx-auto w-full max-w-[90rem] px-4 pb-16 sm:px-6">
+      {/* Banner */}
+      <div className="relative mt-4 h-44 overflow-hidden rounded-3xl bg-gradient-to-br from-brand-green to-brand-green-deep ring-1 ring-black/5 sm:h-64">
         {business.banner ? (
           // eslint-disable-next-line @next/next/no-img-element -- presigned S3 url, not a bundled asset
           <img
@@ -64,38 +64,45 @@ export async function BusinessProfile({
             alt=""
             className="size-full object-cover"
           />
-        ) : null}
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-t from-black/15 to-transparent" />
+        )}
       </div>
-      <div className="flex flex-wrap items-end justify-between gap-4 px-1">
-        <div className="flex items-end gap-4">
-          <div className="bg-background -mt-10 flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl border shadow-sm sm:size-24">
-            {business.logo ? (
-              // eslint-disable-next-line @next/next/no-img-element -- presigned S3 url, not a bundled asset
-              <img
-                src={business.logo}
-                alt=""
-                className="size-full object-cover"
-              />
-            ) : (
-              <MapPin className="text-muted-foreground size-8" />
-            )}
-          </div>
-          <div className="pb-1">
-            <h1 className="font-heading text-2xl font-bold tracking-tight text-balance sm:text-3xl">
-              {business.name}
-            </h1>
-            <div className="mt-2 flex flex-wrap items-center gap-2">
+
+      {/* Logo — pulled up over the banner */}
+      <div className="bg-background ring-background relative z-10 -mt-16 ml-1 flex size-28 shrink-0 items-center justify-center overflow-hidden rounded-3xl border shadow-lg ring-4 sm:-mt-20 sm:size-36">
+        {business.logo ? (
+          // eslint-disable-next-line @next/next/no-img-element -- presigned S3 url, not a bundled asset
+          <img src={business.logo} alt="" className="size-full object-cover" />
+        ) : (
+          <MapPin className="text-muted-foreground size-12" />
+        )}
+      </div>
+
+      {/* Identity + actions */}
+      <div className="mt-4 flex flex-col gap-4 px-1 sm:flex-row sm:items-end sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="font-heading text-2xl font-bold tracking-tight text-balance sm:text-4xl">
+            {business.name}
+          </h1>
+          {business.headline ? (
+            <p className="text-muted-foreground mt-1.5 max-w-prose text-base text-pretty sm:text-lg">
+              {business.headline}
+            </p>
+          ) : null}
+          {business.categories.length > 0 ? (
+            <div className="mt-3 flex flex-wrap items-center gap-2">
               {business.categories.map((category) => (
                 <Badge key={category.id} variant="neutral">
                   {category.name}
                 </Badge>
               ))}
             </div>
-          </div>
+          ) : null}
         </div>
 
         {/* Actions */}
-        <div className="flex flex-wrap gap-2 pb-1">
+        <div className="flex flex-wrap gap-2 sm:shrink-0 sm:justify-end sm:pb-1">
           {directions ? (
             <a
               href={directions}

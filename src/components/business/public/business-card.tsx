@@ -1,4 +1,4 @@
-import { Building2, MapPin } from "lucide-react";
+import { Building2, MapPin, Navigation } from "lucide-react";
 import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
@@ -6,7 +6,14 @@ import { Badge } from "@/components/ui/badge";
 import type { PublicBusinessCard } from "@/lib/public-business";
 
 /** A single directory result — links to the business's public profile. */
-export function BusinessCard({ business }: { business: PublicBusinessCard }) {
+export function BusinessCard({
+  business,
+  distanceLabel,
+}: {
+  business: PublicBusinessCard;
+  /** Pre-formatted, localized distance (e.g. "3.2 km"), shown when a "near me" sort is active. */
+  distanceLabel?: string;
+}) {
   return (
     <Link
       href={`/businesses/${business.slug}`}
@@ -39,6 +46,12 @@ export function BusinessCard({ business }: { business: PublicBusinessCard }) {
             <span className="text-muted-foreground inline-flex items-center gap-1 text-xs">
               <MapPin className="size-3" aria-hidden />
               {business.city}
+            </span>
+          ) : null}
+          {distanceLabel ? (
+            <span className="text-brand-green inline-flex items-center gap-1 text-xs font-medium">
+              <Navigation className="size-3" aria-hidden />
+              {distanceLabel}
             </span>
           ) : null}
         </div>

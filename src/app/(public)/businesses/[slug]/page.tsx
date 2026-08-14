@@ -5,6 +5,7 @@ import { cache } from "react";
 
 import { BusinessProfile } from "@/components/business/public/business-profile";
 import { getPublicBusiness } from "@/lib/public-business";
+import { businessPagesRobots } from "@/lib/seo";
 
 // Memoize per request so generateMetadata and the page share one API call.
 const loadBusiness = cache(getPublicBusiness);
@@ -27,6 +28,7 @@ export async function generateMetadata({
   return {
     title: business.name,
     description,
+    robots: businessPagesRobots,
     alternates: { canonical: `/businesses/${business.slug}` },
     openGraph: {
       type: "website",
