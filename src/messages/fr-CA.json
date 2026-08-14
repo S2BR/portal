@@ -454,6 +454,19 @@
       "body": "Un opérateur a verrouillé cette entreprise; elle ne peut pas être modifiée ni affichée publiquement pour le moment. Pour toute question, veuillez contacter le soutien.",
       "badge": "Verrouillé"
     },
+    "directory": {
+      "title": "Explorer les entreprises",
+      "subtitle": "Découvrez des entreprises de la communauté.",
+      "searchPlaceholder": "Rechercher des entreprises…",
+      "all": "Toutes",
+      "count": "{count, plural, one {# entreprise} other {# entreprises}}",
+      "emptyTitle": "Aucune entreprise trouvée",
+      "emptyBody": "Essayez une autre recherche ou catégorie.",
+      "pagination": "Pagination",
+      "previous": "Précédent",
+      "next": "Suivant",
+      "pageOf": "Page {current} sur {total}"
+    },
     "public": {
       "about": "À propos",
       "amenities": "Commodités",

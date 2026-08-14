@@ -12,6 +12,7 @@ export default async function PublicLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const t = await getTranslations("legal");
+  const directory = await getTranslations("businesses.directory");
 
   return (
     <div className="flex min-h-svh flex-col">
@@ -21,6 +22,9 @@ export default async function PublicLayout({
 
       <footer className="border-t">
         <div className="text-muted-foreground mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-6 text-sm sm:px-6">
+          <Link href="/businesses" className="hover:text-foreground">
+            {directory("title")}
+          </Link>
           <Link href="/terms" className="hover:text-foreground">
             {t("terms")}
           </Link>

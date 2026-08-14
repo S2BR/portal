@@ -454,6 +454,19 @@
       "body": "An operator has locked this listing, so it can't be edited or shown publicly right now. If you have questions, please contact support.",
       "badge": "Locked"
     },
+    "directory": {
+      "title": "Explore businesses",
+      "subtitle": "Discover businesses in the community.",
+      "searchPlaceholder": "Search businesses…",
+      "all": "All",
+      "count": "{count, plural, one {# business} other {# businesses}}",
+      "emptyTitle": "No businesses found",
+      "emptyBody": "Try a different search or category.",
+      "pagination": "Pagination",
+      "previous": "Previous",
+      "next": "Next",
+      "pageOf": "Page {current} of {total}"
+    },
     "public": {
       "about": "About",
       "amenities": "Amenities",

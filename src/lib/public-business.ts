@@ -74,3 +74,74 @@ export async function getPublicBusiness(
 
   return response.ok ? (response.data.business ?? null) : null;
 }
+
+/** A business as a card in the directory list — the lightweight shape the list endpoint returns. */
+export interface PublicBusinessCard {
+  id: string;
+  slug: string;
+  name: string;
+  type: BusinessType;
+  headline: string | null;
+  logo: string | null;
+  city: string | null;
+  categories: { slug: string; name: string }[];
+}
+
+/** A paginated page of directory results. */
+export interface PublicDirectory {
+  data: PublicBusinessCard[];
+  meta: { current_page: number; last_page: number; total: number };
+}
+
+/** A category (with its subcategories) for the directory filter. */
+export interface PublicCategory {
+  id: number;
+  slug: string;
+  name: string;
+  subcategories?: PublicCategory[];
+}
+
+const EMPTY_DIRECTORY: PublicDirectory = {
+  data: [],
+  meta: { current_page: 1, last_page: 1, total: 0 },
+};
+
+/**
+ * Fetch a page of the public directory — unauthenticated, server-side. Optional free-text `q` and
+ * `category` slug filters. Degrades to an empty page if the API is unreachable, so the page still
+ * renders its shell.
+ */
+export async function getPublicDirectory(params: {
+  q?: string;
+  category?: string;
+  page?: number;
+}): Promise<PublicDirectory> {
+  const query = new URLSearchParams();
+  if (params.q) {
+    query.set("q", params.q);
+  }
+  if (params.category) {
+    query.set("category", params.category);
+  }
+  if (params.page && params.page > 1) {
+    query.set("page", String(params.page));
+  }
+  const suffix = query.toString();
+
+  const response = await portalFetch<PublicDirectory>({
+    method: "GET",
+    path: `/public/businesses${suffix ? `?${suffix}` : ""}`,
+  });
+
+  return response.ok ? response.data : EMPTY_DIRECTORY;
+}
+
+/** Fetch the category tree for the directory filter — unauthenticated, server-side. */
+export async function getPublicCategories(): Promise<PublicCategory[]> {
+  const response = await portalFetch<{ categories?: PublicCategory[] }>({
+    method: "GET",
+    path: "/public/categories",
+  });
+
+  return response.ok ? (response.data.categories ?? []) : [];
+}
