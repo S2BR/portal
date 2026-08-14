@@ -84,7 +84,27 @@ export interface PublicBusinessCard {
   headline: string | null;
   logo: string | null;
   city: string | null;
+  /** Main-address coordinates for the directory map; null when the business has no geocoded address. */
+  latitude: number | null;
+  longitude: number | null;
   categories: { slug: string; name: string }[];
+}
+
+/** One entry in the public business sitemap feed. */
+export interface PublicBusinessSitemapEntry {
+  slug: string;
+  updated_at: string | null;
+}
+
+/** Fetch every publicly-visible business's slug + last-updated for `sitemap.xml`. */
+export async function getPublicBusinessSitemap(): Promise<
+  PublicBusinessSitemapEntry[]
+> {
+  const response = await portalFetch<{
+    businesses?: PublicBusinessSitemapEntry[];
+  }>({ method: "GET", path: "/public/businesses/sitemap" });
+
+  return response.ok ? (response.data.businesses ?? []) : [];
 }
 
 /** A paginated page of directory results. */

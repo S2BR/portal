@@ -465,7 +465,8 @@
       "pagination": "Pagination",
       "previous": "Previous",
       "next": "Next",
-      "pageOf": "Page {current} of {total}"
+      "pageOf": "Page {current} of {total}",
+      "mapLabel": "Map of results"
     },
     "public": {
       "about": "About",

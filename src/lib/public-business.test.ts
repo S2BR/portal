@@ -6,6 +6,7 @@ import { portalFetch } from "@/lib/api/client";
 
 import {
   getPublicBusiness,
+  getPublicBusinessSitemap,
   getPublicCategories,
   getPublicDirectory,
 } from "./public-business";
@@ -119,5 +120,24 @@ describe("getPublicCategories", () => {
       data: {},
     });
     await expect(getPublicCategories()).resolves.toEqual([]);
+  });
+});
+
+describe("getPublicBusinessSitemap", () => {
+  it("returns the sitemap feed, or an empty list on failure", async () => {
+    const businesses = [{ slug: "padaria-central-fjmi7z", updated_at: null }];
+    vi.mocked(portalFetch).mockResolvedValue({
+      ok: true,
+      status: 200,
+      data: { businesses },
+    });
+    await expect(getPublicBusinessSitemap()).resolves.toEqual(businesses);
+
+    vi.mocked(portalFetch).mockResolvedValue({
+      ok: false,
+      status: 502,
+      data: {},
+    });
+    await expect(getPublicBusinessSitemap()).resolves.toEqual([]);
   });
 });
