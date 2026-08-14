@@ -466,7 +466,15 @@
       "previous": "Précédent",
       "next": "Suivant",
       "pageOf": "Page {current} sur {total}",
-      "mapLabel": "Carte des résultats"
+      "mapLabel": "Carte des résultats",
+      "filters": "Filtres",
+      "clearFilters": "Effacer",
+      "facetCategory": "Catégorie",
+      "facetAmenities": "Commodités",
+      "facetType": "Type",
+      "facetCity": "Ville",
+      "showMore": "+ Voir plus",
+      "showLess": "− Voir moins"
     },
     "public": {
       "about": "À propos",

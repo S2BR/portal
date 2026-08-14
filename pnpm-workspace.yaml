@@ -4,4 +4,6 @@ allowBuilds:
   "@parcel/watcher": true
   "@swc/core": true
   sharp: true
+  # Its postinstall is just an informational notice; the dist is prebuilt, so no build is needed.
+  typesense-instantsearch-adapter: false
   unrs-resolver: true

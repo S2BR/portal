@@ -466,7 +466,15 @@
       "previous": "Previous",
       "next": "Next",
       "pageOf": "Page {current} of {total}",
-      "mapLabel": "Map of results"
+      "mapLabel": "Map of results",
+      "filters": "Filters",
+      "clearFilters": "Clear",
+      "facetCategory": "Category",
+      "facetAmenities": "Amenities",
+      "facetType": "Type",
+      "facetCity": "City",
+      "showMore": "+ Show more",
+      "showLess": "− Show less"
     },
     "public": {
       "about": "About",
