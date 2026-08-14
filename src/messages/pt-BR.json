@@ -454,6 +454,19 @@
       "body": "Um operador bloqueou este negócio, então ele não pode ser editado nem exibido publicamente no momento. Em caso de dúvidas, entre em contato com o suporte.",
       "badge": "Bloqueado"
     },
+    "directory": {
+      "title": "Explorar negócios",
+      "subtitle": "Descubra negócios da comunidade.",
+      "searchPlaceholder": "Buscar negócios…",
+      "all": "Todos",
+      "count": "{count, plural, one {# negócio} other {# negócios}}",
+      "emptyTitle": "Nenhum negócio encontrado",
+      "emptyBody": "Tente outra busca ou categoria.",
+      "pagination": "Paginação",
+      "previous": "Anterior",
+      "next": "Próximo",
+      "pageOf": "Página {current} de {total}"
+    },
     "public": {
       "about": "Sobre",
       "amenities": "Comodidades",
