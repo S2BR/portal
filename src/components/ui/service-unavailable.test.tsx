@@ -1,9 +1,14 @@
 import { act, render, screen } from "@testing-library/react";
+import { useState } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // The Toaster mounts outside the intl provider in the app; here we just stub translations to keys.
+// Interpolation params are appended so the test can read the live "attempt X of Y" values.
 vi.mock("next-intl", () => ({
-  useTranslations: () => (key: string) => key,
+  useTranslations:
+    () =>
+    (key: string, params?: Record<string, unknown>): string =>
+      params ? `${key}:${JSON.stringify(params)}` : key,
 }));
 
 import {
@@ -53,6 +58,40 @@ describe("ServiceUnavailable", () => {
     expect(onRetry).not.toHaveBeenCalled();
     tick(1);
     expect(onRetry).toHaveBeenCalledTimes(1);
+  });
+
+  it("advances exactly one attempt per step, even with an unstable onRetry", () => {
+    // The real parent (business-workspace) passes a fresh onRetry identity every render AND re-renders
+    // when it fires. A stale useCooldown double-fired the elapsed callback under those conditions, so
+    // the counter skipped even attempts: 1 of 12 → 3 of 12 → 5 of 12. It must step 1 → 2 → 3.
+    const onRetry = vi.fn();
+
+    function Harness() {
+      const [, force] = useState(0);
+      return (
+        <ServiceUnavailable
+          onRetry={() => {
+            onRetry();
+            force((value) => value + 1);
+          }}
+        />
+      );
+    }
+
+    render(<Harness />);
+    expect(screen.getByText(/attempt:.*"current":1,/)).toBeInTheDocument();
+
+    tick(BACKOFF_SECONDS[0]!);
+    expect(onRetry).toHaveBeenCalledTimes(1);
+    expect(screen.getByText(/attempt:.*"current":2,/)).toBeInTheDocument();
+
+    tick(BACKOFF_SECONDS[1]!);
+    expect(onRetry).toHaveBeenCalledTimes(2);
+    expect(screen.getByText(/attempt:.*"current":3,/)).toBeInTheDocument();
+
+    tick(BACKOFF_SECONDS[2]!);
+    expect(onRetry).toHaveBeenCalledTimes(3);
+    expect(screen.getByText(/attempt:.*"current":4,/)).toBeInTheDocument();
   });
 
   it("auto-retries over time, then a manual retry restarts the cycle", () => {
