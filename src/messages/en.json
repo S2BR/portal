@@ -454,6 +454,34 @@
       "body": "An operator has locked this listing, so it can't be edited or shown publicly right now. If you have questions, please contact support.",
       "badge": "Locked"
     },
+    "publish": {
+      "checklistTitle": "Not live yet",
+      "checklistBody": "Only you can see this business. Finish these to publish it:",
+      "progress": "{done} of {total} done",
+      "readyTitle": "Ready to go live",
+      "readyBody": "Only you can see this business right now. Publish it to appear in search and on your public page.",
+      "cta": "Publish",
+      "disabledHint": "Finish the checklist to publish this business.",
+      "notReadyToast": "This business isn't ready to publish yet — a few details are still missing.",
+      "requirements": {
+        "name": {
+          "label": "Name your business",
+          "hint": "The name customers will see."
+        },
+        "description": {
+          "label": "Add a description",
+          "hint": "Tell people what your business does."
+        },
+        "category": {
+          "label": "Choose a category",
+          "hint": "So customers can find you."
+        },
+        "contactable": {
+          "label": "Add a way to reach you",
+          "hint": "An address, phone, email, or website."
+        }
+      }
+    },
     "detail": {
       "back": "Back to my businesses",
       "edit": "Edit",

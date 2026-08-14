@@ -454,6 +454,34 @@
       "body": "Un operador ha bloqueado este negocio, por lo que no se puede editar ni mostrar públicamente por ahora. Si tienes dudas, contacta con soporte.",
       "badge": "Bloqueado"
     },
+    "publish": {
+      "checklistTitle": "Aún no está publicado",
+      "checklistBody": "Solo tú ves este negocio. Completa estos puntos para publicarlo:",
+      "progress": "{done} de {total} completados",
+      "readyTitle": "Listo para publicar",
+      "readyBody": "Por ahora solo tú ves este negocio. Publícalo para que aparezca en la búsqueda y en tu página pública.",
+      "cta": "Publicar",
+      "disabledHint": "Completa la lista para publicar este negocio.",
+      "notReadyToast": "Este negocio aún no está listo para publicarse — faltan algunos datos.",
+      "requirements": {
+        "name": {
+          "label": "Ponle nombre a tu negocio",
+          "hint": "El nombre que verán los clientes."
+        },
+        "description": {
+          "label": "Agrega una descripción",
+          "hint": "Cuenta qué hace tu negocio."
+        },
+        "category": {
+          "label": "Elige una categoría",
+          "hint": "Para que los clientes te encuentren."
+        },
+        "contactable": {
+          "label": "Agrega una forma de contacto",
+          "hint": "Una dirección, teléfono, correo o sitio web."
+        }
+      }
+    },
     "detail": {
       "back": "Volver a mis negocios",
       "edit": "Editar",

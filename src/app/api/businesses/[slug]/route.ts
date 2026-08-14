@@ -141,8 +141,10 @@ export async function PATCH(
 
   const response = await callWithAuth<{
     business?: Business;
+    status?: string;
     message?: string;
     errors?: Record<string, string[]>;
+    requirements?: string[];
     retry_after?: number | null;
   }>({
     method: "PATCH",
@@ -163,6 +165,19 @@ export async function PATCH(
 
   if (response.status === 404) {
     return NextResponse.json({ status: "not_found" }, { status: 404 });
+  }
+
+  // Publishing was refused because the business hasn't met the minimum bar — relay the marker and the
+  // unmet requirement keys so the workspace can point the owner at what's missing (defense in depth;
+  // the client already hides Publish when it isn't publishable).
+  if (
+    response.status === 422 &&
+    response.data?.status === "not_publishable"
+  ) {
+    return NextResponse.json(
+      { status: "not_publishable", requirements: response.data.requirements },
+      { status: 422 },
+    );
   }
 
   return NextResponse.json(

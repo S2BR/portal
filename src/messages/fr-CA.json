@@ -454,6 +454,34 @@
       "body": "Un opérateur a verrouillé cette entreprise; elle ne peut pas être modifiée ni affichée publiquement pour le moment. Pour toute question, veuillez contacter le soutien.",
       "badge": "Verrouillé"
     },
+    "publish": {
+      "checklistTitle": "Pas encore en ligne",
+      "checklistBody": "Vous seul voyez cette entreprise. Complétez ces éléments pour la publier :",
+      "progress": "{done} sur {total} complétés",
+      "readyTitle": "Prête à être publiée",
+      "readyBody": "Pour l’instant, vous seul voyez cette entreprise. Publiez-la pour qu’elle apparaisse dans la recherche et sur votre page publique.",
+      "cta": "Publier",
+      "disabledHint": "Complétez la liste pour publier cette entreprise.",
+      "notReadyToast": "Cette entreprise n’est pas encore prête à être publiée — quelques renseignements manquent.",
+      "requirements": {
+        "name": {
+          "label": "Nommez votre entreprise",
+          "hint": "Le nom que les clients verront."
+        },
+        "description": {
+          "label": "Ajoutez une description",
+          "hint": "Expliquez ce que fait votre entreprise."
+        },
+        "category": {
+          "label": "Choisissez une catégorie",
+          "hint": "Pour que les clients vous trouvent."
+        },
+        "contactable": {
+          "label": "Ajoutez un moyen de vous joindre",
+          "hint": "Une adresse, un téléphone, un courriel ou un site Web."
+        }
+      }
+    },
     "detail": {
       "back": "Retour à mes entreprises",
       "edit": "Modifier",
