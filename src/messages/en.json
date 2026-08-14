@@ -162,7 +162,7 @@
   },
   "nav": {
     "signOut": "Sign out",
-    "profile": "Profile",
+    "settings": "Settings",
     "addAccount": "Add another account",
     "signOutAll": "Sign out of all accounts",
     "portal": "Portal",

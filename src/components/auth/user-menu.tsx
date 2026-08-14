@@ -4,7 +4,7 @@ import {
   Building2,
   LayoutPanelLeft,
   LogOut,
-  User,
+  Settings,
   UserPlus,
   Users,
 } from "lucide-react";
@@ -216,8 +216,8 @@ export function UserMenu() {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem onSelect={() => openSettings()}>
-          <User className="size-4" />
-          {t("profile")}
+          <Settings className="size-4" />
+          {t("settings")}
         </DropdownMenuItem>
         <DropdownMenuItem
           variant="destructive"

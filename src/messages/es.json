@@ -162,7 +162,7 @@
   },
   "nav": {
     "signOut": "Cerrar sesión",
-    "profile": "Perfil",
+    "settings": "Configuración",
     "addAccount": "Añadir otra cuenta",
     "signOutAll": "Cerrar todas las sesiones",
     "portal": "Portal",
