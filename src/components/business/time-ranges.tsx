@@ -3,7 +3,12 @@
 import { Plus, X } from "lucide-react";
 import { useLocale } from "next-intl";
 
+import { formatTime, oneHourLater } from "@/lib/format-time";
 import { Button } from "@/components/ui/button";
+
+// Re-exported so existing importers keep resolving them from here; the implementations now live in
+// the framework-free `@/lib/format-time` so Server Components can call them too.
+export { formatTime, oneHourLater };
 import {
   Select,
   SelectContent,
@@ -23,22 +28,6 @@ const TIME_OPTIONS: string[] = Array.from({ length: 48 }, (_, index) => {
 });
 
 export const DEFAULT_SLOT: HourSlot = { open: "09:00", close: "17:00" };
-
-/** "HH:MM" → the viewer's localized time label (e.g. "9:00 AM" or "09:00"). */
-export function formatTime(value: string, locale: string): string {
-  const [hour, minute] = value.split(":").map(Number);
-  return new Intl.DateTimeFormat(locale, {
-    hour: "numeric",
-    minute: "2-digit",
-  }).format(new Date(2000, 0, 1, hour ?? 0, minute ?? 0));
-}
-
-/** One hour after "HH:MM", wrapping at midnight — the default end for a freshly added range. */
-export function oneHourLater(value: string): string {
-  const [hour, minute] = value.split(":").map(Number);
-  const next = ((hour ?? 0) + 1) % 24;
-  return `${String(next).padStart(2, "0")}:${String(minute ?? 0).padStart(2, "0")}`;
-}
 
 /** A single time dropdown (half-hour steps), labels localized. */
 export function TimeSelect({

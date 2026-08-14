@@ -454,6 +454,22 @@
       "body": "An operator has locked this listing, so it can't be edited or shown publicly right now. If you have questions, please contact support.",
       "badge": "Locked"
     },
+    "public": {
+      "about": "About",
+      "amenities": "Amenities",
+      "photos": "Photos",
+      "closures": "Holidays & special hours",
+      "hours": "Hours",
+      "location": "Location",
+      "contact": "Contact",
+      "directions": "Directions",
+      "call": "Call",
+      "website": "Website",
+      "share": "Share",
+      "linkCopied": "Link copied",
+      "closed": "Closed",
+      "photoAlt": "{name} — photo {number}"
+    },
     "publish": {
       "checklistTitle": "Not live yet",
       "checklistBody": "Only you can see this business. Finish these to publish it:",

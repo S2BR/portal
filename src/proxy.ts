@@ -21,10 +21,18 @@ function isPublicPath(pathname: string): boolean {
 /** Routes reachable in ANY auth state — never gated, never redirected away (e.g. legal pages). */
 // Reachable in ANY auth state — never gated, never bounced. `/` is the Facebook-style home
 // (landing when logged out, social when logged in); the legal pages are public documents; the
-// generated social card must be fetchable by crawlers (which have no session).
+// public business directory + profile pages (`/businesses`, `/businesses/<slug>`) must be readable
+// (and crawlable) by anyone; the generated social card must be fetchable by crawlers (no session).
 // NOTE: "/headers" is a TEMPORARY debug route (dumps request headers) — remove it here and delete
 // src/app/headers when done.
-const OPEN_PATHS = ["/", "/terms", "/privacy", "/opengraph-image", "/headers"];
+const OPEN_PATHS = [
+  "/",
+  "/businesses",
+  "/terms",
+  "/privacy",
+  "/opengraph-image",
+  "/headers",
+];
 
 function isOpenPath(pathname: string): boolean {
   return OPEN_PATHS.some(

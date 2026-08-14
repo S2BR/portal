@@ -155,7 +155,6 @@ export function AddressesEditor({
   const summaryLines = (entry: AddressEntry): string[] => {
     const lines = formatBusinessAddress(
       {
-        id: "",
         address_1: entry.address_1,
         address_2: entry.address_2 || null,
         apartment_suite: entry.apartment_suite || null,
@@ -163,12 +162,6 @@ export function AddressesEditor({
         state_province: entry.state_province || null,
         postal_code: entry.postal_code || null,
         country: entry.country,
-        latitude: null,
-        longitude: null,
-        timezone: null,
-        notes: null,
-        is_main: entry.isMain,
-        is_hidden: entry.isHidden,
       },
       locale,
     );

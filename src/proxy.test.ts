@@ -42,6 +42,14 @@ describe("proxy auth gate", () => {
     expect(url.searchParams.get("next")).toBe("/settings");
   });
 
+  it.each(["/businesses", "/businesses/padaria-central-fjmi7z"])(
+    "lets a signed-out visitor reach the public business page %s",
+    (path) => {
+      // Public directory + profile pages must be readable (and crawlable) with no session.
+      expect(proxy(requestFor(path)).headers.get("location")).toBeNull();
+    },
+  );
+
   it("sends an already-authenticated visitor away from an auth page", () => {
     const response = proxy(requestFor("/login", { session: true }));
     const location = response.headers.get("location");
