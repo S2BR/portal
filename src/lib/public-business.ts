@@ -165,3 +165,44 @@ export async function getPublicCategories(): Promise<PublicCategory[]> {
 
   return response.ok ? (response.data.categories ?? []) : [];
 }
+
+/** An amenity (with its children) for the directory filter labels. */
+export interface PublicAmenity {
+  id: number;
+  slug: string;
+  name: string;
+  amenities?: PublicAmenity[];
+}
+
+/** Fetch the amenity tree for the directory filter labels — unauthenticated, server-side. */
+export async function getPublicAmenities(): Promise<PublicAmenity[]> {
+  const response = await portalFetch<{ amenities?: PublicAmenity[] }>({
+    method: "GET",
+    path: "/public/amenities",
+  });
+
+  return response.ok ? (response.data.amenities ?? []) : [];
+}
+
+/**
+ * Flatten a category/amenity tree into a `{ slug: localized name }` map, used to label the Typesense
+ * facet values (the index stores slugs). Recurses through the child key (`subcategories` / `amenities`).
+ */
+export function taxonomyLabels(
+  nodes: Array<{ slug: string; name: string; subcategories?: unknown; amenities?: unknown }>,
+): Record<string, string> {
+  const labels: Record<string, string> = {};
+  const walk = (list: typeof nodes) => {
+    for (const node of list) {
+      labels[node.slug] = node.name;
+      const children = (node.subcategories ?? node.amenities) as
+        | typeof nodes
+        | undefined;
+      if (Array.isArray(children)) {
+        walk(children);
+      }
+    }
+  };
+  walk(nodes);
+  return labels;
+}

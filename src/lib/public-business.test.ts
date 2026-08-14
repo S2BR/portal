@@ -5,10 +5,12 @@ vi.mock("@/lib/api/client", () => ({ portalFetch: vi.fn() }));
 import { portalFetch } from "@/lib/api/client";
 
 import {
+  getPublicAmenities,
   getPublicBusiness,
   getPublicBusinessSitemap,
   getPublicCategories,
   getPublicDirectory,
+  taxonomyLabels,
 } from "./public-business";
 
 afterEach(() => {
@@ -120,6 +122,45 @@ describe("getPublicCategories", () => {
       data: {},
     });
     await expect(getPublicCategories()).resolves.toEqual([]);
+  });
+});
+
+describe("getPublicAmenities", () => {
+  it("returns the amenity tree, or an empty list on failure", async () => {
+    const amenities = [{ id: 1, slug: "wifi", name: "Wi-Fi" }];
+    vi.mocked(portalFetch).mockResolvedValue({
+      ok: true,
+      status: 200,
+      data: { amenities },
+    });
+    await expect(getPublicAmenities()).resolves.toEqual(amenities);
+
+    vi.mocked(portalFetch).mockResolvedValue({ ok: false, status: 500, data: {} });
+    await expect(getPublicAmenities()).resolves.toEqual([]);
+  });
+});
+
+describe("taxonomyLabels", () => {
+  it("flattens category + amenity trees to a slug→name map", () => {
+    expect(
+      taxonomyLabels([
+        {
+          slug: "food",
+          name: "Food",
+          subcategories: [{ slug: "bakeries", name: "Bakeries" }],
+        },
+      ]),
+    ).toEqual({ food: "Food", bakeries: "Bakeries" });
+
+    expect(
+      taxonomyLabels([
+        {
+          slug: "connectivity",
+          name: "Connectivity",
+          amenities: [{ slug: "wifi", name: "Wi-Fi" }],
+        },
+      ]),
+    ).toEqual({ connectivity: "Connectivity", wifi: "Wi-Fi" });
   });
 });
 

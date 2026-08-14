@@ -466,7 +466,15 @@
       "previous": "Anterior",
       "next": "Siguiente",
       "pageOf": "Página {current} de {total}",
-      "mapLabel": "Mapa de resultados"
+      "mapLabel": "Mapa de resultados",
+      "filters": "Filtros",
+      "clearFilters": "Limpiar",
+      "facetCategory": "Categoría",
+      "facetAmenities": "Servicios",
+      "facetType": "Tipo",
+      "facetCity": "Ciudad",
+      "showMore": "+ Ver más",
+      "showLess": "− Ver menos"
     },
     "public": {
       "about": "Acerca de",
