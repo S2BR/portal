@@ -3,6 +3,21 @@ import addressFormatter from "@fragaria/address-formatter";
 import type { BusinessAddress } from "@/app/api/businesses/route";
 
 /**
+ * The address fields {@link formatBusinessAddress} actually reads — a structural subset shared by the
+ * owner's {@link BusinessAddress} and the public profile's address, so both can be formatted.
+ */
+export type FormattableAddress = Pick<
+  BusinessAddress,
+  | "address_1"
+  | "address_2"
+  | "apartment_suite"
+  | "city"
+  | "state_province"
+  | "postal_code"
+  | "country"
+>;
+
+/**
  * The subset of `@fragaria/address-formatter` input components we populate from
  * a {@link BusinessAddress}.
  */
@@ -70,7 +85,7 @@ export function regionName(countryCode: string, locale: string): string {
  * @returns One string per output line, ready to render as stacked spans.
  */
 export function formatBusinessAddress(
-  address: BusinessAddress,
+  address: FormattableAddress,
   locale: string,
 ): string[] {
   const countryCode = address.country?.trim().toUpperCase() || undefined;

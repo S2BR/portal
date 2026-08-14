@@ -454,6 +454,22 @@
       "body": "Un opérateur a verrouillé cette entreprise; elle ne peut pas être modifiée ni affichée publiquement pour le moment. Pour toute question, veuillez contacter le soutien.",
       "badge": "Verrouillé"
     },
+    "public": {
+      "about": "À propos",
+      "amenities": "Commodités",
+      "photos": "Photos",
+      "closures": "Jours fériés et horaires spéciaux",
+      "hours": "Heures",
+      "location": "Emplacement",
+      "contact": "Contact",
+      "directions": "Itinéraire",
+      "call": "Appeler",
+      "website": "Site Web",
+      "share": "Partager",
+      "linkCopied": "Lien copié",
+      "closed": "Fermé",
+      "photoAlt": "{name} — photo {number}"
+    },
     "publish": {
       "checklistTitle": "Pas encore en ligne",
       "checklistBody": "Vous seul voyez cette entreprise. Complétez ces éléments pour la publier :",

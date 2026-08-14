@@ -454,6 +454,22 @@
       "body": "Un operador ha bloqueado este negocio, por lo que no se puede editar ni mostrar públicamente por ahora. Si tienes dudas, contacta con soporte.",
       "badge": "Bloqueado"
     },
+    "public": {
+      "about": "Acerca de",
+      "amenities": "Servicios",
+      "photos": "Fotos",
+      "closures": "Feriados y horarios especiales",
+      "hours": "Horario",
+      "location": "Ubicación",
+      "contact": "Contacto",
+      "directions": "Cómo llegar",
+      "call": "Llamar",
+      "website": "Sitio web",
+      "share": "Compartir",
+      "linkCopied": "Enlace copiado",
+      "closed": "Cerrado",
+      "photoAlt": "{name} — foto {number}"
+    },
     "publish": {
       "checklistTitle": "Aún no está publicado",
       "checklistBody": "Solo tú ves este negocio. Completa estos puntos para publicarlo:",
