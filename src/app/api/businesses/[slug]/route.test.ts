@@ -135,6 +135,28 @@ describe("PATCH /api/businesses/[slug]", () => {
     expect(await res.json()).toEqual({ status: "not_found" });
   });
 
+  it("relays a not_publishable 422 with the unmet requirement keys", async () => {
+    vi.mocked(callWithAuth).mockResolvedValue({
+      ok: false,
+      status: 422,
+      data: {
+        status: "not_publishable",
+        requirements: ["description", "category"],
+      },
+    });
+
+    const res = await PATCH(
+      req("PATCH", { published: true }),
+      params("acme-roasters"),
+    );
+
+    expect(res.status).toBe(422);
+    expect(await res.json()).toEqual({
+      status: "not_publishable",
+      requirements: ["description", "category"],
+    });
+  });
+
   it("passes the API's 422 field errors through", async () => {
     vi.mocked(callWithAuth).mockResolvedValue({
       ok: false,

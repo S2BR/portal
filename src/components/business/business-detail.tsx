@@ -71,6 +71,7 @@ import {
 } from "@/components/business/category-picker";
 import { BusinessTypeField } from "@/components/business/business-type-field";
 import { FormSection } from "@/components/business/form-section";
+import { PublishPanel } from "@/components/business/publish-panel";
 import {
   ExpandableActionBar,
   type ActionBarItem,
@@ -421,6 +422,7 @@ const TAB_PAYLOAD_KEYS: Record<
 
 export function BusinessDetail({ slug }: { slug: string }) {
   const t = useTranslations("businesses.detail");
+  const publish = useTranslations("businesses.publish");
   const tabs = useTranslations("businesses.detail.tabs");
   const sections = useTranslations("businesses.detail.sections");
   const fields = useTranslations("businesses.detail.fields");
@@ -443,6 +445,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
   const [error, setError] = useState<string | null>(null);
   const [nameError, setNameError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [publishing, setPublishing] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [categoryTree, setCategoryTree] = useState<Category[]>([]);
   const [amenityGroups, setAmenityGroups] = useState<Amenity[]>([]);
@@ -708,6 +711,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
     if (!business) {
       return;
     }
+    setPublishing(true);
     setBusiness({ ...business, is_published: next });
     try {
       const response = await fetch(
@@ -721,6 +725,13 @@ export function BusinessDetail({ slug }: { slug: string }) {
       const data = await response.json().catch(() => null);
       if (!response.ok) {
         setBusiness({ ...business, is_published: !next });
+        // The API refused the publish because the business slipped below the bar — reload so the
+        // checklist reflects the real state, and point the owner at it rather than a generic error.
+        if (data?.status === "not_publishable") {
+          toast.error(publish("notReadyToast"));
+          void load();
+          return;
+        }
         toast.error(apiErrorText(data) ?? create("errorGeneric"));
         return;
       }
@@ -731,7 +742,25 @@ export function BusinessDetail({ slug }: { slug: string }) {
     } catch {
       setBusiness({ ...business, is_published: !next });
       toast.error(create("errorGeneric"));
+    } finally {
+      setPublishing(false);
     }
+  }
+
+  // A checklist item jumps the owner straight to the field that satisfies it: enter edit mode, open
+  // the right tab, then scroll the section into view once it has mounted.
+  function goToSection(tab: string, section: string) {
+    if (!editing) {
+      startEditing();
+    }
+    setActiveTab(tab);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        document
+          .getElementById(section)
+          ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
   }
 
   const backLink = (
@@ -850,15 +879,38 @@ export function BusinessDetail({ slug }: { slug: string }) {
             </h1>
             <div className="flex flex-wrap items-center gap-3">
               <Badge variant="outline">{typeLabel}</Badge>
-              {/* Publish toggle — visibility is independent of editing the form, so it acts on its own. */}
-              <label className="flex items-center gap-2 text-sm">
+              {/* Publish toggle — visibility is independent of editing the form, so it acts on its own.
+                  An under-the-bar draft can't be flipped on here (the API would refuse it); the owner
+                  publishes via the checklist path instead, so the switch is disabled with a hint. */}
+              <label
+                className="flex items-center gap-2 text-sm"
+                title={
+                  !business.is_published && !business.readiness?.is_publishable
+                    ? publish("disabledHint")
+                    : undefined
+                }
+              >
                 <Switch
                   checked={business.is_published}
                   onCheckedChange={togglePublished}
-                  disabled={editing}
+                  disabled={
+                    editing ||
+                    publishing ||
+                    (!business.is_published &&
+                      !business.readiness?.is_publishable)
+                  }
                   aria-label={t("publishToggle")}
                 />
-                <span className="text-muted-foreground">
+                <span className="flex items-center gap-1.5 text-muted-foreground">
+                  <span
+                    aria-hidden
+                    className={cn(
+                      "size-1.5 rounded-full",
+                      business.is_published
+                        ? "bg-emerald-500"
+                        : "bg-amber-500",
+                    )}
+                  />
                   {business.is_published ? t("published") : t("draft")}
                 </span>
               </label>
@@ -890,6 +942,18 @@ export function BusinessDetail({ slug }: { slug: string }) {
           }
         />
       </div>
+
+      {/* The go-live surface: a checklist while the draft is below the bar, then a Publish banner once
+          it's met. Hidden while editing (the header switch owns un-publishing once live). */}
+      {!editing ? (
+        <PublishPanel
+          readiness={business.readiness}
+          isPublished={business.is_published}
+          publishing={publishing}
+          onPublish={() => void togglePublished(true)}
+          onNavigate={goToSection}
+        />
+      ) : null}
 
       {/* While editing, the Save/Cancel bar floats fixed at the bottom of the viewport; pad the form
           so its last content (e.g. the "add social" button) can scroll clear of the bar instead of

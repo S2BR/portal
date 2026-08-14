@@ -134,8 +134,24 @@ export interface Business {
   is_published: boolean;
   /** Operator lock (moderation override): frozen for the owner + hidden from public. */
   is_locked: boolean;
+  /**
+   * The publish-readiness checklist — present on the detail response (omitted from the list). The API
+   * owns this: `is_publishable` gates going live, and the API refuses a publish that doesn't meet it.
+   */
+  readiness?: BusinessReadiness;
   created_at: string | null;
   updated_at: string | null;
+}
+
+/** A single minimum-bar requirement and whether the business currently meets it. */
+export interface BusinessRequirement {
+  key: string;
+  met: boolean;
+}
+
+export interface BusinessReadiness {
+  is_publishable: boolean;
+  requirements: BusinessRequirement[];
 }
 
 const createSchema = z.object({
