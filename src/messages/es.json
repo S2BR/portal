@@ -474,7 +474,20 @@
       "facetType": "Tipo",
       "facetCity": "Ciudad",
       "showMore": "+ Ver más",
-      "showLess": "− Ver menos"
+      "showLess": "− Ver menos",
+      "nearMe": "Cerca de mí",
+      "nearYouExact": "Cerca de ti",
+      "nearYouApprox": "Cerca de ti (aprox.)",
+      "turnOff": "Desactivar",
+      "distanceKm": "{km} km",
+      "distanceM": "{m} m",
+      "locating": "Ubicando…",
+      "locationBlocked": "Ubicación no disponible — revisa el permiso de ubicación del navegador.",
+      "within": "Hasta",
+      "anyDistance": "Cualquiera",
+      "noneNearbyTitle": "Nada cerca",
+      "noneNearbyBody": "No hay negocios a menos de {km} km de ti.",
+      "showAll": "Mostrar todos"
     },
     "public": {
       "about": "Acerca de",

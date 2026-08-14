@@ -474,7 +474,20 @@
       "facetType": "Type",
       "facetCity": "City",
       "showMore": "+ Show more",
-      "showLess": "− Show less"
+      "showLess": "− Show less",
+      "nearMe": "Near me",
+      "nearYouExact": "Near you",
+      "nearYouApprox": "Near you (approximate)",
+      "turnOff": "Turn off",
+      "distanceKm": "{km} km",
+      "distanceM": "{m} m",
+      "locating": "Locating…",
+      "locationBlocked": "Location unavailable — check your browser's location permission.",
+      "within": "Up to",
+      "anyDistance": "Any",
+      "noneNearbyTitle": "Nothing nearby",
+      "noneNearbyBody": "No businesses within {km} km of you.",
+      "showAll": "Show all"
     },
     "public": {
       "about": "About",
