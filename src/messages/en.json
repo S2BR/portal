@@ -734,6 +734,7 @@
       "editAddress": "Edit address",
       "collapseAddress": "Collapse address",
       "categoriesEmpty": "No categories available yet.",
+      "clearSelection": "Clear all",
     "categoriesSelectedCount": "{count, plural, one {# selected} other {# selected}}",
       "searchAmenities": "Search amenities…",
       "amenitiesEmpty": "No amenities match — pick a category to see more.",

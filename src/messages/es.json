@@ -734,6 +734,7 @@
       "editAddress": "Editar dirección",
       "collapseAddress": "Contraer dirección",
       "categoriesEmpty": "Aún no hay categorías disponibles.",
+      "clearSelection": "Borrar todo",
     "categoriesSelectedCount": "{count, plural, one {# seleccionada} other {# seleccionadas}}",
       "searchAmenities": "Buscar servicios…",
       "amenitiesEmpty": "Ningún servicio coincide; elige una categoría para ver más.",

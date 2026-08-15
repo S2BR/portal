@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useRefinementList } from "react-instantsearch";
+import { useClearRefinements, useRefinementList } from "react-instantsearch";
 
 import { Checkbox } from "@/components/ui/checkbox";
 
@@ -32,6 +32,9 @@ export function FacetList({
       showMoreLimit: 50,
       sortBy: ["count:desc", "name:asc"],
     });
+  const { canRefine: canClear, refine: clearFacet } = useClearRefinements({
+    includedAttributes: [attribute],
+  });
 
   // Hide the whole facet when it has no values in the current result set.
   if (items.length === 0) {
@@ -40,9 +43,20 @@ export function FacetList({
 
   return (
     <div>
-      <h3 className="text-muted-foreground px-2 text-xs font-medium tracking-wider uppercase">
-        {title}
-      </h3>
+      <div className="flex items-center justify-between gap-2 px-2">
+        <h3 className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+          {title}
+        </h3>
+        {canClear ? (
+          <button
+            type="button"
+            onClick={clearFacet}
+            className="text-muted-foreground hover:text-foreground text-xs font-medium"
+          >
+            {t("clearFilters")}
+          </button>
+        ) : null}
+      </div>
       <ul className="mt-2 space-y-0.5">
         {items.map((item) => (
           <li key={item.label}>

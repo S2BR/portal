@@ -734,6 +734,7 @@
       "editAddress": "Modifier l’adresse",
       "collapseAddress": "Réduire l’adresse",
       "categoriesEmpty": "Aucune catégorie disponible pour l'instant.",
+      "clearSelection": "Tout effacer",
     "categoriesSelectedCount": "{count, plural, one {# sélectionnée} other {# sélectionnées}}",
       "searchAmenities": "Rechercher des commodités…",
       "amenitiesEmpty": "Aucune commodité ne correspond; choisissez une catégorie pour en voir plus.",
