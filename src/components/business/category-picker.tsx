@@ -50,6 +50,12 @@ export function CategoryPicker({
     onChange([...next]);
   }
 
+  // Deselect every subcategory of a root at once, keeping the root itself selected.
+  function clearSubs(root: Category) {
+    const subIds = new Set((root.subcategories ?? []).map((sub) => sub.id));
+    onChange(value.filter((id) => !subIds.has(id)));
+  }
+
   if (tree.length === 0) {
     return (
       <p className="text-muted-foreground text-sm">{t("categoriesEmpty")}</p>
@@ -62,6 +68,17 @@ export function CategoryPicker({
 
   return (
     <div className="space-y-3">
+      {value.length > 0 ? (
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={() => onChange([])}
+            className="text-muted-foreground hover:text-foreground text-xs font-medium"
+          >
+            {t("clearSelection")}
+          </button>
+        </div>
+      ) : null}
       <div className="flex flex-wrap gap-2">
         {tree.map((root) => (
           <Chip
@@ -91,9 +108,18 @@ export function CategoryPicker({
                 <div className="mb-2.5 flex items-center justify-between gap-2">
                   <span className="text-sm font-medium">{root.name}</span>
                   {count > 0 ? (
-                    <span className="text-muted-foreground text-xs tabular-nums">
-                      {t("categoriesSelectedCount", { count })}
-                    </span>
+                    <div className="flex items-center gap-3">
+                      <span className="text-muted-foreground text-xs tabular-nums">
+                        {t("categoriesSelectedCount", { count })}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => clearSubs(root)}
+                        className="text-muted-foreground hover:text-foreground text-xs font-medium"
+                      >
+                        {t("clearSelection")}
+                      </button>
+                    </div>
                   ) : null}
                 </div>
                 <div className="flex flex-wrap gap-2">

@@ -66,6 +66,17 @@ export function AmenitiesPicker({
 
   return (
     <div className="space-y-4">
+      {value.length > 0 ? (
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={() => onChange([])}
+            className="text-muted-foreground hover:text-foreground text-xs font-medium"
+          >
+            {t("clearSelection")}
+          </button>
+        </div>
+      ) : null}
       <Input
         value={search}
         onChange={(event) => setSearch(event.target.value)}

@@ -3,7 +3,7 @@
 import { ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { useRefinementList } from "react-instantsearch";
+import { useClearRefinements, useRefinementList } from "react-instantsearch";
 
 import type { CategoryNode } from "@/components/business/public/category-tree-nodes";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -28,6 +28,9 @@ export function CategoryTree({
   const { items, refine } = useRefinementList({
     attribute: "category_ids",
     limit: 500,
+  });
+  const { canRefine: canClear, refine: clearCategories } = useClearRefinements({
+    includedAttributes: ["category_ids"],
   });
   const [expanded, setExpanded] = useState<Set<number>>(() => new Set());
 
@@ -61,9 +64,20 @@ export function CategoryTree({
 
   return (
     <div>
-      <h3 className="text-muted-foreground px-2 text-xs font-medium tracking-wider uppercase">
-        {title}
-      </h3>
+      <div className="flex items-center justify-between gap-2 px-2">
+        <h3 className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+          {title}
+        </h3>
+        {canClear ? (
+          <button
+            type="button"
+            onClick={clearCategories}
+            className="text-muted-foreground hover:text-foreground text-xs font-medium"
+          >
+            {t("clearFilters")}
+          </button>
+        ) : null}
+      </div>
       <ul className="mt-2 space-y-0.5">
         {visibleRoots.map((root) => {
           const rootState = state.get(String(root.id));
