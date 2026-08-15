@@ -469,6 +469,8 @@
       "mapLabel": "Carte des résultats",
       "filters": "Filtres",
       "clearFilters": "Effacer",
+      "expand": "Développer",
+      "collapse": "Réduire",
       "facetCategory": "Catégorie",
       "facetAmenities": "Commodités",
       "facetType": "Type",
