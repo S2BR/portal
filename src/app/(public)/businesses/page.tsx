@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { Directory } from "@/components/business/public/directory";
+import { toCategoryNodes } from "@/components/business/public/category-tree-nodes";
 import { getEdgeLocation } from "@/lib/edge-location";
 import {
   getPublicAmenities,
@@ -52,7 +53,11 @@ export default async function DirectoryPage() {
         </h1>
         <p className="text-muted-foreground mt-1">{t("subtitle")}</p>
       </header>
-      <Directory labels={labels} ipLocation={ipLocation} />
+      <Directory
+        labels={labels}
+        categoryTree={toCategoryNodes(categories)}
+        ipLocation={ipLocation}
+      />
     </div>
   );
 }

@@ -469,6 +469,8 @@
       "mapLabel": "Mapa de resultados",
       "filters": "Filtros",
       "clearFilters": "Limpiar",
+      "expand": "Expandir",
+      "collapse": "Contraer",
       "facetCategory": "Categoría",
       "facetAmenities": "Servicios",
       "facetType": "Tipo",

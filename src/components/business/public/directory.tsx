@@ -16,6 +16,8 @@ import {
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter";
 
 import { BusinessCard } from "@/components/business/public/business-card";
+import { CategoryTree } from "@/components/business/public/category-tree";
+import type { CategoryNode } from "@/components/business/public/category-tree-nodes";
 import { DirectoryMap } from "@/components/business/public/directory-map";
 import { FacetList } from "@/components/business/public/facet-list";
 import { cn } from "@/lib/utils";
@@ -369,7 +371,13 @@ function HitsMap({ categoryLabels }: { categoryLabels: Record<string, string> })
 }
 
 /** The faceted sidebar. */
-function Sidebar({ labels }: { labels: Labels }) {
+function Sidebar({
+  labels,
+  categoryTree,
+}: {
+  labels: Labels;
+  categoryTree: CategoryNode[];
+}) {
   const t = useTranslations("businesses.directory");
   return (
     <aside className="space-y-8">
@@ -380,7 +388,7 @@ function Sidebar({ labels }: { labels: Labels }) {
         </h2>
         <ClearFilters />
       </div>
-      <FacetList attribute="categories" title={t("facetCategory")} labels={labels.categories} />
+      <CategoryTree title={t("facetCategory")} tree={categoryTree} />
       <FacetList attribute="amenities" title={t("facetAmenities")} labels={labels.amenities} />
       <FacetList attribute="type" title={t("facetType")} labels={labels.types} />
       <FacetList attribute="city" title={t("facetCity")} />
@@ -396,9 +404,11 @@ function Sidebar({ labels }: { labels: Labels }) {
  */
 export function Directory({
   labels,
+  categoryTree,
   ipLocation,
 }: {
   labels: Labels;
+  categoryTree: CategoryNode[];
   ipLocation: EdgeLocation | null;
 }) {
   const t = useTranslations("businesses.directory");
@@ -473,7 +483,12 @@ export function Directory({
         cacheSearchResultsForSeconds: 120,
       },
       geoLocationField: "location",
-      additionalSearchParameters: { query_by: "name,headline" },
+      additionalSearchParameters: {
+        query_by: "name,headline,description",
+        // Name > headline > a hit buried in the description; description stays out of the returned hits.
+        query_by_weights: "4,2,1",
+        exclude_fields: "description",
+      },
     });
     return adapter.searchClient;
   }, [credentials]);
@@ -500,7 +515,7 @@ export function Directory({
           : {})}
       />
       <div className="grid gap-8 lg:grid-cols-[220px_1fr_360px]">
-        <Sidebar labels={labels} />
+        <Sidebar labels={labels} categoryTree={categoryTree} />
         <div>
           <div className="mb-4 flex flex-wrap items-center gap-3">
             <div className="max-w-xl flex-1">
