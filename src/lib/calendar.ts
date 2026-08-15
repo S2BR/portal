@@ -110,17 +110,19 @@ export type ClosurePeriod = {
 
 /**
  * Whether an ISO date falls within a closure. A one-off matches the plain [start, end] range; a
- * recurring closure matches by month + day, ignoring the year (same-year ranges only — a recurring
- * range spanning year-end is out of scope).
+ * recurring closure matches by month + day, ignoring the year — including a range that WRAPS
+ * year-end (e.g. Dec 31 – Jan 1), where a date matches if it's on/after the start OR on/before the end.
  */
 export function dateInClosure(iso: string, closure: ClosurePeriod): boolean {
   if (!closure.isRecurring) {
     return iso >= closure.startDate && iso <= closure.endDate;
   }
   const monthDay = iso.slice(5);
-  return (
-    monthDay >= closure.startDate.slice(5) && monthDay <= closure.endDate.slice(5)
-  );
+  const start = closure.startDate.slice(5);
+  const end = closure.endDate.slice(5);
+  return start <= end
+    ? monthDay >= start && monthDay <= end
+    : monthDay >= start || monthDay <= end;
 }
 
 /** A localized display of a closure's date(s): a single date, or "start – end". Recurring drops the year. */
