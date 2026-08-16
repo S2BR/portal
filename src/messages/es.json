@@ -740,6 +740,10 @@
       "amenitiesEmpty": "Ningún servicio coincide; elige una categoría para ver más.",
       "media": {
         "logoTitle": "Logotipo",
+        "cropTitle": "Recorta tu logo",
+        "cropHint": "Posiciona y ajusta el cuadro sobre tu logo.",
+        "cropCancel": "Cancelar",
+        "cropConfirm": "Usar este",
         "logoHint": "Una imagen cuadrada funciona mejor",
         "bannerTitle": "Banner",
         "bannerHint": "Una imagen de portada ancha para tu página",

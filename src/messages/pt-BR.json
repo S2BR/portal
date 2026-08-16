@@ -740,6 +740,10 @@
       "amenitiesEmpty": "Nenhuma comodidade corresponde; escolha uma categoria para ver mais.",
       "media": {
         "logoTitle": "Logotipo",
+        "cropTitle": "Recorte seu logo",
+        "cropHint": "Posicione e ajuste o quadrado sobre o seu logo.",
+        "cropCancel": "Cancelar",
+        "cropConfirm": "Usar este",
         "logoHint": "Uma imagem quadrada funciona melhor",
         "bannerTitle": "Banner",
         "bannerHint": "Uma imagem de capa larga para a sua página",

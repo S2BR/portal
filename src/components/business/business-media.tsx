@@ -7,6 +7,7 @@ import { toast } from "sonner";
 
 import type { Business } from "@/app/api/businesses/route";
 import { Button } from "@/components/ui/button";
+import { ImageCropDialog } from "@/components/ui/image-crop-dialog";
 import { Progress } from "@/components/ui/progress";
 import { normalizeImage } from "@/lib/uploads/image";
 import { removeUpload, uploadFile } from "@/lib/uploads/upload";
@@ -64,6 +65,20 @@ export function BusinessImageField({
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // The logo is square-cropped before upload; this holds the picked file while the crop dialog is open.
+  const cropUrlRef = useRef<string | null>(null);
+  const [cropFile, setCropFile] = useState<File | null>(null);
+  const [cropSrc, setCropSrc] = useState<string | null>(null);
+
+  const closeCrop = () => {
+    if (cropUrlRef.current) {
+      URL.revokeObjectURL(cropUrlRef.current);
+      cropUrlRef.current = null;
+    }
+    setCropSrc(null);
+    setCropFile(null);
+  };
+
   const setPreview = (url: string | null) => {
     if (previewRef.current) {
       URL.revokeObjectURL(previewRef.current);
@@ -76,6 +91,9 @@ export function BusinessImageField({
     () => () => {
       if (previewRef.current) {
         URL.revokeObjectURL(previewRef.current);
+      }
+      if (cropUrlRef.current) {
+        URL.revokeObjectURL(cropUrlRef.current);
       }
     },
     [],
@@ -99,10 +117,25 @@ export function BusinessImageField({
       return;
     }
 
+    // The logo is a fixed square — let the owner frame it in a crop dialog before upload. The banner
+    // is wide (responsive focal-point framing comes later), so it uploads downscaled as-is.
+    if (isLogo) {
+      const url = URL.createObjectURL(file);
+      cropUrlRef.current = url;
+      setCropSrc(url);
+      setCropFile(file);
+      return;
+    }
+
     const prepared = await normalizeImage(file, {
       maxSize: MAX_SIDE[kind],
       type: "image/webp",
     });
+    await runUpload(prepared);
+  }
+
+  // Upload an already-prepared (downscaled/cropped, WebP) file with an optimistic preview + toasts.
+  async function runUpload(prepared: File) {
     setPreview(URL.createObjectURL(prepared));
     setPhase("uploading");
     setProgress(0);
@@ -125,6 +158,11 @@ export function BusinessImageField({
     } else {
       toast.error(t("error"));
     }
+  }
+
+  async function onCropped(prepared: File) {
+    closeCrop();
+    await runUpload(prepared);
   }
 
   async function remove() {
@@ -259,6 +297,21 @@ export function BusinessImageField({
           {error}
         </p>
       ) : null}
+
+      {/* Square crop with a rounded-square mask preview (never opens for the banner). */}
+      <ImageCropDialog
+        mask="rounded"
+        src={cropSrc}
+        file={cropFile}
+        onCancel={closeCrop}
+        onCropped={onCropped}
+        labels={{
+          title: t("cropTitle"),
+          hint: t("cropHint"),
+          cancel: t("cropCancel"),
+          confirm: t("cropConfirm"),
+        }}
+      />
     </div>
   );
 }

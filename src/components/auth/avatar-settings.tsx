@@ -10,7 +10,7 @@ import {
 } from "react";
 import { toast } from "sonner";
 
-import { AvatarCropDialog } from "@/components/auth/avatar-crop-dialog";
+import { ImageCropDialog } from "@/components/ui/image-crop-dialog";
 import { useCurrentUser } from "@/components/auth/current-user";
 import { UserAvatar } from "@/components/auth/user-avatar";
 import { Button } from "@/components/ui/button";
@@ -296,11 +296,18 @@ export function AvatarSettings() {
         ) : null}
       </div>
 
-      <AvatarCropDialog
+      <ImageCropDialog
+        mask="circle"
         src={cropSrc}
         file={cropFile}
         onCancel={closeCrop}
         onCropped={runUpload}
+        labels={{
+          title: t("cropTitle"),
+          hint: t("cropHint"),
+          cancel: t("cropCancel"),
+          confirm: t("cropConfirm"),
+        }}
       />
     </SettingGroup>
   );
