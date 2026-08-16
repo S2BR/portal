@@ -1,7 +1,8 @@
-import { Globe, Mail, MapPin, Navigation, Phone } from "lucide-react";
+import { Globe, Mail, Navigation, Phone } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
 import { AddressLines } from "@/components/address/address-lines";
+import { BusinessLogo } from "@/components/business/business-logo";
 import {
   DAYS,
   socialDisplay,
@@ -70,14 +71,12 @@ export async function BusinessProfile({
       </div>
 
       {/* Logo — pulled up over the banner */}
-      <div className="bg-background ring-background relative z-10 -mt-16 ml-1 flex size-28 shrink-0 items-center justify-center overflow-hidden rounded-3xl border shadow-lg ring-4 sm:-mt-20 sm:size-36">
-        {business.logo ? (
-          // eslint-disable-next-line @next/next/no-img-element -- presigned S3 url, not a bundled asset
-          <img src={business.logo} alt="" className="size-full object-cover" />
-        ) : (
-          <MapPin className="text-muted-foreground size-12" />
-        )}
-      </div>
+      <BusinessLogo
+        name={business.name}
+        src={business.logo}
+        className="bg-background ring-background relative z-10 -mt-16 ml-1 size-28 shrink-0 border shadow-lg ring-4 sm:-mt-20 sm:size-36"
+        fallbackClassName="text-4xl"
+      />
 
       {/* Identity + actions */}
       <div className="mt-4 flex flex-col gap-4 px-1 sm:flex-row sm:items-end sm:justify-between">

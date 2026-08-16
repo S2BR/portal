@@ -15,7 +15,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { Business } from "@/app/api/businesses/route";
-import { UserAvatar } from "@/components/auth/user-avatar";
+import { BusinessLogo } from "@/components/business/business-logo";
 import {
   Command,
   CommandEmpty,
@@ -168,14 +168,14 @@ export function BusinessSidebar({ slug }: { slug: string }) {
             className="hover:bg-muted/60 focus-visible:ring-ring flex w-full items-center gap-2 rounded-lg p-2 text-start outline-none focus-visible:ring-2"
           >
             {current ? (
-              <UserAvatar
+              <BusinessLogo
                 name={displayName(current)}
                 src={displayLogo(current)}
-                className="size-8 rounded-md"
-                fallbackClassName="rounded-md text-sm"
+                className="size-8"
+                fallbackClassName="text-sm"
               />
             ) : (
-              <Skeleton className="size-8 shrink-0 rounded-md" />
+              <Skeleton className="size-8 shrink-0 rounded-[22%]" />
             )}
             <span className="min-w-0 flex-1 truncate font-medium">
               {current ? displayName(current) : <Skeleton className="h-4 w-24" />}
@@ -210,11 +210,11 @@ export function BusinessSidebar({ slug }: { slug: string }) {
                     router.push(`/portal/businesses/${business.slug}`);
                   }}
                 >
-                  <UserAvatar
+                  <BusinessLogo
                     name={displayName(business)}
                     src={displayLogo(business)}
-                    className="size-5 rounded"
-                    fallbackClassName="rounded text-[9px]"
+                    className="size-5"
+                    fallbackClassName="text-[9px]"
                   />
                   <span className="truncate">{displayName(business)}</span>
                   {business.slug === slug ? (

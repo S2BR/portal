@@ -1,6 +1,7 @@
-import { Building2, MapPin, Navigation } from "lucide-react";
+import { MapPin, Navigation } from "lucide-react";
 import Link from "next/link";
 
+import { BusinessLogo } from "@/components/business/business-logo";
 import { Badge } from "@/components/ui/badge";
 
 import type { PublicBusinessCard } from "@/lib/public-business";
@@ -20,14 +21,11 @@ export function BusinessCard({
       className="group hover:border-primary/40 bg-card focus-visible:ring-ring flex flex-col overflow-hidden rounded-2xl border transition-colors focus-visible:ring-2 focus-visible:outline-none"
     >
       <div className="from-brand-green to-brand-green-deep relative h-20 bg-gradient-to-br">
-        <span className="bg-background absolute -bottom-5 left-4 flex size-12 items-center justify-center overflow-hidden rounded-xl border shadow-sm">
-          {business.logo ? (
-            // eslint-disable-next-line @next/next/no-img-element -- presigned S3 url, not a bundled asset
-            <img src={business.logo} alt="" className="size-full object-cover" />
-          ) : (
-            <Building2 className="text-muted-foreground size-5" />
-          )}
-        </span>
+        <BusinessLogo
+          name={business.name}
+          src={business.logo}
+          className="bg-background absolute -bottom-5 left-4 size-12 border shadow-sm"
+        />
       </div>
       <div className="flex flex-1 flex-col gap-2 p-4 pt-7">
         <h3 className="leading-tight font-semibold">{business.name}</h3>
