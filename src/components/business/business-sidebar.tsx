@@ -171,11 +171,11 @@ export function BusinessSidebar({ slug }: { slug: string }) {
               <BusinessLogo
                 name={displayName(current)}
                 src={displayLogo(current)}
-                className="size-8"
+                className="size-8 rounded-lg"
                 fallbackClassName="text-sm"
               />
             ) : (
-              <Skeleton className="size-8 shrink-0 rounded-[22%]" />
+              <Skeleton className="size-8 shrink-0 rounded-lg" />
             )}
             <span className="min-w-0 flex-1 truncate font-medium">
               {current ? displayName(current) : <Skeleton className="h-4 w-24" />}
@@ -213,7 +213,7 @@ export function BusinessSidebar({ slug }: { slug: string }) {
                   <BusinessLogo
                     name={displayName(business)}
                     src={displayLogo(business)}
-                    className="size-5"
+                    className="size-5 rounded"
                     fallbackClassName="text-[9px]"
                   />
                   <span className="truncate">{displayName(business)}</span>

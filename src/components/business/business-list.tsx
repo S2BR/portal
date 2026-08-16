@@ -91,7 +91,7 @@ export function BusinessList() {
           <BusinessLogo
             name={business.name}
             src={business.logo}
-            className="size-10 shrink-0"
+            className="size-10 shrink-0 rounded-lg"
             fallback={<Icon className="size-5" />}
             fallbackClassName="bg-muted text-muted-foreground"
           />
@@ -170,7 +170,7 @@ export function BusinessList() {
       <ul className="divide-y">
         {[0, 1, 2].map((index) => (
           <li key={index} className="flex items-center gap-3 px-2 py-3">
-            <Skeleton className="size-10 shrink-0 rounded-[22%]" />
+            <Skeleton className="size-10 shrink-0 rounded-lg" />
             <div className="flex-1 space-y-2">
               <Skeleton className="h-4 w-40" />
               <Skeleton className="h-3 w-24" />

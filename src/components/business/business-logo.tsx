@@ -7,8 +7,10 @@ import { cn } from "@/lib/utils";
 /**
  * A business's logo: its picture when there is one, otherwise its initials — the rounded-square
  * counterpart to the circular {@link UserAvatar}, kept consistent everywhere it appears. The radius
- * is a percentage (`rounded-[22%]`), so the squircle keeps the same proportions at any size. Pass a
- * size via `className` (defaults to size-10); pass `fallback` to show an icon instead of the initials.
+ * is a px token (`rounded-xl` by default), NOT a percentage: Safari clips `overflow:hidden` to a px
+ * radius but not a percentage one, so a percentage renders square there. Pass a matching `rounded-*`
+ * in `className` for sizes far from the size-10 default; pass `fallback` to show an icon instead of
+ * the initials. The fallback inherits the root radius, so it always matches.
  */
 export function BusinessLogo({
   name,
@@ -26,16 +28,17 @@ export function BusinessLogo({
   fallback?: ReactNode;
 }) {
   return (
-    <Avatar className={cn("size-10 rounded-[22%]", className)}>
+    <Avatar className={cn("size-10 rounded-xl", className)}>
       {src ? <AvatarImage src={src} alt={name} /> : null}
       <AvatarFallback
         // With a src, delay the initials so a cached logo (e.g. after a re-mount) paints first and
         // never flashes to initials. With no src, show them at once.
         delayMs={src ? 600 : undefined}
         className={cn(
-          // Matches UserAvatar's chip so avatars and logos read as one family. `text-background!`
-          // wins over a parent's hover text color; `leading-none` optically centers the initials.
-          "rounded-[22%] bg-foreground text-background! text-xs leading-none font-extrabold select-none",
+          // Matches UserAvatar's chip so avatars and logos read as one family. `rounded-[inherit]`
+          // takes the root's radius; `text-background!` wins over a parent's hover text color;
+          // `leading-none` optically centers the initials.
+          "rounded-[inherit] bg-foreground text-background! text-xs leading-none font-extrabold select-none",
           fallbackClassName,
         )}
       >

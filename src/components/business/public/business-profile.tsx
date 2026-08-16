@@ -70,13 +70,16 @@ export async function BusinessProfile({
         )}
       </div>
 
-      {/* Logo — pulled up over the banner */}
-      <BusinessLogo
-        name={business.name}
-        src={business.logo}
-        className="bg-background ring-background relative z-10 -mt-16 ml-1 size-28 shrink-0 border shadow-lg ring-4 sm:-mt-20 sm:size-36"
-        fallbackClassName="text-4xl"
-      />
+      {/* Logo — pulled up over the banner. The negative margin lives on a div (Safari won't pull up
+          the flex <span> the Avatar renders). */}
+      <div className="relative z-10 -mt-16 ml-1 w-fit sm:-mt-20">
+        <BusinessLogo
+          name={business.name}
+          src={business.logo}
+          className="bg-background ring-background size-28 border shadow-lg ring-4 sm:size-36 rounded-[26px] sm:rounded-[32px]"
+          fallbackClassName="text-4xl"
+        />
+      </div>
 
       {/* Identity + actions */}
       <div className="mt-4 flex flex-col gap-4 px-1 sm:flex-row sm:items-end sm:justify-between">
@@ -101,7 +104,7 @@ export async function BusinessProfile({
         </div>
 
         {/* Actions */}
-        <div className="flex flex-wrap gap-2 sm:shrink-0 sm:justify-end sm:pb-1">
+        <div className="flex flex-wrap items-center gap-2 sm:shrink-0 sm:justify-end sm:pb-1">
           {directions ? (
             <a
               href={directions}
