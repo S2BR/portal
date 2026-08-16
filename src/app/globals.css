@@ -404,3 +404,33 @@
 .dark .leaflet-control-attribution a {
   color: var(--muted-foreground);
 }
+
+/* --- Image crop dialog (avatar / logo) --- */
+
+/* Rounded-square mask preview for the logo: round the SVG darkening HOLE (react-image-crop marks the
+   cutout with fill="black" and, unlike the outer overlay, no `mask` attr), so the crop reads as a
+   squircle — a preview of how the logo displays. The crop, and the stored file, stay a plain square. */
+.crop-rounded .ReactCrop__crop-mask rect[fill="black"]:not([mask]) {
+  rx: 28px;
+  ry: 28px;
+}
+.crop-rounded .ReactCrop__crop-selection {
+  border-radius: 28px;
+}
+
+/* One consistent selection outline for every crop dialog. Every ReactCrop gets `ReactCrop--no-animate`,
+   which natively drops the straight-edge marching-ants (they can't follow rounded/circular corners, so
+   they hid behind the darkening). Its default is a 1px dashed *outline* — but outlines ignore
+   border-radius, so we swap it for a dashed *border* that FOLLOWS the mask shape (a circle for avatars,
+   a squircle for logos), and drop the blue :focus ring. The `.ReactCrop.ReactCrop--no-animate` prefix
+   (three classes) outweighs react-image-crop's own outline/:focus rules. */
+.ReactCrop.ReactCrop--no-animate .ReactCrop__crop-selection,
+.ReactCrop.ReactCrop--no-animate .ReactCrop__crop-selection:focus {
+  background: none;
+  border: 2px dashed rgba(255, 255, 255, 0.9);
+  outline: none;
+}
+/* Hide react-image-crop's circular solid ring so the dashed border is the only (consistent) outline. */
+.ReactCrop--circular-crop .ReactCrop__crop-selection::after {
+  display: none;
+}

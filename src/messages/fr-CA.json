@@ -740,6 +740,10 @@
       "amenitiesEmpty": "Aucune commodité ne correspond; choisissez une catégorie pour en voir plus.",
       "media": {
         "logoTitle": "Logo",
+        "cropTitle": "Recadrez votre logo",
+        "cropHint": "Positionnez et redimensionnez le carré sur votre logo.",
+        "cropCancel": "Annuler",
+        "cropConfirm": "Utiliser",
         "logoHint": "Une image carrée fonctionne mieux",
         "bannerTitle": "Bannière",
         "bannerHint": "Une image de couverture large pour votre page",

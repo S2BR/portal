@@ -1,6 +1,5 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
 import ReactCrop, {
   centerCrop,
@@ -20,12 +19,28 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { cropImage, type PixelCrop } from "@/lib/uploads/image";
+import { cn } from "@/lib/utils";
 
-interface AvatarCropDialogProps {
+export interface CropLabels {
+  title: string;
+  hint: string;
+  cancel: string;
+  confirm: string;
+}
+
+/**
+ * The on-screen mask shape — a PREVIEW of how the image will display. The crop (and the stored file)
+ * is always a square; "circle" masks it round (avatars), "rounded" masks it as a squircle (logos).
+ */
+type CropMask = "circle" | "rounded" | "square";
+
+interface ImageCropDialogProps {
   /** The object URL of the picked image, or null when the dialog is closed. */
   src: string | null;
-  /** The picked file — the crop is applied to this and returned. */
+  /** The picked file — the crop is applied to it and returned re-encoded. */
   file: File | null;
+  mask?: CropMask;
+  labels: CropLabels;
   onCancel: () => void;
   onCropped: (file: File) => void;
 }
@@ -40,16 +55,18 @@ function centeredSquare(width: number, height: number): Crop {
 }
 
 /**
- * A square (circular-masked) crop dialog. Opens when a file is picked; on confirm it maps the
- * on-screen selection to the image's natural pixels and hands back a cropped, re-encoded file.
+ * A square crop dialog for a fixed-shape image (avatar / logo). Opens when a file is picked; on
+ * confirm it maps the on-screen selection to the image's natural pixels and hands back a cropped,
+ * re-encoded file. `circular` only changes the on-screen mask — the output is always a square.
  */
-export function AvatarCropDialog({
+export function ImageCropDialog({
   src,
   file,
+  mask = "square",
+  labels,
   onCancel,
   onCropped,
-}: AvatarCropDialogProps) {
-  const t = useTranslations("avatarSettings");
+}: ImageCropDialogProps) {
   const imageRef = useRef<HTMLImageElement>(null);
   const [crop, setCrop] = useState<Crop>();
   const [completed, setCompleted] = useState<RicPixelCrop>();
@@ -87,8 +104,8 @@ export function AvatarCropDialog({
     <Dialog open={open} onOpenChange={(next) => (next ? null : onCancel())}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{t("cropTitle")}</DialogTitle>
-          <DialogDescription>{t("cropHint")}</DialogDescription>
+          <DialogTitle>{labels.title}</DialogTitle>
+          <DialogDescription>{labels.hint}</DialogDescription>
         </DialogHeader>
 
         {src ? (
@@ -98,9 +115,15 @@ export function AvatarCropDialog({
               onChange={(_, percentCrop) => setCrop(percentCrop)}
               onComplete={(pixelCrop) => setCompleted(pixelCrop)}
               aspect={1}
-              circularCrop
+              circularCrop={mask === "circle"}
               keepSelection
-              className="max-h-[60vh]"
+              // `ReactCrop--no-animate` drops the straight-edge marching-ants (they can't follow a
+              // rounded/circular mask); globals.css restyles the outline into a shape-following dashed
+              // border. `crop-rounded` previews a squircle for logos by rounding the SVG mask hole.
+              className={cn(
+                "ReactCrop--no-animate max-h-[60vh]",
+                mask === "rounded" && "crop-rounded",
+              )}
             >
               {/* eslint-disable-next-line @next/next/no-img-element -- local object URL, not a remote asset */}
               <img
@@ -116,10 +139,10 @@ export function AvatarCropDialog({
 
         <DialogFooter>
           <Button variant="ghost" onClick={onCancel} disabled={working}>
-            {t("cropCancel")}
+            {labels.cancel}
           </Button>
           <Button onClick={confirm} disabled={working || !completed}>
-            {t("cropConfirm")}
+            {labels.confirm}
           </Button>
         </DialogFooter>
       </DialogContent>

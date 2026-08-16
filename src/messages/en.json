@@ -740,6 +740,10 @@
       "amenitiesEmpty": "No amenities match — pick a category to see more.",
       "media": {
         "logoTitle": "Logo",
+        "cropTitle": "Crop your logo",
+        "cropHint": "Position and resize the square over your logo.",
+        "cropCancel": "Cancel",
+        "cropConfirm": "Use this",
         "logoHint": "A square image works best",
         "bannerTitle": "Banner",
         "bannerHint": "A wide cover image for your page",
