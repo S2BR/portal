@@ -16,7 +16,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import type { Business } from "@/app/api/businesses/route";
-import { UserAvatar } from "@/components/auth/user-avatar";
+import { BusinessLogo } from "@/components/business/business-logo";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -90,12 +90,12 @@ export function BusinessDashboard({ slug }: { slug: string }) {
       {/* Header — plain logo + name + subtitle, no backdrop. */}
       <section className="flex items-center gap-4">
         {loading ? (
-          <Skeleton className="size-16 shrink-0 rounded-xl" />
+          <Skeleton className="size-16 shrink-0 rounded-[22%]" />
         ) : (
-          <UserAvatar
+          <BusinessLogo
             name={name}
             src={business?.logo}
-            className="size-16 rounded-xl"
+            className="size-16"
             fallbackClassName="text-xl"
           />
         )}

@@ -48,6 +48,7 @@ import {
   socialUrl,
 } from "@/components/business/business-constants";
 import { useBusinessIdentity } from "@/components/business/business-identity-context";
+import { BusinessLogo } from "@/components/business/business-logo";
 import type { Amenity } from "@/app/api/amenities/route";
 import type { Category } from "@/app/api/categories/route";
 import {
@@ -861,18 +862,13 @@ export function BusinessDetail({ slug }: { slug: string }) {
 
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="flex items-start gap-3">
-          <span className="bg-primary/10 text-primary flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-xl">
-            {business.logo ? (
-              // eslint-disable-next-line @next/next/no-img-element -- presigned S3 url, not a bundled asset
-              <img
-                src={business.logo}
-                alt=""
-                className="size-full object-cover"
-              />
-            ) : (
-              <TypeIcon className="size-6" />
-            )}
-          </span>
+          <BusinessLogo
+            name={business.name}
+            src={business.logo}
+            className="size-12 shrink-0"
+            fallback={<TypeIcon className="size-6" />}
+            fallbackClassName="bg-primary/10 text-primary"
+          />
           <div className="space-y-1">
             <h1 className="font-heading text-2xl font-semibold tracking-tight">
               {editing && edit ? edit.name : business.name}

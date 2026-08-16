@@ -7,6 +7,7 @@ import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 
 import type { Business } from "@/app/api/businesses/route";
+import { BusinessLogo } from "@/components/business/business-logo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -87,18 +88,13 @@ export function BusinessList() {
           href={`/portal/businesses/${business.slug}`}
           className="hover:bg-muted/50 focus-visible:bg-muted/50 flex flex-1 items-center gap-3 rounded-lg px-2 py-3 transition-colors outline-none"
         >
-          <span className="bg-muted text-muted-foreground flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg">
-            {business.logo ? (
-              // eslint-disable-next-line @next/next/no-img-element -- presigned S3 url, not a bundled asset
-              <img
-                src={business.logo}
-                alt=""
-                className="size-full object-cover"
-              />
-            ) : (
-              <Icon className="size-5" />
-            )}
-          </span>
+          <BusinessLogo
+            name={business.name}
+            src={business.logo}
+            className="size-10 shrink-0"
+            fallback={<Icon className="size-5" />}
+            fallbackClassName="bg-muted text-muted-foreground"
+          />
           <div className="min-w-0 flex-1">
             <p className="truncate font-medium">{business.name}</p>
             {business.headline ? (
@@ -174,7 +170,7 @@ export function BusinessList() {
       <ul className="divide-y">
         {[0, 1, 2].map((index) => (
           <li key={index} className="flex items-center gap-3 px-2 py-3">
-            <Skeleton className="size-10 shrink-0 rounded-lg" />
+            <Skeleton className="size-10 shrink-0 rounded-[22%]" />
             <div className="flex-1 space-y-2">
               <Skeleton className="h-4 w-40" />
               <Skeleton className="h-3 w-24" />
