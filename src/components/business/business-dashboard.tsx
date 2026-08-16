@@ -90,12 +90,12 @@ export function BusinessDashboard({ slug }: { slug: string }) {
       {/* Header — plain logo + name + subtitle, no backdrop. */}
       <section className="flex items-center gap-4">
         {loading ? (
-          <Skeleton className="size-16 shrink-0 rounded-[22%]" />
+          <Skeleton className="size-16 shrink-0 rounded-2xl" />
         ) : (
           <BusinessLogo
             name={name}
             src={business?.logo}
-            className="size-16"
+            className="size-16 rounded-2xl"
             fallbackClassName="text-xl"
           />
         )}
