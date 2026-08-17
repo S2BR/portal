@@ -106,7 +106,7 @@
       "back": "Retour",
       "twoFactorTitle": "Entrez le code de votre authentificateur",
       "twoFactorSubtitle": "Votre compte utilise l'authentification à deux facteurs. Entrez le code actuel de votre application d'authentification.",
-      "resendIn": "Renvoyer un code dans {seconds}s",
+      "resendIn": "Envoyer un nouveau code dans {seconds} s",
       "sendLinkButton": "Envoyez-moi un lien de connexion",
       "linkSentTitle": "Vérifiez votre courriel",
       "linkSentSubtitle": "Nous avons envoyé un lien de connexion à {email}. Ouvrez-le sur cet appareil pour continuer."
@@ -156,7 +156,7 @@
       "business": "Entreprise",
       "businessDesc": "Gérez le profil de votre entreprise, vos annonces et votre équipe.",
       "community": "Communauté",
-      "communityDesc": "Connectez-vous avec des exploitants et des membres près de chez vous.",
+      "communityDesc": "Connectez-vous avec des responsables et des membres près de chez vous.",
       "soon": "Bientôt"
     }
   },
@@ -314,7 +314,7 @@
   },
   "deleteAccount": {
     "title": "Supprimer le compte",
-    "description": "Fermez votre compte de façon permanente. Vous serez déconnecté sur tous les appareils.",
+    "description": "Fermez votre compte de façon permanente. Vous serez déconnecté de tous vos appareils.",
     "retentionNotice": "Pour des raisons de conformité, votre compte est désactivé immédiatement et définitivement supprimé {days} jours plus tard.",
     "delete": "Supprimer le compte",
     "confirm": "Supprimer mon compte",
@@ -452,7 +452,7 @@
     "createAnother": "Ajouter une entreprise",
     "locked": {
       "title": "Cette entreprise est verrouillée",
-      "body": "Un opérateur a verrouillé cette entreprise; elle ne peut pas être modifiée ni affichée publiquement pour le moment. Pour toute question, veuillez contacter le soutien.",
+      "body": "Un opérateur a verrouillé cette entreprise; elle ne peut pas être modifiée ni affichée publiquement pour le moment. Pour toute question, veuillez communiquer avec le soutien.",
       "badge": "Verrouillé"
     },
     "directory": {
@@ -563,11 +563,11 @@
           "description": "Votre logo, le nom de l’entreprise, le slogan et une brève description."
         },
         "businessType": {
-          "title": "Type d'Entreprise",
+          "title": "Type d'entreprise",
           "description": "Sélectionnez le type qui décrit le mieux votre entreprise."
         },
         "categories": {
-          "title": "Catégorie et Sous-catégorie",
+          "title": "Catégorie et sous-catégorie",
           "description": "Sélectionnez une ou plusieurs catégories qui correspondent le mieux à votre entreprise. Les sous-catégories seront filtrées en fonction de votre sélection de catégorie."
         },
         "website": {
@@ -587,23 +587,23 @@
           "description": "Sélectionnez les commodités et les caractéristiques offertes par votre entreprise."
         },
         "address": {
-          "title": "Adresse d'Entreprise",
+          "title": "Adresse de l'entreprise",
           "description": "Commencez à taper votre adresse dans la boîte de recherche. Sélectionnez l'adresse correcte dans le menu déroulant, et le reste des champs se remplira automatiquement avec les bonnes informations. Vous pouvez apporter des ajustements à n'importe quel champ si nécessaire."
         },
         "hours": {
-          "title": "Heures d'Ouverture de l'Entreprise",
+          "title": "Heures d'ouverture de l'entreprise",
           "description": "Définissez les heures d'ouverture de votre entreprise pour chaque jour de la semaine. Vous pouvez spécifier plusieurs plages horaires pour chaque jour (ex: 9h00 - 12h00, 13h00 - 17h00) pour accommoder les pauses ou les quarts de travail divisés. Cette information aidera les clients à savoir quand votre entreprise est ouverte."
         },
         "closures": {
-          "title": "Congés et horaires spéciaux",
+          "title": "Jours fériés et horaires spéciaux",
           "description": "Indiquez les jours où votre entreprise est fermée — ou ouverte avec un horaire spécial — jours fériés, fermeture ponctuelle ou demi-journée. Choisissez la ou les dates sur le calendrier, nommez-les et cochez celles qui reviennent chaque année."
         },
         "socials": {
-          "title": "Liens de Réseaux Sociaux",
+          "title": "Liens des réseaux sociaux",
           "description": "Ajoutez des liens vers vos profils de réseaux sociaux. Cela aidera les clients à vous trouver et vous suivre sur les réseaux sociaux."
         },
         "branding": {
-          "title": "Image de Marque",
+          "title": "Image de marque",
           "description": "Téléchargez une image de bannière qui représente votre entreprise. Elle sera affichée de manière proéminente sur la page de votre fiche. Vous pouvez également choisir une couleur primaire qui correspond à votre marque, qui sera utilisée pour les accents et les surlignages sur votre fiche."
         },
         "images": {
@@ -671,7 +671,7 @@
       },
       "categoryHint": "Vous ne trouvez pas votre catégorie? Dites-nous ce qui convient et nous y jetterons un œil.",
       "categorySuggest": {
-        "trigger": "Ne trouvez pas votre catégorie?",
+        "trigger": "Vous ne trouvez pas votre catégorie?",
       "helper": "Si vous ne trouvez pas de catégorie appropriée, décrivez-la et notre équipe l'examinera et l'ajoutera au besoin.",
         "label": "Votre suggestion",
         "prompt": "Ex : \"Catégorie : Cafés, Sous-catégorie : Cafés Végétaliens\"",
@@ -807,7 +807,7 @@
         "yourCompany": "votre entreprise",
         "insights": {
           "title": "Les statistiques arrivent bientôt",
-          "body": "Bientôt, vous verrez comment les gens découvrent {name} et interagissent avec — vues du profil, favoris, avis et plus encore."
+          "body": "Bientôt, vous verrez comment les gens découvrent {name} et y interagissent — vues du profil, favoris, avis et plus encore."
         },
         "stats": {
           "views": "Vues du profil",

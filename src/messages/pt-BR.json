@@ -115,7 +115,7 @@
       "verifying": "Entrando…",
       "invalidTitle": "Este link de acesso não funcionou",
       "invalidSubtitle": "Ele pode ter expirado ou já ter sido usado. Solicite um novo para entrar.",
-      "backToLogin": "Voltar ao login"
+      "backToLogin": "Voltar para entrar"
     },
     "goBack": "Voltar"
   },
@@ -223,7 +223,7 @@
     "born": "Nascimento: <b>{date}</b>",
     "remove": "Remover",
     "clear": "Limpar",
-    "dobHint": "Você precisa ter pelo menos 13 anos. Somente você pode ver isto.",
+    "dobHint": "Você precisa ter pelo menos 13 anos. Só você pode ver isso.",
     "dobYear": "Ano",
     "dobMonth": "Mês",
     "dobDay": "Dia",
@@ -265,7 +265,7 @@
     "cancel": "Cancelar",
     "recoveryTitle": "Salve seus códigos de recuperação",
     "recoverySubtitle": "Guarde-os em local seguro. Cada um pode ser usado uma vez se você perder seu autenticador.",
-    "done": "Eu os salvei",
+    "done": "Já salvei",
     "disablePrompt": "Digite sua senha para desativar a autenticação de dois fatores.",
     "regenerate": "Gerar novos códigos de recuperação",
     "regeneratePrompt": "Digite sua senha para gerar um novo conjunto de códigos de recuperação. Seus códigos atuais deixarão de funcionar.",
@@ -426,7 +426,7 @@
       "company": {
         "title": "Empresa",
         "description": "Um negócio ou organização registrada.",
-        "info": "Uma organização que fornece bens ou serviços, tipicamente com múltiplos funcionários e uma estrutura formal."
+        "info": "Uma organização que fornece bens ou serviços, geralmente com vários funcionários e uma estrutura formal."
       },
       "selfEmployed": {
         "title": "Autônomo",
@@ -563,11 +563,11 @@
           "description": "Seu logotipo, o nome da empresa, o slogan e uma breve descrição."
         },
         "businessType": {
-          "title": "Tipo de Empresa",
+          "title": "Tipo de empresa",
           "description": "Selecione o tipo que melhor descreve sua empresa."
         },
         "categories": {
-          "title": "Categoria e Subcategoria",
+          "title": "Categoria e subcategoria",
           "description": "Selecione uma ou mais categorias que melhor se adequem à sua empresa. As subcategorias serão filtradas com base na seleção da sua categoria."
         },
         "website": {
@@ -587,11 +587,11 @@
           "description": "Selecione as comodidades e os recursos que sua empresa oferece."
         },
         "address": {
-          "title": "Endereço da Empresa",
+          "title": "Endereço da empresa",
           "description": "Comece digitando seu endereço na caixa de pesquisa. Selecione o endereço correto no menu suspenso, e os demais campos serão preenchidos automaticamente com as informações corretas. Você pode fazer ajustes em qualquer campo se necessário."
         },
         "hours": {
-          "title": "Horário de Funcionamento da Empresa",
+          "title": "Horário de funcionamento",
           "description": "Defina o horário de funcionamento da sua empresa para cada dia da semana. Você pode especificar múltiplos intervalos de tempo para cada dia (ex: 9:00 - 12:00, 13:00 - 17:00) para acomodar pausas ou turnos divididos. Essa informação ajudará os clientes a saber quando sua empresa está aberta."
         },
         "closures": {
@@ -599,7 +599,7 @@
           "description": "Marque os dias em que sua empresa fica fechada — ou aberta com horário especial — como feriados, um fechamento pontual ou meio período. Escolha a(s) data(s) no calendário, dê um nome e marque as que se repetem todos os anos."
         },
         "socials": {
-          "title": "Links de Redes Sociais",
+          "title": "Links de redes sociais",
           "description": "Adicione links para seus perfis de redes sociais. Isso ajudará os clientes a encontrá-lo e segui-lo nas redes sociais."
         },
         "branding": {
@@ -671,7 +671,7 @@
       },
       "categoryHint": "Não encontrou sua categoria? Diga-nos qual se encaixa e vamos verificar.",
       "categorySuggest": {
-        "trigger": "Não encontra sua categoria?",
+        "trigger": "Não encontrou sua categoria?",
       "helper": "Se não encontrar uma categoria adequada, descreva-a e nossa equipe vai revisar e adicionar quando fizer sentido.",
         "label": "Sua sugestão",
         "prompt": "Ex: \"Categoria: Cafeterias, Subcategoria: Cafeterias Veganas\"",
@@ -727,10 +727,10 @@
     "hideAddress": "Ocultar meu endereço da listagem pública",
     "hideAddressHint": "Fica registrado para a listagem e a busca corretas, mas não será exibido publicamente.",
     "addressHidden": "Oculto",
-    "locationHint": "Arraste o alfinete ou toque no mapa para corrigir o ponto exato.",
+    "locationHint": "Arraste o marcador ou clique no mapa para corrigir o ponto exato.",
     "locationEmpty": "Escolha um endereço acima para posicioná-lo no mapa.",
     "openMap": "Ampliar o mapa",
-    "mapEditPin": "Ajustar ponto",
+    "mapEditPin": "Ajustar marcador",
     "mapPreviewHint": "Arraste e use o zoom para explorar esta localização.",
       "removeAddress": "Remover endereço",
       "editAddress": "Editar endereço",
@@ -739,7 +739,7 @@
       "clearSelection": "Limpar tudo",
     "categoriesSelectedCount": "{count, plural, one {# selecionada} other {# selecionadas}}",
       "searchAmenities": "Buscar comodidades…",
-      "amenitiesEmpty": "Nenhuma comodidade corresponde; escolha uma categoria para ver mais.",
+      "amenitiesEmpty": "Nenhuma comodidade encontrada — escolha uma categoria para ver mais.",
       "media": {
         "logoTitle": "Logotipo",
         "cropTitle": "Recorte seu logo",
