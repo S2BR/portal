@@ -438,6 +438,7 @@
     "submitting": "Criando…",
     "createdToast": "Negócio criado.",
     "errorNameRequired": "Informe o nome do negócio.",
+    "errorPhoneCountry": "Escolha um país para cada telefone.",
     "errorTypeRequired": "Escolha um tipo de negócio.",
     "errorGeneric": "Algo deu errado. Tente novamente."
   },

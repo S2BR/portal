@@ -438,6 +438,7 @@
     "submitting": "Création…",
     "createdToast": "Entreprise créée.",
     "errorNameRequired": "Veuillez saisir le nom de l'entreprise.",
+    "errorPhoneCountry": "Choisissez un pays pour chaque numéro de téléphone.",
     "errorTypeRequired": "Veuillez choisir un type d'entreprise.",
     "errorGeneric": "Une erreur s'est produite. Veuillez réessayer."
   },
