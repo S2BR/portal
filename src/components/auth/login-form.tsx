@@ -32,6 +32,11 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [code, setCode] = useState("");
+  // Set when a passkey sign-in hits a 2FA account: the second step completes with this single-use
+  // token + the authenticator code (not by re-submitting credentials, like the password flow does).
+  const [passkeyPendingToken, setPasskeyPendingToken] = useState<string | null>(
+    null,
+  );
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
@@ -114,9 +119,50 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
     void submit({ email, password, two_factor_code: codeValue.trim() });
   }
 
+  // Complete a passkey sign-in's 2FA step: exchange the pending token + authenticator code for a
+  // session via the shared completion endpoint. A bad code can be retried until the token burns.
+  async function completePasskeyTwoFactor(codeValue: string) {
+    if (!codeValue.trim()) {
+      setError(t("errors.code"));
+      return;
+    }
+    setPending(true);
+    setError(null);
+    try {
+      const response = await fetch("/api/auth/login/email/two-factor", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          pending_token: passkeyPendingToken,
+          two_factor_code: codeValue.trim(),
+        }),
+      });
+      const data = (await response.json()) as {
+        status?: string;
+        message?: string;
+        errors?: Record<string, string[]>;
+      };
+      if (data.status === "authenticated") {
+        enterApp(nextPath);
+      } else if (data.status === "rate_limited") {
+        setError(t("errors.rateLimited"));
+      } else {
+        setError(apiErrorText(data) ?? t("errors.code"));
+      }
+    } catch {
+      setError(t("errors.generic"));
+    } finally {
+      setPending(false);
+    }
+  }
+
   function onSubmitCode(event: FormEvent) {
     event.preventDefault();
-    submitCode(code);
+    if (passkeyPendingToken) {
+      void completePasskeyTwoFactor(code);
+    } else {
+      submitCode(code);
+    }
   }
 
   if (method === "email_code") {
@@ -132,7 +178,7 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
     );
   }
 
-  if (step !== "credentials") {
+  if (step !== "credentials" || passkeyPendingToken) {
     return (
       <form onSubmit={onSubmitCode} className="flex flex-col gap-4">
         <div className="space-y-1 text-center">
@@ -163,6 +209,7 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
           variant="ghost"
           onClick={() => {
             setStep("credentials");
+            setPasskeyPendingToken(null);
             setError(null);
           }}
         >
@@ -208,7 +255,15 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
       <Button type="submit" disabled={pending || captchaBlocking}>
         {t("login.submit")}
       </Button>
-      <PasskeySignInButton nextPath={nextPath} disabled={pending} />
+      <PasskeySignInButton
+        nextPath={nextPath}
+        disabled={pending}
+        onTwoFactorRequired={(token) => {
+          setCode("");
+          setError(null);
+          setPasskeyPendingToken(token);
+        }}
+      />
       <Button
         type="button"
         variant="ghost"

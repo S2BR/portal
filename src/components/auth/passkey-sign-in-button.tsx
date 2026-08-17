@@ -21,9 +21,12 @@ import { useAppConfig } from "@/lib/config/use-app-config";
 export function PasskeySignInButton({
   nextPath,
   disabled,
+  onTwoFactorRequired,
 }: {
   nextPath: string;
   disabled?: boolean;
+  /** Called when the account has 2FA: the passkey verified, but a TOTP code is still required. */
+  onTwoFactorRequired?: (pendingToken: string) => void;
 }) {
   const t = useTranslations("auth");
   const config = useAppConfig();
@@ -73,12 +76,19 @@ export function PasskeySignInButton({
       });
       const verifyData = (await verifyResponse.json()) as {
         status?: string;
+        pending_token?: string;
         message?: string;
         errors?: Record<string, string[]>;
       };
 
       if (verifyData.status === "authenticated") {
         enterApp(nextPath);
+      } else if (
+        verifyData.status === "two_factor_required" &&
+        verifyData.pending_token
+      ) {
+        // 2FA account: the passkey is only the primary factor — hand off to the TOTP step.
+        onTwoFactorRequired?.(verifyData.pending_token);
       } else if (verifyData.status === "rate_limited") {
         setError(t("errors.rateLimited"));
       } else {

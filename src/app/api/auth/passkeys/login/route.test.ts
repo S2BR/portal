@@ -74,6 +74,25 @@ describe("POST /api/auth/passkeys/login", () => {
     expect(establishSession).not.toHaveBeenCalled();
   });
 
+  it("relays two_factor_required + the pending token without a session (nothing bypasses 2FA)", async () => {
+    fetchMock.mockResolvedValue(
+      portalResponse(403, {
+        status: "two_factor_required",
+        pending_token: "pending-xyz",
+        expires_in: 300,
+      }),
+    );
+
+    const res = await POST(request(validBody));
+
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({
+      status: "two_factor_required",
+      pending_token: "pending-xyz",
+    });
+    expect(establishSession).not.toHaveBeenCalled();
+  });
+
   it("relays rate limiting", async () => {
     fetchMock.mockResolvedValue(portalResponse(429, { message: "slow down" }));
 
