@@ -730,6 +730,7 @@
     "locationHint": "Arrastra el pin o toca el mapa para corregir el punto exacto.",
     "locationEmpty": "Elige una dirección arriba para ubicarla en el mapa.",
     "openMap": "Ampliar el mapa",
+    "mapEditPin": "Ajustar marcador",
     "mapPreviewHint": "Desplázate y haz zoom para explorar esta ubicación.",
       "removeAddress": "Quitar dirección",
       "editAddress": "Editar dirección",
