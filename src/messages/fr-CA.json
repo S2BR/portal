@@ -730,6 +730,7 @@
     "locationHint": "Déplacez l’épingle ou touchez la carte pour corriger l’emplacement exact.",
     "locationEmpty": "Choisissez une adresse ci-dessus pour la situer sur la carte.",
     "openMap": "Agrandir la carte",
+    "mapEditPin": "Ajuster le repère",
     "mapPreviewHint": "Déplacez-vous et zoomez pour explorer cet emplacement.",
       "removeAddress": "Supprimer l’adresse",
       "editAddress": "Modifier l’adresse",

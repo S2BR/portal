@@ -5,7 +5,6 @@ import {
   EyeOff,
   Info,
   MapPin,
-  Maximize2,
   Plus,
   X,
 } from "lucide-react";
@@ -201,20 +200,22 @@ export function AddressesEditor({
     }
     return (
       <div className="space-y-1.5">
-        <div className="relative">
+        {/* A read-only preview — a stray click can't move the pin. Adjusting happens in the popup,
+            entered from the button (revealed on hover, always shown on touch where there's no hover). */}
+        <div className="group relative">
           <LocationMap
             latitude={point.lat}
             longitude={point.lng}
-            onChange={(lat, lng) => setCoordinate(entry.key, lat, lng)}
+            interactive={false}
             className="h-56 w-full"
           />
           <button
             type="button"
             onClick={() => setExpandedKey(entry.key)}
-            aria-label={t("openMap")}
-            className="bg-card/90 text-muted-foreground hover:text-foreground hover:bg-card focus-visible:ring-ring absolute end-2 top-2 rounded-md border p-1.5 shadow-sm backdrop-blur transition-colors focus-visible:ring-2 focus-visible:outline-none"
+            className="bg-card/90 text-foreground hover:bg-card focus-visible:ring-ring absolute end-2 top-2 inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-xs font-medium opacity-0 shadow-sm backdrop-blur transition group-hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:outline-none [@media(hover:none)]:opacity-100"
           >
-            <Maximize2 className="size-4" />
+            <MapPin className="size-4" />
+            {t("mapEditPin")}
           </button>
         </div>
         <p className="text-muted-foreground text-xs">
