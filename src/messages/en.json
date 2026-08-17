@@ -494,6 +494,20 @@
     },
     "public": {
       "reviews": {
+        "readReviews": "Read the reviews",
+        "beFirst": "Be the first to review this business",
+        "backToProfile": "Back to profile",
+        "leaveReview": "Leave a review",
+        "allReviews": "All reviews",
+        "sortLabel": "Sort",
+        "showAll": "Show all",
+        "filterByStars": "Show only {star}-star reviews",
+        "sort": {
+          "recent": "Most recent",
+          "oldest": "Oldest",
+          "highest": "Highest rated",
+          "lowest": "Lowest rated"
+        },
         "title": "Reviews",
         "count": "{count, plural, one {# review} other {# reviews}}",
         "writeTitle": "Write a review",

@@ -494,6 +494,20 @@
     },
     "public": {
       "reviews": {
+        "readReviews": "Ver as avaliações",
+        "beFirst": "Seja o primeiro a avaliar este negócio",
+        "backToProfile": "Voltar ao perfil",
+        "leaveReview": "Deixe uma avaliação",
+        "allReviews": "Todas as avaliações",
+        "sortLabel": "Ordenar",
+        "showAll": "Ver todas",
+        "filterByStars": "Ver apenas avaliações de {star} estrelas",
+        "sort": {
+          "recent": "Mais recentes",
+          "oldest": "Mais antigas",
+          "highest": "Melhor avaliadas",
+          "lowest": "Pior avaliadas"
+        },
         "title": "Avaliações",
         "count": "{count, plural, one {# avaliação} other {# avaliações}}",
         "writeTitle": "Escreva uma avaliação",

@@ -18,12 +18,19 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> },
 ): Promise<NextResponse> {
   const { slug } = await params;
-  const page = new URL(request.url).searchParams.get("page");
-  const suffix = page && page !== "1" ? `?page=${encodeURIComponent(page)}` : "";
+  const incoming = new URL(request.url).searchParams;
+  const forwarded = new URLSearchParams();
+  for (const key of ["page", "sort", "rating"] as const) {
+    const value = incoming.get(key);
+    if (value) {
+      forwarded.set(key, value);
+    }
+  }
+  const suffix = forwarded.toString();
 
   const response = await portalFetch<PublicReviewsPage>({
     method: "GET",
-    path: `/public/businesses/${encodeURIComponent(slug)}/reviews${suffix}`,
+    path: `/public/businesses/${encodeURIComponent(slug)}/reviews${suffix ? `?${suffix}` : ""}`,
   });
 
   return NextResponse.json(response.ok ? response.data : EMPTY);

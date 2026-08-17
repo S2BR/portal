@@ -1,14 +1,6 @@
 import { afterEach, expect, it, vi } from "vitest";
 
-vi.mock("@/lib/public-business", () => ({
-  getPublicBusiness: vi.fn(),
-  getPublicReviews: vi.fn(() =>
-    Promise.resolve({
-      data: [],
-      meta: { current_page: 1, last_page: 1, total: 0 },
-    }),
-  ),
-}));
+vi.mock("@/lib/public-business", () => ({ getPublicBusiness: vi.fn() }));
 vi.mock("next/navigation", () => ({
   notFound: () => {
     throw new Error("NEXT_NOT_FOUND");

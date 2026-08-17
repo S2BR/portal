@@ -494,6 +494,20 @@
     },
     "public": {
       "reviews": {
+        "readReviews": "Lire les avis",
+        "beFirst": "Soyez le premier à évaluer cette entreprise",
+        "backToProfile": "Retour au profil",
+        "leaveReview": "Laisser un avis",
+        "allReviews": "Tous les avis",
+        "sortLabel": "Trier",
+        "showAll": "Tout afficher",
+        "filterByStars": "Afficher seulement les avis à {star} étoiles",
+        "sort": {
+          "recent": "Plus récents",
+          "oldest": "Plus anciens",
+          "highest": "Mieux notés",
+          "lowest": "Moins bien notés"
+        },
         "title": "Avis",
         "count": "{count, plural, one {# avis} other {# avis}}",
         "writeTitle": "Rédiger un avis",

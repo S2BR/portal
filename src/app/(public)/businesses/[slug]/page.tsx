@@ -4,7 +4,7 @@ import { getLocale } from "next-intl/server";
 import { cache } from "react";
 
 import { BusinessProfile } from "@/components/business/public/business-profile";
-import { getPublicBusiness, getPublicReviews } from "@/lib/public-business";
+import { getPublicBusiness } from "@/lib/public-business";
 import { businessPagesRobots } from "@/lib/seo";
 
 // Memoize per request so generateMetadata and the page share one API call.
@@ -67,9 +67,6 @@ export default async function PublicBusinessPage({
   }
 
   const locale = await getLocale();
-  const reviews = await getPublicReviews(business.slug);
 
-  return (
-    <BusinessProfile business={business} locale={locale} reviews={reviews} />
-  );
+  return <BusinessProfile business={business} locale={locale} />;
 }
