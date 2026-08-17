@@ -11,6 +11,7 @@ import {
 } from "@/components/business/phone-format";
 import { Combobox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 /**
  * A phone entry: a searchable country picker + a number field that formats as you type. The country
@@ -22,12 +23,15 @@ export function PhoneField({
   value,
   country,
   defaultCountry,
+  invalid,
   onChange,
 }: {
   value: string;
   country?: string;
   /** Falls back to the business's address country so a fresh phone starts in the right place. */
   defaultCountry?: string;
+  /** Flags the country picker (a number was entered without one) — it must be chosen to save. */
+  invalid?: boolean;
   onChange: (value: string, country?: string) => void;
 }) {
   const locale = useLocale();
@@ -70,7 +74,10 @@ export function PhoneField({
         placeholder={t("country")}
         searchPlaceholder={t("countrySearch")}
         emptyText={t("countryEmpty")}
-        className="sm:w-44"
+        className={cn(
+          "sm:w-44",
+          invalid && "border-destructive ring-destructive/25 ring-2",
+        )}
       />
       <Input
         type="tel"

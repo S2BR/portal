@@ -29,6 +29,7 @@ import {
   useRef,
   useState,
   type FormEvent,
+  type MouseEvent,
   type ReactNode,
 } from "react";
 import { toast } from "sonner";
@@ -324,14 +325,20 @@ function buildPayload(edit: EditState) {
         })),
       ...edit.phones
         .filter((row) => row.value.trim() !== "")
-        .map((row) => ({
-          id: row.id,
-          type: "phone" as const,
-          value: row.value.trim(),
-          name: trimOrNull(row.name),
-          // A phone carries its country in the meta bag; other types have no meta.
-          meta: row.country ? { country: row.country } : null,
-        })),
+        .map((row) => {
+          // A phone carries its country in the meta bag (other types have none). Fall back to the
+          // address country — the same default the field shows — so what's displayed is what's saved.
+          const country =
+            row.country ??
+            (edit.addresses[0]?.country?.toUpperCase() || undefined);
+          return {
+            id: row.id,
+            type: "phone" as const,
+            value: row.value.trim(),
+            name: trimOrNull(row.name),
+            meta: country ? { country } : null,
+          };
+        }),
       ...edit.emails
         .filter((row) => row.value.trim() !== "")
         .map((row) => ({
@@ -445,6 +452,10 @@ export function BusinessDetail({ slug }: { slug: string }) {
   const [edit, setEdit] = useState<EditState | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [nameError, setNameError] = useState<string | null>(null);
+  // Keys of phone rows that have a number but no country picked — flagged after a blocked save.
+  const [invalidPhoneKeys, setInvalidPhoneKeys] = useState<Set<string>>(
+    () => new Set(),
+  );
   const [saving, setSaving] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -621,6 +632,19 @@ export function BusinessDetail({ slug }: { slug: string }) {
     }
     if (!edit.name.trim()) {
       setNameError(create("errorNameRequired"));
+      return;
+    }
+    // A phone with a number must have a country (a +1 could be CA or US) — block and flag the pickers.
+    // The address country counts as the effective default (it's what the field shows).
+    const defaultCountry =
+      edit.addresses[0]?.country?.toUpperCase() || undefined;
+    const phonesMissingCountry = edit.phones
+      .filter((row) => row.value.trim() !== "" && !(row.country ?? defaultCountry))
+      .map((row) => row.key);
+    if (phonesMissingCountry.length > 0) {
+      setInvalidPhoneKeys(new Set(phonesMissingCountry));
+      setActiveTab("contact");
+      toast.error(create("errorPhoneCountry"));
       return;
     }
 
@@ -1225,9 +1249,17 @@ export function BusinessDetail({ slug }: { slug: string }) {
                           value={row.value}
                           country={row.country}
                           defaultCountry={edit.addresses[0]?.country?.toUpperCase()}
-                          onChange={(value, country) =>
-                            update({ value, country })
-                          }
+                          invalid={invalidPhoneKeys.has(row.key)}
+                          onChange={(value, country) => {
+                            update({ value, country });
+                            if (country && invalidPhoneKeys.has(row.key)) {
+                              setInvalidPhoneKeys((prev) => {
+                                const next = new Set(prev);
+                                next.delete(row.key);
+                                return next;
+                              });
+                            }
+                          }}
                         />
                         <Input
                           value={row.name}
@@ -1708,12 +1740,22 @@ function PrefixInput({
   onChange: (value: string) => void;
   placeholder?: string;
 }) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  // Clicking the prefix focuses the field (preventDefault so the span doesn't steal the click first).
+  const focusInput = (event: MouseEvent) => {
+    event.preventDefault();
+    inputRef.current?.focus();
+  };
   return (
     <div className="border-input focus-within:border-ring focus-within:ring-ring/50 dark:bg-input/30 flex h-11 w-full min-w-0 flex-1 items-center rounded-lg border bg-transparent transition-colors focus-within:ring-3">
-      <span className="text-muted-foreground shrink-0 ps-3.5 text-base select-none">
+      <span
+        onMouseDown={focusInput}
+        className="text-muted-foreground shrink-0 cursor-text ps-3.5 text-base select-none"
+      >
         {prefix}
       </span>
       <input
+        ref={inputRef}
         type="text"
         inputMode="url"
         value={value}
@@ -1738,11 +1780,17 @@ function LinkedinInput({
   placeholder?: string;
 }) {
   const t = useTranslations("businesses.detail.linkedin");
+  const inputRef = useRef<HTMLInputElement>(null);
   const match = value.match(/^(in|company)\/(.*)$/i);
   const kind = (match?.[1]?.toLowerCase() ?? "in") as "in" | "company";
   const name = match?.[2] ?? value.replace(/^\/+/, "");
   const set = (nextKind: string, nextName: string) => {
     onChange(`${nextKind}/${nextName}`);
+  };
+  // Clicking either prefix segment focuses the handle field.
+  const focusInput = (event: MouseEvent) => {
+    event.preventDefault();
+    inputRef.current?.focus();
   };
 
   // The green dot matches the selection marker used in the menus (instead of a check).
@@ -1752,7 +1800,10 @@ function LinkedinInput({
 
   return (
     <div className="border-input focus-within:border-ring focus-within:ring-ring/50 dark:bg-input/30 flex h-11 w-full min-w-0 flex-1 items-center rounded-lg border bg-transparent transition-colors focus-within:ring-3">
-      <span className="text-muted-foreground shrink-0 ps-3.5 text-base select-none">
+      <span
+        onMouseDown={focusInput}
+        className="text-muted-foreground shrink-0 cursor-text ps-3.5 text-base select-none"
+      >
         https://linkedin.com/
       </span>
       <Select value={kind} onValueChange={(nextKind) => set(nextKind, name)}>
@@ -1771,10 +1822,14 @@ function LinkedinInput({
           </SelectItem>
         </SelectContent>
       </Select>
-      <span className="text-muted-foreground shrink-0 text-base select-none">
+      <span
+        onMouseDown={focusInput}
+        className="text-muted-foreground shrink-0 cursor-text text-base select-none"
+      >
         /
       </span>
       <input
+        ref={inputRef}
         type="text"
         inputMode="url"
         value={name}
@@ -1879,6 +1934,27 @@ function RepeaterEditor<TRow extends { key: string }>({
   // The drag handle only appears once there's something to reorder.
   const sortable = rows.length > 1;
 
+  const containerRef = useRef<HTMLDivElement>(null);
+  const pendingFocusRef = useRef<string | null>(null);
+
+  // After a row is added, focus its first text field so the user can start typing straight away.
+  // A ref (not state) holds the pending key so clearing it doesn't trigger another render.
+  useEffect(() => {
+    const key = pendingFocusRef.current;
+    if (!key) {
+      return;
+    }
+    pendingFocusRef.current = null;
+    const selector = `[data-row-key="${CSS.escape(key)}"] input, [data-row-key="${CSS.escape(key)}"] textarea`;
+    containerRef.current?.querySelector<HTMLElement>(selector)?.focus();
+  }, [rows]);
+
+  const add = () => {
+    const row = makeRow();
+    pendingFocusRef.current = row.key;
+    onChange([...rows, row]);
+  };
+
   const update = (key: string, changes: Partial<TRow>) =>
     onChange(rows.map((r) => (r.key === key ? { ...r, ...changes } : r)));
   const remove = (key: string) =>
@@ -1902,7 +1978,7 @@ function RepeaterEditor<TRow extends { key: string }>({
   );
 
   return (
-    <div className="space-y-3">
+    <div ref={containerRef} className="space-y-3">
       {sortable ? (
         <SortableList
           items={rows}
@@ -1913,6 +1989,7 @@ function RepeaterEditor<TRow extends { key: string }>({
             <div
               ref={setNodeRef}
               style={style}
+              data-row-key={row.key}
               className={cn(
                 "flex flex-wrap items-center gap-2 rounded-md p-1",
                 isDragging && placeholderClass,
@@ -1953,6 +2030,7 @@ function RepeaterEditor<TRow extends { key: string }>({
           {rows.map((row) => (
             <div
               key={row.key}
+              data-row-key={row.key}
               className="flex flex-wrap items-center gap-2 p-1"
             >
               {rowBody(row, null)}
@@ -1960,12 +2038,7 @@ function RepeaterEditor<TRow extends { key: string }>({
           ))}
         </div>
       )}
-      <Button
-        type="button"
-        variant="outline"
-        size="sm"
-        onClick={() => onChange([...rows, makeRow()])}
-      >
+      <Button type="button" variant="outline" size="sm" onClick={add}>
         <Plus className="size-4" />
         {addLabel}
       </Button>

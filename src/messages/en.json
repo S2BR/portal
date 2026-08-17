@@ -438,6 +438,7 @@
     "submitting": "Creating…",
     "createdToast": "Business created.",
     "errorNameRequired": "Please enter a business name.",
+    "errorPhoneCountry": "Choose a country for each phone number.",
     "errorTypeRequired": "Please choose a business type.",
     "errorGeneric": "Something went wrong. Please try again."
   },
