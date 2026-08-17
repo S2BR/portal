@@ -57,6 +57,8 @@ type DirectoryHit = {
   type: PublicBusinessCard["type"];
   categories?: string[];
   city?: string;
+  rating_avg?: number;
+  rating_count?: number;
   _geoloc?: { lat: number; lng: number };
 };
 
@@ -89,6 +91,8 @@ function hitToCard(
       slug,
       name: categoryLabels[slug] ?? slug,
     })),
+    rating_avg: hit.rating_avg ?? 0,
+    rating_count: hit.rating_count ?? 0,
   };
 }
 

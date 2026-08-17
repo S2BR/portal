@@ -493,6 +493,28 @@
       "showAll": "Show all"
     },
     "public": {
+      "reviews": {
+        "title": "Reviews",
+        "count": "{count, plural, one {# review} other {# reviews}}",
+        "writeTitle": "Write a review",
+        "yourReview": "Your review",
+        "signInPrompt": "Sign in to leave a review.",
+        "placeholder": "Share your experience (optional)",
+        "submit": "Post review",
+        "update": "Update review",
+        "delete": "Delete",
+        "loadMore": "Show more reviews",
+        "empty": "No reviews yet — be the first.",
+        "ownerReply": "Response from the owner",
+        "report": "Report",
+        "reported": "Thanks — we’ll take a look.",
+        "ratingRequired": "Please pick a star rating.",
+        "cannotReviewOwn": "You can’t review your own business.",
+        "saved": "Review posted",
+        "removed": "Review removed",
+        "error": "Something went wrong.",
+        "stars": "{count, plural, one {# star} other {# stars}}"
+      },
       "about": "About",
       "amenities": "Amenities",
       "photos": "Photos",
@@ -787,8 +809,27 @@
       "addEmail": "Add email"
     },
     "workspace": {
+      "reviews": {
+        "title": "Reviews",
+        "subtitle": "Everything people are saying about your business — reply to any of them.",
+        "empty": "No reviews yet. They’ll show up here as customers leave them.",
+        "hidden": "Hidden",
+        "reports": "{count, plural, one {# report} other {# reports}}",
+        "reply": "Reply",
+        "editReply": "Edit",
+        "removeReply": "Remove",
+        "replyPlaceholder": "Write a public reply…",
+        "save": "Save reply",
+        "cancel": "Cancel",
+        "yourReply": "Your reply",
+        "saved": "Reply saved",
+        "removed": "Reply removed",
+        "error": "Something went wrong.",
+        "loadMore": "Show more"
+      },
       "create": "Create new company",
       "nav": {
+        "reviews": "Reviews",
         "dashboard": "Dashboard",
         "information": "Company information",
         "products": "Products",

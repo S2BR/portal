@@ -493,6 +493,28 @@
       "showAll": "Tout afficher"
     },
     "public": {
+      "reviews": {
+        "title": "Avis",
+        "count": "{count, plural, one {# avis} other {# avis}}",
+        "writeTitle": "Rédiger un avis",
+        "yourReview": "Votre avis",
+        "signInPrompt": "Connectez-vous pour laisser un avis.",
+        "placeholder": "Partagez votre expérience (facultatif)",
+        "submit": "Publier l’avis",
+        "update": "Mettre à jour l’avis",
+        "delete": "Supprimer",
+        "loadMore": "Afficher plus d’avis",
+        "empty": "Aucun avis pour l’instant. Soyez le premier.",
+        "ownerReply": "Réponse de l’entreprise",
+        "report": "Signaler",
+        "reported": "Merci, nous allons vérifier.",
+        "ratingRequired": "Choisissez une note en étoiles.",
+        "cannotReviewOwn": "Vous ne pouvez pas évaluer votre propre entreprise.",
+        "saved": "Avis publié",
+        "removed": "Avis supprimé",
+        "error": "Une erreur est survenue.",
+        "stars": "{count, plural, one {# étoile} other {# étoiles}}"
+      },
       "about": "À propos",
       "amenities": "Commodités",
       "photos": "Photos",
@@ -787,8 +809,27 @@
       "addEmail": "Ajouter un courriel"
     },
     "workspace": {
+      "reviews": {
+        "title": "Avis",
+        "subtitle": "Tout ce que les gens disent de votre entreprise. Vous pouvez répondre à chaque avis.",
+        "empty": "Aucun avis pour l’instant. Ils apparaîtront ici à mesure que vos clients en laissent.",
+        "hidden": "Masqué",
+        "reports": "{count, plural, one {# signalement} other {# signalements}}",
+        "reply": "Répondre",
+        "editReply": "Modifier",
+        "removeReply": "Retirer",
+        "replyPlaceholder": "Rédigez une réponse publique…",
+        "save": "Enregistrer la réponse",
+        "cancel": "Annuler",
+        "yourReply": "Votre réponse",
+        "saved": "Réponse enregistrée",
+        "removed": "Réponse retirée",
+        "error": "Une erreur est survenue.",
+        "loadMore": "Afficher plus"
+      },
       "create": "Créer une entreprise",
       "nav": {
+        "reviews": "Avis",
         "dashboard": "Tableau de bord",
         "information": "Informations de l’entreprise",
         "products": "Produits",

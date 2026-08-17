@@ -1,4 +1,4 @@
-import { MapPin, Navigation } from "lucide-react";
+import { MapPin, Navigation, Star } from "lucide-react";
 import Link from "next/link";
 
 import { BusinessLogo } from "@/components/business/business-logo";
@@ -44,6 +44,18 @@ export function BusinessCard({
             <span className="text-muted-foreground inline-flex items-center gap-1 text-xs">
               <MapPin className="size-3" aria-hidden />
               {business.city}
+            </span>
+          ) : null}
+          {business.rating_count > 0 ? (
+            <span className="inline-flex items-center gap-1 text-xs font-medium tabular-nums">
+              <Star
+                className="text-brand-gold size-3 fill-current stroke-0"
+                aria-hidden
+              />
+              {business.rating_avg.toFixed(1)}
+              <span className="text-muted-foreground font-normal">
+                ({business.rating_count})
+              </span>
             </span>
           ) : null}
           {distanceLabel ? (

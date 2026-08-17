@@ -10,6 +10,8 @@ import {
   socialLabel,
 } from "@/components/business/business-constants";
 import { ProfileMap } from "@/components/business/public/profile-map";
+import { ReviewsSection } from "@/components/business/public/reviews-section";
+import { StarRating } from "@/components/business/public/star-rating";
 import { ClosuresReadout } from "@/components/business/closures-editor";
 import { flagEmoji, formatPhone } from "@/components/business/phone-format";
 import { ShareButton } from "@/components/business/public/share-button";
@@ -18,7 +20,7 @@ import { formatBusinessAddress } from "@/lib/format-address";
 import { formatTime } from "@/lib/format-time";
 import { cn } from "@/lib/utils";
 
-import type { PublicBusiness } from "@/lib/public-business";
+import type { PublicBusiness, PublicReviewsPage } from "@/lib/public-business";
 
 /** The maps deep-link for the "Directions" action — by coordinates when present, else by address. */
 function directionsHref(business: PublicBusiness): string | null {
@@ -38,9 +40,11 @@ function directionsHref(business: PublicBusiness): string | null {
 export async function BusinessProfile({
   business,
   locale,
+  reviews,
 }: {
   business: PublicBusiness;
   locale: string;
+  reviews: PublicReviewsPage;
 }) {
   const t = await getTranslations("businesses.public");
   const days = await getTranslations("businesses.detail.days");
@@ -93,6 +97,17 @@ export async function BusinessProfile({
             <p className="text-muted-foreground mt-1.5 max-w-prose text-base text-pretty sm:text-lg">
               {business.headline}
             </p>
+          ) : null}
+          {business.rating_count > 0 ? (
+            <div className="mt-2.5 flex items-center gap-2">
+              <StarRating value={business.rating_avg} size={18} />
+              <span className="text-sm font-semibold tabular-nums">
+                {business.rating_avg.toFixed(1)}
+              </span>
+              <span className="text-muted-foreground text-sm">
+                {t("reviews.count", { count: business.rating_count })}
+              </span>
+            </div>
           ) : null}
           {business.categories.length > 0 ? (
             <div className="mt-3 flex flex-wrap items-center gap-2">
@@ -204,6 +219,12 @@ export async function BusinessProfile({
               </div>
             </section>
           ) : null}
+
+          <ReviewsSection
+            slug={business.slug}
+            initial={reviews}
+            ratingCount={business.rating_count}
+          />
         </div>
 
         {/* Sidebar */}

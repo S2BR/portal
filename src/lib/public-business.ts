@@ -58,8 +58,50 @@ export interface PublicBusiness {
   categories: Category[];
   amenities: Amenity[];
   images: BusinessImage[];
+  /** Aggregate rating from publicly-visible reviews; `rating_avg` is 0 when there are none. */
+  rating_avg: number;
+  rating_count: number;
   is_claimed: boolean;
   created_at: string | null;
+}
+
+/** A single public review on a business's profile. */
+export interface PublicReview {
+  id: string;
+  rating: number;
+  body: string | null;
+  reviewer: { name: string | null; avatar: string | null };
+  owner_reply: string | null;
+  owner_replied_at: string | null;
+  created_at: string | null;
+}
+
+/** A paginated page of a business's public reviews. */
+export interface PublicReviewsPage {
+  data: PublicReview[];
+  meta: { current_page: number; last_page: number; total: number };
+}
+
+const EMPTY_REVIEWS: PublicReviewsPage = {
+  data: [],
+  meta: { current_page: 1, last_page: 1, total: 0 },
+};
+
+/**
+ * Fetch a page of a business's public reviews — unauthenticated, server-side. Degrades to an empty
+ * page if the API is unreachable, so the profile still renders.
+ */
+export async function getPublicReviews(
+  slug: string,
+  page = 1,
+): Promise<PublicReviewsPage> {
+  const suffix = page > 1 ? `?page=${page}` : "";
+  const response = await portalFetch<PublicReviewsPage>({
+    method: "GET",
+    path: `/public/businesses/${encodeURIComponent(slug)}/reviews${suffix}`,
+  });
+
+  return response.ok ? response.data : EMPTY_REVIEWS;
 }
 
 /**
@@ -91,6 +133,9 @@ export interface PublicBusinessCard {
   latitude: number | null;
   longitude: number | null;
   categories: { slug: string; name: string }[];
+  /** Aggregate rating from publicly-visible reviews; `rating_avg` is 0 when there are none. */
+  rating_avg: number;
+  rating_count: number;
 }
 
 /** One entry in the public business sitemap feed. */

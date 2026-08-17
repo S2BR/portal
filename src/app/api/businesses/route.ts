@@ -142,6 +142,9 @@ export interface Business {
   is_published: boolean;
   /** Operator lock (moderation override): frozen for the owner + hidden from public. */
   is_locked: boolean;
+  /** Aggregate rating from publicly-visible reviews; `rating_avg` is 0 when there are none. */
+  rating_avg: number;
+  rating_count: number;
   /**
    * The publish-readiness checklist — present on the detail response (omitted from the list). The API
    * owns this: `is_publishable` gates going live, and the API refuses a publish that doesn't meet it.

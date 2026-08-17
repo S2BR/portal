@@ -493,6 +493,28 @@
       "showAll": "Mostrar todos"
     },
     "public": {
+      "reviews": {
+        "title": "Avaliações",
+        "count": "{count, plural, one {# avaliação} other {# avaliações}}",
+        "writeTitle": "Escreva uma avaliação",
+        "yourReview": "Sua avaliação",
+        "signInPrompt": "Entre para deixar uma avaliação.",
+        "placeholder": "Conte sua experiência (opcional)",
+        "submit": "Publicar avaliação",
+        "update": "Atualizar avaliação",
+        "delete": "Excluir",
+        "loadMore": "Ver mais avaliações",
+        "empty": "Ainda não há avaliações. Seja o primeiro.",
+        "ownerReply": "Resposta da empresa",
+        "report": "Denunciar",
+        "reported": "Obrigado, vamos verificar.",
+        "ratingRequired": "Escolha uma nota em estrelas.",
+        "cannotReviewOwn": "Você não pode avaliar o seu próprio negócio.",
+        "saved": "Avaliação publicada",
+        "removed": "Avaliação removida",
+        "error": "Algo deu errado.",
+        "stars": "{count, plural, one {# estrela} other {# estrelas}}"
+      },
       "about": "Sobre",
       "amenities": "Comodidades",
       "photos": "Fotos",
@@ -787,8 +809,27 @@
       "addEmail": "Adicionar e-mail"
     },
     "workspace": {
+      "reviews": {
+        "title": "Avaliações",
+        "subtitle": "Tudo o que dizem sobre o seu negócio. Você pode responder a cada avaliação.",
+        "empty": "Ainda não há avaliações. Elas vão aparecer aqui conforme seus clientes as deixarem.",
+        "hidden": "Oculta",
+        "reports": "{count, plural, one {# denúncia} other {# denúncias}}",
+        "reply": "Responder",
+        "editReply": "Editar",
+        "removeReply": "Remover",
+        "replyPlaceholder": "Escreva uma resposta pública…",
+        "save": "Salvar resposta",
+        "cancel": "Cancelar",
+        "yourReply": "Sua resposta",
+        "saved": "Resposta salva",
+        "removed": "Resposta removida",
+        "error": "Algo deu errado.",
+        "loadMore": "Ver mais"
+      },
       "create": "Criar nova empresa",
       "nav": {
+        "reviews": "Avaliações",
         "dashboard": "Painel",
         "information": "Informações da empresa",
         "products": "Produtos",
