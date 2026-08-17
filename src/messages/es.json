@@ -31,17 +31,17 @@
     },
     "verify": {
       "title": "Verifica tu correo",
-      "subtitle": "Introduce el código que enviamos a {email}.",
+      "subtitle": "Ingresa el código que enviamos a {email}.",
       "submit": "Verificar correo",
       "resend": "Reenviar código",
       "resent": "Un nuevo código está en camino."
     },
     "forgot": {
       "title": "Restablece tu contraseña",
-      "subtitle": "Introduce tu correo y te enviaremos un código de restablecimiento.",
+      "subtitle": "Ingresa tu correo y te enviaremos un código de restablecimiento.",
       "submit": "Enviar código",
       "resetTitle": "Establece una nueva contraseña",
-      "resetSubtitle": "Introduce el código que enviamos a {email} y elige una nueva contraseña.",
+      "resetSubtitle": "Ingresa el código que enviamos a {email} y elige una nueva contraseña.",
       "resetSubmit": "Restablecer contraseña"
     },
     "fields": {
@@ -59,7 +59,7 @@
       "otpSubtitle": "Enviamos un código de verificación a {email}.",
       "otpSubmit": "Verificar",
       "twoFactorTitle": "Autenticación de dos factores",
-      "twoFactorSubtitle": "Introduce el código de tu aplicación de autenticación.",
+      "twoFactorSubtitle": "Ingresa el código de tu aplicación de autenticación.",
       "back": "Volver a iniciar sesión"
     },
     "links": {
@@ -70,10 +70,10 @@
       "forgotPassword": "¿Olvidaste tu contraseña?"
     },
     "errors": {
-      "name": "Introduce tu nombre.",
-      "email": "Introduce una dirección de correo válida.",
-      "password": "Introduce tu contraseña.",
-      "code": "Introduce el código de verificación.",
+      "name": "Ingresa tu nombre.",
+      "email": "Ingresa una dirección de correo válida.",
+      "password": "Ingresa tu contraseña.",
+      "code": "Ingresa el código de verificación.",
       "passwordPolicy": "Tu contraseña no cumple los requisitos.",
       "passwordMismatch": "Las contraseñas no coinciden.",
       "rateLimited": "Demasiados intentos. Espera un momento e inténtalo de nuevo.",
@@ -152,7 +152,7 @@
     },
     "modules": {
       "title": "Próximamente",
-      "subtitle": "Se acercan nuevos espacios.",
+      "subtitle": "Pronto llegarán nuevos espacios.",
       "business": "Negocios",
       "businessDesc": "Gestiona el perfil de tu negocio, tus anuncios y tu equipo.",
       "community": "Comunidad",
@@ -260,13 +260,13 @@
     "enable": "Activar",
     "disable": "Desactivar",
     "scan": "Escanea este código QR con tu aplicación de autenticación.",
-    "orEnter": "O introduce esta clave manualmente:",
+    "orEnter": "O ingresa esta clave manualmente:",
     "confirm": "Confirmar",
     "cancel": "Cancelar",
     "recoveryTitle": "Guarda tus códigos de recuperación",
     "recoverySubtitle": "Guárdalos en un lugar seguro. Cada uno se puede usar una vez si pierdes tu autenticador.",
     "done": "Los he guardado",
-    "disablePrompt": "Introduce tu contraseña para desactivar la autenticación de dos factores.",
+    "disablePrompt": "Ingresa tu contraseña para desactivar la autenticación de dos factores.",
     "regenerate": "Regenerar códigos de recuperación",
     "regeneratePrompt": "Ingresa tu contraseña para generar un nuevo conjunto de códigos de recuperación. Tus códigos actuales dejarán de funcionar.",
     "enabledToast": "La autenticación de dos factores está activada",
@@ -280,7 +280,7 @@
     "newEmail": "Nuevo correo",
     "submit": "Enviar código de verificación",
     "verifyTitle": "Verifica tu nuevo correo",
-    "verifySubtitle": "Introduce el código que enviamos a {email}.",
+    "verifySubtitle": "Ingresa el código que enviamos a {email}.",
     "verifySubmit": "Confirmar",
     "cancel": "Cancelar"
   },
@@ -307,10 +307,10 @@
     "addedToast": "Llave de acceso añadida",
     "removedToast": "Llave de acceso eliminada",
     "nameLabel": "Nombre",
-    "namePlaceholder": "p. ej. Mi portátil",
+    "namePlaceholder": "p. ej. Mi laptop",
     "lastUsed": "Usada por última vez el {date}",
     "neverUsed": "Nunca usada",
-    "removePrompt": "Introduce tu contraseña para eliminar esta llave de acceso."
+    "removePrompt": "Ingresa tu contraseña para eliminar esta llave de acceso."
   },
   "deleteAccount": {
     "title": "Eliminar cuenta",
@@ -375,15 +375,15 @@
     },
     "notify": {
       "open": "Avísame en el lanzamiento",
-      "title": "Recibe aviso en el lanzamiento",
+      "title": "Recibe un aviso en el lanzamiento",
       "description": "Deja tu nombre y correo — te avisaremos en cuanto S2BR esté disponible.",
       "name": "Tu nombre",
       "email": "Correo electrónico",
       "submit": "Avísame",
       "success": "¡Estás en la lista! Te enviaremos un correo cuando S2BR se lance.",
       "errors": {
-        "name": "Introduce tu nombre.",
-        "email": "Introduce un correo electrónico válido.",
+        "name": "Ingresa tu nombre.",
+        "email": "Ingresa un correo electrónico válido.",
         "captcha": "Completa el captcha.",
         "rateLimited": "Demasiados intentos. Inténtalo de nuevo en un momento.",
         "generic": "Algo salió mal. Inténtalo de nuevo."
@@ -426,18 +426,18 @@
       "company": {
         "title": "Empresa",
         "description": "Un negocio u organización registrada.",
-        "info": "Una organización que proporciona bienes o servicios, típicamente con múltiples empleados y una estructura formal."
+        "info": "Una organización que ofrece bienes o servicios, por lo general con varios empleados y una estructura formal."
       },
       "selfEmployed": {
         "title": "Autónomo",
         "description": "Trabajas por tu cuenta: freelance, autónomo, independiente.",
-        "info": "Un individuo o profesional que trabaja por cuenta propia y no está empleado por una empresa, a menudo ofreciendo servicios especializados o trabajo freelance."
+        "info": "Una persona o profesional que trabaja por cuenta propia y no trabaja para una empresa, y que suele ofrecer servicios especializados o trabajo freelance."
       }
     },
     "submit": "Crear negocio",
     "submitting": "Creando…",
     "createdToast": "Negocio creado.",
-    "errorNameRequired": "Introduce el nombre del negocio.",
+    "errorNameRequired": "Ingresa el nombre del negocio.",
     "errorPhoneCountry": "Elige un país para cada teléfono.",
     "errorTypeRequired": "Elige un tipo de negocio.",
     "errorGeneric": "Algo salió mal. Inténtalo de nuevo."
@@ -447,12 +447,12 @@
     "subtitle": "Los negocios que gestionas. Selecciona uno para verlo o editarlo.",
     "reorder": "Reordenar",
     "reorderError": "No se pudo guardar el nuevo orden. Inténtalo de nuevo.",
-    "empty": "Aún no has añadido ningún negocio.",
+    "empty": "Aún no has agregado ningún negocio.",
     "createFirst": "Crea tu primer negocio",
-    "createAnother": "Añadir negocio",
+    "createAnother": "Agregar negocio",
     "locked": {
       "title": "Este negocio está bloqueado",
-      "body": "Un operador ha bloqueado este negocio, por lo que no se puede editar ni mostrar públicamente por ahora. Si tienes dudas, contacta con soporte.",
+      "body": "Un operador ha bloqueado este negocio, por lo que no se puede editar ni mostrar públicamente por ahora. Si tienes dudas, contacta a soporte.",
       "badge": "Bloqueado"
     },
     "directory": {
@@ -552,7 +552,7 @@
       "leaveDiscard": "Descartar cambios",
       "deletedToast": "Negocio eliminado.",
       "notFound": "Ese negocio no existe o no tienes acceso a él.",
-      "created": "Añadido el {date}",
+      "created": "Agregado el {date}",
       "deleteTitle": "¿Eliminar este negocio?",
       "deleteBody": "Esto quita «{name}» de tus negocios.",
       "deleteConfirm": "Eliminar negocio",
@@ -563,15 +563,15 @@
           "description": "Tu logo, el nombre de la empresa, el eslogan y una breve descripción."
         },
         "businessType": {
-          "title": "Tipo de Empresa",
+          "title": "Tipo de empresa",
           "description": "Selecciona el tipo que mejor describe tu empresa."
         },
         "categories": {
-          "title": "Categoría y Subcategoría",
+          "title": "Categoría y subcategoría",
           "description": "Selecciona una o más categorías que mejor se ajusten a tu empresa. Las subcategorías se filtrarán según tu selección de categoría."
         },
         "website": {
-          "title": "Sitio Web",
+          "title": "Sitio web",
           "description": "Proporciona la información de contacto de tu empresa. Esto ayudará a los clientes a contactarte fácilmente."
         },
         "phone": {
@@ -579,7 +579,7 @@
           "description": "Agrega uno o más números de teléfono para tu empresa. Los clientes pueden usar estos números para contactarte directamente. Puedes especificar una etiqueta para cada número (ej. \"Línea Principal\", \"Atención al Cliente\") para indicar su propósito."
         },
         "email": {
-          "title": "Correo Electrónico",
+          "title": "Correo electrónico",
           "description": "Agrega una o más direcciones de correo electrónico para tu empresa. Los clientes pueden usar estos emails para contactarte directamente. Puedes especificar una etiqueta para cada email (ej. \"Consultas Generales\", \"Soporte\") para indicar su propósito."
         },
         "amenities": {
@@ -587,24 +587,24 @@
           "description": "Selecciona los servicios y las características que ofrece tu empresa."
         },
         "address": {
-          "title": "Dirección de la Empresa",
-          "description": "Comienza escribiendo tu dirección en la caja de búsqueda. Selecciona la dirección correcta del menú desplegable, y el resto de los campos se completarán automáticamente con la información correcta. Puedes hacer ajustes a cualquier campo si es necesario."
+          "title": "Dirección de la empresa",
+          "description": "Comienza a escribir tu dirección en el cuadro de búsqueda. Selecciona la dirección correcta del menú desplegable y el resto de los campos se completarán automáticamente con la información correcta. Puedes ajustar cualquier campo si es necesario."
         },
         "hours": {
-          "title": "Horarios de Atención de la Empresa",
-          "description": "Establece los horarios de atención de tu empresa para cada día de la semana. Puedes especificar múltiples rangos de tiempo para cada día (ej. 9:00 AM - 12:00 PM, 1:00 PM - 5:00 PM) para acomodar descansos o turnos divididos. Esta información ayudará a los clientes a saber cuándo tu empresa está abierta."
+          "title": "Horario de atención",
+          "description": "Establece el horario de atención de tu empresa para cada día de la semana. Puedes especificar varias franjas horarias para cada día (ej. 9:00 AM - 12:00 PM, 1:00 PM - 5:00 PM) para incluir descansos o turnos divididos. Esta información ayudará a los clientes a saber cuándo tu empresa está abierta."
         },
         "closures": {
           "title": "Feriados y horarios especiales",
           "description": "Marca los días en que tu empresa está cerrada — o abierta con horario especial — como festivos, un cierre puntual o medio día. Elige la(s) fecha(s) en el calendario, ponles nombre y marca las que se repiten cada año."
         },
         "socials": {
-          "title": "Enlaces de Redes Sociales",
+          "title": "Enlaces de redes sociales",
           "description": "Agrega enlaces a tus perfiles de redes sociales. Esto ayudará a los clientes a encontrarte y seguirte en redes sociales."
         },
         "branding": {
           "title": "Marca",
-          "description": "Sube una imagen de banner que represente tu empresa. Esta se mostrará prominentemente en tu página de listado. También puedes elegir un color primario que coincida con tu marca, que se usará para acentos y resaltados en tu listado."
+          "description": "Sube una imagen de banner que represente tu empresa. Se mostrará de forma destacada en tu página de listado. También puedes elegir un color principal que combine con tu marca, que se usará para acentos y detalles en tu listado."
         },
         "images": {
           "title": "Imágenes",
@@ -714,7 +714,7 @@
       },
       "mainAddress": "Dirección principal",
       "reorder": "Reordenar",
-      "makeMainQuestion": "¿Hacer esta la dirección principal?",
+      "makeMainQuestion": "¿Definir esta como dirección principal?",
       "setAsMain": "Definir como principal",
       "linkedin": {
         "person": "Soy un profesional",
@@ -725,7 +725,7 @@
     "addressNoteTitle": "¿Por qué se requiere mi dirección?",
     "addressNoteBody": "Incluso si tu empresa opera de forma remota o no tiene una tienda física, tu dirección es necesaria para ser agregada al listado correcto y asegurar que tu empresa aparezca en los resultados de búsqueda relevantes. Si no tienes una dirección física, puedes usar tu dirección de casa o un punto de referencia cercano como referencia. También puedes elegir ocultar tu dirección del listado público si lo prefieres.",
     "hideAddress": "Ocultar mi dirección del listado público",
-    "hideAddressHint": "Se conserva para la clasificación y búsqueda correctas, pero no se mostrará públicamente.",
+    "hideAddressHint": "Se conserva para el listado y la búsqueda correctos, pero no se mostrará públicamente.",
     "addressHidden": "Oculta",
     "locationHint": "Arrastra el pin o toca el mapa para corregir el punto exacto.",
     "locationEmpty": "Elige una dirección arriba para ubicarla en el mapa.",

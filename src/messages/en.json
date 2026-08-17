@@ -254,7 +254,7 @@
   },
   "twoFactor": {
     "title": "Two-factor authentication",
-    "description": "Add a second step to sign-in using an authenticator app.",
+    "description": "Add a second sign-in step using an authenticator app.",
     "statusOn": "Enabled",
     "statusOff": "Disabled",
     "enable": "Enable",
@@ -697,7 +697,7 @@
       "closuresGroupSingle": "Single",
       "closuresGroupRecurring": "Recurring",
       "timezoneLabel": "Timezone",
-      "timezoneHint": "All hours below — weekly and holidays — are read in this zone. It defaults from your main address.",
+      "timezoneHint": "All hours below — weekly and holidays — use this zone. It's taken from your main address.",
       "timezonePlaceholder": "Select a timezone",
       "searchTimezone": "Search timezones…",
       "noTimezone": "No timezone found",
