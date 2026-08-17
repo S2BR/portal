@@ -1,5 +1,6 @@
 import { Globe, Mail, Navigation, Phone } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import Link from "next/link";
 
 import { AddressLines } from "@/components/address/address-lines";
 import { BusinessLogo } from "@/components/business/business-logo";
@@ -10,7 +11,6 @@ import {
   socialLabel,
 } from "@/components/business/business-constants";
 import { ProfileMap } from "@/components/business/public/profile-map";
-import { ReviewsSection } from "@/components/business/public/reviews-section";
 import { StarRating } from "@/components/business/public/star-rating";
 import { ClosuresReadout } from "@/components/business/closures-editor";
 import { flagEmoji, formatPhone } from "@/components/business/phone-format";
@@ -20,7 +20,7 @@ import { formatBusinessAddress } from "@/lib/format-address";
 import { formatTime } from "@/lib/format-time";
 import { cn } from "@/lib/utils";
 
-import type { PublicBusiness, PublicReviewsPage } from "@/lib/public-business";
+import type { PublicBusiness } from "@/lib/public-business";
 
 /** The maps deep-link for the "Directions" action — by coordinates when present, else by address. */
 function directionsHref(business: PublicBusiness): string | null {
@@ -40,11 +40,9 @@ function directionsHref(business: PublicBusiness): string | null {
 export async function BusinessProfile({
   business,
   locale,
-  reviews,
 }: {
   business: PublicBusiness;
   locale: string;
-  reviews: PublicReviewsPage;
 }) {
   const t = await getTranslations("businesses.public");
   const days = await getTranslations("businesses.detail.days");
@@ -99,16 +97,31 @@ export async function BusinessProfile({
             </p>
           ) : null}
           {business.rating_count > 0 ? (
-            <div className="mt-2.5 flex items-center gap-2">
-              <StarRating value={business.rating_avg} size={18} />
-              <span className="text-sm font-semibold tabular-nums">
-                {business.rating_avg.toFixed(1)}
-              </span>
-              <span className="text-muted-foreground text-sm">
-                {t("reviews.count", { count: business.rating_count })}
-              </span>
+            <div className="mt-2.5">
+              <div className="flex items-center gap-2">
+                <StarRating value={business.rating_avg} size={18} />
+                <span className="text-sm font-semibold tabular-nums">
+                  {business.rating_avg.toFixed(1)}
+                </span>
+                <span className="text-muted-foreground text-sm">
+                  {t("reviews.count", { count: business.rating_count })}
+                </span>
+              </div>
+              <Link
+                href={`/businesses/${business.slug}/reviews`}
+                className="text-muted-foreground hover:text-foreground mt-1 inline-block text-sm underline underline-offset-2"
+              >
+                {t("reviews.readReviews")}
+              </Link>
             </div>
-          ) : null}
+          ) : (
+            <Link
+              href={`/businesses/${business.slug}/reviews`}
+              className="text-muted-foreground hover:text-foreground mt-2.5 inline-block text-sm underline-offset-2 hover:underline"
+            >
+              {t("reviews.beFirst")}
+            </Link>
+          )}
           {business.categories.length > 0 ? (
             <div className="mt-3 flex flex-wrap items-center gap-2">
               {business.categories.map((category) => (
@@ -219,12 +232,6 @@ export async function BusinessProfile({
               </div>
             </section>
           ) : null}
-
-          <ReviewsSection
-            slug={business.slug}
-            initial={reviews}
-            ratingCount={business.rating_count}
-          />
         </div>
 
         {/* Sidebar */}

@@ -494,6 +494,20 @@
     },
     "public": {
       "reviews": {
+        "readReviews": "Ver las reseñas",
+        "beFirst": "Sé el primero en reseñar este negocio",
+        "backToProfile": "Volver al perfil",
+        "leaveReview": "Deja una reseña",
+        "allReviews": "Todas las reseñas",
+        "sortLabel": "Ordenar",
+        "showAll": "Ver todas",
+        "filterByStars": "Ver solo reseñas de {star} estrellas",
+        "sort": {
+          "recent": "Más recientes",
+          "oldest": "Más antiguas",
+          "highest": "Mejor valoradas",
+          "lowest": "Peor valoradas"
+        },
         "title": "Reseñas",
         "count": "{count, plural, one {# reseña} other {# reseñas}}",
         "writeTitle": "Escribe una reseña",

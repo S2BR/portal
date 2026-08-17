@@ -76,10 +76,22 @@ export interface PublicReview {
   created_at: string | null;
 }
 
-/** A paginated page of a business's public reviews. */
+/** How the reviews list is ordered. */
+export type ReviewSort = "recent" | "oldest" | "highest" | "lowest";
+
+/** The full-set rating summary (independent of any active filter) — powers the histogram. */
+export interface ReviewSummary {
+  avg: number;
+  count: number;
+  /** Count of reviews per star, keyed "1"–"5". */
+  breakdown: Record<string, number>;
+}
+
+/** A paginated page of a business's public reviews, plus the full-set rating summary. */
 export interface PublicReviewsPage {
   data: PublicReview[];
   meta: { current_page: number; last_page: number; total: number };
+  rating?: ReviewSummary;
 }
 
 const EMPTY_REVIEWS: PublicReviewsPage = {
@@ -88,17 +100,30 @@ const EMPTY_REVIEWS: PublicReviewsPage = {
 };
 
 /**
- * Fetch a page of a business's public reviews — unauthenticated, server-side. Degrades to an empty
- * page if the API is unreachable, so the profile still renders.
+ * Fetch a page of a business's public reviews — unauthenticated, server-side. Ordered by `sort` and
+ * optionally narrowed to a single `rating`. Degrades to an empty page if the API is unreachable.
  */
 export async function getPublicReviews(
   slug: string,
   page = 1,
+  sort: ReviewSort = "recent",
+  rating?: number,
 ): Promise<PublicReviewsPage> {
-  const suffix = page > 1 ? `?page=${page}` : "";
+  const query = new URLSearchParams();
+  if (page > 1) {
+    query.set("page", String(page));
+  }
+  if (sort !== "recent") {
+    query.set("sort", sort);
+  }
+  if (rating) {
+    query.set("rating", String(rating));
+  }
+  const suffix = query.toString();
+
   const response = await portalFetch<PublicReviewsPage>({
     method: "GET",
-    path: `/public/businesses/${encodeURIComponent(slug)}/reviews${suffix}`,
+    path: `/public/businesses/${encodeURIComponent(slug)}/reviews${suffix ? `?${suffix}` : ""}`,
   });
 
   return response.ok ? response.data : EMPTY_REVIEWS;
