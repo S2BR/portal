@@ -5,7 +5,7 @@ import ReactCrop, {
   centerCrop,
   makeAspectCrop,
   type Crop,
-  type PixelCrop as RicPixelCrop,
+  type PercentCrop,
 } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 
@@ -46,7 +46,7 @@ interface ImageCropDialogProps {
 }
 
 /** Center a square crop covering ~90% of the image. */
-function centeredSquare(width: number, height: number): Crop {
+function centeredSquare(width: number, height: number): PercentCrop {
   return centerCrop(
     makeAspectCrop({ unit: "%", width: 90 }, 1, width, height),
     width,
@@ -69,14 +69,19 @@ export function ImageCropDialog({
 }: ImageCropDialogProps) {
   const imageRef = useRef<HTMLImageElement>(null);
   const [crop, setCrop] = useState<Crop>();
-  const [completed, setCompleted] = useState<RicPixelCrop>();
+  // Store the completed crop as PERCENTages, not pixels: it's resolution-independent and is exactly
+  // what the gray mask is drawn from, so the output can't drift from what the mask showed.
+  const [completed, setCompleted] = useState<PercentCrop>();
   const [working, setWorking] = useState(false);
 
   const open = src !== null && file !== null;
 
   function onImageLoad(event: React.SyntheticEvent<HTMLImageElement>) {
     const { width, height } = event.currentTarget;
-    setCrop(centeredSquare(width, height));
+    const initial = centeredSquare(width, height);
+    setCrop(initial);
+    // Seed the completed crop too, so the default (centered) framing is usable without a nudge.
+    setCompleted(initial);
   }
 
   async function confirm() {
@@ -84,14 +89,13 @@ export function ImageCropDialog({
     if (!image || !completed || !file) {
       return;
     }
-    // Selection is in displayed pixels; scale to the image's natural resolution.
-    const scaleX = image.naturalWidth / image.width;
-    const scaleY = image.naturalHeight / image.height;
+    // The selection is a percentage of the image, so it maps to natural pixels directly — no dependency
+    // on the (rounded, sometimes mid-animation) displayed size, which is what made the crop drift.
     const pixels: PixelCrop = {
-      x: completed.x * scaleX,
-      y: completed.y * scaleY,
-      width: completed.width * scaleX,
-      height: completed.height * scaleY,
+      x: (completed.x / 100) * image.naturalWidth,
+      y: (completed.y / 100) * image.naturalHeight,
+      width: (completed.width / 100) * image.naturalWidth,
+      height: (completed.height / 100) * image.naturalHeight,
     };
 
     setWorking(true);
@@ -113,7 +117,7 @@ export function ImageCropDialog({
             <ReactCrop
               crop={crop}
               onChange={(_, percentCrop) => setCrop(percentCrop)}
-              onComplete={(pixelCrop) => setCompleted(pixelCrop)}
+              onComplete={(_, percentCrop) => setCompleted(percentCrop)}
               aspect={1}
               circularCrop={mask === "circle"}
               keepSelection

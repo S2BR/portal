@@ -1564,6 +1564,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
                   slug={slug}
                   kind="banner"
                   value={business.banner}
+                  focal={business.banner_focal}
                   onUpdated={(updated) => setBusiness(updated)}
                 />
                 {editing && edit ? (

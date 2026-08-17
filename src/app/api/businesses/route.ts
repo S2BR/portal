@@ -95,6 +95,12 @@ export interface BusinessColors {
   primary: string | null;
 }
 
+/** Banner focal point as `object-position` percentages (0-100); null = centered. */
+export interface BannerFocal {
+  x: number;
+  y: number;
+}
+
 export interface BusinessImage {
   id: string;
   url: string;
@@ -120,6 +126,8 @@ export interface Business {
   // present since they're columns.
   logo: string | null;
   banner: string | null;
+  /** Banner focal point (object-position); null = centered. */
+  banner_focal: BannerFocal | null;
   contacts?: BusinessContact[];
   socials?: BusinessSocial[];
   opening_hours?: BusinessOpeningHour[];

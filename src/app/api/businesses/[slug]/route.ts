@@ -69,6 +69,11 @@ const updateSchema = z
     published: z.boolean().optional(),
     category_suggestion: z.string().max(500).nullable().optional(),
     colors: z.object({ primary: z.string().nullish() }).nullable().optional(),
+    // Banner focal point (object-position percentages); null recentres it.
+    banner_focal: z
+      .object({ x: z.number().min(0).max(100), y: z.number().min(0).max(100) })
+      .nullable()
+      .optional(),
     contacts: z.array(contactSchema).optional(),
     socials: z.array(socialSchema).optional(),
     opening_hours: z.array(openingHourSchema).optional(),
