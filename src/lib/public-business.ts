@@ -5,6 +5,7 @@ import { portalFetch } from "@/lib/api/client";
 import type { Amenity } from "@/app/api/amenities/route";
 import type { Category } from "@/app/api/categories/route";
 import type {
+  BannerFocal,
   BusinessClosure,
   BusinessColors,
   BusinessContact,
@@ -46,6 +47,8 @@ export interface PublicBusiness {
   timezone: string | null;
   logo: string | null;
   banner: string | null;
+  /** Banner focal point (object-position); null = centered. */
+  banner_focal: BannerFocal | null;
   colors: BusinessColors | null;
   contacts: BusinessContact[];
   socials: BusinessSocial[];

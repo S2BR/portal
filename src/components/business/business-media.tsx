@@ -1,14 +1,26 @@
 "use client";
 
-import { ImagePlus, X } from "lucide-react";
+import { ImagePlus, Move, X } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useRef, useState, type ChangeEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type CSSProperties,
+  type PointerEvent as ReactPointerEvent,
+} from "react";
 import { toast } from "sonner";
 
-import type { Business } from "@/app/api/businesses/route";
+import type { BannerFocal, Business } from "@/app/api/businesses/route";
 import { Button } from "@/components/ui/button";
 import { ImageCropDialog } from "@/components/ui/image-crop-dialog";
 import { Progress } from "@/components/ui/progress";
+import {
+  CENTER_FOCAL,
+  clampFocal,
+  focalObjectPosition,
+} from "@/lib/banner-focal";
 import { normalizeImage } from "@/lib/uploads/image";
 import { removeUpload, uploadFile } from "@/lib/uploads/upload";
 import { cn } from "@/lib/utils";
@@ -48,11 +60,14 @@ export function BusinessImageField({
   slug,
   kind,
   value,
+  focal: focalProp = null,
   onUpdated,
 }: {
   slug: string;
   kind: "logo" | "banner";
   value: string | null;
+  /** The banner's stored focal point (object-position); ignored for the logo. */
+  focal?: BannerFocal | null;
   onUpdated: (business: Business) => void;
 }) {
   const t = useTranslations("businesses.detail.media");
@@ -64,6 +79,21 @@ export function BusinessImageField({
   const [progress, setProgress] = useState(0);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Banner focal point. Reposition is a deliberate mode (entered from a hover button) so a stray
+  // click or drag can't disturb the banner. `dragFocal` is a live override while dragging (and until
+  // the save lands), so the drag can't be reset by an unrelated re-render; else stored `focalProp` wins.
+  const [repositionMode, setRepositionMode] = useState(false);
+  const [dragFocal, setDragFocal] = useState<BannerFocal | null>(null);
+  const [repositioning, setRepositioning] = useState(false);
+  const dragRef = useRef<{
+    startX: number;
+    startY: number;
+    startFocal: BannerFocal;
+    width: number;
+    height: number;
+    moved: boolean;
+  } | null>(null);
 
   // The logo is square-cropped before upload; this holds the picked file while the crop dialog is open.
   const cropUrlRef = useRef<string | null>(null);
@@ -103,6 +133,7 @@ export function BusinessImageField({
   const isLogo = kind === "logo";
   const shown = preview ?? value;
   const maxLabel = `${Math.round(MAX_BYTES / 1024 / 1024)} MB`;
+  const focal = dragFocal ?? focalProp ?? CENTER_FOCAL;
 
   async function onFileChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -118,7 +149,7 @@ export function BusinessImageField({
     }
 
     // The logo is a fixed square — let the owner frame it in a crop dialog before upload. The banner
-    // is wide (responsive focal-point framing comes later), so it uploads downscaled as-is.
+    // is wide, so it uploads downscaled as-is; the owner then drags it to set the focal point.
     if (isLogo) {
       const url = URL.createObjectURL(file);
       cropUrlRef.current = url;
@@ -177,6 +208,102 @@ export function BusinessImageField({
     } else {
       toast.error(t("error"));
     }
+  }
+
+  // Persist the banner focal point via the business PATCH, then hand display back to the (now
+  // updated, or on failure unchanged) `focalProp`. `dragFocal` holds the value across the round-trip.
+  async function saveFocal(next: BannerFocal) {
+    const response = await fetch(`/api/businesses/${encodeURIComponent(slug)}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ banner_focal: next }),
+    });
+    const data = response.ok
+      ? ((await response.json().catch(() => null)) as {
+          business?: Business;
+        } | null)
+      : null;
+    if (data?.business) {
+      onUpdated(data.business);
+    } else {
+      toast.error(t("error"));
+    }
+    setDragFocal(null);
+  }
+
+  function resetFocal() {
+    setDragFocal(CENTER_FOCAL);
+    void saveFocal(CENTER_FOCAL);
+  }
+
+  /** Map a pointer delta to a new focal point — dragging the image reveals the opposite edge. */
+  function focalFromDelta(
+    drag: NonNullable<typeof dragRef.current>,
+    clientX: number,
+    clientY: number,
+  ): BannerFocal {
+    return {
+      x: Math.round(
+        clampFocal(drag.startFocal.x - ((clientX - drag.startX) / drag.width) * 100),
+      ),
+      y: Math.round(
+        clampFocal(drag.startFocal.y - ((clientY - drag.startY) / drag.height) * 100),
+      ),
+    };
+  }
+
+  function onBannerPointerDown(event: ReactPointerEvent<HTMLDivElement>) {
+    // Let the in-mode controls (Done / Reset) be clicked without starting a drag.
+    if (busy || (event.target as HTMLElement).closest("button")) {
+      return;
+    }
+    const rect = event.currentTarget.getBoundingClientRect();
+    dragRef.current = {
+      startX: event.clientX,
+      startY: event.clientY,
+      startFocal: focal,
+      width: rect.width,
+      height: rect.height,
+      moved: false,
+    };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }
+
+  function onBannerPointerMove(event: ReactPointerEvent<HTMLDivElement>) {
+    const drag = dragRef.current;
+    if (!drag) {
+      return;
+    }
+    // Ignore sub-pixel jitter before committing to a drag.
+    if (
+      !drag.moved &&
+      Math.hypot(event.clientX - drag.startX, event.clientY - drag.startY) < 4
+    ) {
+      return;
+    }
+    drag.moved = true;
+    if (!repositioning) {
+      setRepositioning(true);
+    }
+    setDragFocal(focalFromDelta(drag, event.clientX, event.clientY));
+  }
+
+  function onBannerPointerUp(event: ReactPointerEvent<HTMLDivElement>) {
+    const drag = dragRef.current;
+    dragRef.current = null;
+    setRepositioning(false);
+    if (!drag) {
+      return;
+    }
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+    if (!drag.moved) {
+      return;
+    }
+    const next = focalFromDelta(drag, event.clientX, event.clientY);
+    setDragFocal(next);
+    void saveFocal(next);
   }
 
   const fileInput = (
@@ -261,6 +388,103 @@ export function BusinessImageField({
     </div>
   );
 
+  // The banner-with-image state. Replace and Reposition are explicit hover buttons (a stray click on
+  // the image does nothing), and repositioning is a deliberate mode: the image is dragged to set the
+  // focal point and auto-saves on release, with Reset and Done controls.
+  const bannerPreview = (
+    <div
+      className={cn(
+        "group border-input relative aspect-[16/6] w-full overflow-hidden rounded-xl border",
+        repositionMode &&
+          "ring-primary ring-offset-background ring-2 ring-offset-2",
+      )}
+      onPointerDown={repositionMode ? onBannerPointerDown : undefined}
+      onPointerMove={repositionMode ? onBannerPointerMove : undefined}
+      onPointerUp={repositionMode ? onBannerPointerUp : undefined}
+    >
+      <ImageBox
+        src={shown}
+        alt={t("bannerTitle")}
+        style={{ objectPosition: focalObjectPosition(focal) }}
+        className={cn(
+          "size-full rounded-xl",
+          repositionMode &&
+            (repositioning
+              ? "cursor-grabbing touch-none"
+              : "cursor-grab touch-none"),
+        )}
+      />
+
+      {repositionMode ? (
+        <>
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-2 pt-8">
+            <span className="text-xs font-medium text-white">
+              {t("repositionHint")}
+            </span>
+          </div>
+          <div className="absolute end-2 top-2 flex items-center gap-2">
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
+              onClick={resetFocal}
+              disabled={busy}
+            >
+              {t("resetFocal")}
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              onClick={() => setRepositionMode(false)}
+            >
+              {t("done")}
+            </Button>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="absolute inset-0 flex items-center justify-center gap-2 opacity-0 transition duration-200 group-hover:bg-black/40 group-hover:opacity-100">
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
+              onClick={() => inputRef.current?.click()}
+              disabled={busy}
+            >
+              {phase !== "idle" ? (
+                <Spinner />
+              ) : (
+                <ImagePlus className="size-4" aria-hidden />
+              )}
+              {t("replace")}
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
+              onClick={() => setRepositionMode(true)}
+              disabled={busy}
+            >
+              <Move className="size-4" aria-hidden />
+              {t("reposition")}
+            </Button>
+          </div>
+          <Button
+            type="button"
+            variant="secondary"
+            size="icon"
+            aria-label={t("remove")}
+            disabled={busy}
+            onClick={remove}
+            className="absolute end-2 top-2 size-7 opacity-0 shadow-sm transition-opacity duration-200 group-hover:opacity-100 focus-visible:opacity-100"
+          >
+            {pending ? <Spinner /> : <X className="size-4" />}
+          </Button>
+        </>
+      )}
+    </div>
+  );
+
   return (
     <div className="space-y-3">
       <h3 className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
@@ -281,12 +505,14 @@ export function BusinessImageField({
         </div>
       ) : (
         <div className="space-y-2">
-          {imageBlock({
-            wrapperClassName: "",
-            buttonClassName: "aspect-[16/6] w-full",
-            withLabel: true,
-            removeClassName: "end-2 top-2 size-7",
-          })}
+          {shown
+            ? bannerPreview
+            : imageBlock({
+                wrapperClassName: "",
+                buttonClassName: "aspect-[16/6] w-full",
+                withLabel: true,
+                removeClassName: "end-2 top-2 size-7",
+              })}
           {hint}
         </div>
       )}
@@ -472,10 +698,13 @@ function ImageBox({
   src,
   alt,
   className,
+  style,
 }: {
   src: string | null;
   alt: string;
   className?: string;
+  /** Inline styles for the image — carries the banner's `object-position` focal point. */
+  style?: CSSProperties;
 }) {
   if (!src) {
     return (
@@ -495,6 +724,9 @@ function ImageBox({
     <img
       src={src}
       alt={alt}
+      // The image is dragged to reposition the banner; block the browser's native image-drag ghost.
+      draggable={false}
+      style={style}
       className={cn("bg-muted border-input border object-cover", className)}
     />
   );

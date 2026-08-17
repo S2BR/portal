@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 
 import { AddressLines } from "@/components/address/address-lines";
 import { BusinessLogo } from "@/components/business/business-logo";
+import { focalObjectPosition } from "@/lib/banner-focal";
 import {
   DAYS,
   socialDisplay,
@@ -64,6 +65,7 @@ export async function BusinessProfile({
             src={business.banner}
             alt=""
             className="size-full object-cover"
+            style={{ objectPosition: focalObjectPosition(business.banner_focal) }}
           />
         ) : (
           <div className="absolute inset-0 bg-gradient-to-t from-black/15 to-transparent" />
