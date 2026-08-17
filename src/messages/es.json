@@ -493,6 +493,28 @@
       "showAll": "Mostrar todos"
     },
     "public": {
+      "reviews": {
+        "title": "Reseñas",
+        "count": "{count, plural, one {# reseña} other {# reseñas}}",
+        "writeTitle": "Escribe una reseña",
+        "yourReview": "Tu reseña",
+        "signInPrompt": "Inicia sesión para dejar una reseña.",
+        "placeholder": "Cuenta tu experiencia (opcional)",
+        "submit": "Publicar reseña",
+        "update": "Actualizar reseña",
+        "delete": "Eliminar",
+        "loadMore": "Ver más reseñas",
+        "empty": "Aún no hay reseñas. Sé el primero.",
+        "ownerReply": "Respuesta del negocio",
+        "report": "Reportar",
+        "reported": "Gracias, lo revisaremos.",
+        "ratingRequired": "Elige una calificación con estrellas.",
+        "cannotReviewOwn": "No puedes reseñar tu propio negocio.",
+        "saved": "Reseña publicada",
+        "removed": "Reseña eliminada",
+        "error": "Algo salió mal.",
+        "stars": "{count, plural, one {# estrella} other {# estrellas}}"
+      },
       "about": "Acerca de",
       "amenities": "Servicios",
       "photos": "Fotos",
@@ -787,8 +809,27 @@
       "addEmail": "Agregar correo"
     },
     "workspace": {
+      "reviews": {
+        "title": "Reseñas",
+        "subtitle": "Todo lo que dicen de tu negocio. Puedes responder a cada reseña.",
+        "empty": "Aún no hay reseñas. Aparecerán aquí cuando tus clientes las dejen.",
+        "hidden": "Oculta",
+        "reports": "{count, plural, one {# reporte} other {# reportes}}",
+        "reply": "Responder",
+        "editReply": "Editar",
+        "removeReply": "Quitar",
+        "replyPlaceholder": "Escribe una respuesta pública…",
+        "save": "Guardar respuesta",
+        "cancel": "Cancelar",
+        "yourReply": "Tu respuesta",
+        "saved": "Respuesta guardada",
+        "removed": "Respuesta eliminada",
+        "error": "Algo salió mal.",
+        "loadMore": "Ver más"
+      },
       "create": "Crear nueva empresa",
       "nav": {
+        "reviews": "Reseñas",
         "dashboard": "Panel",
         "information": "Información de la empresa",
         "products": "Productos",

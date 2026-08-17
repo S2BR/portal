@@ -34,12 +34,15 @@ const STATS: { key: "views" | "favorites" | "reviews" | "rating"; icon: LucideIc
     { key: "rating", icon: TrendingUp },
   ];
 
-const LINKS: { key: "information" | "products" | "services"; icon: LucideIcon }[] =
-  [
-    { key: "information", icon: Info },
-    { key: "products", icon: Package },
-    { key: "services", icon: Wrench },
-  ];
+const LINKS: {
+  key: "information" | "reviews" | "products" | "services";
+  icon: LucideIcon;
+}[] = [
+  { key: "information", icon: Info },
+  { key: "reviews", icon: Star },
+  { key: "products", icon: Package },
+  { key: "services", icon: Wrench },
+];
 
 /**
  * The company workspace home — a designed overview of the insights coming to the dashboard (profile
@@ -127,24 +130,45 @@ export function BusinessDashboard({ slug }: { slug: string }) {
         </div>
       </div>
 
-      {/* KPI stat cards (previews) — StatTile layout, value replaced by the soon badge. */}
+      {/* KPI stat cards — reviews + rating are live; views + favorites are still previews. */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {STATS.map((stat) => (
-          <div
-            key={stat.key}
-            className="bg-muted/40 flex h-full items-center gap-3 rounded-xl p-4"
-          >
-            <span className="bg-muted text-muted-foreground flex size-10 shrink-0 items-center justify-center rounded-lg">
-              <stat.icon className="size-5" aria-hidden />
-            </span>
-            <div className="min-w-0">
-              <p className="text-muted-foreground text-xs">
-                {t(`dashboard.stats.${stat.key}`)}
-              </p>
-              <div className="mt-1">{soonBadge}</div>
+        {STATS.map((stat) => {
+          const live = stat.key === "reviews" || stat.key === "rating";
+          const value =
+            stat.key === "reviews"
+              ? String(business?.rating_count ?? 0)
+              : business && business.rating_count > 0
+                ? business.rating_avg.toFixed(1)
+                : "—";
+          return (
+            <div
+              key={stat.key}
+              className="bg-muted/40 flex h-full items-center gap-3 rounded-xl p-4"
+            >
+              <span className="bg-muted text-muted-foreground flex size-10 shrink-0 items-center justify-center rounded-lg">
+                <stat.icon className="size-5" aria-hidden />
+              </span>
+              <div className="min-w-0">
+                <p className="text-muted-foreground text-xs">
+                  {t(`dashboard.stats.${stat.key}`)}
+                </p>
+                <div className="mt-1">
+                  {live ? (
+                    loading ? (
+                      <Skeleton className="h-6 w-10" />
+                    ) : (
+                      <span className="text-xl font-semibold tabular-nums">
+                        {value}
+                      </span>
+                    )
+                  ) : (
+                    soonBadge
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Trend chart (preview) — neutral placeholder bars + gold badge. */}

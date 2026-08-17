@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
   Package,
   Plus,
+  Star,
   Wrench,
   type LucideIcon,
 } from "lucide-react";
@@ -35,7 +36,12 @@ import { useBusinessNav } from "@/components/business/business-nav-context";
 import { parseRateLimit } from "@/lib/rate-limit";
 import { cn } from "@/lib/utils";
 
-type NavKey = "dashboard" | "information" | "products" | "services";
+type NavKey =
+  | "dashboard"
+  | "information"
+  | "reviews"
+  | "products"
+  | "services";
 type NavItem = { key: NavKey; href: string; icon: LucideIcon; exact?: boolean };
 
 /**
@@ -130,6 +136,7 @@ export function BusinessSidebar({ slug }: { slug: string }) {
   };
   const manage: NavItem[] = [
     { key: "information", href: `${base}/information`, icon: Info },
+    { key: "reviews", href: `${base}/reviews`, icon: Star },
   ];
   const offerings: NavItem[] = [
     { key: "products", href: `${base}/products`, icon: Package },
