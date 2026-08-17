@@ -12,9 +12,11 @@ const bodySchema = z.object({
 });
 
 /**
- * BFF: verify a passkey assertion and, on success, store the token pair in
- * httpOnly cookies (the browser never sees a token). A passkey is a strong
- * factor on its own, so success signs the user straight in. Public.
+ * BFF: verify a passkey assertion and, on success, store the token pair in httpOnly cookies (the
+ * browser never sees a token). Public. When the account has 2FA enabled the passkey is only the
+ * primary factor: the API returns `two_factor_required` with a single-use `pending_token`, which we
+ * relay so the client can complete the second step at `/api/auth/login/email/two-factor` (shared
+ * with the emailed-code flow) — nothing bypasses 2FA.
  */
 export async function POST(request: Request): Promise<NextResponse> {
   const parsed = bodySchema.safeParse(await request.json().catch(() => null));
@@ -22,7 +24,9 @@ export async function POST(request: Request): Promise<NextResponse> {
     return NextResponse.json({ status: "invalid" }, { status: 422 });
   }
 
-  const response = await portalFetch<SignInResponse & Partial<ApiError>>({
+  const response = await portalFetch<
+    SignInResponse & { pending_token?: string } & Partial<ApiError>
+  >({
     method: "POST",
     path: "/auth/passkeys/login",
     body: parsed.data,
@@ -31,6 +35,16 @@ export async function POST(request: Request): Promise<NextResponse> {
   if (response.ok) {
     await establishSession(response.data, response.data.user.id);
     return NextResponse.json({ status: "authenticated" });
+  }
+
+  if (
+    response.status === 403 &&
+    response.data.status === "two_factor_required"
+  ) {
+    return NextResponse.json({
+      status: "two_factor_required",
+      pending_token: response.data.pending_token,
+    });
   }
 
   if (response.status === 429) {
