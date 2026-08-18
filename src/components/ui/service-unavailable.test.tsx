@@ -29,7 +29,22 @@ describe("formatDuration", () => {
   });
 });
 
+describe("BACKOFF_SECONDS", () => {
+  it("is a strictly increasing 12-step schedule starting at 10s", () => {
+    expect(BACKOFF_SECONDS).toHaveLength(12);
+    expect(BACKOFF_SECONDS[0]).toBe(10);
+    for (let i = 1; i < BACKOFF_SECONDS.length; i += 1) {
+      expect(BACKOFF_SECONDS[i]!).toBeGreaterThan(BACKOFF_SECONDS[i - 1]!);
+    }
+  });
+});
+
 describe("ServiceUnavailable", () => {
+  // A short schedule so the state machine is exercised in a handful of ticks — the real durations
+  // (BACKOFF_SECONDS) are data, asserted above; here we only care about the step/exhaust/reset logic.
+  // Walking the real 18,000s schedule second-by-second was slow enough to flake under load.
+  const SCHEDULE = [2, 3, 4, 5] as const;
+
   beforeEach(() => vi.useFakeTimers());
   afterEach(() => {
     vi.clearAllTimers();
@@ -50,11 +65,11 @@ describe("ServiceUnavailable", () => {
     }
   }
 
-  it("fires the first retry only after the first backoff step (10s)", () => {
+  it("fires the first retry only after the first backoff step", () => {
     const onRetry = vi.fn();
-    render(<ServiceUnavailable onRetry={onRetry} />);
+    render(<ServiceUnavailable onRetry={onRetry} schedule={SCHEDULE} />);
 
-    tick(9);
+    tick(SCHEDULE[0] - 1);
     expect(onRetry).not.toHaveBeenCalled();
     tick(1);
     expect(onRetry).toHaveBeenCalledTimes(1);
@@ -63,13 +78,14 @@ describe("ServiceUnavailable", () => {
   it("advances exactly one attempt per step, even with an unstable onRetry", () => {
     // The real parent (business-workspace) passes a fresh onRetry identity every render AND re-renders
     // when it fires. A stale useCooldown double-fired the elapsed callback under those conditions, so
-    // the counter skipped even attempts: 1 of 12 → 3 of 12 → 5 of 12. It must step 1 → 2 → 3.
+    // the counter skipped even attempts: 1 of N → 3 of N → 5 of N. It must step 1 → 2 → 3.
     const onRetry = vi.fn();
 
     function Harness() {
       const [, force] = useState(0);
       return (
         <ServiceUnavailable
+          schedule={SCHEDULE}
           onRetry={() => {
             onRetry();
             force((value) => value + 1);
@@ -81,32 +97,32 @@ describe("ServiceUnavailable", () => {
     render(<Harness />);
     expect(screen.getByText(/attempt:.*"current":1,/)).toBeInTheDocument();
 
-    tick(BACKOFF_SECONDS[0]!);
+    tick(SCHEDULE[0]);
     expect(onRetry).toHaveBeenCalledTimes(1);
     expect(screen.getByText(/attempt:.*"current":2,/)).toBeInTheDocument();
 
-    tick(BACKOFF_SECONDS[1]!);
+    tick(SCHEDULE[1]);
     expect(onRetry).toHaveBeenCalledTimes(2);
     expect(screen.getByText(/attempt:.*"current":3,/)).toBeInTheDocument();
 
-    tick(BACKOFF_SECONDS[2]!);
+    tick(SCHEDULE[2]);
     expect(onRetry).toHaveBeenCalledTimes(3);
     expect(screen.getByText(/attempt:.*"current":4,/)).toBeInTheDocument();
   });
 
   it("auto-retries over time, then a manual retry restarts the cycle", () => {
     const onRetry = vi.fn();
-    render(<ServiceUnavailable onRetry={onRetry} />);
+    render(<ServiceUnavailable onRetry={onRetry} schedule={SCHEDULE} />);
 
-    // Through the first three steps: retries fire, but the schedule isn't exhausted → no manual button.
-    tick(BACKOFF_SECONDS[0]! + BACKOFF_SECONDS[1]! + BACKOFF_SECONDS[2]!);
-    expect(onRetry.mock.calls.length).toBeGreaterThanOrEqual(3);
-    expect(screen.queryByRole("button", { name: "retry" })).toBeNull();
-
-    // Walk the remaining steps to exhaust the schedule → a manual "Try again" appears.
-    for (const step of BACKOFF_SECONDS.slice(3)) {
+    // Through all but the last step: retries fire, but the schedule isn't exhausted → no manual button.
+    for (const step of SCHEDULE.slice(0, -1)) {
       tick(step);
     }
+    expect(onRetry.mock.calls.length).toBe(SCHEDULE.length - 1);
+    expect(screen.queryByRole("button", { name: "retry" })).toBeNull();
+
+    // Walk the final step to exhaust the schedule → a manual "Try again" appears.
+    tick(SCHEDULE[SCHEDULE.length - 1]!);
     const button = screen.getByRole("button", { name: "retry" });
     const before = onRetry.mock.calls.length;
 

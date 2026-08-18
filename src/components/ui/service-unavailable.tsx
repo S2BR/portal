@@ -48,13 +48,16 @@ export function formatDuration(totalSeconds: number): string {
 export function ServiceUnavailable({
   onRetry,
   className,
+  schedule = BACKOFF_SECONDS,
 }: {
   onRetry: () => void;
   className?: string;
+  /** The auto-retry backoff steps (seconds). Defaults to {@link BACKOFF_SECONDS}; overridable in tests. */
+  schedule?: readonly number[];
 }) {
   const t = useTranslations("serviceUnavailable");
   const [attempt, setAttempt] = useState(0);
-  const exhausted = attempt >= BACKOFF_SECONDS.length;
+  const exhausted = attempt >= schedule.length;
 
   // On each elapse: move to the next (longer) step and fire a retry. If it fails, the parent keeps us
   // mounted, so `attempt` persists and the next, longer wait begins; if it succeeds, we unmount.
@@ -64,7 +67,7 @@ export function ServiceUnavailable({
   }, [onRetry]);
 
   const remaining = useCooldown(
-    exhausted ? 0 : BACKOFF_SECONDS[attempt]!,
+    exhausted ? 0 : schedule[attempt]!,
     exhausted ? undefined : advance,
   );
 
@@ -96,7 +99,7 @@ export function ServiceUnavailable({
         <p className="text-muted-foreground text-xs">
           {t("attempt", {
             current: attempt + 1,
-            total: BACKOFF_SECONDS.length,
+            total: schedule.length,
           })}
           {" · "}
           {t("retryingIn", { when: formatDuration(remaining) })}
