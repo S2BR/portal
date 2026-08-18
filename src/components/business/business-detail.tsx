@@ -129,6 +129,7 @@ import { apiErrorText } from "@/lib/api/error-text";
 import { todayISO } from "@/lib/calendar";
 import { formatBusinessAddress } from "@/lib/format-address";
 import { parseRateLimit } from "@/lib/rate-limit";
+import { externalHref } from "@/lib/url";
 import { useUnsavedChangesGuard } from "@/lib/use-unsaved-changes-guard";
 import { cn } from "@/lib/utils";
 
@@ -1849,9 +1850,7 @@ function contactHref(contact: BusinessContact): string {
   if (contact.type === "email") {
     return `mailto:${contact.value}`;
   }
-  return /^https?:\/\//i.test(contact.value)
-    ? contact.value
-    : `https://${contact.value}`;
+  return externalHref(contact.value);
 }
 
 /** Read-only list for one contact section (website/phone/email); phones show flag + formatted. Each
