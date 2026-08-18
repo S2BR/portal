@@ -1010,6 +1010,12 @@
       "resolvedAt": "Resolved",
       "noResolutionNote": "No note left.",
       "noteLabel": "Internal note (optional)"
+    },
+    "expired": {
+      "title": "Admin session expired",
+      "description": "Your admin access timed out after inactivity. Re-enter to continue.",
+      "reenter": "Re-enter admin",
+      "back": "Back to dashboard"
     }
   }
 }

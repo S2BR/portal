@@ -4,9 +4,14 @@ import { cookies } from "next/headers";
 
 import type { AuthUser, TokenPair } from "@/lib/api/types";
 
-import { ACCESS_COOKIE, ACCOUNTS_COOKIE, REFRESH_COOKIE } from "./cookies";
+import {
+  ACCESS_COOKIE,
+  ACCOUNTS_COOKIE,
+  ADMIN_COOKIE,
+  REFRESH_COOKIE,
+} from "./cookies";
 import { encodeUser, USER_COOKIE } from "./user-cookie";
-import { readVerifiedClaims } from "./verify-token";
+import { readVerifiedClaims, verifyAdminToken } from "./verify-token";
 import { verifyAccessToken } from "./verify-token";
 
 const USER_COOKIE_MAX_AGE = 60 * 60 * 24 * 7; // 7 days; overwritten on each session change
@@ -77,6 +82,28 @@ export async function setSessionCookies(
     tokens.refresh_token,
     cookieOptions(REFRESH_MAX_AGE_SECONDS),
   );
+
+  // Admin-panel session (see IssueAdminToken) — tied to the active account:
+  // - a response that CARRIES an admin_token → (re)set the cookie, sliding the 1h window;
+  // - no admin_token on a SAME-account refresh (keepUserCookie) → LEAVE any existing cookie, so a
+  //   just-revoked admin's session rides out its remaining life (inert — the API blocks every action);
+  // - no admin_token on an account CHANGE (login / switch / add) → CLEAR it, so the newly-active
+  //   account only ever sees its own admin state.
+  if (typeof tokens.admin_token === "string" && tokens.admin_token !== "") {
+    try {
+      await verifyAdminToken(tokens.admin_token);
+      store.set(
+        ADMIN_COOKIE,
+        tokens.admin_token,
+        cookieOptions(tokens.admin_expires_in ?? 3600),
+      );
+    } catch {
+      // A malformed admin token must never gate the panel — drop any stale one.
+      store.delete(ADMIN_COOKIE);
+    }
+  } else if (!options.keepUserCookie) {
+    store.delete(ADMIN_COOKIE);
+  }
   // The active account just changed (login / add / switch) — drop the stale display cookie so it
   // can't show the previous user; the next `/me` repopulates it for the new one. On a plain token
   // REFRESH (same account) the caller passes `keepUserCookie` so the header keeps rendering the user
@@ -124,6 +151,24 @@ export async function currentAccessTokenRoles(): Promise<string[]> {
   }
 }
 
+/**
+ * Whether a live admin-panel session is present — a valid, unexpired admin token in the cookie. This
+ * gates the admin UI; it survives the 15-minute access token's expiry (its whole purpose) and is
+ * independent of it. Never throws. Real authorization of any admin action is still the API's job.
+ */
+export async function adminSessionActive(): Promise<boolean> {
+  const token = (await cookies()).get(ADMIN_COOKIE)?.value;
+  if (!token) {
+    return false;
+  }
+  try {
+    await verifyAdminToken(token);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /** Return the user with the current token's roles attached, for the display cookie / `/me` reply. */
 export async function withCurrentRoles(user: AuthUser): Promise<AuthUser> {
   return { ...user, roles: await currentAccessTokenRoles() };
@@ -134,6 +179,7 @@ export async function clearSessionCookies(): Promise<void> {
   store.delete(ACCESS_COOKIE);
   store.delete(REFRESH_COOKIE);
   store.delete(USER_COOKIE);
+  store.delete(ADMIN_COOKIE);
 }
 
 export async function getAccessToken(): Promise<string | undefined> {

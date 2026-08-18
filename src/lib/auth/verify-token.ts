@@ -50,3 +50,20 @@ export async function readVerifiedClaims(token: string): Promise<JWTPayload> {
   });
   return payload;
 }
+
+/**
+ * Verify the admin-panel session token — a token SEPARATE from the access token, whose only job is to
+ * gate the admin UI. Passes only a genuinely portal-signed, unexpired token whose `typ` is `admin`.
+ * Throws on any failure so the caller fails closed (no admin access).
+ */
+export async function verifyAdminToken(token: string): Promise<JWTPayload> {
+  const { payload } = await jwtVerify(token, await portalPublicKey(), {
+    algorithms: [ALGORITHM],
+    audience: env.PORTAL_JWT_AUDIENCE,
+    ...(env.PORTAL_JWT_ISSUER ? { issuer: env.PORTAL_JWT_ISSUER } : {}),
+  });
+  if (payload.typ !== "admin") {
+    throw new Error("Not an admin token.");
+  }
+  return payload;
+}

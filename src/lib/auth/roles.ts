@@ -11,3 +11,14 @@ export const SUPER_ADMIN = "super_admin";
 export function isSuperAdmin(user: AuthUser | null | undefined): boolean {
   return user?.roles?.includes(SUPER_ADMIN) ?? false;
 }
+
+/**
+ * Whether the account may open the admin panel at all — super_admin today, and later "has any admin
+ * role" (community admins, moderators, …). Mirrors the API's User::hasAdminPanelAccess(). Which
+ * sections they then see is gated per-role inside the panel. UX only; the API enforces for real.
+ */
+export function hasAdminPanelAccess(
+  user: AuthUser | null | undefined,
+): boolean {
+  return isSuperAdmin(user);
+}
