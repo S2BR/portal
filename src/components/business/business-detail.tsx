@@ -429,7 +429,18 @@ const TAB_PAYLOAD_KEYS: Record<
   branding: ["colors"],
 };
 
-export function BusinessDetail({ slug }: { slug: string }) {
+export function BusinessDetail({
+  slug,
+  // The BFF base the form reads/writes through. Owner default; the admin editor passes
+  // `/api/admin/businesses` so the exact same form manages ANY business.
+  basePath = "/api/businesses",
+  // Where to go after a delete (the owner's list, or the admin directory).
+  deletedRedirect = "/portal/businesses",
+}: {
+  slug: string;
+  basePath?: string;
+  deletedRedirect?: string;
+}) {
   const t = useTranslations("businesses.detail");
   const publish = useTranslations("businesses.publish");
   const tabs = useTranslations("businesses.detail.tabs");
@@ -535,9 +546,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
     // ServiceUnavailable panel stays mounted across a failed retry and its backoff counter persists
     // (re-setting the same value is a no-op).
     try {
-      const response = await fetch(
-        `/api/businesses/${encodeURIComponent(slug)}`,
-      );
+      const response = await fetch(`${basePath}/${encodeURIComponent(slug)}`);
       // Only a real 404 means "not yours / gone". Anything else (a transient upstream or refresh
       // blip, a network stutter) is a temporary failure the user can retry — not an access problem.
       if (response.status === 404) {
@@ -573,7 +582,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
       setRateLimited(null);
       setLoadFailed(true);
     }
-  }, [slug]);
+  }, [slug, basePath]);
 
   useEffect(() => {
     // One-off fetch on mount; setState runs only after the async response resolves.
@@ -640,7 +649,9 @@ export function BusinessDetail({ slug }: { slug: string }) {
     const defaultCountry =
       edit.addresses[0]?.country?.toUpperCase() || undefined;
     const phonesMissingCountry = edit.phones
-      .filter((row) => row.value.trim() !== "" && !(row.country ?? defaultCountry))
+      .filter(
+        (row) => row.value.trim() !== "" && !(row.country ?? defaultCountry),
+      )
       .map((row) => row.key);
     if (phonesMissingCountry.length > 0) {
       setInvalidPhoneKeys(new Set(phonesMissingCountry));
@@ -654,14 +665,11 @@ export function BusinessDetail({ slug }: { slug: string }) {
     setNameError(null);
 
     try {
-      const response = await fetch(
-        `/api/businesses/${encodeURIComponent(slug)}`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(buildPayload(edit)),
-        },
-      );
+      const response = await fetch(`${basePath}/${encodeURIComponent(slug)}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(buildPayload(edit)),
+      });
       const data = (await response.json()) as {
         status?: string;
         business?: Business;
@@ -704,15 +712,12 @@ export function BusinessDetail({ slug }: { slug: string }) {
   async function remove() {
     setDeleting(true);
     try {
-      const response = await fetch(
-        `/api/businesses/${encodeURIComponent(slug)}`,
-        {
-          method: "DELETE",
-        },
-      );
+      const response = await fetch(`${basePath}/${encodeURIComponent(slug)}`, {
+        method: "DELETE",
+      });
       if (response.ok) {
         toast.success(t("deletedToast"));
-        router.push("/portal/businesses");
+        router.push(deletedRedirect);
         return;
       }
       const data = (await response.json().catch(() => null)) as {
@@ -740,14 +745,11 @@ export function BusinessDetail({ slug }: { slug: string }) {
     setPublishing(true);
     setBusiness({ ...business, is_published: next });
     try {
-      const response = await fetch(
-        `/api/businesses/${encodeURIComponent(slug)}`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ published: next }),
-        },
-      );
+      const response = await fetch(`${basePath}/${encodeURIComponent(slug)}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ published: next }),
+      });
       const data = await response.json().catch(() => null);
       if (!response.ok) {
         setBusiness({ ...business, is_published: !next });
@@ -922,14 +924,12 @@ export function BusinessDetail({ slug }: { slug: string }) {
                   }
                   aria-label={t("publishToggle")}
                 />
-                <span className="flex items-center gap-1.5 text-muted-foreground">
+                <span className="text-muted-foreground flex items-center gap-1.5">
                   <span
                     aria-hidden
                     className={cn(
                       "size-1.5 rounded-full",
-                      business.is_published
-                        ? "bg-emerald-500"
-                        : "bg-amber-500",
+                      business.is_published ? "bg-emerald-500" : "bg-amber-500",
                     )}
                   />
                   {business.is_published ? t("published") : t("draft")}
@@ -1011,6 +1011,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
                 <div className="md:col-span-1">
                   <BusinessImageField
                     slug={slug}
+                    basePath={basePath}
                     kind="logo"
                     value={business.logo}
                     onUpdated={(updated) => {
@@ -1202,7 +1203,11 @@ export function BusinessDetail({ slug }: { slug: string }) {
                     rows={edit.websites}
                     onChange={(websites) => patch({ websites })}
                     addLabel={t("addWebsite")}
-                    makeRow={(): LinkRow => ({ key: crypto.randomUUID(), value: "", name: "" })}
+                    makeRow={(): LinkRow => ({
+                      key: crypto.randomUUID(),
+                      value: "",
+                      name: "",
+                    })}
                     renderRow={(row, update) => (
                       <>
                         <PrefixInput
@@ -1243,7 +1248,11 @@ export function BusinessDetail({ slug }: { slug: string }) {
                     rows={edit.phones}
                     onChange={(phones) => patch({ phones })}
                     addLabel={t("addPhone")}
-                    makeRow={(): PhoneRow => ({ key: crypto.randomUUID(), value: "", name: "" })}
+                    makeRow={(): PhoneRow => ({
+                      key: crypto.randomUUID(),
+                      value: "",
+                      name: "",
+                    })}
                     renderRow={(row, update) => (
                       <>
                         <PhoneField
@@ -1294,7 +1303,11 @@ export function BusinessDetail({ slug }: { slug: string }) {
                     rows={edit.emails}
                     onChange={(emails) => patch({ emails })}
                     addLabel={t("addEmail")}
-                    makeRow={(): LinkRow => ({ key: crypto.randomUUID(), value: "", name: "" })}
+                    makeRow={(): LinkRow => ({
+                      key: crypto.randomUUID(),
+                      value: "",
+                      name: "",
+                    })}
                     renderRow={(row, update) => (
                       <>
                         <Input
@@ -1348,8 +1361,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
                       key={address.id}
                       className="flex items-center gap-3 py-4 first:pt-0 last:pb-0"
                     >
-                      {address.latitude != null &&
-                      address.longitude != null ? (
+                      {address.latitude != null && address.longitude != null ? (
                         <AddressMapPreview
                           latitude={address.latitude}
                           longitude={address.longitude}
@@ -1364,7 +1376,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
                           className={cn(
                             "flex size-9 shrink-0 items-center justify-center rounded-lg border",
                             address.is_hidden
-                              ? "border-dashed bg-transparent text-muted-foreground/70"
+                              ? "text-muted-foreground/70 border-dashed bg-transparent"
                               : "bg-background text-muted-foreground",
                           )}
                         >
@@ -1595,6 +1607,7 @@ export function BusinessDetail({ slug }: { slug: string }) {
               >
                 <BusinessImageField
                   slug={slug}
+                  basePath={basePath}
                   kind="banner"
                   value={business.banner}
                   focal={business.banner_focal}
@@ -1762,7 +1775,7 @@ function PrefixInput({
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
-        className="placeholder:text-muted-foreground h-full min-w-0 flex-1 bg-transparent py-2 pe-3.5 ps-1 text-base outline-none"
+        className="placeholder:text-muted-foreground h-full min-w-0 flex-1 bg-transparent py-2 ps-1 pe-3.5 text-base outline-none"
       />
     </div>
   );
@@ -1836,7 +1849,7 @@ function LinkedinInput({
         value={name}
         onChange={(event) => set(kind, event.target.value)}
         placeholder={placeholder}
-        className="placeholder:text-muted-foreground h-full min-w-0 flex-1 bg-transparent py-2 pe-3.5 ps-1 text-base outline-none"
+        className="placeholder:text-muted-foreground h-full min-w-0 flex-1 bg-transparent py-2 ps-1 pe-3.5 text-base outline-none"
       />
     </div>
   );
@@ -1956,8 +1969,7 @@ function RepeaterEditor<TRow extends { key: string }>({
 
   const update = (key: string, changes: Partial<TRow>) =>
     onChange(rows.map((r) => (r.key === key ? { ...r, ...changes } : r)));
-  const remove = (key: string) =>
-    onChange(rows.filter((r) => r.key !== key));
+  const remove = (key: string) => onChange(rows.filter((r) => r.key !== key));
 
   /** The interactive body of a row (drag handle + the caller's fields + a remove button). */
   const rowBody = (row: TRow, handle: ReactNode) => (

@@ -1054,6 +1054,44 @@
         "page": "Page {page} sur {total}",
         "previous": "Précédent",
         "next": "Suivant"
+      },
+      "editor": {
+        "back": "Retour aux entreprises",
+        "notFound": "Entreprise introuvable.",
+        "unclaimed": "Aucun propriétaire (non réclamée).",
+        "owners": "Propriétaires",
+        "lockedReason": "Motif du verrouillage",
+        "audit": "Audit",
+        "lock": "Verrouiller",
+        "unlock": "Déverrouiller",
+        "publish": "Forcer la publication",
+        "unpublish": "Dépublier",
+        "restore": "Restaurer",
+        "deletedBanner": "Cette entreprise est supprimée. Restaurez-la pour la modifier.",
+        "forbidden": "Vous n'avez pas accès à ceci.",
+        "actionError": "Une erreur s'est produite.",
+        "toast": {
+          "lock": "Entreprise verrouillée.",
+          "unlock": "Entreprise déverrouillée.",
+          "publish": "Entreprise publiée.",
+          "unpublish": "Entreprise dépubliée.",
+          "restore": "Entreprise restaurée."
+        },
+        "auditTitle": "Journal d'audit",
+        "auditSubtitle": "Actions de l'opérateur sur cette entreprise, plus récentes d'abord.",
+        "auditEmpty": "Aucune action enregistrée pour l'instant.",
+        "actions": {
+          "business.updated": "Modifiée",
+          "business.locked": "Verrouillée",
+          "business.unlocked": "Déverrouillée",
+          "business.published": "Publiée",
+          "business.unpublished": "Dépubliée",
+          "business.deleted": "Supprimée",
+          "business.restored": "Restaurée",
+          "business.owner_added": "Propriétaire ajouté",
+          "business.owner_removed": "Propriétaire retiré",
+          "business.claimed": "Réclamée"
+        }
       }
     }
   },

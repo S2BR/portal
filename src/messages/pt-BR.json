@@ -1054,6 +1054,44 @@
         "page": "Página {page} de {total}",
         "previous": "Anterior",
         "next": "Próxima"
+      },
+      "editor": {
+        "back": "Voltar aos negócios",
+        "notFound": "Negócio não encontrado.",
+        "unclaimed": "Sem proprietário (não reivindicado).",
+        "owners": "Proprietários",
+        "lockedReason": "Motivo do bloqueio",
+        "audit": "Auditoria",
+        "lock": "Bloquear",
+        "unlock": "Desbloquear",
+        "publish": "Forçar publicação",
+        "unpublish": "Despublicar",
+        "restore": "Restaurar",
+        "deletedBanner": "Este negócio está excluído. Restaure-o para editar.",
+        "forbidden": "Você não tem acesso a isto.",
+        "actionError": "Algo deu errado.",
+        "toast": {
+          "lock": "Negócio bloqueado.",
+          "unlock": "Negócio desbloqueado.",
+          "publish": "Negócio publicado.",
+          "unpublish": "Negócio despublicado.",
+          "restore": "Negócio restaurado."
+        },
+        "auditTitle": "Trilha de auditoria",
+        "auditSubtitle": "Ações do operador neste negócio, mais recentes primeiro.",
+        "auditEmpty": "Nenhuma ação registrada ainda.",
+        "actions": {
+          "business.updated": "Editado",
+          "business.locked": "Bloqueado",
+          "business.unlocked": "Desbloqueado",
+          "business.published": "Publicado",
+          "business.unpublished": "Despublicado",
+          "business.deleted": "Excluído",
+          "business.restored": "Restaurado",
+          "business.owner_added": "Proprietário adicionado",
+          "business.owner_removed": "Proprietário removido",
+          "business.claimed": "Reivindicado"
+        }
       }
     }
   },

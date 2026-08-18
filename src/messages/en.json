@@ -1054,6 +1054,44 @@
         "page": "Page {page} of {total}",
         "previous": "Previous",
         "next": "Next"
+      },
+      "editor": {
+        "back": "Back to businesses",
+        "notFound": "Business not found.",
+        "unclaimed": "No owner (unclaimed).",
+        "owners": "Owners",
+        "lockedReason": "Lock reason",
+        "audit": "Audit",
+        "lock": "Lock",
+        "unlock": "Unlock",
+        "publish": "Force publish",
+        "unpublish": "Unpublish",
+        "restore": "Restore",
+        "deletedBanner": "This business is deleted. Restore it to edit.",
+        "forbidden": "You don't have access to this.",
+        "actionError": "Something went wrong.",
+        "toast": {
+          "lock": "Business locked.",
+          "unlock": "Business unlocked.",
+          "publish": "Business published.",
+          "unpublish": "Business unpublished.",
+          "restore": "Business restored."
+        },
+        "auditTitle": "Audit trail",
+        "auditSubtitle": "Operator actions on this business, newest first.",
+        "auditEmpty": "No recorded actions yet.",
+        "actions": {
+          "business.updated": "Edited",
+          "business.locked": "Locked",
+          "business.unlocked": "Unlocked",
+          "business.published": "Published",
+          "business.unpublished": "Unpublished",
+          "business.deleted": "Deleted",
+          "business.restored": "Restored",
+          "business.owner_added": "Owner added",
+          "business.owner_removed": "Owner removed",
+          "business.claimed": "Claimed"
+        }
       }
     }
   },
