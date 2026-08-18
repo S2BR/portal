@@ -112,7 +112,7 @@ export async function BusinessProfile({
             {business.rating_count > 0 ? (
               <Link
                 href={`/businesses/${business.slug}/reviews`}
-                className="group flex items-center gap-2"
+                className="group inline-flex w-fit items-center gap-2"
               >
                 <StarRating value={business.rating_avg} size={18} />
                 <span className="text-sm font-semibold tabular-nums">

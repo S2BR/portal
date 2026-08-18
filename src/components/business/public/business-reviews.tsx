@@ -1,7 +1,8 @@
 "use client";
 
+import { Loader2 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { UserAvatar } from "@/components/auth/user-avatar";
@@ -27,6 +28,13 @@ import type {
 
 const SORTS: ReviewSort[] = ["recent", "oldest", "highest", "lowest"];
 const STARS = [5, 4, 3, 2, 1];
+
+/**
+ * Infinite-scroll auto-loads reviews up to this many, then hands off to a manual "Show more" — a cap
+ * so a single view can't fetch unbounded pages in the background. Override per environment via
+ * NEXT_PUBLIC_REVIEWS_AUTOLOAD_LIMIT; a fresh sort/filter starts the count over.
+ */
+const AUTO_LOAD_LIMIT = Number(process.env.NEXT_PUBLIC_REVIEWS_AUTOLOAD_LIMIT) || 120;
 
 const EMPTY_SUMMARY: ReviewSummary = {
   avg: 0,
@@ -64,6 +72,38 @@ export function BusinessReviews({
 
   // Guards a stale response from a slower earlier request overwriting a newer one.
   const requestId = useRef(0);
+
+  const hasMore = page < lastPage;
+  // Auto-load (infinite scroll) only while under the cap; past it, a manual "Show more" takes over.
+  const autoLoad = hasMore && reviews.length < AUTO_LOAD_LIMIT;
+
+  // A sentinel near the list's end; when it scrolls into view we fetch the next page. `loadMoreRef`
+  // keeps the observer pointed at the latest closure without re-creating it every render.
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  const loadMoreRef = useRef(loadMore);
+  useEffect(() => {
+    loadMoreRef.current = loadMore;
+  });
+
+  useEffect(() => {
+    if (!autoLoad || loadingMore) {
+      return;
+    }
+    const sentinel = sentinelRef.current;
+    if (!sentinel) {
+      return;
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          void loadMoreRef.current();
+        }
+      },
+      { rootMargin: "400px" },
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [autoLoad, loadingMore]);
 
   async function fetchPage(
     nextSort: ReviewSort,
@@ -252,18 +292,27 @@ export function BusinessReviews({
           </ul>
         )}
 
-        {page < lastPage ? (
-          <div className="mt-4">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={loadMore}
-              disabled={loadingMore}
-            >
-              {t("loadMore")}
-            </Button>
-          </div>
+        {hasMore ? (
+          autoLoad ? (
+            // Infinite scroll: this sentinel triggers the next page as it nears the viewport.
+            <div ref={sentinelRef} className="mt-4 flex justify-center py-2">
+              {loadingMore ? (
+                <Loader2 className="text-muted-foreground size-5 animate-spin" aria-hidden />
+              ) : null}
+            </div>
+          ) : (
+            <div className="mt-4">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={loadMore}
+                disabled={loadingMore}
+              >
+                {t("loadMore")}
+              </Button>
+            </div>
+          )
         ) : null}
       </section>
 
