@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
+// Run the server in UTC so any server-side Date is UTC, never the host machine's zone (Toronto in
+// local dev). User-facing dates are formatted in the viewer's own timezone via next-intl; this just
+// keeps the server's own clock neutral. A deploy that sets TZ explicitly is respected.
+process.env.TZ ??= "UTC";
+
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 /**

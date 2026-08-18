@@ -198,7 +198,8 @@
     "addAccount": "Ajouter un autre compte",
     "signOutAll": "Se déconnecter de tous les comptes",
     "portal": "Portail",
-    "businesses": "Entreprises"
+    "businesses": "Entreprises",
+    "admin": "Administration"
   },
   "profile": {
     "title": "Profil",
@@ -608,7 +609,7 @@
       "back": "Retour à mes entreprises",
       "edit": "Modifier",
       "delete": "Supprimer",
-      "save": "Enregistrer les modifications",
+      "save": "Enregistrer",
       "saving": "Enregistrement…",
       "cancel": "Annuler",
       "savedToast": "Modifications enregistrées.",
@@ -760,8 +761,6 @@
       "removeClosure": "Retirer la date de fermeture",
       "addClosedDate": "Ajouter une date",
       "specialHours": "Ouvrir avec un horaire spécial",
-      "save": "Enregistrer",
-      "delete": "Supprimer",
       "closuresGroupSingle": "Uniques",
       "closuresGroupRecurring": "Récurrentes",
       "timezoneLabel": "Fuseau horaire",
@@ -911,6 +910,106 @@
       "noResults": "Aucune entreprise trouvée",
       "openMenu": "Ouvrir le menu de l’entreprise",
       "menuTitle": "Menu de l’entreprise"
+    }
+  },
+  "admin": {
+    "title": "Administration",
+    "nav": {
+      "reports": "Signalements"
+    },
+    "reports": {
+      "title": "Signalements",
+      "subtitle": "Entreprises et avis signalés. Les signalements prioritaires apparaissent en premier.",
+      "empty": "Aucun signalement ne correspond à ces filtres."
+    },
+    "filters": {
+      "status": "Statut",
+      "reason": "Motif",
+      "type": "Type",
+      "allStatuses": "Tous les statuts",
+      "allReasons": "Tous les motifs",
+      "allTypes": "Tous les types"
+    },
+    "status": {
+      "open": "Ouvert",
+      "reviewing": "En examen",
+      "resolved": "Résolu",
+      "dismissed": "Rejeté"
+    },
+    "targets": {
+      "business": "Entreprise",
+      "review": "Avis",
+      "deleted": "Élément supprimé"
+    },
+    "priority": "Prioritaire",
+    "table": {
+      "target": "Élément",
+      "reason": "Motif",
+      "reporter": "Signalé par",
+      "reported": "Signalé",
+      "status": "Statut",
+      "actions": "Actions"
+    },
+    "actions": {
+      "hide": "Masquer l'avis",
+      "unhide": "Afficher l'avis",
+      "lock": "Verrouiller l'entreprise",
+      "unlock": "Déverrouiller l'entreprise",
+      "resolve": "Résoudre le signalement",
+      "dismiss": "Rejeter le signalement"
+    },
+    "confirm": {
+      "reasonLabel": "Motif interne (facultatif)",
+      "noteLabel": "Note interne (facultative)",
+      "notePlaceholder": "Visible uniquement par les modérateurs.",
+      "cancel": "Annuler",
+      "hide": {
+        "title": "Masquer cet avis?",
+        "description": "Il est retiré de l'affichage public et de la note de l'entreprise jusqu'à son rétablissement.",
+        "confirm": "Masquer l'avis"
+      },
+      "lock": {
+        "title": "Verrouiller cette entreprise?",
+        "description": "Elle est retirée des listes publiques et figée pour son propriétaire jusqu'au déverrouillage.",
+        "confirm": "Verrouiller"
+      },
+      "resolve": {
+        "title": "Résoudre ce signalement?",
+        "description": "Marquez-le comme traité — une action a été prise.",
+        "confirm": "Résoudre"
+      },
+      "dismiss": {
+        "title": "Rejeter ce signalement?",
+        "description": "Marquez-le comme examiné — aucune action requise.",
+        "confirm": "Rejeter"
+      }
+    },
+    "toast": {
+      "hide": "Avis masqué.",
+      "unhide": "Avis rétabli.",
+      "lock": "Entreprise verrouillée.",
+      "unlock": "Entreprise déverrouillée.",
+      "resolve": "Signalement résolu.",
+      "dismiss": "Signalement rejeté."
+    },
+    "pagination": {
+      "page": "Page {page} sur {total}",
+      "previous": "Précédent",
+      "next": "Suivant"
+    },
+    "forbidden": "Vous n'avez pas accès à ceci.",
+    "loadError": "Impossible de charger les signalements.",
+    "actionError": "Une erreur s'est produite.",
+    "detail": {
+      "reporterLabel": "Signalé par",
+      "reporterMessage": "Message du signaleur",
+      "noMessage": "Aucun message fourni.",
+      "reportedResource": "Ressource signalée",
+      "viewPublic": "Voir la page publique",
+      "resolution": "Résolution",
+      "resolvedAt": "Résolu",
+      "noResolutionNote": "Aucune note laissée.",
+      "noteLabel": "Note interne (facultative)"
     }
   }
 }

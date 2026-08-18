@@ -14,6 +14,7 @@ import {
   removeFromVault,
   setSessionCookies,
   setUserCookie,
+  withCurrentRoles,
   type VaultAccount,
 } from "./session";
 
@@ -48,7 +49,7 @@ export async function establishSession(
   // header immediately, instead of showing a skeleton until the background /me returns.
   const me = await callWithAuth<{ user: AuthUser }>({ path: "/account" });
   if (me.ok) {
-    await setUserCookie(me.data.user);
+    await setUserCookie(await withCurrentRoles(me.data.user));
   }
 }
 
@@ -87,8 +88,9 @@ export async function promoteVaultedAccount(): Promise<AuthUser | null> {
       await removeFromVault(account.id);
       const me = await callWithAuth<{ user: AuthUser }>({ path: "/account" });
       if (me.ok) {
-        await setUserCookie(me.data.user);
-        return me.data.user;
+        const user = await withCurrentRoles(me.data.user);
+        await setUserCookie(user);
+        return user;
       }
       // Activated (tokens are valid) but the immediate /account read hiccupped — the account is
       // now active, so stop here rather than churning through more of the vault.

@@ -5,6 +5,7 @@ import {
   LayoutPanelLeft,
   LogOut,
   Settings,
+  ShieldCheck,
   UserPlus,
   Users,
 } from "lucide-react";
@@ -16,6 +17,7 @@ import { useCallback, useState, useTransition } from "react";
 import { useCurrentUser } from "@/components/auth/current-user";
 import { useSettingsDialog } from "@/components/auth/settings-dialog";
 import { UserAvatar } from "@/components/auth/user-avatar";
+import { isSuperAdmin } from "@/lib/auth/roles";
 import { ThemeSegmentedControl } from "@/components/theme-segmented-control";
 import { Button } from "@/components/ui/button";
 import {
@@ -215,6 +217,14 @@ export function UserMenu() {
             {t("businesses")}
           </Link>
         </DropdownMenuItem>
+        {isSuperAdmin(user) ? (
+          <DropdownMenuItem asChild>
+            <Link href="/portal/admin">
+              <ShieldCheck className="size-4" />
+              {t("admin")}
+            </Link>
+          </DropdownMenuItem>
+        ) : null}
         <DropdownMenuItem onSelect={() => openSettings()}>
           <Settings className="size-4" />
           {t("settings")}

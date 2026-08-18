@@ -39,6 +39,10 @@ export interface AuthUser {
   // The account's self-selected gender, or null if unset.
   gender: Gender | null;
   created_at: string;
+  // Platform role names carried from the access token's `roles` claim (not from the account
+  // payload) — e.g. `["super_admin"]`. Absent/empty for an ordinary account. Gates the admin UI;
+  // the API is the real enforcement.
+  roles?: string[];
 }
 
 export interface TokenPair {
