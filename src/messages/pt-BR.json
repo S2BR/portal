@@ -1010,6 +1010,12 @@
       "resolvedAt": "Resolvida",
       "noResolutionNote": "Nenhuma nota deixada.",
       "noteLabel": "Nota interna (opcional)"
+    },
+    "expired": {
+      "title": "Sessão de administração expirada",
+      "description": "Seu acesso de administração expirou por inatividade. Entre novamente para continuar.",
+      "reenter": "Entrar novamente",
+      "back": "Voltar ao painel"
     }
   }
 }

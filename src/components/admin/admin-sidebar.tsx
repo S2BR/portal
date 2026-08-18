@@ -5,10 +5,19 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { useCurrentUser } from "@/components/auth/current-user";
+
 import { cn } from "@/lib/utils";
 
 type NavKey = "reports";
-type NavItem = { key: NavKey; href: string; icon: LucideIcon };
+// requiredRoles gates a section to specific admin roles (community admins, moderators, …). Empty =
+// visible to anyone who can open the panel. Only Reports exists today, so nothing is gated yet.
+type NavItem = {
+  key: NavKey;
+  href: string;
+  icon: LucideIcon;
+  requiredRoles?: string[];
+};
 
 const ITEMS: NavItem[] = [
   { key: "reports", href: "/portal/admin/reports", icon: Flag },
@@ -21,6 +30,13 @@ const ITEMS: NavItem[] = [
 export function AdminSidebar() {
   const t = useTranslations("admin");
   const pathname = usePathname();
+  const { user } = useCurrentUser();
+  const roles = user?.roles ?? [];
+  const items = ITEMS.filter(
+    (item) =>
+      !item.requiredRoles ||
+      item.requiredRoles.some((role) => roles.includes(role)),
+  );
 
   return (
     <aside className="px-4 pt-6 sm:w-72 sm:shrink-0 sm:px-6 sm:pt-10">
@@ -34,7 +50,7 @@ export function AdminSidebar() {
         </div>
         <nav className="text-sm">
           <ul className="space-y-1">
-            {ITEMS.map((item) => {
+            {items.map((item) => {
               const active = pathname.startsWith(item.href);
               return (
                 <li key={item.key}>

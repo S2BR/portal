@@ -1010,6 +1010,12 @@
       "resolvedAt": "Resuelta",
       "noResolutionNote": "No se dejó ninguna nota.",
       "noteLabel": "Nota interna (opcional)"
+    },
+    "expired": {
+      "title": "Sesión de administración expirada",
+      "description": "Tu acceso de administración caducó por inactividad. Vuelve a entrar para continuar.",
+      "reenter": "Volver a entrar",
+      "back": "Volver al panel"
     }
   }
 }

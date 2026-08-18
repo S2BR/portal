@@ -50,6 +50,10 @@ export interface TokenPair {
   refresh_token: string;
   token_type: string;
   expires_in: number;
+  // Present only for admin-capable accounts: a separate, longer-lived token that gates the admin
+  // panel UI (never authorizes API actions). See the API's IssueAdminToken.
+  admin_token?: string;
+  admin_expires_in?: number;
 }
 
 /** A sign-in success: the token pair at the top level, with the user nested. */

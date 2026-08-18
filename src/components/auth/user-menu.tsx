@@ -17,7 +17,7 @@ import { useCallback, useState, useTransition } from "react";
 import { useCurrentUser } from "@/components/auth/current-user";
 import { useSettingsDialog } from "@/components/auth/settings-dialog";
 import { UserAvatar } from "@/components/auth/user-avatar";
-import { isSuperAdmin } from "@/lib/auth/roles";
+import { hasAdminPanelAccess } from "@/lib/auth/roles";
 import { ThemeSegmentedControl } from "@/components/theme-segmented-control";
 import { Button } from "@/components/ui/button";
 import {
@@ -217,7 +217,7 @@ export function UserMenu() {
             {t("businesses")}
           </Link>
         </DropdownMenuItem>
-        {isSuperAdmin(user) ? (
+        {hasAdminPanelAccess(user) ? (
           <DropdownMenuItem asChild>
             <Link href="/portal/admin">
               <ShieldCheck className="size-4" />
