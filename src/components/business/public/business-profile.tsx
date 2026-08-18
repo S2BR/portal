@@ -12,6 +12,7 @@ import {
 } from "@/components/business/business-constants";
 import { ProfileMap } from "@/components/business/public/profile-map";
 import { StarRating } from "@/components/business/public/star-rating";
+import { ReportDialog } from "@/components/moderation/report-dialog";
 import { ClosuresReadout } from "@/components/business/closures-editor";
 import { flagEmoji, formatPhone } from "@/components/business/phone-format";
 import { ShareButton } from "@/components/business/public/share-button";
@@ -47,6 +48,7 @@ export async function BusinessProfile({
 }) {
   const t = await getTranslations("businesses.public");
   const days = await getTranslations("businesses.detail.days");
+  const reportT = await getTranslations("moderation.report");
 
   const main =
     business.addresses.find((address) => address.is_main) ??
@@ -364,6 +366,14 @@ export async function BusinessProfile({
               </div>
             ) : null}
           </div>
+        </div>
+
+        <div className="mt-8 flex justify-end">
+          <ReportDialog
+            type="business"
+            id={business.id}
+            label={reportT("reportBusiness")}
+          />
         </div>
       </article>
     </>
