@@ -33,13 +33,16 @@ export async function SiteHeader() {
         <Brand />
         <div className="ms-auto flex items-center gap-2">
           <LocaleSwitcher />
-          <ThemeToggle />
           {authenticated ? (
+            // Signed in: the theme control lives in the user menu, so it's dropped from the header.
             <SiteHeaderAuth />
           ) : (
-            <Button asChild variant="ghost">
-              <Link href="/login">{t("nav.login")}</Link>
-            </Button>
+            <>
+              <ThemeToggle />
+              <Button asChild variant="ghost">
+                <Link href="/login">{t("nav.login")}</Link>
+              </Button>
+            </>
           )}
         </div>
       </div>
