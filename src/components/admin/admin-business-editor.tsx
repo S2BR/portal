@@ -19,6 +19,7 @@ import type {
   AdminAuditPage,
   AdminBusiness,
 } from "@/app/api/admin/businesses/[id]/types";
+import { AdminBusinessOwners } from "@/components/admin/admin-business-owners";
 import { BusinessDetail } from "@/components/business/business-detail";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -134,18 +135,6 @@ export function AdminBusinessEditor({ id }: { id: string }) {
               </h1>
               <StatusBadge business={business} statusT={statusT} />
             </div>
-            <p className="text-muted-foreground text-sm">
-              {business.owners.length === 0 ? (
-                <span className="italic">{t("unclaimed")}</span>
-              ) : (
-                <>
-                  {t("owners")}:{" "}
-                  {business.owners
-                    .map((owner) => `${owner.name} (${owner.email})`)
-                    .join(", ")}
-                </>
-              )}
-            </p>
             {business.is_locked && business.locked_reason ? (
               <p className="text-sm">
                 <span className="text-muted-foreground">
@@ -229,13 +218,24 @@ export function AdminBusinessEditor({ id }: { id: string }) {
           </Button>
         </div>
       ) : (
-        // The reused owner edit form, pointed at the admin BFF — manages this business's full detail.
-        <BusinessDetail
-          key={formKey}
-          slug={id}
-          basePath="/api/admin/businesses"
-          deletedRedirect="/portal/admin/businesses"
-        />
+        <>
+          <AdminBusinessOwners
+            id={id}
+            owners={business.owners}
+            onChange={(owners) =>
+              setBusiness((current) =>
+                current ? { ...current, owners } : current,
+              )
+            }
+          />
+          {/* The reused owner edit form, pointed at the admin BFF — manages this business's detail. */}
+          <BusinessDetail
+            key={formKey}
+            slug={id}
+            basePath="/api/admin/businesses"
+            deletedRedirect="/portal/admin/businesses"
+          />
+        </>
       )}
 
       <AuditSheet id={id} open={auditOpen} onOpenChange={setAuditOpen} t={t} />

@@ -1092,6 +1092,20 @@
           "business.owner_removed": "Owner removed",
           "business.claimed": "Claimed"
         }
+      },
+      "owners": {
+        "title": "Owners",
+        "subtitle": "Accounts that can manage this business.",
+        "add": "Add owner",
+        "searchPlaceholder": "Search by name or email…",
+        "searchHint": "Type to search users.",
+        "noResults": "No matching users.",
+        "empty": "No owners yet (unclaimed).",
+        "added": "Owner added.",
+        "removed": "Owner removed.",
+        "remove": "Remove owner",
+        "forbidden": "You don't have access to this.",
+        "error": "Something went wrong."
       }
     }
   },

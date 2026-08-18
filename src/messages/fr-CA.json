@@ -1092,6 +1092,20 @@
           "business.owner_removed": "Propriétaire retiré",
           "business.claimed": "Réclamée"
         }
+      },
+      "owners": {
+        "title": "Propriétaires",
+        "subtitle": "Comptes pouvant gérer cette entreprise.",
+        "add": "Ajouter un propriétaire",
+        "searchPlaceholder": "Rechercher par nom ou courriel…",
+        "searchHint": "Tapez pour rechercher des utilisateurs.",
+        "noResults": "Aucun utilisateur correspondant.",
+        "empty": "Aucun propriétaire (non réclamée).",
+        "added": "Propriétaire ajouté.",
+        "removed": "Propriétaire retiré.",
+        "remove": "Retirer le propriétaire",
+        "forbidden": "Vous n'avez pas accès à ceci.",
+        "error": "Une erreur s'est produite."
       }
     }
   },

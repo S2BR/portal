@@ -1092,6 +1092,20 @@
           "business.owner_removed": "Proprietário removido",
           "business.claimed": "Reivindicado"
         }
+      },
+      "owners": {
+        "title": "Proprietários",
+        "subtitle": "Contas que podem gerenciar este negócio.",
+        "add": "Adicionar proprietário",
+        "searchPlaceholder": "Pesquisar por nome ou e-mail…",
+        "searchHint": "Digite para pesquisar usuários.",
+        "noResults": "Nenhum usuário correspondente.",
+        "empty": "Ainda sem proprietários (não reivindicado).",
+        "added": "Proprietário adicionado.",
+        "removed": "Proprietário removido.",
+        "remove": "Remover proprietário",
+        "forbidden": "Você não tem acesso a isto.",
+        "error": "Algo deu errado."
       }
     }
   },
