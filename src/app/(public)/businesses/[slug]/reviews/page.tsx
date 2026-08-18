@@ -67,15 +67,18 @@ export default async function BusinessReviewsPage({
         {t("backToProfile")}
       </Link>
 
-      <header className="mt-4 mb-8 flex items-center gap-4">
-        <BusinessLogo
-          name={business.name}
-          src={business.logo}
-          className="size-14 rounded-2xl"
-          fallbackClassName="text-lg"
-        />
+      <header className="mt-4 mb-8 flex items-center gap-4 sm:gap-6">
+        {/* Same frosted-glass plate + logo size as the main profile. */}
+        <div className="w-fit shrink-0 overflow-hidden rounded-[32px] border border-white/40 bg-white/20 p-1.5 shadow-lg backdrop-blur-md sm:rounded-[40px] sm:p-2 dark:border-white/15 dark:bg-white/10">
+          <BusinessLogo
+            name={business.name}
+            src={business.logo}
+            className="bg-background size-28 rounded-[26px] sm:size-36 sm:rounded-[32px]"
+            fallbackClassName="text-4xl"
+          />
+        </div>
         <div className="min-w-0">
-          <h1 className="font-heading truncate text-2xl font-semibold tracking-tight">
+          <h1 className="font-heading truncate text-2xl font-semibold tracking-tight sm:text-3xl">
             {business.name}
           </h1>
           <p className="text-muted-foreground text-sm">{t("title")}</p>
