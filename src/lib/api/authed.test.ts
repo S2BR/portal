@@ -14,7 +14,7 @@ import {
   setSessionCookies,
 } from "@/lib/auth/session";
 
-import { callWithAuth } from "./authed";
+import { __resetRefreshCoordinationForTests, callWithAuth } from "./authed";
 
 const fetchMock = vi.fn();
 vi.stubGlobal("fetch", fetchMock);
@@ -34,6 +34,7 @@ beforeEach(() => {
 afterEach(() => {
   fetchMock.mockReset();
   vi.clearAllMocks();
+  __resetRefreshCoordinationForTests();
 });
 
 describe("callWithAuth", () => {
@@ -129,7 +130,7 @@ describe("callWithAuth", () => {
         }),
       );
 
-    const res = await callWithAuth({ path: "/auth/me" });
+    await callWithAuth({ path: "/auth/me" });
 
     expect(clearSessionCookies).not.toHaveBeenCalled();
     expect(setSessionCookies).not.toHaveBeenCalled();
@@ -178,5 +179,44 @@ describe("callWithAuth", () => {
     expect(refreshCalls).toBe(1);
     expect(clearSessionCookies).not.toHaveBeenCalled();
     expect(setSessionCookies).toHaveBeenCalledTimes(2);
+  });
+
+  it("does not replay a just-rotated token — a straggler reuses the cached rotation", async () => {
+    // The real bug: a request SENT with the old cookies (access-1 / refresh-1) lands AFTER a
+    // concurrent call already rotated refresh-1. It must reuse that rotation, not replay refresh-1
+    // to the API — which the server treats as reuse past its grace window and burns the family.
+    let refreshCalls = 0;
+    fetchMock.mockImplementation((url: string, init?: RequestInit) => {
+      if (String(url).endsWith("/auth/refresh")) {
+        refreshCalls += 1;
+        return Promise.resolve(
+          jsonResponse(200, {
+            access_token: "access-2",
+            refresh_token: "refresh-2",
+            token_type: "Bearer",
+            expires_in: 900,
+          }),
+        );
+      }
+      const authorization = (init?.headers as Record<string, string>)
+        ?.Authorization;
+      return Promise.resolve(
+        authorization === "Bearer access-1"
+          ? jsonResponse(401, { message: "Unauthenticated." })
+          : jsonResponse(200, { ok: true }),
+      );
+    });
+
+    // First call rotates refresh-1 → refresh-2 (one API refresh).
+    const first = await callWithAuth({ path: "/a" });
+    expect(first.status).toBe(200);
+    expect(refreshCalls).toBe(1);
+
+    // The straggler still carries access-1 / refresh-1 (its own request snapshot). It 401s, presents
+    // refresh-1 — and must reuse the cached rotation rather than replay it to the API.
+    const straggler = await callWithAuth({ path: "/b" });
+    expect(straggler.status).toBe(200);
+    expect(refreshCalls).toBe(1);
+    expect(clearSessionCookies).not.toHaveBeenCalled();
   });
 });

@@ -11,14 +11,33 @@ import { portalFetch, type PortalRequest, type PortalResponse } from "./client";
 import type { TokenPair } from "./types";
 
 /**
- * In-flight refresh calls, keyed by the presented refresh token. A page often fires several authed
- * BFF calls at once; when the access token has expired, each would otherwise try to rotate the SAME
- * single-use refresh token concurrently — the first wins and the rest are misread as reuse (a
- * spurious "no access" or a forced sign-out). Single-flighting collapses them to one rotation whose
- * result every concurrent caller reuses. Keyed by the token so only the same account's simultaneous
- * calls share, and cleared as soon as the call settles (this is a short-lived de-dupe, not a cache).
+ * In-flight refresh calls, keyed by the presented refresh token — collapses refreshes that OVERLAP
+ * in time (a page firing several authed calls at once) to a single rotation.
  */
 const inFlightRefreshes = new Map<string, Promise<PortalResponse<TokenPair>>>();
+
+/**
+ * Recently-completed SUCCESSFUL refreshes, keyed by the token that was rotated. Overlap de-duping
+ * alone isn't enough: refresh tokens are single-use, and each browser BFF call is a SEPARATE request
+ * that carries whatever cookie it was sent with — so a call that was sent with token R but only
+ * reaches the refresh step AFTER a concurrent call already rotated R (e.g. because its own request
+ * ran slow) would replay R to the API. The server treats that as reuse once past its short grace
+ * window and burns the whole session family — a spurious full sign-out. Caching the result briefly
+ * lets that straggler reuse the rotation instead of replaying R, so the API never sees the reuse.
+ */
+const recentRefreshes = new Map<
+  string,
+  { at: number; result: PortalResponse<TokenPair> }
+>();
+
+/** How long a completed rotation stays reusable by a straggler carrying the pre-rotation token. */
+const RECENT_REFRESH_TTL_MS = 60_000;
+
+/** Test-only: clear the in-memory refresh coordination between cases (the maps are module state). */
+export function __resetRefreshCoordinationForTests(): void {
+  inFlightRefreshes.clear();
+  recentRefreshes.clear();
+}
 
 function refreshTokenPair(
   refreshToken: string,
@@ -28,13 +47,32 @@ function refreshTokenPair(
     return existing;
   }
 
+  // A straggler still carrying the just-rotated token: reuse the rotation rather than replay it.
+  const recent = recentRefreshes.get(refreshToken);
+  if (recent && Date.now() - recent.at < RECENT_REFRESH_TTL_MS) {
+    return Promise.resolve(recent.result);
+  }
+
   const request = portalFetch<TokenPair>({
     method: "POST",
     path: "/auth/refresh",
     body: { refresh_token: refreshToken },
-  }).finally(() => {
-    inFlightRefreshes.delete(refreshToken);
-  });
+  })
+    .then((result) => {
+      if (result.ok) {
+        recentRefreshes.set(refreshToken, { at: Date.now(), result });
+        // Drop expired entries so the map can't grow unbounded.
+        for (const [key, entry] of recentRefreshes) {
+          if (Date.now() - entry.at >= RECENT_REFRESH_TTL_MS) {
+            recentRefreshes.delete(key);
+          }
+        }
+      }
+      return result;
+    })
+    .finally(() => {
+      inFlightRefreshes.delete(refreshToken);
+    });
 
   inFlightRefreshes.set(refreshToken, request);
   return request;
