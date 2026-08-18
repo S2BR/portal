@@ -915,7 +915,8 @@
   "admin": {
     "title": "Administración",
     "nav": {
-      "reports": "Denuncias"
+      "reports": "Denuncias",
+      "businesses": "Negocios"
     },
     "reports": {
       "title": "Denuncias",
@@ -1016,6 +1017,44 @@
       "description": "Tu acceso de administración caducó por inactividad. Vuelve a entrar para continuar.",
       "reenter": "Volver a entrar",
       "back": "Volver al panel"
+    },
+    "businesses": {
+      "title": "Negocios",
+      "subtitle": "Todos los negocios de la plataforma. Busca, filtra y abre uno para gestionarlo.",
+      "search": "Buscar",
+      "searchPlaceholder": "Buscar por nombre…",
+      "empty": "Ningún negocio coincide con estos filtros.",
+      "unclaimed": "Sin reclamar",
+      "forbidden": "No tienes acceso a esto.",
+      "loadError": "No se pudieron cargar los negocios.",
+      "filters": {
+        "status": "Estado",
+        "type": "Tipo",
+        "allStatuses": "Todos los estados",
+        "allTypes": "Todos los tipos"
+      },
+      "status": {
+        "published": "Publicado",
+        "draft": "Borrador",
+        "locked": "Bloqueado",
+        "unclaimed": "Sin reclamar",
+        "deleted": "Eliminado"
+      },
+      "types": {
+        "company": "Empresa",
+        "self_employed": "Autónomo"
+      },
+      "table": {
+        "business": "Negocio",
+        "owners": "Propietarios",
+        "status": "Estado",
+        "created": "Creado"
+      },
+      "pagination": {
+        "page": "Página {page} de {total}",
+        "previous": "Anterior",
+        "next": "Siguiente"
+      }
     }
   },
   "session": {

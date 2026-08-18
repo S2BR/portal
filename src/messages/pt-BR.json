@@ -915,7 +915,8 @@
   "admin": {
     "title": "Administração",
     "nav": {
-      "reports": "Denúncias"
+      "reports": "Denúncias",
+      "businesses": "Negócios"
     },
     "reports": {
       "title": "Denúncias",
@@ -1016,6 +1017,44 @@
       "description": "Seu acesso de administração expirou por inatividade. Entre novamente para continuar.",
       "reenter": "Entrar novamente",
       "back": "Voltar ao painel"
+    },
+    "businesses": {
+      "title": "Negócios",
+      "subtitle": "Todos os negócios da plataforma. Pesquise, filtre e abra um para gerenciá-lo.",
+      "search": "Pesquisar",
+      "searchPlaceholder": "Pesquisar por nome…",
+      "empty": "Nenhum negócio corresponde a esses filtros.",
+      "unclaimed": "Não reivindicado",
+      "forbidden": "Você não tem acesso a isto.",
+      "loadError": "Não foi possível carregar os negócios.",
+      "filters": {
+        "status": "Status",
+        "type": "Tipo",
+        "allStatuses": "Todos os status",
+        "allTypes": "Todos os tipos"
+      },
+      "status": {
+        "published": "Publicado",
+        "draft": "Rascunho",
+        "locked": "Bloqueado",
+        "unclaimed": "Não reivindicado",
+        "deleted": "Excluído"
+      },
+      "types": {
+        "company": "Empresa",
+        "self_employed": "Autônomo"
+      },
+      "table": {
+        "business": "Negócio",
+        "owners": "Proprietários",
+        "status": "Status",
+        "created": "Criado"
+      },
+      "pagination": {
+        "page": "Página {page} de {total}",
+        "previous": "Anterior",
+        "next": "Próxima"
+      }
     }
   },
   "session": {

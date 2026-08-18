@@ -915,7 +915,8 @@
   "admin": {
     "title": "Administration",
     "nav": {
-      "reports": "Signalements"
+      "reports": "Signalements",
+      "businesses": "Entreprises"
     },
     "reports": {
       "title": "Signalements",
@@ -1016,6 +1017,44 @@
       "description": "Votre accès administrateur a expiré après inactivité. Ré-entrez pour continuer.",
       "reenter": "Ré-entrer",
       "back": "Retour au tableau de bord"
+    },
+    "businesses": {
+      "title": "Entreprises",
+      "subtitle": "Toutes les entreprises de la plateforme. Cherchez, filtrez et ouvrez-en une pour la gérer.",
+      "search": "Rechercher",
+      "searchPlaceholder": "Rechercher par nom…",
+      "empty": "Aucune entreprise ne correspond à ces filtres.",
+      "unclaimed": "Non réclamée",
+      "forbidden": "Vous n'avez pas accès à ceci.",
+      "loadError": "Impossible de charger les entreprises.",
+      "filters": {
+        "status": "Statut",
+        "type": "Type",
+        "allStatuses": "Tous les statuts",
+        "allTypes": "Tous les types"
+      },
+      "status": {
+        "published": "Publiée",
+        "draft": "Brouillon",
+        "locked": "Verrouillée",
+        "unclaimed": "Non réclamée",
+        "deleted": "Supprimée"
+      },
+      "types": {
+        "company": "Entreprise",
+        "self_employed": "Travailleur autonome"
+      },
+      "table": {
+        "business": "Entreprise",
+        "owners": "Propriétaires",
+        "status": "Statut",
+        "created": "Créée"
+      },
+      "pagination": {
+        "page": "Page {page} sur {total}",
+        "previous": "Précédent",
+        "next": "Suivant"
+      }
     }
   },
   "session": {

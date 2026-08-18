@@ -915,7 +915,8 @@
   "admin": {
     "title": "Admin",
     "nav": {
-      "reports": "Reports"
+      "reports": "Reports",
+      "businesses": "Businesses"
     },
     "reports": {
       "title": "Reports",
@@ -1016,6 +1017,44 @@
       "description": "Your admin access timed out after inactivity. Re-enter to continue.",
       "reenter": "Re-enter admin",
       "back": "Back to dashboard"
+    },
+    "businesses": {
+      "title": "Businesses",
+      "subtitle": "Every business on the platform. Search, filter, and open one to manage it.",
+      "search": "Search",
+      "searchPlaceholder": "Search by name…",
+      "empty": "No businesses match these filters.",
+      "unclaimed": "Unclaimed",
+      "forbidden": "You don't have access to this.",
+      "loadError": "Couldn't load businesses.",
+      "filters": {
+        "status": "Status",
+        "type": "Type",
+        "allStatuses": "All statuses",
+        "allTypes": "All types"
+      },
+      "status": {
+        "published": "Published",
+        "draft": "Draft",
+        "locked": "Locked",
+        "unclaimed": "Unclaimed",
+        "deleted": "Deleted"
+      },
+      "types": {
+        "company": "Company",
+        "self_employed": "Self-employed"
+      },
+      "table": {
+        "business": "Business",
+        "owners": "Owners",
+        "status": "Status",
+        "created": "Created"
+      },
+      "pagination": {
+        "page": "Page {page} of {total}",
+        "previous": "Previous",
+        "next": "Next"
+      }
     }
   },
   "session": {
