@@ -11,6 +11,11 @@ import {
   REFRESH_COOKIE,
 } from "./cookies";
 import { encodeUser, USER_COOKIE } from "./user-cookie";
+import {
+  encodeNotice,
+  NOTICE_COOKIE,
+  type SessionNotice,
+} from "./session-notice";
 import { readVerifiedClaims, verifyAdminToken } from "./verify-token";
 import { verifyAccessToken } from "./verify-token";
 
@@ -172,6 +177,22 @@ export async function adminSessionActive(): Promise<boolean> {
 /** Return the user with the current token's roles attached, for the display cookie / `/me` reply. */
 export async function withCurrentRoles(user: AuthUser): Promise<AuthUser> {
   return { ...user, roles: await currentAccessTokenRoles() };
+}
+
+/**
+ * Leave a one-shot notice for the client to toast after a session change the user didn't explicitly
+ * trigger (e.g. the switcher fell back to another account). Non-httpOnly so the client can read +
+ * clear it; short-lived, since it's consumed on the very next page.
+ */
+export async function setSessionNotice(notice: SessionNotice): Promise<void> {
+  const store = await cookies();
+  store.set(NOTICE_COOKIE, encodeNotice(notice), {
+    httpOnly: false,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60,
+  });
 }
 
 export async function clearSessionCookies(): Promise<void> {

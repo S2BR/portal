@@ -1017,5 +1017,8 @@
       "reenter": "Re-enter admin",
       "back": "Back to dashboard"
     }
+  },
+  "session": {
+    "accountFallback": "Your previous session ended — you're now signed in as {account}."
   }
 }

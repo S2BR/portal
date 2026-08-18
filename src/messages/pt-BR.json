@@ -1017,5 +1017,8 @@
       "reenter": "Entrar novamente",
       "back": "Voltar ao painel"
     }
+  },
+  "session": {
+    "accountFallback": "Sua sessão anterior terminou — você agora está conectado como {account}."
   }
 }

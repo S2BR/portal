@@ -1,6 +1,10 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-import { ADD_COOKIE, REFRESH_COOKIE } from "@/lib/auth/cookies";
+import {
+  ACCOUNTS_COOKIE,
+  ADD_COOKIE,
+  REFRESH_COOKIE,
+} from "@/lib/auth/cookies";
 
 /** The only routes reachable without a session. Everything else is gated. */
 const PUBLIC_PATHS = [
@@ -56,9 +60,15 @@ export function proxy(request: NextRequest): NextResponse {
   // register → verify-email) to add a second session, instead of bouncing home.
   const addingAccount = request.cookies.has(ADD_COOKIE) && publicPath;
 
-  // Unauthenticated visitor hitting a protected route → send them to sign-in,
-  // remembering where they were headed.
+  // No active session on a protected route. If OTHER accounts are still signed in (the switcher
+  // vault), fall back to one of them instead of forcing a re-login — the promote route activates it
+  // and bounces back here. Otherwise send them to sign-in, remembering where they were headed.
   if (!hasSession && !publicPath) {
+    if (request.cookies.has(ACCOUNTS_COOKIE)) {
+      const promote = new URL("/api/auth/promote", request.url);
+      promote.searchParams.set("next", pathname);
+      return NextResponse.redirect(promote);
+    }
     const url = new URL("/login", request.url);
     if (pathname !== "/") {
       url.searchParams.set("next", pathname);

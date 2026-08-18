@@ -12,6 +12,7 @@ vi.mock("@/lib/auth/session", () => ({
   readAccounts: vi.fn(),
   getRefreshToken: vi.fn(),
   withCurrentRoles: vi.fn(async (user) => user),
+  setSessionNotice: vi.fn(),
 }));
 
 import { callWithAuth } from "@/lib/api/authed";
