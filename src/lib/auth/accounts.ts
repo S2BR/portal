@@ -13,6 +13,7 @@ import {
   readAccounts,
   removeFromVault,
   setSessionCookies,
+  setSessionNotice,
   setUserCookie,
   withCurrentRoles,
   type VaultAccount,
@@ -90,6 +91,12 @@ export async function promoteVaultedAccount(): Promise<AuthUser | null> {
       if (me.ok) {
         const user = await withCurrentRoles(me.data.user);
         await setUserCookie(user);
+        // The active session ended unexpectedly and we fell back to this account — leave a notice so
+        // the UI can tell the user what happened instead of silently swapping who's signed in.
+        await setSessionNotice({
+          kind: "account_fallback",
+          account: user.name,
+        });
         return user;
       }
       // Activated (tokens are valid) but the immediate /account read hiccupped — the account is
