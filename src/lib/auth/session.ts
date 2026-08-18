@@ -6,6 +6,7 @@ import type { AuthUser, TokenPair } from "@/lib/api/types";
 
 import { ACCESS_COOKIE, ACCOUNTS_COOKIE, REFRESH_COOKIE } from "./cookies";
 import { encodeUser, USER_COOKIE } from "./user-cookie";
+import { readVerifiedClaims } from "./verify-token";
 import { verifyAccessToken } from "./verify-token";
 
 const USER_COOKIE_MAX_AGE = 60 * 60 * 24 * 7; // 7 days; overwritten on each session change
@@ -100,6 +101,32 @@ export async function setUserCookie(user: AuthUser): Promise<void> {
     path: "/",
     maxAge: USER_COOKIE_MAX_AGE,
   });
+}
+
+/**
+ * The platform role names carried by the current access token (its verified `roles` claim), or an
+ * empty list. Roles travel with the token — not the account payload — so the portal reads them the
+ * same way the API does: off a signature-verified token, no extra round-trip. Never throws (a
+ * missing/invalid token just yields no roles).
+ */
+export async function currentAccessTokenRoles(): Promise<string[]> {
+  const token = (await cookies()).get(ACCESS_COOKIE)?.value;
+  if (!token) {
+    return [];
+  }
+  try {
+    const claims = await readVerifiedClaims(token);
+    return Array.isArray(claims.roles)
+      ? claims.roles.filter((role): role is string => typeof role === "string")
+      : [];
+  } catch {
+    return [];
+  }
+}
+
+/** Return the user with the current token's roles attached, for the display cookie / `/me` reply. */
+export async function withCurrentRoles(user: AuthUser): Promise<AuthUser> {
+  return { ...user, roles: await currentAccessTokenRoles() };
 }
 
 export async function clearSessionCookies(): Promise<void> {

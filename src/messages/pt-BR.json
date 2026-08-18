@@ -198,7 +198,8 @@
     "addAccount": "Adicionar outra conta",
     "signOutAll": "Sair de todas as contas",
     "portal": "Portal",
-    "businesses": "Negócios"
+    "businesses": "Negócios",
+    "admin": "Administração"
   },
   "profile": {
     "title": "Perfil",
@@ -608,7 +609,7 @@
       "back": "Voltar aos meus negócios",
       "edit": "Editar",
       "delete": "Excluir",
-      "save": "Salvar alterações",
+      "save": "Salvar",
       "saving": "Salvando…",
       "cancel": "Cancelar",
       "savedToast": "Alterações salvas.",
@@ -760,8 +761,6 @@
       "removeClosure": "Remover data fechada",
       "addClosedDate": "Adicionar data",
       "specialHours": "Abrir com horário especial",
-      "save": "Salvar",
-      "delete": "Excluir",
       "closuresGroupSingle": "Únicas",
       "closuresGroupRecurring": "Recorrentes",
       "timezoneLabel": "Fuso horário",
@@ -911,6 +910,106 @@
       "noResults": "Nenhuma empresa encontrada",
       "openMenu": "Abrir menu da empresa",
       "menuTitle": "Menu da empresa"
+    }
+  },
+  "admin": {
+    "title": "Administração",
+    "nav": {
+      "reports": "Denúncias"
+    },
+    "reports": {
+      "title": "Denúncias",
+      "subtitle": "Negócios e avaliações denunciados. As denúncias prioritárias aparecem primeiro.",
+      "empty": "Nenhuma denúncia corresponde a esses filtros."
+    },
+    "filters": {
+      "status": "Status",
+      "reason": "Motivo",
+      "type": "Tipo",
+      "allStatuses": "Todos os status",
+      "allReasons": "Todos os motivos",
+      "allTypes": "Todos os tipos"
+    },
+    "status": {
+      "open": "Aberta",
+      "reviewing": "Em análise",
+      "resolved": "Resolvida",
+      "dismissed": "Descartada"
+    },
+    "targets": {
+      "business": "Negócio",
+      "review": "Avaliação",
+      "deleted": "Item excluído"
+    },
+    "priority": "Prioritária",
+    "table": {
+      "target": "Item",
+      "reason": "Motivo",
+      "reporter": "Denunciante",
+      "reported": "Denunciada",
+      "status": "Status",
+      "actions": "Ações"
+    },
+    "actions": {
+      "hide": "Ocultar avaliação",
+      "unhide": "Exibir avaliação",
+      "lock": "Bloquear negócio",
+      "unlock": "Desbloquear negócio",
+      "resolve": "Resolver denúncia",
+      "dismiss": "Descartar denúncia"
+    },
+    "confirm": {
+      "reasonLabel": "Motivo interno (opcional)",
+      "noteLabel": "Nota interna (opcional)",
+      "notePlaceholder": "Visível apenas para os moderadores.",
+      "cancel": "Cancelar",
+      "hide": {
+        "title": "Ocultar esta avaliação?",
+        "description": "Ela sai da visualização pública e da nota do negócio até ser exibida novamente.",
+        "confirm": "Ocultar avaliação"
+      },
+      "lock": {
+        "title": "Bloquear este negócio?",
+        "description": "Ele sai das listagens públicas e fica congelado para o dono até ser desbloqueado.",
+        "confirm": "Bloquear negócio"
+      },
+      "resolve": {
+        "title": "Resolver esta denúncia?",
+        "description": "Marque como tratada — ação tomada.",
+        "confirm": "Resolver"
+      },
+      "dismiss": {
+        "title": "Descartar esta denúncia?",
+        "description": "Marque como analisada — nenhuma ação necessária.",
+        "confirm": "Descartar"
+      }
+    },
+    "toast": {
+      "hide": "Avaliação ocultada.",
+      "unhide": "Avaliação restaurada.",
+      "lock": "Negócio bloqueado.",
+      "unlock": "Negócio desbloqueado.",
+      "resolve": "Denúncia resolvida.",
+      "dismiss": "Denúncia descartada."
+    },
+    "pagination": {
+      "page": "Página {page} de {total}",
+      "previous": "Anterior",
+      "next": "Próxima"
+    },
+    "forbidden": "Você não tem acesso a isto.",
+    "loadError": "Não foi possível carregar as denúncias.",
+    "actionError": "Algo deu errado.",
+    "detail": {
+      "reporterLabel": "Denunciado por",
+      "reporterMessage": "Mensagem do denunciante",
+      "noMessage": "Nenhuma mensagem fornecida.",
+      "reportedResource": "Recurso denunciado",
+      "viewPublic": "Ver página pública",
+      "resolution": "Resolução",
+      "resolvedAt": "Resolvida",
+      "noResolutionNote": "Nenhuma nota deixada.",
+      "noteLabel": "Nota interna (opcional)"
     }
   }
 }

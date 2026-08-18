@@ -3,7 +3,11 @@ import { NextResponse } from "next/server";
 import { callWithAuth } from "@/lib/api/authed";
 import type { AuthUser } from "@/lib/api/types";
 import { promoteVaultedAccount } from "@/lib/auth/accounts";
-import { clearSessionCookies, getRefreshToken } from "@/lib/auth/session";
+import {
+  clearSessionCookies,
+  getRefreshToken,
+  withCurrentRoles,
+} from "@/lib/auth/session";
 
 /**
  * BFF "current user" handler. Runs `callWithAuth`, so an expired access token is transparently
@@ -24,7 +28,9 @@ export async function GET(): Promise<NextResponse> {
   const response = await callWithAuth<{ user: AuthUser }>({ path: "/account" });
 
   if (response.ok) {
-    return NextResponse.json({ user: response.data.user });
+    return NextResponse.json({
+      user: await withCurrentRoles(response.data.user),
+    });
   }
 
   // Session cookies still present → the failure was transient, not a dead refresh token.

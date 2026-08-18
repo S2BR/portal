@@ -1,6 +1,6 @@
 import "server-only";
 
-import { importSPKI, jwtVerify } from "jose";
+import { importSPKI, jwtVerify, type JWTPayload } from "jose";
 
 import { env } from "@/env";
 
@@ -34,9 +34,19 @@ function portalPublicKey(): ReturnType<typeof importSPKI> {
  * expired), so callers fail closed.
  */
 export async function verifyAccessToken(token: string): Promise<void> {
-  await jwtVerify(token, await portalPublicKey(), {
+  await readVerifiedClaims(token);
+}
+
+/**
+ * Verify a portal access token (as {@link verifyAccessToken}) and return its decoded claims. Throws
+ * on any verification failure, so a caller only ever reads claims off a genuine, unexpired portal
+ * token — never a forged or tampered one.
+ */
+export async function readVerifiedClaims(token: string): Promise<JWTPayload> {
+  const { payload } = await jwtVerify(token, await portalPublicKey(), {
     algorithms: [ALGORITHM],
     audience: env.PORTAL_JWT_AUDIENCE,
     ...(env.PORTAL_JWT_ISSUER ? { issuer: env.PORTAL_JWT_ISSUER } : {}),
   });
+  return payload;
 }

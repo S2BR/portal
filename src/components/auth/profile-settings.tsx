@@ -1,7 +1,8 @@
 "use client";
 
 import { Cake, CalendarDays, Clock, User, VenusAndMars } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import type { Timezone } from "@/app/api/auth/timezones/route";
@@ -25,14 +26,6 @@ import {
 } from "@/components/ui/setting-tile";
 import { defaultBirthDate } from "@/lib/date-wheel";
 import { apiErrorText } from "@/lib/api/error-text";
-
-/** "March 2026" — the account-creation month, in the active locale. */
-function formatMonthYear(iso: string, locale: string): string {
-  return new Intl.DateTimeFormat(locale, {
-    month: "long",
-    year: "numeric",
-  }).format(new Date(iso));
-}
 
 /** A `YYYY-MM-DD` date as a long localized date, parsed as local (no timezone shift). */
 function formatDate(ymd: string, locale: string): string {
@@ -62,7 +55,9 @@ export function ProfileSettings() {
   const fields = useTranslations("auth.fields");
   const authErrors = useTranslations("auth.errors");
   const locale = useLocale();
+  const format = useFormatter();
   const { user, refresh } = useCurrentUser();
+  const router = useRouter();
 
   const [editingField, setEditingField] = useState<EditableField | null>(null);
   const [name, setName] = useState("");
@@ -128,6 +123,9 @@ export function ProfileSettings() {
       if (data.status === "ok") {
         setEditingField(null);
         await refresh();
+        // The signed-in user's timezone feeds next-intl's date formatting (a server config), so a
+        // change only takes effect after the RSC tree re-runs — refresh it rather than wait for a reload.
+        router.refresh();
       } else {
         setError(apiErrorText(data) ?? authErrors("generic"));
       }
@@ -176,192 +174,195 @@ export function ProfileSettings() {
   return (
     <SettingGroup title={t("title")} description={t("subtitle")}>
       <div className="grid gap-3 sm:grid-cols-2">
-          {/* Name */}
-          {editingField === "name" ? (
-            <SettingBlock
-              icon={User}
-              label={fields("name")}
-              className="sm:col-span-2"
-            >
-              <Input
-                aria-label={fields("name")}
-                autoComplete="name"
-                value={name}
-                onChange={(event) => setName(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    void saveField();
-                  }
-                }}
-                autoFocus
-              />
-              {footer}
-            </SettingBlock>
-          ) : (
-            <SettingTile
-              icon={User}
-              label={fields("name")}
-              onClick={() => startEdit("name")}
-              className="sm:col-span-2"
-            >
-              {user.name}
-            </SettingTile>
-          )}
-
-          {/* Date of birth */}
-          {editingField === "dateOfBirth" ? (
-            <SettingBlock
-              icon={Cake}
-              label={t("dateOfBirth")}
-              className="sm:col-span-2"
-              action={
-                user.date_of_birth ? (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    disabled={pending}
-                    onClick={() => void patchAccount({ date_of_birth: null })}
-                  >
-                    {t("remove")}
-                  </Button>
-                ) : null
-              }
-            >
-              {dateOfBirth ? (
-                <p className="text-muted-foreground text-center text-sm">
-                  {t.rich("born", {
-                    date: formatDate(dateOfBirth, locale),
-                    b: (chunks) => (
-                      <span className="text-foreground ms-1 font-semibold">
-                        {chunks}
-                      </span>
-                    ),
-                  })}
-                </p>
-              ) : null}
-              <DateWheelPicker
-                value={dateOfBirth}
-                onChange={setDateOfBirth}
-                locale={locale}
-                labels={{
-                  year: t("dobYear"),
-                  month: t("dobMonth"),
-                  day: t("dobDay"),
-                }}
-              />
-              <p className="text-muted-foreground text-xs">{t("dobHint")}</p>
-              {footer}
-            </SettingBlock>
-          ) : (
-            <SettingTile
-              icon={Cake}
-              label={t("dateOfBirth")}
-              onClick={() => startEdit("dateOfBirth")}
-            >
-              {user.date_of_birth ? (
-                formatDate(user.date_of_birth, locale)
-              ) : (
-                <span className="text-muted-foreground text-sm font-normal italic">
-                  {t("addDateOfBirth")}
-                </span>
-              )}
-            </SettingTile>
-          )}
-
-          {/* Gender */}
-          {editingField === "gender" ? (
-            <SettingBlock
-              icon={VenusAndMars}
-              label={t("gender")}
-              className="sm:col-span-2"
-              action={
-                user.gender ? (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    disabled={pending}
-                    onClick={() => void patchAccount({ gender: null })}
-                  >
-                    {t("remove")}
-                  </Button>
-                ) : null
-              }
-            >
-              <Select
-                value={gender === "" ? undefined : gender}
-                onValueChange={(value) => setGender(value as Gender)}
-              >
-                <SelectTrigger aria-label={t("gender")}>
-                  <SelectValue placeholder={t("selectGender")} />
-                </SelectTrigger>
-                <SelectContent>
-                  {GENDER_OPTIONS.map((option) => (
-                    <SelectItem key={option} value={option}>
-                      {t(`genders.${option}`)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <p className="text-muted-foreground text-xs">{t("genderHint")}</p>
-              {footer}
-            </SettingBlock>
-          ) : (
-            <SettingTile
-              icon={VenusAndMars}
-              label={t("gender")}
-              onClick={() => startEdit("gender")}
-            >
-              {user.gender ? (
-                t(`genders.${user.gender}`)
-              ) : (
-                <span className="text-muted-foreground text-sm font-normal italic">
-                  {t("addGender")}
-                </span>
-              )}
-            </SettingTile>
-          )}
-
-          {/* Timezone */}
-          {editingField === "timezone" ? (
-            <SettingBlock
-              icon={Clock}
-              label={t("timezone")}
-              className="sm:col-span-2"
-            >
-              <Combobox
-                value={timezone}
-                onChange={setTimezone}
-                options={[
-                  { value: "", label: t("deviceDefault") },
-                  ...timezones.map((zone) => ({
-                    value: zone.id,
-                    label: zone.label,
-                  })),
-                ]}
-                placeholder={t("deviceDefault")}
-                searchPlaceholder={t("searchTimezone")}
-                emptyText={t("noTimezone")}
-              />
-              {footer}
-            </SettingBlock>
-          ) : (
-            <SettingTile
-              icon={Clock}
-              label={t("timezone")}
-              onClick={() => startEdit("timezone")}
-            >
-              {currentZoneLabel}
-            </SettingTile>
-          )}
-
-          {/* Account-creation tile — read-only. Sits beside the timezone tile so it
-              doesn't hang alone on its own row. */}
-          <SettingTile icon={CalendarDays} label={t("memberSince")}>
-            {formatMonthYear(user.created_at, locale)}
+        {/* Name */}
+        {editingField === "name" ? (
+          <SettingBlock
+            icon={User}
+            label={fields("name")}
+            className="sm:col-span-2"
+          >
+            <Input
+              aria-label={fields("name")}
+              autoComplete="name"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  void saveField();
+                }
+              }}
+              autoFocus
+            />
+            {footer}
+          </SettingBlock>
+        ) : (
+          <SettingTile
+            icon={User}
+            label={fields("name")}
+            onClick={() => startEdit("name")}
+            className="sm:col-span-2"
+          >
+            {user.name}
           </SettingTile>
-        </div>
+        )}
+
+        {/* Date of birth */}
+        {editingField === "dateOfBirth" ? (
+          <SettingBlock
+            icon={Cake}
+            label={t("dateOfBirth")}
+            className="sm:col-span-2"
+            action={
+              user.date_of_birth ? (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  disabled={pending}
+                  onClick={() => void patchAccount({ date_of_birth: null })}
+                >
+                  {t("remove")}
+                </Button>
+              ) : null
+            }
+          >
+            {dateOfBirth ? (
+              <p className="text-muted-foreground text-center text-sm">
+                {t.rich("born", {
+                  date: formatDate(dateOfBirth, locale),
+                  b: (chunks) => (
+                    <span className="text-foreground ms-1 font-semibold">
+                      {chunks}
+                    </span>
+                  ),
+                })}
+              </p>
+            ) : null}
+            <DateWheelPicker
+              value={dateOfBirth}
+              onChange={setDateOfBirth}
+              locale={locale}
+              labels={{
+                year: t("dobYear"),
+                month: t("dobMonth"),
+                day: t("dobDay"),
+              }}
+            />
+            <p className="text-muted-foreground text-xs">{t("dobHint")}</p>
+            {footer}
+          </SettingBlock>
+        ) : (
+          <SettingTile
+            icon={Cake}
+            label={t("dateOfBirth")}
+            onClick={() => startEdit("dateOfBirth")}
+          >
+            {user.date_of_birth ? (
+              formatDate(user.date_of_birth, locale)
+            ) : (
+              <span className="text-muted-foreground text-sm font-normal italic">
+                {t("addDateOfBirth")}
+              </span>
+            )}
+          </SettingTile>
+        )}
+
+        {/* Gender */}
+        {editingField === "gender" ? (
+          <SettingBlock
+            icon={VenusAndMars}
+            label={t("gender")}
+            className="sm:col-span-2"
+            action={
+              user.gender ? (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  disabled={pending}
+                  onClick={() => void patchAccount({ gender: null })}
+                >
+                  {t("remove")}
+                </Button>
+              ) : null
+            }
+          >
+            <Select
+              value={gender === "" ? undefined : gender}
+              onValueChange={(value) => setGender(value as Gender)}
+            >
+              <SelectTrigger aria-label={t("gender")}>
+                <SelectValue placeholder={t("selectGender")} />
+              </SelectTrigger>
+              <SelectContent>
+                {GENDER_OPTIONS.map((option) => (
+                  <SelectItem key={option} value={option}>
+                    {t(`genders.${option}`)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-muted-foreground text-xs">{t("genderHint")}</p>
+            {footer}
+          </SettingBlock>
+        ) : (
+          <SettingTile
+            icon={VenusAndMars}
+            label={t("gender")}
+            onClick={() => startEdit("gender")}
+          >
+            {user.gender ? (
+              t(`genders.${user.gender}`)
+            ) : (
+              <span className="text-muted-foreground text-sm font-normal italic">
+                {t("addGender")}
+              </span>
+            )}
+          </SettingTile>
+        )}
+
+        {/* Timezone */}
+        {editingField === "timezone" ? (
+          <SettingBlock
+            icon={Clock}
+            label={t("timezone")}
+            className="sm:col-span-2"
+          >
+            <Combobox
+              value={timezone}
+              onChange={setTimezone}
+              options={[
+                { value: "", label: t("deviceDefault") },
+                ...timezones.map((zone) => ({
+                  value: zone.id,
+                  label: zone.label,
+                })),
+              ]}
+              placeholder={t("deviceDefault")}
+              searchPlaceholder={t("searchTimezone")}
+              emptyText={t("noTimezone")}
+            />
+            {footer}
+          </SettingBlock>
+        ) : (
+          <SettingTile
+            icon={Clock}
+            label={t("timezone")}
+            onClick={() => startEdit("timezone")}
+          >
+            {currentZoneLabel}
+          </SettingTile>
+        )}
+
+        {/* Account-creation tile — read-only. Sits beside the timezone tile so it
+              doesn't hang alone on its own row. */}
+        <SettingTile icon={CalendarDays} label={t("memberSince")}>
+          {format.dateTime(new Date(user.created_at), {
+            month: "long",
+            year: "numeric",
+          })}
+        </SettingTile>
+      </div>
     </SettingGroup>
   );
 }

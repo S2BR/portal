@@ -11,6 +11,7 @@ vi.mock("@/lib/auth/session", () => ({
   removeFromVault: vi.fn(),
   readAccounts: vi.fn(),
   getRefreshToken: vi.fn(),
+  withCurrentRoles: vi.fn(async (user) => user),
 }));
 
 import { callWithAuth } from "@/lib/api/authed";

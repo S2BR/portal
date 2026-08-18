@@ -6,6 +6,7 @@ vi.mock("@/lib/api/authed", () => ({
 vi.mock("@/lib/auth/session", () => ({
   clearSessionCookies: vi.fn(),
   getRefreshToken: vi.fn(),
+  withCurrentRoles: vi.fn(async (user) => user),
 }));
 vi.mock("@/lib/auth/accounts", () => ({
   promoteVaultedAccount: vi.fn(),

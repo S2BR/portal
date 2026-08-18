@@ -198,7 +198,8 @@
     "addAccount": "Add another account",
     "signOutAll": "Sign out of all accounts",
     "portal": "Portal",
-    "businesses": "Businesses"
+    "businesses": "Businesses",
+    "admin": "Admin"
   },
   "profile": {
     "title": "Profile",
@@ -608,7 +609,7 @@
       "back": "Back to my businesses",
       "edit": "Edit",
       "delete": "Delete",
-      "save": "Save changes",
+      "save": "Save",
       "saving": "Saving…",
       "cancel": "Cancel",
       "savedToast": "Changes saved.",
@@ -760,8 +761,6 @@
       "removeClosure": "Remove closed date",
       "addClosedDate": "Add date",
       "specialHours": "Open with special hours",
-      "save": "Save",
-      "delete": "Delete",
       "closuresGroupSingle": "Single",
       "closuresGroupRecurring": "Recurring",
       "timezoneLabel": "Timezone",
@@ -911,6 +910,106 @@
       "noResults": "No companies found",
       "openMenu": "Open company menu",
       "menuTitle": "Company menu"
+    }
+  },
+  "admin": {
+    "title": "Admin",
+    "nav": {
+      "reports": "Reports"
+    },
+    "reports": {
+      "title": "Reports",
+      "subtitle": "Reported businesses and reviews. Priority reports appear first.",
+      "empty": "No reports match these filters."
+    },
+    "filters": {
+      "status": "Status",
+      "reason": "Reason",
+      "type": "Type",
+      "allStatuses": "All statuses",
+      "allReasons": "All reasons",
+      "allTypes": "All types"
+    },
+    "status": {
+      "open": "Open",
+      "reviewing": "Reviewing",
+      "resolved": "Resolved",
+      "dismissed": "Dismissed"
+    },
+    "targets": {
+      "business": "Business",
+      "review": "Review",
+      "deleted": "Deleted target"
+    },
+    "priority": "Priority",
+    "table": {
+      "target": "Target",
+      "reason": "Reason",
+      "reporter": "Reporter",
+      "reported": "Reported",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "actions": {
+      "hide": "Hide review",
+      "unhide": "Unhide review",
+      "lock": "Lock business",
+      "unlock": "Unlock business",
+      "resolve": "Resolve report",
+      "dismiss": "Dismiss report"
+    },
+    "confirm": {
+      "reasonLabel": "Internal reason (optional)",
+      "noteLabel": "Internal note (optional)",
+      "notePlaceholder": "Only visible to moderators.",
+      "cancel": "Cancel",
+      "hide": {
+        "title": "Hide this review?",
+        "description": "It's removed from public view and the business rating until unhidden.",
+        "confirm": "Hide review"
+      },
+      "lock": {
+        "title": "Lock this business?",
+        "description": "It's pulled from public listings and frozen for its owner until unlocked.",
+        "confirm": "Lock business"
+      },
+      "resolve": {
+        "title": "Resolve this report?",
+        "description": "Mark it handled — action taken.",
+        "confirm": "Resolve"
+      },
+      "dismiss": {
+        "title": "Dismiss this report?",
+        "description": "Mark it reviewed — no action needed.",
+        "confirm": "Dismiss"
+      }
+    },
+    "toast": {
+      "hide": "Review hidden.",
+      "unhide": "Review restored.",
+      "lock": "Business locked.",
+      "unlock": "Business unlocked.",
+      "resolve": "Report resolved.",
+      "dismiss": "Report dismissed."
+    },
+    "pagination": {
+      "page": "Page {page} of {total}",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "forbidden": "You don't have access to this.",
+    "loadError": "Couldn't load reports.",
+    "actionError": "Something went wrong.",
+    "detail": {
+      "reporterLabel": "Reported by",
+      "reporterMessage": "Reporter's message",
+      "noMessage": "No message provided.",
+      "reportedResource": "Reported resource",
+      "viewPublic": "View public page",
+      "resolution": "Resolution",
+      "resolvedAt": "Resolved",
+      "noResolutionNote": "No note left.",
+      "noteLabel": "Internal note (optional)"
     }
   }
 }
