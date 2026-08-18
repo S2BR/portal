@@ -6,9 +6,9 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { UserAvatar } from "@/components/auth/user-avatar";
-import { useCurrentUser } from "@/components/auth/current-user";
 import { ReviewForm } from "@/components/business/public/review-form";
 import { StarRating } from "@/components/business/public/star-rating";
+import { ReportDialog } from "@/components/moderation/report-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -34,7 +34,8 @@ const STARS = [5, 4, 3, 2, 1];
  * so a single view can't fetch unbounded pages in the background. Override per environment via
  * NEXT_PUBLIC_REVIEWS_AUTOLOAD_LIMIT; a fresh sort/filter starts the count over.
  */
-const AUTO_LOAD_LIMIT = Number(process.env.NEXT_PUBLIC_REVIEWS_AUTOLOAD_LIMIT) || 120;
+const AUTO_LOAD_LIMIT =
+  Number(process.env.NEXT_PUBLIC_REVIEWS_AUTOLOAD_LIMIT) || 120;
 
 const EMPTY_SUMMARY: ReviewSummary = {
   avg: 0,
@@ -57,7 +58,6 @@ export function BusinessReviews({
 }) {
   const t = useTranslations("businesses.public.reviews");
   const format = useFormatter();
-  const { user } = useCurrentUser();
 
   const [reviews, setReviews] = useState<PublicReview[]>(initial.data);
   const [summary, setSummary] = useState<ReviewSummary>(
@@ -177,24 +177,6 @@ export function BusinessReviews({
     }
   }
 
-  async function report(id: string) {
-    try {
-      const response = await fetch(
-        `/api/businesses/${encodeURIComponent(slug)}/reviews/${encodeURIComponent(id)}/report`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ reason: "other" }),
-        },
-      );
-      toast[response.ok ? "success" : "error"](
-        response.ok ? t("reported") : t("error"),
-      );
-    } catch {
-      toast.error(t("error"));
-    }
-  }
-
   const maxBar = Math.max(
     1,
     ...STARS.map((star) => summary.breakdown[String(star)] ?? 0),
@@ -221,7 +203,10 @@ export function BusinessReviews({
               value={sort}
               onValueChange={(value) => changeSort(value as ReviewSort)}
             >
-              <SelectTrigger className="h-9 w-[170px]" aria-label={t("sortLabel")}>
+              <SelectTrigger
+                className="h-9 w-[170px]"
+                aria-label={t("sortLabel")}
+              >
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -264,7 +249,9 @@ export function BusinessReviews({
                       ) : null}
                     </div>
                     {review.body ? (
-                      <p className="mt-1.5 text-sm text-pretty">{review.body}</p>
+                      <p className="mt-1.5 text-sm text-pretty">
+                        {review.body}
+                      </p>
                     ) : null}
                     {review.owner_reply ? (
                       <div className="bg-muted/50 mt-2.5 rounded-lg border p-3">
@@ -276,15 +263,12 @@ export function BusinessReviews({
                         </p>
                       </div>
                     ) : null}
-                    {user ? (
-                      <button
-                        type="button"
-                        onClick={() => report(review.id)}
-                        className="text-muted-foreground hover:text-foreground mt-2 text-xs underline underline-offset-2"
-                      >
-                        {t("report")}
-                      </button>
-                    ) : null}
+                    <ReportDialog
+                      type="review"
+                      id={review.id}
+                      label={t("report")}
+                      className="mt-2 inline-block"
+                    />
                   </div>
                 </div>
               </li>
@@ -297,7 +281,10 @@ export function BusinessReviews({
             // Infinite scroll: this sentinel triggers the next page as it nears the viewport.
             <div ref={sentinelRef} className="mt-4 flex justify-center py-2">
               {loadingMore ? (
-                <Loader2 className="text-muted-foreground size-5 animate-spin" aria-hidden />
+                <Loader2
+                  className="text-muted-foreground size-5 animate-spin"
+                  aria-hidden
+                />
               ) : null}
             </div>
           ) : (
@@ -318,7 +305,7 @@ export function BusinessReviews({
 
       {/* Write a review + the rating summary — a sidebar that sticks on desktop, stacks on top on
           mobile so the "leave a review" call to action stays above the fold. */}
-      <aside className="order-1 space-y-6 lg:order-2 lg:sticky lg:top-24">
+      <aside className="order-1 space-y-6 lg:sticky lg:top-24 lg:order-2">
         <section className="space-y-3">
           <h2 className="text-lg font-semibold">{t("leaveReview")}</h2>
           <ReviewForm slug={slug} onSaved={() => reload(sort, activeRating)} />

@@ -3,18 +3,17 @@ import { z } from "zod";
 
 import { callWithAuth } from "@/lib/api/authed";
 import { rateLimitedResponse } from "@/lib/api/rate-limit";
+import { REPORT_REASONS } from "@/lib/report-reasons";
 
 const bodySchema = z.object({
-  reason: z.enum(["spam", "offensive", "fake", "other"]),
+  type: z.string().min(1),
+  id: z.string().min(1),
+  reason: z.enum(REPORT_REASONS),
+  details: z.string().max(2000).nullish(),
 });
 
-/** BFF: flag a review for an operator. Idempotent per user upstream. */
-export async function POST(
-  request: Request,
-  { params }: { params: Promise<{ slug: string; id: string }> },
-): Promise<NextResponse> {
-  const { slug, id } = await params;
-
+/** BFF: submit an abuse report against any reportable resource. Signed-in users only (upstream). */
+export async function POST(request: Request): Promise<NextResponse> {
   const parsed = bodySchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) {
     return NextResponse.json({ status: "invalid" }, { status: 422 });
@@ -25,7 +24,7 @@ export async function POST(
     message?: string;
   }>({
     method: "POST",
-    path: `/businesses/${encodeURIComponent(slug)}/reviews/${encodeURIComponent(id)}/report`,
+    path: "/reports",
     body: parsed.data,
   });
 
