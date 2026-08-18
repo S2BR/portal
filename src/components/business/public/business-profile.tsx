@@ -253,7 +253,7 @@ export async function BusinessProfile({
           {/* Sidebar */}
           <div className="space-y-4">
             {business.opening_hours.length > 0 ? (
-              <div className="bg-muted/40 rounded-2xl border p-5">
+              <div className="bg-muted/40 rounded-2xl p-5">
                 <h2 className="mb-3 text-sm font-semibold">{t("hours")}</h2>
                 <ul className="space-y-1.5 text-sm tabular-nums">
                   {DAYS.map((day) => {
@@ -286,7 +286,7 @@ export async function BusinessProfile({
             ) : null}
 
             {main ? (
-              <div className="bg-muted/40 rounded-2xl border p-5">
+              <div className="bg-muted/40 rounded-2xl p-5">
                 <h2 className="mb-3 text-sm font-semibold">{t("location")}</h2>
                 {main.latitude !== null && main.longitude !== null ? (
                   <div className="mb-3">
@@ -306,7 +306,7 @@ export async function BusinessProfile({
               websites.length +
               business.socials.length >
             0 ? (
-              <div className="bg-muted/40 rounded-2xl border p-5">
+              <div className="bg-muted/40 rounded-2xl p-5">
                 <h2 className="mb-3 text-sm font-semibold">{t("contact")}</h2>
                 <ul className="space-y-2.5 text-sm">
                   {phones.map((phone) => (
