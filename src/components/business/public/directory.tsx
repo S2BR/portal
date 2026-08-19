@@ -31,6 +31,53 @@ import {
 import type { EdgeLocation } from "@/lib/edge-location";
 import type { PublicBusinessCard } from "@/lib/public-business";
 
+/** The scoped Typesense search credentials (a short-lived, browser-safe key). */
+type SearchCredentials = { key: string; host: string; expiresAt: number };
+
+/** Build a Typesense InstantSearch client for the given scoped credentials. */
+function buildTypesenseClient(credentials: SearchCredentials) {
+  let host = credentials.host;
+  let port = 443;
+  let protocol = "https";
+  try {
+    const url = new URL(credentials.host);
+    host = url.hostname;
+    protocol = url.protocol.replace(":", "");
+    port = url.port ? Number(url.port) : protocol === "https" ? 443 : 80;
+  } catch {
+    // credentials.host was a bare hostname — keep the https/443 defaults.
+  }
+  const adapter = new TypesenseInstantSearchAdapter({
+    server: {
+      apiKey: credentials.key,
+      nodes: [{ host, port, protocol }],
+      cacheSearchResultsForSeconds: 120,
+    },
+    geoLocationField: "location",
+    additionalSearchParameters: {
+      query_by: "name,headline,description",
+      // Name > headline > a hit buried in the description; description stays out of the returned hits.
+      query_by_weights: "4,2,1",
+      exclude_fields: "description",
+    },
+  });
+  return adapter.searchClient;
+}
+
+/** Whether a search error is a rejected/expired scoped key (Typesense 401/403) — the retry trigger. */
+function isKeyExpiredError(error: unknown): boolean {
+  const status = (error as { httpStatus?: number })?.httpStatus;
+  if (status === 401 || status === 403) {
+    return true;
+  }
+  const message = String(
+    (error as { message?: string })?.message ?? error ?? "",
+  );
+  return /RequestUnauthorized|x-typesense-api-key|HTTP code (401|403)|Unauthorized|Forbidden/i.test(
+    message,
+  );
+}
+
 /** Great-circle distance between two coordinates, in metres. */
 function distanceMeters(
   from: { latitude: number; longitude: number },
@@ -440,11 +487,9 @@ export function Directory({
   // Near-me radius in km (null = "Any": sort by distance but don't filter). Defaults to a metro-sized
   // radius so "near me" actually narrows to what's around you.
   const [radiusKm, setRadiusKm] = useState<number | null>(50);
-  const [credentials, setCredentials] = useState<{
-    key: string;
-    host: string;
-    expiresAt: number;
-  } | null>(null);
+  const [credentials, setCredentials] = useState<SearchCredentials | null>(
+    null,
+  );
 
   // Mint a scoped key on mount.
   useEffect(() => {
@@ -496,32 +541,62 @@ export function Directory({
     if (!credentials) {
       return null;
     }
-    let host = credentials.host;
-    let port = 443;
-    let protocol = "https";
-    try {
-      const url = new URL(credentials.host);
-      host = url.hostname;
-      protocol = url.protocol.replace(":", "");
-      port = url.port ? Number(url.port) : protocol === "https" ? 443 : 80;
-    } catch {
-      // credentials.host was a bare hostname — keep the https/443 defaults.
-    }
-    const adapter = new TypesenseInstantSearchAdapter({
-      server: {
-        apiKey: credentials.key,
-        nodes: [{ host, port, protocol }],
-        cacheSearchResultsForSeconds: 120,
-      },
-      geoLocationField: "location",
-      additionalSearchParameters: {
-        query_by: "name,headline,description",
-        // Name > headline > a hit buried in the description; description stays out of the returned hits.
-        query_by_weights: "4,2,1",
-        exclude_fields: "description",
-      },
-    });
-    return adapter.searchClient;
+    // A mutable local (captured by the closures below) holds the live client, so a retry uses the
+    // freshly re-minted key without touching a ref during render.
+    let current = buildTypesenseClient(credentials);
+
+    // Single-flight re-mint: many InstantSearch requests can fail at once when the key lapses, but
+    // they should all share ONE new key rather than each minting their own.
+    let reminting: Promise<boolean> | null = null;
+    const remint = (): Promise<boolean> => {
+      reminting ??= fetch("/api/search/key?refresh=1")
+        .then((response) => (response.ok ? response.json() : null))
+        .then(
+          (
+            data: { key?: string; host?: string; expires_at?: number } | null,
+          ) => {
+            if (!data?.key || !data.host || !data.expires_at) {
+              return false;
+            }
+            const fresh: SearchCredentials = {
+              key: data.key,
+              host: data.host,
+              expiresAt: data.expires_at,
+            };
+            current = buildTypesenseClient(fresh);
+            setCredentials(fresh); // resets the proactive timer + the memo
+            return true;
+          },
+        )
+        .catch(() => false)
+        .finally(() => {
+          reminting = null;
+        });
+      return reminting;
+    };
+
+    // A scoped key can expire while the tab is idle/backgrounded (the proactive timer gets throttled),
+    // so a direct-to-Typesense search 401s. Catch it, re-mint transparently, and retry once — the user
+    // just waits a beat longer, then sees results, instead of an uncaught error. (The client's `search`
+    // is overloaded, so we invoke it through a loose callable; the outer cast restores the real type.)
+    const search = async (requests: unknown) => {
+      const run = () =>
+        (current.search as unknown as (r: unknown) => Promise<unknown>)(
+          requests,
+        );
+      try {
+        return await run();
+      } catch (error) {
+        if (!isKeyExpiredError(error) || !(await remint())) {
+          throw error;
+        }
+        return await run();
+      }
+    };
+
+    // Same client shape as `base`, just with the self-healing `search` — cast so InstantSearch's
+    // searchClient prop accepts it exactly as it did the raw adapter client.
+    return { ...current, search } as unknown as typeof current;
   }, [credentials]);
 
   if (!searchClient) {
