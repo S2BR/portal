@@ -153,6 +153,7 @@ export interface PublicBusinessCard {
   type: BusinessType;
   headline: string | null;
   logo: string | null;
+  banner: string | null;
   city: string | null;
   /** Main-address coordinates for the directory map; null when the business has no geocoded address. */
   latitude: number | null;
@@ -262,15 +263,19 @@ export async function getPublicAmenities(): Promise<PublicAmenity[]> {
  * facet values (the index stores slugs). Recurses through the child key (`subcategories` / `amenities`).
  */
 export function taxonomyLabels(
-  nodes: Array<{ slug: string; name: string; subcategories?: unknown; amenities?: unknown }>,
+  nodes: Array<{
+    slug: string;
+    name: string;
+    subcategories?: unknown;
+    amenities?: unknown;
+  }>,
 ): Record<string, string> {
   const labels: Record<string, string> = {};
   const walk = (list: typeof nodes) => {
     for (const node of list) {
       labels[node.slug] = node.name;
       const children = (node.subcategories ?? node.amenities) as
-        | typeof nodes
-        | undefined;
+        typeof nodes | undefined;
       if (Array.isArray(children)) {
         walk(children);
       }
