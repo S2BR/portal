@@ -5,19 +5,15 @@ import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useEffect, useState, useTransition, type ReactNode } from "react";
 
+import { LanguageCards } from "@/components/auth/language-cards";
+import { PreviewCard } from "@/components/ui/preview-card";
 import {
   ThemeToggler,
   type Resolved,
   type ThemeSelection,
 } from "@/components/ui/theme-toggler";
 import { setDirection, setLocale } from "@/i18n/actions";
-import {
-  isLocale,
-  localeNames,
-  locales,
-  type Direction,
-  type Locale,
-} from "@/i18n/config";
+import { isLocale, locales, type Direction, type Locale } from "@/i18n/config";
 import { cn } from "@/lib/utils";
 
 /** A labeled settings group: heading + short description, then its controls. */
@@ -40,54 +36,6 @@ function Group({
       </div>
       {children}
     </section>
-  );
-}
-
-/**
- * A selectable option rendered as a small visual preview (top) plus a label (bottom). The cards use
- * a three-step gray (default → hover → selected); the selected one is marked with a brand-green dot.
- */
-function PreviewCard({
-  selected,
-  onClick,
-  label,
-  framed = true,
-  children,
-}: {
-  selected: boolean;
-  onClick: () => void;
-  label: string;
-  /** Wrap the preview in a bordered box (theme/direction mockups). Off for the round flag. */
-  framed?: boolean;
-  children: ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={selected}
-      className={cn(
-        "focus-visible:ring-ring flex flex-col rounded-xl p-1.5 text-start transition-colors outline-none focus-visible:ring-2 focus-visible:ring-inset",
-        // Three-step gray: default (muted/40) → hover (muted/70) → selected
-        // (muted-foreground/10). The brand-green dot marks the selection.
-        selected ? "bg-muted-foreground/10" : "bg-muted/40 hover:bg-muted/70",
-      )}
-    >
-      {framed ? (
-        <div className="overflow-hidden rounded-lg">{children}</div>
-      ) : (
-        children
-      )}
-      <div className="flex items-center gap-1.5 px-1 pt-2 pb-0.5">
-        <span className="truncate text-[11px] font-semibold">{label}</span>
-        {selected ? (
-          <span
-            className="bg-brand-green ms-auto size-2 shrink-0 rounded-full"
-            aria-hidden
-          />
-        ) : null}
-      </div>
-    </button>
   );
 }
 
@@ -168,23 +116,6 @@ function DirectionMock({ dir }: { dir: Direction }) {
         <div className="bg-muted-foreground/20 h-1 w-4/5 animate-pulse rounded-full [animation-delay:300ms] motion-reduce:animate-none" />
         <div className="bg-muted-foreground/20 h-1 w-3/5 animate-pulse rounded-full [animation-delay:450ms] motion-reduce:animate-none" />
       </div>
-    </div>
-  );
-}
-
-function LanguageMock({ locale }: { locale: Locale }) {
-  return (
-    <div className="flex h-14 items-center justify-center">
-      {/* A round flag (no bordered box) so the shape echoes the flag. Decorative — the native
-          name is the card label. A plain <img> paints the cached flag instantly. */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={`/images/flags/${locale}.png`}
-        alt=""
-        width={44}
-        height={44}
-        className="size-11 rounded-full object-cover"
-      />
     </div>
   );
 }
@@ -281,21 +212,7 @@ export function LayoutSettings() {
         title={t("language.title")}
         description={t("language.description")}
       >
-        <div className="grid grid-cols-4 gap-3">
-          {locales.map((option) => (
-            <PreviewCard
-              key={option}
-              selected={option === activeLocale}
-              onClick={() => selectLocale(option)}
-              framed={false}
-              // Drop the parenthetical region (e.g. "Français (Canada)" → "Français")
-              // so all four fit on one row — the flag already conveys the region.
-              label={localeNames[option].replace(/\s*\(.+\)$/, "")}
-            >
-              <LanguageMock locale={option} />
-            </PreviewCard>
-          ))}
-        </div>
+        <LanguageCards value={activeLocale} onSelect={selectLocale} />
       </Group>
     </div>
   );

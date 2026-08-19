@@ -270,7 +270,15 @@
       "female": "Mujer",
       "non_binary": "No binario",
       "prefer_not_to_say": "Prefiero no decirlo"
-    }
+    },
+    "distanceUnit": "Unidad de distancia",
+    "distanceUnitHint": "Cómo se muestran las distancias (como \"cerca de mí\") en toda la plataforma.",
+    "distanceUnits": {
+      "km": "Kilómetros",
+      "mi": "Millas"
+    },
+    "language": "Idioma",
+    "languageHint": "Tu idioma para la interfaz y los correos que te enviamos."
   },
   "sessions": {
     "title": "Sesiones activas",
@@ -522,9 +530,11 @@
       "within": "Hasta",
       "anyDistance": "Cualquiera",
       "noneNearbyTitle": "Nada cerca",
-      "noneNearbyBody": "No hay negocios a menos de {km} km de ti.",
+      "noneNearbyBody": "No hay negocios a menos de {distance} de ti.",
       "showAll": "Mostrar todos",
-      "openNow": "Abierto ahora"
+      "openNow": "Abierto ahora",
+      "distanceMi": "{mi} mi",
+      "distanceFt": "{ft} ft"
     },
     "public": {
       "reviews": {

@@ -21,13 +21,18 @@ const bodySchema = z
       .enum(["male", "female", "non_binary", "prefer_not_to_say"])
       .nullable()
       .optional(),
+    // Display preferences. `null` clears (falls back to defaults); the api re-validates the enums.
+    distance_unit: z.enum(["km", "mi"]).nullable().optional(),
+    locale: z.enum(["en", "es", "fr-CA", "pt-BR"]).nullable().optional(),
   })
   .refine(
     (value) =>
       value.name !== undefined ||
       value.timezone !== undefined ||
       value.date_of_birth !== undefined ||
-      value.gender !== undefined,
+      value.gender !== undefined ||
+      value.distance_unit !== undefined ||
+      value.locale !== undefined,
     { message: "empty" },
   );
 
