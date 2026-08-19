@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import en from "@/messages/en.json";
 import es from "@/messages/es.json";
 import frCA from "@/messages/fr-CA.json";
+import ja from "@/messages/ja.json";
 import ptBR from "@/messages/pt-BR.json";
 
 import { locales } from "./config";
@@ -23,6 +24,7 @@ const catalogs: Record<string, Messages> = {
   es,
   "fr-CA": frCA,
   "pt-BR": ptBR,
+  ja,
 };
 
 describe("i18n message catalogs", () => {

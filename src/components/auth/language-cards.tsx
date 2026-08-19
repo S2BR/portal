@@ -32,7 +32,7 @@ export function LanguageCards({
   onSelect: (locale: Locale) => void;
 }) {
   return (
-    <div className="grid grid-cols-4 gap-3">
+    <div className="grid grid-cols-3 gap-3 sm:grid-cols-5">
       {locales.map((option) => (
         <PreviewCard
           key={option}
@@ -40,7 +40,7 @@ export function LanguageCards({
           onClick={() => onSelect(option)}
           framed={false}
           // Drop the parenthetical region (e.g. "Français (Canada)" → "Français")
-          // so all four fit on one row — the flag already conveys the region.
+          // so the labels stay short under the flag — the flag already conveys the region.
           label={localeNames[option].replace(/\s*\(.+\)$/, "")}
         >
           <LanguageMock locale={option} />

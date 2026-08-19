@@ -23,7 +23,7 @@ const bodySchema = z
       .optional(),
     // Display preferences. `null` clears (falls back to defaults); the api re-validates the enums.
     distance_unit: z.enum(["km", "mi"]).nullable().optional(),
-    locale: z.enum(["en", "es", "fr-CA", "pt-BR"]).nullable().optional(),
+    locale: z.enum(["en", "es", "fr-CA", "pt-BR", "ja"]).nullable().optional(),
   })
   .refine(
     (value) =>

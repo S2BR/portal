@@ -1,0 +1,1133 @@
+{
+  "moderation": {
+    "report": {
+      "title": "報告",
+      "subtitle": "問題の内容をお知らせください。報告内容は非公開で扱われます。",
+      "reasonLabel": "報告する理由を教えてください",
+      "reasonPlaceholder": "理由を選択",
+      "reasonSearchPlaceholder": "理由を検索…",
+      "reasonNoMatch": "該当する項目がありません。",
+      "detailsLabel": "詳しい状況（任意）",
+      "detailsPlaceholder": "確認に役立つ情報があればご記入ください。",
+      "submit": "報告を送信",
+      "cancel": "キャンセル",
+      "success": "ありがとうございます。内容を確認します。",
+      "error": "問題が発生しました。",
+      "signInPrompt": "報告するにはログインしてください。",
+      "trigger": "報告",
+      "reportBusiness": "このビジネスを報告"
+    },
+    "reasons": {
+      "spam": "スパム",
+      "harassment": "嫌がらせやいじめ",
+      "hate_speech": "ヘイトスピーチ",
+      "violence": "暴力や脅迫",
+      "sexual_content": "性的または露骨なコンテンツ",
+      "child_sexual_abuse": "児童の性的虐待",
+      "illegal": "違法または規制対象の商品",
+      "misinformation": "誤った情報",
+      "impersonation": "なりすまし",
+      "privacy": "プライバシーの侵害",
+      "other": "その他"
+    }
+  },
+  "serviceUnavailable": {
+    "title": "問題が発生しました",
+    "body": "サービスへの接続に問題が発生しています。自動的に再試行を続けます。",
+    "attempt": "{total} 回中 {current} 回目の試行",
+    "retryingIn": "{when} に再試行します",
+    "retry": "もう一度試す"
+  },
+  "rateLimit": {
+    "title": "リクエストが多すぎます",
+    "body": "{seconds} 秒後に再試行します…",
+    "retrying": "再試行しています…",
+    "actionCountdown": "{seconds} 秒後にもう一度お試しください",
+    "ready": "もう一度お試しいただけます"
+  },
+  "brand": {
+    "name": "S2BR"
+  },
+  "auth": {
+    "tagline": "ビジネスオーナーとコミュニティ運営者のために作られました。",
+    "taglineSub": "あなたの存在感、コミュニティ、チームを、すべて一つの場所で管理できます。",
+    "signIn": {
+      "title": "ログイン",
+      "subtitle": "S2BR アカウントにログインします。"
+    },
+    "register": {
+      "title": "アカウントを作成",
+      "subtitle": "S2BR に参加しましょう。",
+      "submit": "アカウント作成",
+      "acceptTerms": "<terms>利用規約</terms>と<privacy>プライバシーポリシー</privacy>に同意します。"
+    },
+    "verify": {
+      "title": "メールアドレスを確認",
+      "subtitle": "{email} に送信したコードを入力してください。",
+      "submit": "メールを確認",
+      "resend": "コードを再送信",
+      "resent": "新しいコードを送信しました。"
+    },
+    "forgot": {
+      "title": "パスワードをリセット",
+      "subtitle": "メールアドレスを入力すると、リセット用のコードをお送りします。",
+      "submit": "リセットコードを送信",
+      "resetTitle": "新しいパスワードを設定",
+      "resetSubtitle": "{email} に送信したコードを入力し、新しいパスワードを選んでください。",
+      "resetSubmit": "パスワードをリセット"
+    },
+    "fields": {
+      "name": "氏名",
+      "email": "メールアドレス",
+      "password": "パスワード",
+      "confirmPassword": "パスワードの確認",
+      "code": "確認コード"
+    },
+    "showPassword": "パスワードを表示",
+    "hidePassword": "パスワードを非表示",
+    "login": {
+      "submit": "ログイン",
+      "otpTitle": "メールを確認してください",
+      "otpSubtitle": "{email} に確認コードを送信しました。",
+      "otpSubmit": "確認",
+      "twoFactorTitle": "二段階認証",
+      "twoFactorSubtitle": "認証アプリのコードを入力してください。",
+      "back": "ログインに戻る"
+    },
+    "links": {
+      "noAccount": "アカウントをお持ちでないですか？",
+      "createAccount": "作成する",
+      "haveAccount": "すでにアカウントをお持ちですか？",
+      "signIn": "ログイン",
+      "forgotPassword": "パスワードをお忘れですか？"
+    },
+    "errors": {
+      "name": "氏名を入力してください。",
+      "email": "有効なメールアドレスを入力してください。",
+      "password": "パスワードを入力してください。",
+      "code": "確認コードを入力してください。",
+      "passwordPolicy": "パスワードが要件を満たしていません。",
+      "passwordMismatch": "パスワードが一致しません。",
+      "rateLimited": "試行回数が多すぎます。しばらく待ってからもう一度お試しください。",
+      "generic": "問題が発生しました。もう一度お試しください。",
+      "acceptTerms": "続けるには利用規約に同意してください。"
+    },
+    "captchaUnsupported": "現在、認証をご利用いただけません。しばらくしてからもう一度お試しください。",
+    "passkey": {
+      "or": "または",
+      "signIn": "パスキーでログイン",
+      "signInError": "パスキーでのログインができませんでした。もう一度お試しください。"
+    },
+    "passwordRules": {
+      "title": "パスワードには次を含めてください:",
+      "length": "{min} 文字以上",
+      "mixedCase": "大文字と小文字",
+      "number": "数字",
+      "symbol": "記号"
+    },
+    "emailCode": {
+      "button": "メールコードでログイン",
+      "requestTitle": "メールでログイン",
+      "requestSubtitle": "1 回限りのログインコードをメールでお送りします。",
+      "sendButton": "コードをメールで送る",
+      "verifyTitle": "コードを入力",
+      "verifySubtitle": "{email} にログインコードを送信しました。",
+      "twoFactorLabel": "認証アプリのコード",
+      "verifyButton": "ログイン",
+      "resend": "新しいコードを送る",
+      "back": "戻る",
+      "twoFactorTitle": "認証アプリのコードを入力",
+      "twoFactorSubtitle": "このアカウントは二段階認証が有効です。認証アプリの現在のコードを入力してください。",
+      "resendIn": "{seconds} 秒後に新しいコードを送る",
+      "sendLinkButton": "ログインリンクをメールで送る",
+      "linkSentTitle": "メールを確認してください",
+      "linkSentSubtitle": "{email} にログインリンクを送信しました。続けるにはこの端末で開いてください。"
+    },
+    "magicLink": {
+      "verifying": "ログインしています…",
+      "invalidTitle": "このログインリンクは使用できませんでした",
+      "invalidSubtitle": "有効期限が切れているか、すでに使用された可能性があります。ログインするには新しいリンクをリクエストしてください。",
+      "backToLogin": "ログインに戻る"
+    },
+    "goBack": "戻る"
+  },
+  "legal": {
+    "terms": "利用規約",
+    "privacy": "プライバシーポリシー",
+    "backToApp": "S2BR に戻る",
+    "fallbackNotice": "この文書は現在、英語版のみご利用いただけます。"
+  },
+  "dashboard": {
+    "greeting": {
+      "morning": "おはようございます、{name} さん",
+      "afternoon": "こんにちは、{name} さん",
+      "evening": "こんばんは、{name} さん"
+    },
+    "subtitle": "アカウントの概要をご覧いただけます。",
+    "setup": {
+      "title": "アカウントの設定を完了しましょう",
+      "progress": "{total} 件中 {done} 件完了",
+      "avatar": "プロフィール写真を追加",
+      "twoFactor": "二段階認証を有効にする",
+      "passkey": "パスキーを追加",
+      "action": "設定する",
+      "doneTitle": "準備完了です",
+      "doneSubtitle": "アカウントの設定がすべて完了しました。お疲れさまでした。"
+    },
+    "status": {
+      "twoFactor": "二段階認証",
+      "on": "オン",
+      "off": "オフ",
+      "passkeys": "パスキー",
+      "sessions": "アクティブなセッション",
+      "memberSince": "登録日"
+    },
+    "modules": {
+      "title": "近日公開",
+      "subtitle": "新しいスペースを準備中です。",
+      "business": "ビジネス",
+      "businessDesc": "ビジネスのプロフィール、掲載情報、チームを管理できます。",
+      "community": "コミュニティ",
+      "communityDesc": "近くの運営者やメンバーとつながりましょう。",
+      "soon": "近日公開"
+    }
+  },
+  "nav": {
+    "signOut": "ログアウト",
+    "settings": "設定",
+    "addAccount": "別のアカウントを追加",
+    "signOutAll": "すべてのアカウントからログアウト",
+    "portal": "ポータル",
+    "businesses": "ビジネス",
+    "admin": "管理"
+  },
+  "profile": {
+    "title": "プロフィール",
+    "email": "メールアドレス",
+    "emailVerified": "メール確認済み",
+    "emailNotVerified": "メール未確認",
+    "twoFactorOn": "二段階認証オン",
+    "twoFactorOff": "二段階認証オフ",
+    "memberSince": "{date} に登録",
+    "settingsTitle": "設定",
+    "settingsDescription": "アカウントの設定と環境設定を管理します。",
+    "nav": {
+      "profile": "プロフィール",
+      "layout": "レイアウト",
+      "account": "アカウント",
+      "security": "セキュリティ",
+      "sessions": "セッション",
+      "danger": "危険な操作"
+    }
+  },
+  "avatarSettings": {
+    "title": "プロフィール写真",
+    "hint": "写真があると、あなたのアカウントを見分けやすくなります。",
+    "upload": "写真をアップロード",
+    "replace": "変更",
+    "remove": "削除",
+    "dropHint": "または画像をここにドラッグ",
+    "constraints": "JPEG、PNG、WebP · 最大 {max}",
+    "saving": "保存しています…",
+    "cropTitle": "写真をトリミング",
+    "cropHint": "ドラッグして円の位置とサイズを調整します。",
+    "cropCancel": "キャンセル",
+    "cropConfirm": "これを使う",
+    "savedToast": "プロフィール写真を更新しました",
+    "removedToast": "プロフィール写真を削除しました",
+    "undo": "元に戻す",
+    "uploading": "アップロード中… {percent}%",
+    "tooLarge": "この画像は大きすぎます（最大 2 MB）。",
+    "invalidType": "JPEG、PNG、WebP の画像を選択してください。",
+    "error": "アップロードに失敗しました。もう一度お試しください。"
+  },
+  "profileSettings": {
+    "title": "プロフィールの詳細",
+    "subtitle": "氏名、生年月日、各種設定。",
+    "edit": "編集",
+    "save": "変更を保存",
+    "cancel": "キャンセル",
+    "timezone": "タイムゾーン",
+    "deviceDefault": "端末の既定",
+    "searchTimezone": "タイムゾーンを検索…",
+    "noTimezone": "タイムゾーンが見つかりません。",
+    "dateOfBirth": "生年月日",
+    "addDateOfBirth": "生年月日を追加",
+    "born": "生年月日 <b>{date}</b>",
+    "remove": "削除",
+    "clear": "クリア",
+    "dobHint": "13 歳以上である必要があります。これはあなただけが確認できます。",
+    "dobYear": "年",
+    "dobMonth": "月",
+    "dobDay": "日",
+    "memberSince": "登録日",
+    "gender": "性別",
+    "addGender": "性別を追加",
+    "selectGender": "選択…",
+    "genderHint": "任意です。これはあなただけが確認できます。",
+    "genders": {
+      "male": "男性",
+      "female": "女性",
+      "non_binary": "ノンバイナリー",
+      "prefer_not_to_say": "回答しない"
+    },
+    "distanceUnit": "距離の単位",
+    "distanceUnitHint": "「近くのビジネス」などの距離がプラットフォーム全体でどのように表示されるかです。",
+    "distanceUnits": {
+      "km": "キロメートル",
+      "mi": "マイル"
+    },
+    "language": "言語",
+    "languageHint": "インターフェースと送信されるメールに使用する言語です。"
+  },
+  "sessions": {
+    "title": "アクティブなセッション",
+    "empty": "アクティブなセッションはありません。",
+    "current": "この端末",
+    "unknownDevice": "不明な端末",
+    "unknownIp": "不明な場所",
+    "lastActive": "最終アクティビティ {when}",
+    "signOut": "ログアウト",
+    "signOutOthers": "他のすべての端末からログアウト",
+    "error": "問題が発生しました。もう一度お試しください。",
+    "revoked": "その端末からログアウトしました",
+    "revokedOthers": "他の端末からログアウトしました"
+  },
+  "twoFactor": {
+    "title": "二段階認証",
+    "description": "認証アプリを使ってログインに 2 つ目のステップを追加します。",
+    "statusOn": "有効",
+    "statusOff": "無効",
+    "enable": "有効にする",
+    "disable": "無効にする",
+    "scan": "認証アプリでこの QR コードをスキャンしてください。",
+    "orEnter": "またはこのキーを手動で入力してください:",
+    "confirm": "確認",
+    "cancel": "キャンセル",
+    "recoveryTitle": "リカバリーコードを保存してください",
+    "recoverySubtitle": "安全な場所に保管してください。認証アプリを紛失した場合、各コードは 1 回だけ使用できます。",
+    "done": "保存しました",
+    "disablePrompt": "二段階認証を無効にするにはパスワードを入力してください。",
+    "regenerate": "リカバリーコードを再生成",
+    "regeneratePrompt": "新しいリカバリーコードのセットを生成するにはパスワードを入力してください。現在のコードは使用できなくなります。",
+    "enabledToast": "二段階認証が有効になりました",
+    "disabledToast": "二段階認証が無効になりました",
+    "codesRegenerated": "新しいリカバリーコードを生成しました"
+  },
+  "emailSettings": {
+    "title": "メールアドレス",
+    "hint": "ログインや通知の受信に使用するメールアドレスです。",
+    "change": "メールを変更",
+    "newEmail": "新しいメールアドレス",
+    "submit": "確認コードを送信",
+    "verifyTitle": "新しいメールアドレスを確認",
+    "verifySubtitle": "{email} に送信したコードを入力してください。",
+    "verifySubmit": "確認",
+    "cancel": "キャンセル"
+  },
+  "passwordSettings": {
+    "title": "パスワード",
+    "hint": "アカウントのパスワードを変更します。",
+    "change": "パスワードを変更",
+    "currentPassword": "現在のパスワード",
+    "newPassword": "新しいパスワード",
+    "submit": "パスワードを更新",
+    "cancel": "キャンセル",
+    "success": "パスワードを更新しました。他の端末はログアウトされました。"
+  },
+  "passkeys": {
+    "title": "パスキー",
+    "description": "端末の生体認証や PIN を使って、パスワードなしでログインできます。",
+    "add": "パスキーを追加",
+    "remove": "削除",
+    "cancel": "キャンセル",
+    "empty": "パスキーはまだ追加されていません。",
+    "unsupported": "このブラウザはパスキーに対応していません。",
+    "defaultName": "マイパスキー",
+    "addError": "そのパスキーを追加できませんでした。もう一度お試しください。",
+    "addedToast": "パスキーを追加しました",
+    "removedToast": "パスキーを削除しました",
+    "nameLabel": "名前",
+    "namePlaceholder": "例: 自分のノートパソコン",
+    "lastUsed": "最終使用 {date}",
+    "neverUsed": "未使用",
+    "removePrompt": "このパスキーを削除するにはパスワードを入力してください。"
+  },
+  "deleteAccount": {
+    "title": "アカウントを削除",
+    "description": "アカウントを完全に閉鎖します。すべての端末からログアウトされます。",
+    "retentionNotice": "コンプライアンス上の理由により、アカウントはすぐに無効化され、{days} 日後に完全に削除されます。",
+    "delete": "アカウントを削除",
+    "confirm": "アカウントを削除する",
+    "cancel": "キャンセル"
+  },
+  "theme": {
+    "label": "テーマ",
+    "light": "ライト",
+    "dark": "ダーク",
+    "system": "システム"
+  },
+  "layoutSettings": {
+    "theme": {
+      "title": "テーマ",
+      "description": "インターフェースの見た目を選びます。"
+    },
+    "direction": {
+      "title": "方向",
+      "description": "ページ内でレイアウトが流れる向きを設定します。",
+      "ltr": "左から右",
+      "rtl": "右から左"
+    },
+    "language": {
+      "title": "言語",
+      "description": "インターフェースの言語を選びます。"
+    }
+  },
+  "locale": {
+    "label": "言語"
+  },
+  "verify": {
+    "title": "本人確認",
+    "description": "続けるには本人確認を行ってください。",
+    "usePasskey": "パスキーを使う",
+    "or": "または",
+    "confirm": "確認",
+    "cancel": "キャンセル",
+    "passkeyError": "パスキーを確認できませんでした。もう一度お試しください。"
+  },
+  "consent": {
+    "message": "どのページが役立っているかを把握するために分析用 Cookie を使用しています。広告はなく、データを販売することもありません。",
+    "learnMore": "プライバシーポリシー",
+    "accept": "同意する",
+    "decline": "拒否する"
+  },
+  "marketing": {
+    "nav": {
+      "login": "ログイン"
+    },
+    "hero": {
+      "title": "コミュニティをつなげる。",
+      "subtitle": "どこにいても、あなたのブラジル人コミュニティを。近くのお店、グルメ、イベント、サービスを探せます — 世界中で暮らすブラジル人のために作られました。",
+      "ctaPrimary": "始める",
+      "ctaSecondary": "ログイン",
+      "caption": "世界中のブラジル人が、S2BR でつながる",
+      "launchPrefix": "公開予定",
+      "launchDate": "2026 年 9 月 7 日"
+    },
+    "notify": {
+      "open": "公開時に通知を受け取る",
+      "title": "公開時にお知らせします",
+      "description": "お名前とメールアドレスをご記入ください — S2BR が公開されたらすぐにお知らせします。",
+      "name": "お名前",
+      "email": "メールアドレス",
+      "submit": "通知を受け取る",
+      "success": "リストに登録しました！S2BR の公開時にメールでお知らせします。",
+      "errors": {
+        "name": "お名前を入力してください。",
+        "email": "有効なメールアドレスを入力してください。",
+        "captcha": "キャプチャを完了してください。",
+        "rateLimited": "試行回数が多すぎます。しばらくしてからもう一度お試しください。",
+        "generic": "問題が発生しました。もう一度お試しください。"
+      }
+    },
+    "features": {
+      "stores": "お店",
+      "food": "グルメ",
+      "events": "イベント",
+      "services": "サービス"
+    },
+    "footer": {
+      "products": "製品",
+      "services": "サービス",
+      "news": "ニュース",
+      "events": "イベント",
+      "social": "ソーシャル",
+      "rights": "© {year} S2BR"
+    }
+  },
+  "social": {
+    "comingTitle": "フィードは近日公開",
+    "comingSubtitle": "ここでは、あなたの周りやコミュニティで起きていることを確認できるようになります。現在準備中です — また後ほどご覧ください。",
+    "getStartedTitle": "始めましょう",
+    "getStartedSubtitle": "あなたの世界を S2BR に追加しましょう — まずはビジネスから。イベント、サービスなども近日公開です。"
+  },
+  "create": {
+    "business": {
+      "title": "ビジネスを作成",
+      "subtitle": "あなたのビジネスを掲載して、コミュニティに見つけてもらいましょう。"
+    }
+  },
+  "businessNew": {
+    "subtitle": "まずは基本から — 住所、営業時間、説明などの詳細は後で追加できます。",
+    "nameLabel": "ビジネス名",
+    "namePlaceholder": "例: Acme Roasters",
+    "typeLabel": "これはどのような種類のビジネスですか？",
+    "moreInfo": "詳細情報",
+    "types": {
+      "company": {
+        "title": "会社",
+        "description": "登録済みのビジネスまたは組織。",
+        "info": "商品やサービスを提供する組織で、通常は複数の従業員と正式な組織構造を持ちます。"
+      },
+      "selfEmployed": {
+        "title": "個人事業主",
+        "description": "自分自身のために働いています — フリーランサー、個人事業主、独立業者。",
+        "info": "会社に雇用されず自分自身のために働く個人または専門家で、専門的なサービスやフリーランスの仕事を提供することが多いです。"
+      }
+    },
+    "submit": "ビジネスを作成",
+    "submitting": "作成しています…",
+    "createdToast": "ビジネスを作成しました。",
+    "errorNameRequired": "ビジネス名を入力してください。",
+    "errorPhoneCountry": "電話番号ごとに国を選択してください。",
+    "errorTypeRequired": "ビジネスの種類を選択してください。",
+    "errorGeneric": "問題が発生しました。もう一度お試しください。"
+  },
+  "businesses": {
+    "title": "マイビジネス",
+    "subtitle": "あなたが所有するビジネスです。表示または編集するには 1 つ選択してください。",
+    "reorder": "並べ替え",
+    "reorderError": "新しい並び順を保存できませんでした。もう一度お試しください。",
+    "empty": "まだビジネスを追加していません。",
+    "createFirst": "最初のビジネスを作成",
+    "createAnother": "ビジネスを追加",
+    "locked": {
+      "title": "この掲載はロックされています",
+      "body": "運営者がこの掲載をロックしているため、現在は編集や公開ができません。ご不明な点があればサポートまでお問い合わせください。",
+      "badge": "ロック中"
+    },
+    "directory": {
+      "title": "ビジネスを探す",
+      "subtitle": "コミュニティのビジネスを見つけましょう。",
+      "searchPlaceholder": "ビジネスを検索…",
+      "all": "すべて",
+      "count": "{count, plural, one {# 件のビジネス} other {# 件のビジネス}}",
+      "emptyTitle": "ビジネスが見つかりません",
+      "emptyBody": "別の検索やカテゴリーをお試しください。",
+      "pagination": "ページ送り",
+      "previous": "前へ",
+      "next": "次へ",
+      "pageOf": "{total} ページ中 {current} ページ",
+      "mapLabel": "検索結果の地図",
+      "filters": "絞り込み",
+      "clearFilters": "クリア",
+      "expand": "展開",
+      "collapse": "折りたたむ",
+      "facetCategory": "カテゴリー",
+      "facetAmenities": "設備・サービス",
+      "facetType": "種類",
+      "facetCity": "市区町村",
+      "showMore": "+ もっと見る",
+      "showLess": "− 表示を減らす",
+      "nearMe": "近くのビジネス",
+      "nearYouExact": "近くのビジネス",
+      "nearYouApprox": "近くのビジネス（おおよそ）",
+      "turnOff": "オフにする",
+      "distanceKm": "{km} km",
+      "distanceM": "{m} m",
+      "locating": "位置を特定しています…",
+      "locationBlocked": "位置情報を取得できません — ブラウザの位置情報の許可を確認してください。",
+      "within": "半径",
+      "anyDistance": "すべて",
+      "noneNearbyTitle": "近くには何もありません",
+      "noneNearbyBody": "半径 {distance} 以内にビジネスはありません。",
+      "showAll": "すべて表示",
+      "openNow": "営業中",
+      "distanceMi": "{mi} マイル",
+      "distanceFt": "{ft} フィート"
+    },
+    "public": {
+      "reviews": {
+        "readReviews": "レビューを読む",
+        "beFirst": "このビジネスに最初のレビューを投稿しましょう",
+        "backToProfile": "プロフィールに戻る",
+        "leaveReview": "レビューを書く",
+        "allReviews": "すべてのレビュー",
+        "sortLabel": "並べ替え",
+        "showAll": "すべて表示",
+        "filterByStars": "{star} つ星のレビューのみ表示",
+        "sort": {
+          "recent": "新しい順",
+          "oldest": "古い順",
+          "highest": "評価の高い順",
+          "lowest": "評価の低い順"
+        },
+        "title": "レビュー",
+        "count": "{count, plural, one {# 件のレビュー} other {# 件のレビュー}}",
+        "writeTitle": "レビューを書く",
+        "yourReview": "あなたのレビュー",
+        "signInPrompt": "レビューを書くにはログインしてください。",
+        "placeholder": "体験を共有しましょう（任意）",
+        "submit": "レビューを投稿",
+        "update": "レビューを更新",
+        "delete": "削除",
+        "loadMore": "レビューをもっと見る",
+        "empty": "まだレビューはありません — 最初のレビューを投稿しましょう。",
+        "ownerReply": "オーナーからの返信",
+        "report": "報告",
+        "reported": "ありがとうございます。確認します。",
+        "ratingRequired": "星評価を選択してください。",
+        "cannotReviewOwn": "自分のビジネスにはレビューできません。",
+        "saved": "レビューを投稿しました",
+        "removed": "レビューを削除しました",
+        "error": "問題が発生しました。",
+        "stars": "{count, plural, one {# つ星} other {# つ星}}"
+      },
+      "about": "紹介",
+      "amenities": "設備・サービス",
+      "photos": "写真",
+      "closures": "祝日・特別営業時間",
+      "hours": "営業時間",
+      "location": "所在地",
+      "contact": "連絡先",
+      "directions": "経路",
+      "call": "電話する",
+      "website": "ウェブサイト",
+      "share": "共有",
+      "linkCopied": "リンクをコピーしました",
+      "closed": "休業",
+      "photoAlt": "{name} — 写真 {number}"
+    },
+    "publish": {
+      "checklistTitle": "まだ公開されていません",
+      "checklistBody": "このビジネスはあなただけが見られます。公開するには次を完了してください:",
+      "progress": "{total} 件中 {done} 件完了",
+      "readyTitle": "公開の準備ができました",
+      "readyBody": "現在このビジネスはあなただけが見られます。公開すると、検索結果や公開ページに表示されます。",
+      "cta": "公開",
+      "disabledHint": "このビジネスを公開するにはチェックリストを完了してください。",
+      "notReadyToast": "このビジネスはまだ公開できません — いくつかの項目が不足しています。",
+      "requirements": {
+        "name": {
+          "label": "ビジネス名を付ける",
+          "hint": "お客様に表示される名前です。"
+        },
+        "description": {
+          "label": "説明を追加",
+          "hint": "あなたのビジネスが何をするのかを伝えましょう。"
+        },
+        "category": {
+          "label": "カテゴリーを選ぶ",
+          "hint": "お客様に見つけてもらうためです。"
+        },
+        "contactable": {
+          "label": "連絡手段を追加",
+          "hint": "住所、電話番号、メール、またはウェブサイト。"
+        }
+      }
+    },
+    "detail": {
+      "back": "マイビジネスに戻る",
+      "edit": "編集",
+      "delete": "削除",
+      "save": "保存",
+      "saving": "保存しています…",
+      "cancel": "キャンセル",
+      "savedToast": "変更を保存しました。",
+      "unsavedChanges": "未保存の変更",
+      "leaveConfirm": "未保存の変更があります。保存せずに移動しますか？",
+      "leaveTitle": "未保存の変更を破棄しますか？",
+      "leaveBody": "未保存の変更があります。今移動すると失われます。",
+      "leaveStay": "編集を続ける",
+      "leaveDiscard": "変更を破棄",
+      "deletedToast": "ビジネスを削除しました。",
+      "notFound": "そのビジネスは存在しないか、アクセス権がありません。",
+      "created": "{date} に追加",
+      "deleteTitle": "このビジネスを削除しますか？",
+      "deleteBody": "これにより「{name}」があなたのビジネスから削除されます。",
+      "deleteConfirm": "ビジネスを削除",
+      "deleting": "削除しています…",
+      "sections": {
+        "basics": {
+          "title": "基本情報",
+          "description": "ロゴ、ビジネス名、キャッチフレーズ、短い説明。"
+        },
+        "businessType": {
+          "title": "ビジネスの種類",
+          "description": "あなたのビジネスに最も当てはまる種類を選択してください。"
+        },
+        "categories": {
+          "title": "カテゴリーとサブカテゴリー",
+          "description": "あなたのビジネスに最も合うカテゴリーを 1 つ以上選択してください。サブカテゴリーは選択したカテゴリーに基づいて絞り込まれます。"
+        },
+        "website": {
+          "title": "ウェブサイト",
+          "description": "ビジネスの連絡先情報を入力してください。お客様が簡単に連絡できるようになります。"
+        },
+        "phone": {
+          "title": "電話番号",
+          "description": "ビジネスの電話番号を 1 つ以上追加してください。お客様はこれらの番号で直接連絡できます。番号ごとにラベル（例:「代表番号」「カスタマーサポート」）を指定して用途を示すことができます。"
+        },
+        "email": {
+          "title": "メールアドレス",
+          "description": "ビジネスのメールアドレスを 1 つ以上追加してください。お客様はこれらのメールで直接連絡できます。メールごとにラベル（例:「一般のお問い合わせ」「サポート」）を指定して用途を示すことができます。"
+        },
+        "amenities": {
+          "title": "設備・サービス",
+          "description": "あなたのビジネスが提供する設備や特徴を選択してください。"
+        },
+        "address": {
+          "title": "ビジネスの住所",
+          "description": "検索ボックスに住所の入力を始めてください。ドロップダウンから正しい住所を選択すると、残りの項目が正しい情報で自動入力されます。必要に応じてどの項目も調整できます。"
+        },
+        "hours": {
+          "title": "ビジネスの営業時間",
+          "description": "曜日ごとにビジネスの営業時間を設定してください。休憩や分割シフトに対応するため、各曜日に複数の時間帯（例: 9:00〜12:00、13:00〜17:00）を指定できます。この情報は、お客様がいつ営業しているかを知るのに役立ちます。"
+        },
+        "closures": {
+          "title": "祝日・特別営業時間",
+          "description": "祝日、臨時休業、半日営業など、ビジネスが休業する日 — または特別営業する日 — を指定してください。カレンダーで日付を選び、名前を付け、毎年繰り返す日にはその旨を指定します。"
+        },
+        "socials": {
+          "title": "ソーシャルメディアのリンク",
+          "description": "ソーシャルメディアのプロフィールへのリンクを追加してください。お客様がソーシャルメディアであなたを見つけてフォローしやすくなります。"
+        },
+        "branding": {
+          "title": "ブランディング",
+          "description": "あなたのビジネスを表すバナー画像をアップロードしてください。掲載ページで目立つように表示されます。ブランドに合ったメインカラーを選ぶこともでき、掲載ページのアクセントや強調に使用されます。"
+        },
+        "images": {
+          "title": "画像",
+          "description": "あなたのビジネスを紹介する追加の画像をアップロードしてください。これらの画像は掲載ページのギャラリーに表示され、商品、サービス、雰囲気を紹介できます。最適な表示のため、16:9 の比率の高画質な画像のご使用をおすすめします。"
+        }
+      },
+      "fields": {
+        "name": "ビジネス名",
+        "headline": "見出し",
+        "description": "説明",
+        "email": "メールアドレス",
+        "phone": "電話番号",
+        "website": "ウェブサイト",
+        "line1": "住所",
+        "line2": "住所 2 行目",
+        "city": "市区町村",
+        "region": "地域または都道府県",
+        "postalCode": "郵便番号",
+        "country": "国（2 文字コード）",
+        "categorySuggestion": "カテゴリーの提案",
+        "contactValue": "値",
+        "contactLabel": "ラベル（任意）",
+        "handle": "ユーザー名または URL",
+        "color": "メインカラー",
+        "apartmentSuite": "アパート / 部屋番号",
+        "stateProvince": "地域または都道府県",
+        "latitude": "緯度",
+        "longitude": "経度",
+        "location": "所在地",
+        "notes": "メモ",
+        "open": "開店",
+        "close": "閉店",
+        "categories": "カテゴリー"
+      },
+      "empty": {
+        "headline": "見出しはまだありません。",
+        "description": "説明はまだありません。",
+        "contact": "連絡先はまだありません。",
+        "address": "住所はまだありません。",
+        "hours": "営業時間はまだありません。",
+        "socials": "ソーシャルリンクはまだありません。",
+        "branding": "ブランドカラーはまだありません。",
+        "categories": "カテゴリーはまだ選択されていません。",
+        "amenities": "設備・サービスはまだ選択されていません。",
+        "closures": "休業日はまだありません。"
+      },
+      "tabs": {
+        "general": "全般",
+        "contact": "連絡先",
+        "address": "住所",
+        "hours": "営業時間",
+        "socials": "ソーシャル",
+        "branding": "ブランディング",
+        "amenities": "設備・サービス"
+      },
+      "days": {
+        "monday": "月曜日",
+        "tuesday": "火曜日",
+        "wednesday": "水曜日",
+        "thursday": "木曜日",
+        "friday": "金曜日",
+        "saturday": "土曜日",
+        "sunday": "日曜日"
+      },
+      "categoryHint": "カテゴリーが見つかりませんか？合うものを教えていただければ、確認します。",
+      "categorySuggest": {
+        "trigger": "カテゴリーが見つかりませんか？",
+        "helper": "適切なカテゴリーが見つからない場合は、内容を記入してください。チームが確認し、適切であれば追加します。",
+        "label": "あなたの提案",
+        "prompt": "例:「カテゴリー: カフェ、サブカテゴリー: ヴィーガンカフェ」",
+        "submit": "提案を保存",
+        "remove": "削除",
+        "successTitle": "提案を保存しました",
+        "successDescription": "チームが確認し、適切であれば掲載情報を更新します。"
+      },
+      "closedAllDay": "休業",
+      "previousMonth": "前の月",
+      "nextMonth": "次の月",
+      "closuresHint": "日をクリックして休業日に設定するか、開始日と終了日をクリックして期間を休業に設定します。",
+      "cancelSelection": "キャンセル",
+      "closureName": "休業日の名前",
+      "closureNamePlaceholder": "名前（任意）— 例: クリスマス",
+      "repeatsYearly": "毎年繰り返す",
+      "everyYear": "毎年",
+      "removeClosure": "休業日を削除",
+      "addClosedDate": "日付を追加",
+      "specialHours": "特別営業時間で開店",
+      "closuresGroupSingle": "単発",
+      "closuresGroupRecurring": "繰り返し",
+      "timezoneLabel": "タイムゾーン",
+      "timezoneHint": "以下のすべての時間 — 週ごとと祝日 — はこのゾーンを使用します。メインの住所から取得されます。",
+      "timezonePlaceholder": "タイムゾーンを選択",
+      "searchTimezone": "タイムゾーンを検索…",
+      "noTimezone": "タイムゾーンが見つかりません",
+      "timezoneReadout": "時間は {zone} の時刻で表示されます。",
+      "published": "公開済み",
+      "draft": "下書き",
+      "publishToggle": "この掲載を公開するかどうかを切り替える",
+      "publishedToast": "掲載を公開しました",
+      "unpublishedToast": "掲載を非公開にしました",
+      "colorHint": "あなたのブランドのメインカラーです。",
+      "addSocial": "ソーシャルリンクを追加",
+      "lookup": {
+        "placeholder": "住所を検索…"
+      },
+      "mainAddress": "メインの住所",
+      "reorder": "並べ替え",
+      "makeMainQuestion": "これをメインの住所にしますか？",
+      "setAsMain": "メインに設定",
+      "linkedin": {
+        "person": "私は専門家です",
+        "company": "私は会社です"
+      },
+      "addAddress": "住所を追加",
+      "newAddress": "新しい住所",
+      "addressNoteTitle": "なぜ住所が必要なのですか？",
+      "addressNoteBody": "あなたのビジネスがリモートで運営されていたり実店舗がなかったりする場合でも、正しい掲載に追加し、関連する検索結果に表示されるようにするために住所が必要です。実際の住所がない場合は、自宅の住所や近くの目印を参考として使用できます。ご希望であれば、住所を公開掲載から非表示にすることもできます。",
+      "hideAddress": "公開掲載から住所を非表示にする",
+      "hideAddressHint": "正しい掲載と検索のために記録として残りますが、公開はされません。",
+      "addressHidden": "非表示",
+      "locationHint": "ピンをドラッグするか地図をタップして、正確な位置を修正してください。",
+      "locationEmpty": "上で住所を選ぶと、地図上に配置されます。",
+      "openMap": "地図を拡大",
+      "mapEditPin": "ピンを調整",
+      "mapPreviewHint": "移動やズームでこの場所を確認できます。",
+      "removeAddress": "住所を削除",
+      "editAddress": "住所を編集",
+      "collapseAddress": "住所を折りたたむ",
+      "categoriesEmpty": "利用できるカテゴリーはまだありません。",
+      "clearSelection": "すべてクリア",
+      "categoriesSelectedCount": "{count, plural, one {# 件選択中} other {# 件選択中}}",
+      "searchAmenities": "設備・サービスを検索…",
+      "amenitiesEmpty": "該当する設備・サービスがありません — カテゴリーを選ぶともっと表示されます。",
+      "media": {
+        "logoTitle": "ロゴ",
+        "cropTitle": "ロゴをトリミング",
+        "cropHint": "ロゴの上で四角の位置とサイズを調整します。",
+        "cropCancel": "キャンセル",
+        "cropConfirm": "これを使う",
+        "logoHint": "正方形の画像が最適です",
+        "bannerTitle": "バナー",
+        "bannerHint": "ページ用の横長のカバー画像",
+        "repositionHint": "ドラッグして位置を調整",
+        "reposition": "位置を調整",
+        "done": "完了",
+        "resetFocal": "中央に戻す",
+        "galleryTitle": "ギャラリー",
+        "galleryHint": "空間、商品、チームを紹介しましょう",
+        "upload": "アップロード",
+        "replace": "変更",
+        "remove": "削除",
+        "addImages": "画像を追加",
+        "uploading": "アップロード中… {percent}%",
+        "finalizing": "処理を完了しています…",
+        "constraints": "JPG、PNG、WebP · 最大 {max}",
+        "tooLarge": "この画像は大きすぎます",
+        "invalidType": "JPG、PNG、WebP の画像を選択してください",
+        "savedToast": "画像を更新しました",
+        "removedToast": "画像を削除しました",
+        "error": "問題が発生しました。もう一度お試しください"
+      },
+      "loadError": "このビジネスを読み込めませんでした。もう一度お試しください。",
+      "retry": "もう一度試す",
+      "addTime": "時間帯を追加",
+      "removeTime": "時間帯を削除",
+      "unavailable": "利用できません",
+      "copyTo": "コピー先…",
+      "everyDay": "毎日",
+      "apply": "適用",
+      "phone": {
+        "country": "国",
+        "countrySearch": "国を検索…",
+        "countryEmpty": "国が見つかりません",
+        "number": "電話番号"
+      },
+      "addWebsite": "ウェブサイトを追加",
+      "addPhone": "電話番号を追加",
+      "addEmail": "メールを追加"
+    },
+    "workspace": {
+      "reviews": {
+        "title": "レビュー",
+        "subtitle": "あなたのビジネスについて寄せられたすべての声です。どれにでも返信できます。",
+        "empty": "まだレビューはありません。お客様が投稿すると、ここに表示されます。",
+        "hidden": "非表示",
+        "reports": "{count, plural, one {# 件の報告} other {# 件の報告}}",
+        "reply": "返信",
+        "editReply": "編集",
+        "removeReply": "削除",
+        "replyPlaceholder": "公開の返信を書く…",
+        "save": "返信を保存",
+        "cancel": "キャンセル",
+        "yourReply": "あなたの返信",
+        "saved": "返信を保存しました",
+        "removed": "返信を削除しました",
+        "error": "問題が発生しました。",
+        "loadMore": "もっと見る"
+      },
+      "create": "新しいビジネスを作成",
+      "nav": {
+        "reviews": "レビュー",
+        "dashboard": "ダッシュボード",
+        "information": "ビジネス情報",
+        "products": "製品",
+        "services": "サービス"
+      },
+      "groups": {
+        "manage": "管理",
+        "offerings": "提供内容"
+      },
+      "comingSoon": {
+        "subtitle": "このエリアは近日公開です。"
+      },
+      "dashboard": {
+        "subtitle": "ここであなたのビジネスに関するすべてを管理できます。",
+        "soon": "近日公開",
+        "yourCompany": "あなたのビジネス",
+        "insights": {
+          "title": "インサイトを準備中です",
+          "body": "まもなく、人々が {name} をどのように見つけて関わっているか — プロフィールの表示回数、お気に入り、レビューなど — を確認できるようになります。"
+        },
+        "stats": {
+          "views": "プロフィールの表示回数",
+          "favorites": "お気に入り",
+          "reviews": "レビュー",
+          "rating": "評価"
+        },
+        "chart": {
+          "title": "プロフィールの表示回数",
+          "period": "過去 30 日間"
+        }
+      },
+      "searchPlaceholder": "ビジネスを検索…",
+      "noResults": "ビジネスが見つかりません",
+      "openMenu": "ビジネスメニューを開く",
+      "menuTitle": "ビジネスメニュー"
+    }
+  },
+  "admin": {
+    "title": "管理",
+    "nav": {
+      "reports": "報告",
+      "businesses": "ビジネス"
+    },
+    "reports": {
+      "title": "報告",
+      "subtitle": "報告されたビジネスとレビュー。優先度の高い報告が先に表示されます。",
+      "empty": "これらの条件に一致する報告はありません。"
+    },
+    "filters": {
+      "status": "ステータス",
+      "reason": "理由",
+      "type": "種類",
+      "allStatuses": "すべてのステータス",
+      "allReasons": "すべての理由",
+      "allTypes": "すべての種類"
+    },
+    "status": {
+      "open": "未対応",
+      "reviewing": "確認中",
+      "resolved": "解決済み",
+      "dismissed": "却下"
+    },
+    "targets": {
+      "business": "ビジネス",
+      "review": "レビュー",
+      "deleted": "削除された対象"
+    },
+    "priority": "優先",
+    "table": {
+      "target": "対象",
+      "reason": "理由",
+      "reporter": "報告者",
+      "reported": "報告日",
+      "status": "ステータス",
+      "actions": "操作"
+    },
+    "actions": {
+      "hide": "レビューを非表示",
+      "unhide": "レビューを再表示",
+      "lock": "ビジネスをロック",
+      "unlock": "ビジネスのロックを解除",
+      "resolve": "報告を解決",
+      "dismiss": "報告を却下"
+    },
+    "confirm": {
+      "reasonLabel": "内部の理由（任意）",
+      "noteLabel": "内部メモ（任意）",
+      "notePlaceholder": "モデレーターのみが確認できます。",
+      "cancel": "キャンセル",
+      "hide": {
+        "title": "このレビューを非表示にしますか？",
+        "description": "再表示するまで、公開表示とビジネスの評価から除外されます。",
+        "confirm": "レビューを非表示"
+      },
+      "lock": {
+        "title": "このビジネスをロックしますか？",
+        "description": "ロックを解除するまで、公開掲載から除外され、オーナーに対して凍結されます。",
+        "confirm": "ビジネスをロック"
+      },
+      "resolve": {
+        "title": "この報告を解決しますか？",
+        "description": "対応済みとしてマークします — 対応が行われました。",
+        "confirm": "解決"
+      },
+      "dismiss": {
+        "title": "この報告を却下しますか？",
+        "description": "確認済みとしてマークします — 対応は不要です。",
+        "confirm": "却下"
+      }
+    },
+    "toast": {
+      "hide": "レビューを非表示にしました。",
+      "unhide": "レビューを再表示しました。",
+      "lock": "ビジネスをロックしました。",
+      "unlock": "ビジネスのロックを解除しました。",
+      "resolve": "報告を解決しました。",
+      "dismiss": "報告を却下しました。"
+    },
+    "pagination": {
+      "page": "{total} ページ中 {page} ページ",
+      "previous": "前へ",
+      "next": "次へ"
+    },
+    "forbidden": "これにアクセスする権限がありません。",
+    "loadError": "報告を読み込めませんでした。",
+    "actionError": "問題が発生しました。",
+    "detail": {
+      "reporterLabel": "報告者",
+      "reporterMessage": "報告者のメッセージ",
+      "noMessage": "メッセージはありません。",
+      "reportedResource": "報告されたリソース",
+      "viewPublic": "公開ページを表示",
+      "resolution": "対応内容",
+      "resolvedAt": "解決日",
+      "noResolutionNote": "メモは残されていません。",
+      "noteLabel": "内部メモ（任意）"
+    },
+    "expired": {
+      "title": "管理セッションの有効期限が切れました",
+      "description": "非アクティブ状態が続いたため、管理者アクセスがタイムアウトしました。続けるには再度入り直してください。",
+      "reenter": "管理者として再度入る",
+      "back": "ダッシュボードに戻る"
+    },
+    "businesses": {
+      "title": "ビジネス",
+      "subtitle": "プラットフォーム上のすべてのビジネス。検索、絞り込みを行い、1 つ開いて管理できます。",
+      "search": "検索",
+      "searchPlaceholder": "名前で検索…",
+      "empty": "これらの条件に一致するビジネスはありません。",
+      "unclaimed": "未登録",
+      "forbidden": "これにアクセスする権限がありません。",
+      "loadError": "ビジネスを読み込めませんでした。",
+      "filters": {
+        "status": "ステータス",
+        "type": "種類",
+        "allStatuses": "すべてのステータス",
+        "allTypes": "すべての種類"
+      },
+      "status": {
+        "published": "公開済み",
+        "draft": "下書き",
+        "locked": "ロック中",
+        "unclaimed": "未登録",
+        "deleted": "削除済み"
+      },
+      "types": {
+        "company": "会社",
+        "self_employed": "個人事業主"
+      },
+      "table": {
+        "business": "ビジネス",
+        "owners": "オーナー",
+        "status": "ステータス",
+        "created": "作成日"
+      },
+      "pagination": {
+        "page": "{total} ページ中 {page} ページ",
+        "previous": "前へ",
+        "next": "次へ"
+      },
+      "editor": {
+        "back": "ビジネスに戻る",
+        "notFound": "ビジネスが見つかりません。",
+        "unclaimed": "オーナーなし（未登録）。",
+        "owners": "オーナー",
+        "lockedReason": "ロックの理由",
+        "audit": "監査",
+        "lock": "ロック",
+        "unlock": "ロック解除",
+        "publish": "強制的に公開",
+        "unpublish": "非公開にする",
+        "restore": "復元",
+        "deletedBanner": "このビジネスは削除されています。編集するには復元してください。",
+        "forbidden": "これにアクセスする権限がありません。",
+        "actionError": "問題が発生しました。",
+        "toast": {
+          "lock": "ビジネスをロックしました。",
+          "unlock": "ビジネスのロックを解除しました。",
+          "publish": "ビジネスを公開しました。",
+          "unpublish": "ビジネスを非公開にしました。",
+          "restore": "ビジネスを復元しました。"
+        },
+        "auditTitle": "監査ログ",
+        "auditSubtitle": "このビジネスに対する運営者の操作。新しい順。",
+        "auditEmpty": "記録された操作はまだありません。",
+        "actions": {
+          "business": {
+            "updated": "編集",
+            "locked": "ロック",
+            "unlocked": "ロック解除",
+            "published": "公開",
+            "unpublished": "非公開",
+            "deleted": "削除",
+            "restored": "復元",
+            "owner_added": "オーナー追加",
+            "owner_removed": "オーナー削除",
+            "claimed": "登録"
+          }
+        }
+      },
+      "owners": {
+        "title": "オーナー",
+        "subtitle": "このビジネスを管理できるアカウント。",
+        "add": "オーナーを追加",
+        "searchPlaceholder": "名前またはメールで検索…",
+        "searchHint": "入力してユーザーを検索します。",
+        "noResults": "一致するユーザーがいません。",
+        "empty": "オーナーはまだいません（未登録）。",
+        "added": "オーナーを追加しました。",
+        "removed": "オーナーを削除しました。",
+        "remove": "オーナーを削除",
+        "forbidden": "これにアクセスする権限がありません。",
+        "error": "問題が発生しました。"
+      },
+      "newButton": "新しいビジネス",
+      "new": {
+        "title": "新しいビジネス",
+        "subtitle": "ビジネスを作成し、エディターで詳細を入力してオーナーを割り当てます。"
+      }
+    }
+  },
+  "session": {
+    "accountFallback": "前のセッションが終了しました — 現在は {account} としてログインしています。"
+  }
+}
