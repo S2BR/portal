@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import ar from "@/messages/ar.json";
 import de from "@/messages/de.json";
 import en from "@/messages/en.json";
 import es from "@/messages/es.json";
@@ -30,6 +31,7 @@ const catalogs: Record<string, Messages> = {
   ja,
   it: itIT,
   de,
+  ar,
 };
 
 describe("i18n message catalogs", () => {

@@ -43,7 +43,7 @@ export function BusinessCard({
             the Avatar span) and there's no z-index: Safari only blurs the backdrop within the same
             stacking context, so isolating the plate would kill the frost. DOM order paints it over
             the banner. */}
-        <div className="absolute -bottom-8 left-4 overflow-hidden rounded-[18px] border border-white/40 bg-white/20 p-1 shadow-lg backdrop-blur-md dark:border-white/15 dark:bg-white/10">
+        <div className="absolute start-4 -bottom-8 overflow-hidden rounded-[18px] border border-white/40 bg-white/20 p-1 shadow-lg backdrop-blur-md dark:border-white/15 dark:bg-white/10">
           <BusinessLogo
             name={business.name}
             src={business.logo}

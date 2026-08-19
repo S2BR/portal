@@ -6,6 +6,7 @@ export const locales = [
   "ja",
   "it",
   "de",
+  "ar",
 ] as const;
 
 export type Locale = (typeof locales)[number];
@@ -24,6 +25,7 @@ export const localeNames: Record<Locale, string> = {
   ja: "日本語",
   it: "Italiano",
   de: "Deutsch",
+  ar: "العربية",
 };
 
 export function isLocale(value: unknown): value is Locale {
@@ -47,7 +49,7 @@ export function toApiLocale(locale: Locale): string {
  * logical CSS are all direction-driven — add an RTL locale here (e.g. `ar`, `he`, `fa`) and
  * the whole UI mirrors with no further changes. A dev-only toggle can force RTL meanwhile.
  */
-export const rtlLocales: readonly string[] = [];
+export const rtlLocales: readonly string[] = ["ar"];
 
 export type Direction = "ltr" | "rtl";
 
