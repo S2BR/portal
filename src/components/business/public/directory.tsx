@@ -105,6 +105,10 @@ type DirectoryHit = {
   type: PublicBusinessCard["type"];
   categories?: string[];
   city?: string;
+  // Presigned logo + banner urls, kept fresh by the nightly re-index; absent when the business
+  // has none (the API only indexes the keys when set).
+  logo?: string;
+  banner?: string;
   rating_avg?: number;
   rating_count?: number;
   _geoloc?: { lat: number; lng: number };
@@ -130,8 +134,8 @@ function hitToCard(
     name: hit.name,
     type: hit.type,
     headline: hit.headline ?? null,
-    // The index has no logo (presigned URLs expire) — cards use the icon fallback for now.
-    logo: null,
+    logo: hit.logo ?? null,
+    banner: hit.banner ?? null,
     city: hit.city ?? null,
     latitude: hit._geoloc?.lat ?? null,
     longitude: hit._geoloc?.lng ?? null,

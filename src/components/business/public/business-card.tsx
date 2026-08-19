@@ -21,13 +21,23 @@ export function BusinessCard({
       className="group hover:border-primary/40 bg-card focus-visible:ring-ring flex flex-col overflow-hidden rounded-2xl border transition-colors focus-visible:ring-2 focus-visible:outline-none"
     >
       <div className="from-brand-green to-brand-green-deep relative h-20 bg-gradient-to-br">
+        {business.banner ? (
+          // Decorative — the business name is the heading below. A plain <img> paints the cached,
+          // presigned banner instantly; the gradient shows through until it loads / when there's none.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={business.banner}
+            alt=""
+            className="absolute inset-0 size-full object-cover"
+          />
+        ) : null}
         <BusinessLogo
           name={business.name}
           src={business.logo}
-          className="bg-background absolute -bottom-5 left-4 size-12 border shadow-sm"
+          className="bg-background absolute -bottom-8 left-4 size-20 border shadow-sm"
         />
       </div>
-      <div className="flex flex-1 flex-col gap-2 p-4 pt-7">
+      <div className="flex flex-1 flex-col gap-2 p-4 pt-11">
         <h3 className="leading-tight font-semibold">{business.name}</h3>
         {business.headline ? (
           <p className="text-muted-foreground line-clamp-2 text-sm">
