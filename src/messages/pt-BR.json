@@ -1119,6 +1119,11 @@
         "remove": "Remover proprietário",
         "forbidden": "Você não tem acesso a isto.",
         "error": "Algo deu errado."
+      },
+      "newButton": "Novo negócio",
+      "new": {
+        "title": "Novo negócio",
+        "subtitle": "Crie um negócio e depois preencha os detalhes e atribua um proprietário pelo editor."
       }
     }
   },

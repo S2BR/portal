@@ -19,8 +19,18 @@ type FieldErrors = { name?: string; type?: string };
  * self-employed), mirroring the API's create contract. On success it toasts and routes to the
  * new business's detail page; a 422 from the API surfaces inline against the offending field.
  * Address, hours, and description are added there through editing.
+ *
+ * Shared by the owner flow (default — posts to `/api/businesses`, lands on the owner editor) and the
+ * admin flow, which passes the admin `endpoint` and a `redirectTo` that opens the admin editor.
  */
-export function CreateBusinessForm() {
+export function CreateBusinessForm({
+  endpoint = "/api/businesses",
+  redirectTo = (business: Business) =>
+    `/portal/businesses/${business.slug}/information`,
+}: {
+  endpoint?: string;
+  redirectTo?: (business: Business) => string;
+} = {}) {
   const t = useTranslations("businessNew");
   const router = useRouter();
 
@@ -51,7 +61,7 @@ export function CreateBusinessForm() {
     setFieldErrors({});
 
     try {
-      const response = await fetch("/api/businesses", {
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: trimmed, type }),
@@ -65,8 +75,8 @@ export function CreateBusinessForm() {
 
       if (data.status === "ok" && data.business) {
         toast.success(t("createdToast"));
-        // Land on Company information so the owner can fill in the rest right away.
-        router.push(`/portal/businesses/${data.business.slug}/information`);
+        // Land on the editor so the rest of the detail can be filled in right away.
+        router.push(redirectTo(data.business));
         return;
       }
 

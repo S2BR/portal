@@ -1119,6 +1119,11 @@
         "remove": "Retirer le propriétaire",
         "forbidden": "Vous n'avez pas accès à ceci.",
         "error": "Une erreur s'est produite."
+      },
+      "newButton": "Nouvelle entreprise",
+      "new": {
+        "title": "Nouvelle entreprise",
+        "subtitle": "Créez une entreprise, puis remplissez ses détails et attribuez un propriétaire depuis l'éditeur."
       }
     }
   },

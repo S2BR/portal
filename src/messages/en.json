@@ -1119,6 +1119,11 @@
         "remove": "Remove owner",
         "forbidden": "You don't have access to this.",
         "error": "Something went wrong."
+      },
+      "newButton": "New business",
+      "new": {
+        "title": "New business",
+        "subtitle": "Create a business, then fill in its details and assign an owner from the editor."
       }
     }
   },
