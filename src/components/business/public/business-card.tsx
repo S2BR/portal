@@ -31,11 +31,25 @@ export function BusinessCard({
             className="absolute inset-0 size-full object-cover"
           />
         ) : null}
-        <BusinessLogo
-          name={business.name}
-          src={business.logo}
-          className="bg-background absolute -bottom-8 left-4 size-20 border shadow-sm"
-        />
+        {distanceLabel ? (
+          // Pinned to the banner's top-right over a translucent scrim so it stays legible on any
+          // banner image (or the gradient when there's none).
+          <span className="text-brand-green-deep dark:text-brand-green absolute end-2 top-2 inline-flex items-center gap-1 rounded-full bg-white/80 px-2.5 py-1 text-xs font-medium backdrop-blur-sm dark:bg-black/75">
+            <Navigation className="size-3" aria-hidden />
+            {distanceLabel}
+          </span>
+        ) : null}
+        {/* Logo on a frosted-glass plate, like the profile header. Positioning lives on the div (not
+            the Avatar span) and there's no z-index: Safari only blurs the backdrop within the same
+            stacking context, so isolating the plate would kill the frost. DOM order paints it over
+            the banner. */}
+        <div className="absolute -bottom-8 left-4 overflow-hidden rounded-[18px] border border-white/40 bg-white/20 p-1 shadow-lg backdrop-blur-md dark:border-white/15 dark:bg-white/10">
+          <BusinessLogo
+            name={business.name}
+            src={business.logo}
+            className="bg-background size-20 rounded-xl"
+          />
+        </div>
       </div>
       <div className="flex flex-1 flex-col gap-2 p-4 pt-11">
         <h3 className="leading-tight font-semibold">{business.name}</h3>
@@ -66,12 +80,6 @@ export function BusinessCard({
               <span className="text-muted-foreground font-normal">
                 ({business.rating_count})
               </span>
-            </span>
-          ) : null}
-          {distanceLabel ? (
-            <span className="text-brand-green inline-flex items-center gap-1 text-xs font-medium">
-              <Navigation className="size-3" aria-hidden />
-              {distanceLabel}
             </span>
           ) : null}
         </div>

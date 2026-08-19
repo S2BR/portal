@@ -28,7 +28,10 @@ function AvatarImage({
   return (
     <AvatarPrimitive.Image
       data-slot="avatar-image"
-      className={cn("aspect-square size-full object-cover", className)}
+      // Fill the (relative) root absolutely rather than as a flex child: Safari stretches a flex-child
+      // <img> on the cross axis before `object-fit` applies, cropping the image off-center. Taking it
+      // out of flex flow centers it consistently; identical to the flex layout in Chrome.
+      className={cn("absolute inset-0 size-full object-cover", className)}
       {...props}
     />
   );
