@@ -1071,7 +1071,7 @@ export function BusinessDetail({
                       </ViewBlock>
                       <ViewBlock label={fields("description")}>
                         {business.description ? (
-                          <p className="whitespace-pre-line">
+                          <p className="whitespace-pre-wrap">
                             {business.description}
                           </p>
                         ) : (

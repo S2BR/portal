@@ -193,7 +193,7 @@ export async function BusinessProfile({
                 <h2 className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
                   {t("about")}
                 </h2>
-                <p className="mt-3 max-w-prose leading-relaxed text-pretty">
+                <p className="mt-3 max-w-prose leading-relaxed whitespace-pre-wrap">
                   {business.description}
                 </p>
               </section>
