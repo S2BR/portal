@@ -341,7 +341,9 @@ function AuditSheet({
                 >
                   <div className="flex items-center justify-between gap-2">
                     <span className="font-medium">
-                      {t(`actions.${entry.action}`)}
+                      {t.has(`actions.${entry.action}`)
+                        ? t(`actions.${entry.action}`)
+                        : entry.action}
                     </span>
                     <span className="text-muted-foreground text-xs whitespace-nowrap">
                       {entry.created_at

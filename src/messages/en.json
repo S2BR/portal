@@ -1081,16 +1081,18 @@
         "auditSubtitle": "Operator actions on this business, newest first.",
         "auditEmpty": "No recorded actions yet.",
         "actions": {
-          "business.updated": "Edited",
-          "business.locked": "Locked",
-          "business.unlocked": "Unlocked",
-          "business.published": "Published",
-          "business.unpublished": "Unpublished",
-          "business.deleted": "Deleted",
-          "business.restored": "Restored",
-          "business.owner_added": "Owner added",
-          "business.owner_removed": "Owner removed",
-          "business.claimed": "Claimed"
+          "business": {
+            "updated": "Edited",
+            "locked": "Locked",
+            "unlocked": "Unlocked",
+            "published": "Published",
+            "unpublished": "Unpublished",
+            "deleted": "Deleted",
+            "restored": "Restored",
+            "owner_added": "Owner added",
+            "owner_removed": "Owner removed",
+            "claimed": "Claimed"
+          }
         }
       },
       "owners": {

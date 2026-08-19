@@ -1081,16 +1081,18 @@
         "auditSubtitle": "Actions de l'opérateur sur cette entreprise, plus récentes d'abord.",
         "auditEmpty": "Aucune action enregistrée pour l'instant.",
         "actions": {
-          "business.updated": "Modifiée",
-          "business.locked": "Verrouillée",
-          "business.unlocked": "Déverrouillée",
-          "business.published": "Publiée",
-          "business.unpublished": "Dépubliée",
-          "business.deleted": "Supprimée",
-          "business.restored": "Restaurée",
-          "business.owner_added": "Propriétaire ajouté",
-          "business.owner_removed": "Propriétaire retiré",
-          "business.claimed": "Réclamée"
+          "business": {
+            "updated": "Modifiée",
+            "locked": "Verrouillée",
+            "unlocked": "Déverrouillée",
+            "published": "Publiée",
+            "unpublished": "Dépubliée",
+            "deleted": "Supprimée",
+            "restored": "Restaurée",
+            "owner_added": "Propriétaire ajouté",
+            "owner_removed": "Propriétaire retiré",
+            "claimed": "Réclamée"
+          }
         }
       },
       "owners": {
