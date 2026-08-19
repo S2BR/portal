@@ -957,7 +957,7 @@
         "admin_review": "Análise do administrador"
       },
       "table": {
-        "business": "Negócio",
+        "target": "Ficha",
         "claimant": "Reivindicante",
         "method": "Método",
         "status": "Status",
@@ -982,8 +982,8 @@
         "reject": "Rejeitar reivindicação"
       },
       "toast": {
-        "approve": "Reivindicação aprovada.",
-        "reject": "Reivindicação rejeitada."
+        "approved": "Reivindicação aprovada.",
+        "rejected": "Reivindicação rejeitada."
       },
       "pagination": {
         "page": "Página {page} de {total}",
@@ -1200,5 +1200,11 @@
     "submitted": "Sua reivindicação foi enviada para análise.",
     "autoApproved": "Agora este negócio é seu para administrar.",
     "error": "Algo deu errado. Tente novamente."
+  },
+  "claimableAlert": {
+    "title": "Você pode reivindicar {count, plural, one {# ficha} other {# fichas}}",
+    "body": "Seu e-mail corresponde. Assuma o controle para gerenciá-{count, plural, one {la} other {las}}.",
+    "cta": "{count, plural, one {Reivindicar} other {Reivindicar todas}}",
+    "dismiss": "Dispensar"
   }
 }

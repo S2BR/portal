@@ -957,7 +957,7 @@
         "admin_review": "Admin review"
       },
       "table": {
-        "business": "Business",
+        "target": "Listing",
         "claimant": "Claimant",
         "method": "Method",
         "status": "Status",
@@ -982,8 +982,8 @@
         "reject": "Reject claim"
       },
       "toast": {
-        "approve": "Claim approved.",
-        "reject": "Claim rejected."
+        "approved": "Claim approved.",
+        "rejected": "Claim rejected."
       },
       "pagination": {
         "page": "Page {page} of {total}",
@@ -1200,5 +1200,11 @@
     "submitted": "Your claim has been submitted for review.",
     "autoApproved": "This business is now yours to manage.",
     "error": "Something went wrong. Please try again."
+  },
+  "claimableAlert": {
+    "title": "You can claim {count, plural, one {# listing} other {# listings}}",
+    "body": "Your email matches. Take ownership to manage {count, plural, one {it} other {them}}.",
+    "cta": "{count, plural, one {Claim it} other {Claim them}}",
+    "dismiss": "Dismiss"
   }
 }

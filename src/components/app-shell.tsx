@@ -4,6 +4,7 @@ import { AccountBoundary } from "@/components/auth/account-boundary";
 import { AppHeader } from "@/components/app-header";
 import { BusinessIdentityProvider } from "@/components/business/business-identity-context";
 import { BusinessNavProvider } from "@/components/business/business-nav-context";
+import { ClaimableAlert } from "@/components/claims/claimable-alert";
 
 /**
  * The authenticated app shell: the app header + a centered main. The current-user context lives in
@@ -21,6 +22,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="flex min-h-svh flex-col">
           <AppHeader />
           <main className="mx-auto w-full max-w-[90rem] flex-1 px-4 py-10 sm:px-6">
+            <ClaimableAlert />
             <AccountBoundary>{children}</AccountBoundary>
           </main>
         </div>
