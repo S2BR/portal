@@ -927,12 +927,69 @@
     "title": "Amministrazione",
     "nav": {
       "reports": "Segnalazioni",
+      "claims": "Rivendicazioni",
       "businesses": "Attività"
     },
     "reports": {
       "title": "Segnalazioni",
       "subtitle": "Attività e recensioni segnalate. Le segnalazioni prioritarie appaiono per prime.",
       "empty": "Nessuna segnalazione corrisponde a questi filtri."
+    },
+    "claims": {
+      "title": "Rivendicazioni di attività",
+      "subtitle": "Rivendicazioni di proprietà in attesa di esame. Le rivendicazioni in sospeso appaiono per prime.",
+      "empty": "Nessuna rivendicazione corrisponde a questi filtri.",
+      "forbidden": "Non hai accesso a questo.",
+      "loadError": "Non è stato possibile caricare le rivendicazioni.",
+      "actionError": "Qualcosa è andato storto.",
+      "filters": {
+        "status": "Stato",
+        "allStatuses": "Tutti gli stati"
+      },
+      "status": {
+        "pending": "In sospeso",
+        "approved": "Approvata",
+        "rejected": "Rifiutata",
+        "auto_approved": "Approvata automaticamente"
+      },
+      "method": {
+        "email_match": "Corrispondenza email",
+        "admin_review": "Esame dell'amministratore"
+      },
+      "table": {
+        "business": "Attività",
+        "claimant": "Richiedente",
+        "method": "Metodo",
+        "status": "Stato",
+        "submitted": "Inviata"
+      },
+      "detail": {
+        "claimant": "Richiedente",
+        "message": "Messaggio del richiedente",
+        "noMessage": "Nessun messaggio fornito.",
+        "proof": "Prova",
+        "proofAlt": "Prova {index}",
+        "noProof": "Nessuna prova inviata.",
+        "viewPublic": "Vedi la pagina pubblica",
+        "review": "Esame",
+        "reviewer": "Esaminata da",
+        "noReviewNote": "Nessuna nota lasciata.",
+        "noteLabel": "Nota interna (facoltativa)",
+        "notePlaceholder": "Visibile solo ai moderatori."
+      },
+      "actions": {
+        "approve": "Approva rivendicazione",
+        "reject": "Rifiuta rivendicazione"
+      },
+      "toast": {
+        "approve": "Rivendicazione approvata.",
+        "reject": "Rivendicazione rifiutata."
+      },
+      "pagination": {
+        "page": "Pagina {page} di {total}",
+        "previous": "Precedente",
+        "next": "Successiva"
+      }
     },
     "filters": {
       "status": "Stato",
@@ -1129,5 +1186,19 @@
   },
   "session": {
     "accountFallback": "La tua sessione precedente è terminata — ora hai effettuato l'accesso come {account}."
+  },
+  "businessClaim": {
+    "cta": "Rivendica questa attività",
+    "signInPrompt": "Accedi per rivendicare un'attività.",
+    "title": "Rivendica questa attività",
+    "description": "Dicci che sei il proprietario. Se l'email del tuo account corrisponde all'email indicata per questa attività, otterrai l'accesso immediatamente; in caso contrario, il nostro team esaminerà la tua richiesta.",
+    "messageLabel": "Messaggio (facoltativo)",
+    "messagePlaceholder": "Qual è il tuo legame con questa attività?",
+    "reviewNote": "Esaminiamo le rivendicazioni che non possono essere verificate automaticamente.",
+    "cancel": "Annulla",
+    "submit": "Invia rivendicazione",
+    "submitted": "La tua rivendicazione è stata inviata per l'esame.",
+    "autoApproved": "Ora puoi gestire questa attività.",
+    "error": "Qualcosa è andato storto. Riprova."
   }
 }

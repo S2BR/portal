@@ -927,12 +927,69 @@
     "title": "Administración",
     "nav": {
       "reports": "Denuncias",
+      "claims": "Reclamaciones",
       "businesses": "Negocios"
     },
     "reports": {
       "title": "Denuncias",
       "subtitle": "Negocios y reseñas denunciados. Las denuncias prioritarias aparecen primero.",
       "empty": "Ninguna denuncia coincide con estos filtros."
+    },
+    "claims": {
+      "title": "Reclamaciones de negocios",
+      "subtitle": "Reclamaciones de propiedad pendientes de revisión. Las reclamaciones pendientes aparecen primero.",
+      "empty": "Ninguna reclamación coincide con estos filtros.",
+      "forbidden": "No tienes acceso a esto.",
+      "loadError": "No se pudieron cargar las reclamaciones.",
+      "actionError": "Algo salió mal.",
+      "filters": {
+        "status": "Estado",
+        "allStatuses": "Todos los estados"
+      },
+      "status": {
+        "pending": "Pendiente",
+        "approved": "Aprobada",
+        "rejected": "Rechazada",
+        "auto_approved": "Aprobada automáticamente"
+      },
+      "method": {
+        "email_match": "Coincidencia de correo",
+        "admin_review": "Revisión de administrador"
+      },
+      "table": {
+        "business": "Negocio",
+        "claimant": "Reclamante",
+        "method": "Método",
+        "status": "Estado",
+        "submitted": "Enviada"
+      },
+      "detail": {
+        "claimant": "Reclamante",
+        "message": "Mensaje del reclamante",
+        "noMessage": "No se proporcionó ningún mensaje.",
+        "proof": "Prueba",
+        "proofAlt": "Prueba {index}",
+        "noProof": "No se envió ninguna prueba.",
+        "viewPublic": "Ver página pública",
+        "review": "Revisión",
+        "reviewer": "Revisado por",
+        "noReviewNote": "No se dejó ninguna nota.",
+        "noteLabel": "Nota interna (opcional)",
+        "notePlaceholder": "Solo visible para los moderadores."
+      },
+      "actions": {
+        "approve": "Aprobar reclamación",
+        "reject": "Rechazar reclamación"
+      },
+      "toast": {
+        "approve": "Reclamación aprobada.",
+        "reject": "Reclamación rechazada."
+      },
+      "pagination": {
+        "page": "Página {page} de {total}",
+        "previous": "Anterior",
+        "next": "Siguiente"
+      }
     },
     "filters": {
       "status": "Estado",
@@ -1129,5 +1186,19 @@
   },
   "session": {
     "accountFallback": "Tu sesión anterior terminó: ahora tienes la sesión iniciada como {account}."
+  },
+  "businessClaim": {
+    "cta": "Reclamar este negocio",
+    "signInPrompt": "Inicia sesión para reclamar un negocio.",
+    "title": "Reclamar este negocio",
+    "description": "Dinos que eres el propietario. Si el correo de tu cuenta coincide con el correo que figura para este negocio, obtendrás acceso de inmediato; de lo contrario, nuestro equipo revisará tu solicitud.",
+    "messageLabel": "Mensaje (opcional)",
+    "messagePlaceholder": "¿Cuál es tu relación con este negocio?",
+    "reviewNote": "Revisamos las reclamaciones que no se pueden verificar automáticamente.",
+    "cancel": "Cancelar",
+    "submit": "Enviar reclamación",
+    "submitted": "Tu reclamación se ha enviado para revisión.",
+    "autoApproved": "Este negocio ya es tuyo para administrarlo.",
+    "error": "Algo salió mal. Inténtalo de nuevo."
   }
 }

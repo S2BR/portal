@@ -927,12 +927,69 @@
     "title": "管理",
     "nav": {
       "reports": "報告",
+      "claims": "オーナー申請",
       "businesses": "ビジネス"
     },
     "reports": {
       "title": "報告",
       "subtitle": "報告されたビジネスとレビュー。優先度の高い報告が先に表示されます。",
       "empty": "これらの条件に一致する報告はありません。"
+    },
+    "claims": {
+      "title": "ビジネスのオーナー申請",
+      "subtitle": "審査待ちの所有権申請です。保留中の申請が先に表示されます。",
+      "empty": "これらの条件に一致する申請はありません。",
+      "forbidden": "これにアクセスする権限がありません。",
+      "loadError": "申請を読み込めませんでした。",
+      "actionError": "問題が発生しました。",
+      "filters": {
+        "status": "ステータス",
+        "allStatuses": "すべてのステータス"
+      },
+      "status": {
+        "pending": "保留中",
+        "approved": "承認済み",
+        "rejected": "却下",
+        "auto_approved": "自動承認"
+      },
+      "method": {
+        "email_match": "メールの一致",
+        "admin_review": "管理者による審査"
+      },
+      "table": {
+        "business": "ビジネス",
+        "claimant": "申請者",
+        "method": "方法",
+        "status": "ステータス",
+        "submitted": "送信日"
+      },
+      "detail": {
+        "claimant": "申請者",
+        "message": "申請者のメッセージ",
+        "noMessage": "メッセージはありません。",
+        "proof": "証明",
+        "proofAlt": "証明 {index}",
+        "noProof": "証明は提出されていません。",
+        "viewPublic": "公開ページを表示",
+        "review": "審査",
+        "reviewer": "審査者",
+        "noReviewNote": "メモは残されていません。",
+        "noteLabel": "内部メモ（任意）",
+        "notePlaceholder": "モデレーターのみが確認できます。"
+      },
+      "actions": {
+        "approve": "申請を承認",
+        "reject": "申請を却下"
+      },
+      "toast": {
+        "approve": "申請を承認しました。",
+        "reject": "申請を却下しました。"
+      },
+      "pagination": {
+        "page": "{total} ページ中 {page} ページ",
+        "previous": "前へ",
+        "next": "次へ"
+      }
     },
     "filters": {
       "status": "ステータス",
@@ -1129,5 +1186,19 @@
   },
   "session": {
     "accountFallback": "前のセッションが終了しました — 現在は {account} としてログインしています。"
+  },
+  "businessClaim": {
+    "cta": "このビジネスのオーナー申請",
+    "signInPrompt": "ビジネスのオーナー申請を行うにはログインしてください。",
+    "title": "このビジネスのオーナー申請",
+    "description": "オーナーであることをお知らせください。アカウントのメールアドレスがこのビジネスに登録されているメールアドレスと一致する場合は、すぐにアクセスできます。一致しない場合は、当社のチームがリクエストを確認します。",
+    "messageLabel": "メッセージ（任意）",
+    "messagePlaceholder": "このビジネスとのご関係を教えてください。",
+    "reviewNote": "自動的に確認できない申請は、当社で審査します。",
+    "cancel": "キャンセル",
+    "submit": "申請を送信",
+    "submitted": "申請を審査のため送信しました。",
+    "autoApproved": "このビジネスをご自身で管理できるようになりました。",
+    "error": "問題が発生しました。もう一度お試しください。"
   }
 }

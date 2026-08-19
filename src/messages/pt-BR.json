@@ -927,12 +927,69 @@
     "title": "Administração",
     "nav": {
       "reports": "Denúncias",
+      "claims": "Reivindicações",
       "businesses": "Negócios"
     },
     "reports": {
       "title": "Denúncias",
       "subtitle": "Negócios e avaliações denunciados. As denúncias prioritárias aparecem primeiro.",
       "empty": "Nenhuma denúncia corresponde a esses filtros."
+    },
+    "claims": {
+      "title": "Reivindicações de negócios",
+      "subtitle": "Reivindicações de propriedade aguardando análise. As reivindicações pendentes aparecem primeiro.",
+      "empty": "Nenhuma reivindicação corresponde a esses filtros.",
+      "forbidden": "Você não tem acesso a isto.",
+      "loadError": "Não foi possível carregar as reivindicações.",
+      "actionError": "Algo deu errado.",
+      "filters": {
+        "status": "Status",
+        "allStatuses": "Todos os status"
+      },
+      "status": {
+        "pending": "Pendente",
+        "approved": "Aprovada",
+        "rejected": "Rejeitada",
+        "auto_approved": "Aprovada automaticamente"
+      },
+      "method": {
+        "email_match": "Correspondência de e-mail",
+        "admin_review": "Análise do administrador"
+      },
+      "table": {
+        "business": "Negócio",
+        "claimant": "Reivindicante",
+        "method": "Método",
+        "status": "Status",
+        "submitted": "Enviada"
+      },
+      "detail": {
+        "claimant": "Reivindicante",
+        "message": "Mensagem do reivindicante",
+        "noMessage": "Nenhuma mensagem fornecida.",
+        "proof": "Comprovação",
+        "proofAlt": "Comprovação {index}",
+        "noProof": "Nenhuma comprovação enviada.",
+        "viewPublic": "Ver página pública",
+        "review": "Análise",
+        "reviewer": "Analisado por",
+        "noReviewNote": "Nenhuma nota deixada.",
+        "noteLabel": "Nota interna (opcional)",
+        "notePlaceholder": "Visível apenas para os moderadores."
+      },
+      "actions": {
+        "approve": "Aprovar reivindicação",
+        "reject": "Rejeitar reivindicação"
+      },
+      "toast": {
+        "approve": "Reivindicação aprovada.",
+        "reject": "Reivindicação rejeitada."
+      },
+      "pagination": {
+        "page": "Página {page} de {total}",
+        "previous": "Anterior",
+        "next": "Próxima"
+      }
     },
     "filters": {
       "status": "Status",
@@ -1129,5 +1186,19 @@
   },
   "session": {
     "accountFallback": "Sua sessão anterior terminou — você agora está conectado como {account}."
+  },
+  "businessClaim": {
+    "cta": "Reivindicar este negócio",
+    "signInPrompt": "Entre para reivindicar um negócio.",
+    "title": "Reivindicar este negócio",
+    "description": "Diga que você é o proprietário. Se o e-mail da sua conta corresponder ao e-mail listado para este negócio, você terá acesso imediato; caso contrário, nossa equipe analisará sua solicitação.",
+    "messageLabel": "Mensagem (opcional)",
+    "messagePlaceholder": "Qual é a sua relação com este negócio?",
+    "reviewNote": "Analisamos as reivindicações que não podem ser verificadas automaticamente.",
+    "cancel": "Cancelar",
+    "submit": "Enviar reivindicação",
+    "submitted": "Sua reivindicação foi enviada para análise.",
+    "autoApproved": "Agora este negócio é seu para administrar.",
+    "error": "Algo deu errado. Tente novamente."
   }
 }

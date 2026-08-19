@@ -927,12 +927,69 @@
     "title": "Administration",
     "nav": {
       "reports": "Signalements",
+      "claims": "Revendications",
       "businesses": "Entreprises"
     },
     "reports": {
       "title": "Signalements",
       "subtitle": "Entreprises et avis signalés. Les signalements prioritaires apparaissent en premier.",
       "empty": "Aucun signalement ne correspond à ces filtres."
+    },
+    "claims": {
+      "title": "Revendications d'entreprise",
+      "subtitle": "Revendications de propriété en attente d'examen. Les revendications en attente apparaissent en premier.",
+      "empty": "Aucune revendication ne correspond à ces filtres.",
+      "forbidden": "Vous n'avez pas accès à ceci.",
+      "loadError": "Impossible de charger les revendications.",
+      "actionError": "Une erreur s'est produite.",
+      "filters": {
+        "status": "Statut",
+        "allStatuses": "Tous les statuts"
+      },
+      "status": {
+        "pending": "En attente",
+        "approved": "Approuvée",
+        "rejected": "Rejetée",
+        "auto_approved": "Approuvée automatiquement"
+      },
+      "method": {
+        "email_match": "Correspondance de courriel",
+        "admin_review": "Examen par un administrateur"
+      },
+      "table": {
+        "business": "Entreprise",
+        "claimant": "Revendicateur",
+        "method": "Méthode",
+        "status": "Statut",
+        "submitted": "Envoyée"
+      },
+      "detail": {
+        "claimant": "Revendicateur",
+        "message": "Message du revendicateur",
+        "noMessage": "Aucun message fourni.",
+        "proof": "Preuve",
+        "proofAlt": "Preuve {index}",
+        "noProof": "Aucune preuve soumise.",
+        "viewPublic": "Voir la page publique",
+        "review": "Examen",
+        "reviewer": "Examiné par",
+        "noReviewNote": "Aucune note laissée.",
+        "noteLabel": "Note interne (facultative)",
+        "notePlaceholder": "Visible uniquement par les modérateurs."
+      },
+      "actions": {
+        "approve": "Approuver la revendication",
+        "reject": "Rejeter la revendication"
+      },
+      "toast": {
+        "approve": "Revendication approuvée.",
+        "reject": "Revendication rejetée."
+      },
+      "pagination": {
+        "page": "Page {page} sur {total}",
+        "previous": "Précédent",
+        "next": "Suivant"
+      }
     },
     "filters": {
       "status": "Statut",
@@ -1129,5 +1186,19 @@
   },
   "session": {
     "accountFallback": "Votre session précédente a pris fin — vous êtes maintenant connecté comme {account}."
+  },
+  "businessClaim": {
+    "cta": "Revendiquer cette entreprise",
+    "signInPrompt": "Connectez-vous pour revendiquer une entreprise.",
+    "title": "Revendiquer cette entreprise",
+    "description": "Dites-nous que vous êtes le propriétaire. Si le courriel de votre compte correspond au courriel indiqué pour cette entreprise, vous obtiendrez l'accès immédiatement; sinon, notre équipe examinera votre demande.",
+    "messageLabel": "Message (facultatif)",
+    "messagePlaceholder": "Quel est votre lien avec cette entreprise ?",
+    "reviewNote": "Nous examinons les revendications qui ne peuvent pas être vérifiées automatiquement.",
+    "cancel": "Annuler",
+    "submit": "Envoyer la revendication",
+    "submitted": "Votre revendication a été envoyée pour examen.",
+    "autoApproved": "Vous pouvez maintenant gérer cette entreprise.",
+    "error": "Une erreur est survenue. Veuillez réessayer."
   }
 }

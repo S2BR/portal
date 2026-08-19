@@ -927,12 +927,69 @@
     "title": "Verwaltung",
     "nav": {
       "reports": "Meldungen",
+      "claims": "Ansprüche",
       "businesses": "Unternehmen"
     },
     "reports": {
       "title": "Meldungen",
       "subtitle": "Gemeldete Unternehmen und Bewertungen. Vorrangige Meldungen erscheinen zuerst.",
       "empty": "Keine Meldung entspricht diesen Filtern."
+    },
+    "claims": {
+      "title": "Unternehmensansprüche",
+      "subtitle": "Eigentumsansprüche, die auf Prüfung warten. Ausstehende Ansprüche erscheinen zuerst.",
+      "empty": "Kein Anspruch entspricht diesen Filtern.",
+      "forbidden": "Sie haben keinen Zugriff darauf.",
+      "loadError": "Ansprüche konnten nicht geladen werden.",
+      "actionError": "Etwas ist schiefgelaufen.",
+      "filters": {
+        "status": "Status",
+        "allStatuses": "Alle Status"
+      },
+      "status": {
+        "pending": "Ausstehend",
+        "approved": "Genehmigt",
+        "rejected": "Abgelehnt",
+        "auto_approved": "Automatisch genehmigt"
+      },
+      "method": {
+        "email_match": "E-Mail-Übereinstimmung",
+        "admin_review": "Prüfung durch Administrator"
+      },
+      "table": {
+        "business": "Unternehmen",
+        "claimant": "Antragsteller",
+        "method": "Methode",
+        "status": "Status",
+        "submitted": "Eingereicht"
+      },
+      "detail": {
+        "claimant": "Antragsteller",
+        "message": "Nachricht des Antragstellers",
+        "noMessage": "Keine Nachricht angegeben.",
+        "proof": "Nachweis",
+        "proofAlt": "Nachweis {index}",
+        "noProof": "Kein Nachweis eingereicht.",
+        "viewPublic": "Öffentliche Seite ansehen",
+        "review": "Prüfung",
+        "reviewer": "Geprüft von",
+        "noReviewNote": "Keine Notiz hinterlassen.",
+        "noteLabel": "Interne Notiz (optional)",
+        "notePlaceholder": "Nur für Moderatoren sichtbar."
+      },
+      "actions": {
+        "approve": "Anspruch genehmigen",
+        "reject": "Anspruch ablehnen"
+      },
+      "toast": {
+        "approve": "Anspruch genehmigt.",
+        "reject": "Anspruch abgelehnt."
+      },
+      "pagination": {
+        "page": "Seite {page} von {total}",
+        "previous": "Zurück",
+        "next": "Weiter"
+      }
     },
     "filters": {
       "status": "Status",
@@ -1129,5 +1186,19 @@
   },
   "session": {
     "accountFallback": "Ihre vorherige Sitzung ist beendet – Sie sind jetzt als {account} angemeldet."
+  },
+  "businessClaim": {
+    "cta": "Dieses Unternehmen beanspruchen",
+    "signInPrompt": "Melden Sie sich an, um ein Unternehmen zu beanspruchen.",
+    "title": "Dieses Unternehmen beanspruchen",
+    "description": "Sagen Sie uns, dass Sie der Inhaber sind. Wenn die E-Mail-Adresse Ihres Kontos mit der für dieses Unternehmen angegebenen E-Mail-Adresse übereinstimmt, erhalten Sie sofort Zugriff – andernfalls prüft unser Team Ihre Anfrage.",
+    "messageLabel": "Nachricht (optional)",
+    "messagePlaceholder": "Wie stehen Sie mit diesem Unternehmen in Verbindung?",
+    "reviewNote": "Wir prüfen Ansprüche, die nicht automatisch verifiziert werden können.",
+    "cancel": "Abbrechen",
+    "submit": "Anspruch senden",
+    "submitted": "Ihr Anspruch wurde zur Prüfung eingereicht.",
+    "autoApproved": "Sie können dieses Unternehmen jetzt verwalten.",
+    "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut."
   }
 }
