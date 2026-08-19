@@ -436,10 +436,12 @@ export function BusinessDetail({
   basePath = "/api/businesses",
   // Where to go after a delete (the owner's list, or the admin directory).
   deletedRedirect = "/portal/businesses",
+  showBackLink = true,
 }: {
   slug: string;
   basePath?: string;
   deletedRedirect?: string;
+  showBackLink?: boolean;
 }) {
   const t = useTranslations("businesses.detail");
   const publish = useTranslations("businesses.publish");
@@ -791,7 +793,8 @@ export function BusinessDetail({
     });
   }
 
-  const backLink = (
+  // Suppressed in the admin editor, which supplies its own back link (to the admin directory).
+  const backLink = showBackLink ? (
     <Link
       href="/portal/businesses"
       className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-sm transition-colors"
@@ -799,7 +802,7 @@ export function BusinessDetail({
       <ArrowLeft className="size-4 rtl:rotate-180" />
       {t("back")}
     </Link>
-  );
+  ) : null;
 
   if (missing) {
     return (

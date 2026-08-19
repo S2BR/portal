@@ -234,6 +234,7 @@ export function AdminBusinessEditor({ id }: { id: string }) {
             slug={id}
             basePath="/api/admin/businesses"
             deletedRedirect="/portal/admin/businesses"
+            showBackLink={false}
           />
         </>
       )}
