@@ -3,6 +3,8 @@ import { describe, expect, it } from "vitest";
 import en from "@/messages/en.json";
 import es from "@/messages/es.json";
 import frCA from "@/messages/fr-CA.json";
+// Aliased: a bare `it` would shadow vitest's `it()` test function.
+import itIT from "@/messages/it.json";
 import ja from "@/messages/ja.json";
 import ptBR from "@/messages/pt-BR.json";
 
@@ -25,6 +27,7 @@ const catalogs: Record<string, Messages> = {
   "fr-CA": frCA,
   "pt-BR": ptBR,
   ja,
+  it: itIT,
 };
 
 describe("i18n message catalogs", () => {

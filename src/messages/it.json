@@ -1,0 +1,1133 @@
+{
+  "moderation": {
+    "report": {
+      "title": "Segnala",
+      "subtitle": "Dicci cosa non va. La tua segnalazione è riservata.",
+      "reasonLabel": "Perché lo segnali?",
+      "reasonPlaceholder": "Seleziona un motivo",
+      "reasonSearchPlaceholder": "Cerca motivi…",
+      "reasonNoMatch": "Nessun risultato.",
+      "detailsLabel": "Più contesto (facoltativo)",
+      "detailsPlaceholder": "Aggiungi qualsiasi dettaglio che ci aiuti a esaminarlo.",
+      "submit": "Invia segnalazione",
+      "cancel": "Annulla",
+      "success": "Grazie, la esamineremo.",
+      "error": "Qualcosa è andato storto.",
+      "signInPrompt": "Accedi per segnalare.",
+      "trigger": "Segnala",
+      "reportBusiness": "Segnala questa attività"
+    },
+    "reasons": {
+      "spam": "Spam",
+      "harassment": "Molestie o bullismo",
+      "hate_speech": "Incitamento all'odio",
+      "violence": "Violenza o minacce",
+      "sexual_content": "Contenuto sessuale o esplicito",
+      "child_sexual_abuse": "Abuso sessuale su minori",
+      "illegal": "Beni illegali o regolamentati",
+      "misinformation": "Disinformazione",
+      "impersonation": "Furto d'identità",
+      "privacy": "Violazione della privacy",
+      "other": "Altro"
+    }
+  },
+  "serviceUnavailable": {
+    "title": "Qualcosa è andato storto",
+    "body": "Stiamo avendo difficoltà a raggiungere il servizio. Continueremo a riprovare automaticamente.",
+    "attempt": "Tentativo {current} di {total}",
+    "retryingIn": "nuovo tentativo tra {when}",
+    "retry": "Riprova"
+  },
+  "rateLimit": {
+    "title": "Troppe richieste",
+    "body": "Nuovo tentativo tra {seconds} s…",
+    "retrying": "Nuovo tentativo…",
+    "actionCountdown": "Riprova tra {seconds} s",
+    "ready": "Ora puoi riprovare"
+  },
+  "brand": {
+    "name": "S2BR"
+  },
+  "auth": {
+    "tagline": "Pensato per titolari di attività e responsabili di comunità.",
+    "taglineSub": "Gestisci la tua presenza, la tua comunità e il tuo team — tutto in un unico posto.",
+    "signIn": {
+      "title": "Accedi",
+      "subtitle": "Accedi al tuo account S2BR."
+    },
+    "register": {
+      "title": "Crea il tuo account",
+      "subtitle": "Unisciti a S2BR.",
+      "submit": "Crea account",
+      "acceptTerms": "Accetto i <terms>Termini di Servizio</terms> e l'<privacy>Informativa sulla Privacy</privacy>."
+    },
+    "verify": {
+      "title": "Verifica la tua email",
+      "subtitle": "Inserisci il codice che abbiamo inviato a {email}.",
+      "submit": "Verifica email",
+      "resend": "Invia di nuovo il codice",
+      "resent": "Un nuovo codice è in arrivo."
+    },
+    "forgot": {
+      "title": "Reimposta la tua password",
+      "subtitle": "Inserisci la tua email e ti invieremo un codice di reimpostazione.",
+      "submit": "Invia il codice",
+      "resetTitle": "Imposta una nuova password",
+      "resetSubtitle": "Inserisci il codice che abbiamo inviato a {email} e scegli una nuova password.",
+      "resetSubmit": "Reimposta la password"
+    },
+    "fields": {
+      "name": "Nome completo",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Conferma password",
+      "code": "Codice di verifica"
+    },
+    "showPassword": "Mostra password",
+    "hidePassword": "Nascondi password",
+    "login": {
+      "submit": "Accedi",
+      "otpTitle": "Controlla la tua email",
+      "otpSubtitle": "Abbiamo inviato un codice di verifica a {email}.",
+      "otpSubmit": "Verifica",
+      "twoFactorTitle": "Autenticazione a due fattori",
+      "twoFactorSubtitle": "Inserisci il codice dalla tua app di autenticazione.",
+      "back": "Torna all'accesso"
+    },
+    "links": {
+      "noAccount": "Non hai un account?",
+      "createAccount": "Creane uno",
+      "haveAccount": "Hai già un account?",
+      "signIn": "Accedi",
+      "forgotPassword": "Hai dimenticato la password?"
+    },
+    "errors": {
+      "name": "Inserisci il tuo nome.",
+      "email": "Inserisci un indirizzo email valido.",
+      "password": "Inserisci la tua password.",
+      "code": "Inserisci il codice di verifica.",
+      "passwordPolicy": "La tua password non soddisfa i requisiti.",
+      "passwordMismatch": "Le password non corrispondono.",
+      "rateLimited": "Troppi tentativi. Attendi un momento e riprova.",
+      "generic": "Qualcosa è andato storto. Riprova.",
+      "acceptTerms": "Accetta i termini per continuare."
+    },
+    "captchaUnsupported": "La verifica non è disponibile al momento. Riprova più tardi.",
+    "passkey": {
+      "or": "oppure",
+      "signIn": "Accedi con una passkey",
+      "signInError": "Non siamo riusciti a farti accedere con una passkey. Riprova."
+    },
+    "passwordRules": {
+      "title": "La password deve includere:",
+      "length": "Almeno {min} caratteri",
+      "mixedCase": "Lettere maiuscole e minuscole",
+      "number": "Un numero",
+      "symbol": "Un simbolo"
+    },
+    "emailCode": {
+      "button": "Accedi con un codice via email",
+      "requestTitle": "Accedi via email",
+      "requestSubtitle": "Ti invieremo un codice di accesso monouso via email.",
+      "sendButton": "Inviami un codice",
+      "verifyTitle": "Inserisci il tuo codice",
+      "verifySubtitle": "Abbiamo inviato un codice di accesso a {email}.",
+      "twoFactorLabel": "Codice dell'autenticatore",
+      "verifyButton": "Accedi",
+      "resend": "Invia un nuovo codice",
+      "back": "Indietro",
+      "twoFactorTitle": "Inserisci il codice del tuo autenticatore",
+      "twoFactorSubtitle": "Il tuo account ha l'autenticazione a due fattori. Inserisci il codice attuale dalla tua app di autenticazione.",
+      "resendIn": "Invia un nuovo codice tra {seconds}s",
+      "sendLinkButton": "Inviami un link di accesso",
+      "linkSentTitle": "Controlla la tua email",
+      "linkSentSubtitle": "Abbiamo inviato un link di accesso a {email}. Aprilo su questo dispositivo per continuare."
+    },
+    "magicLink": {
+      "verifying": "Accesso in corso…",
+      "invalidTitle": "Questo link di accesso non ha funzionato",
+      "invalidSubtitle": "Potrebbe essere scaduto o già stato usato. Richiedine uno nuovo per accedere.",
+      "backToLogin": "Torna all'accesso"
+    },
+    "goBack": "Torna indietro"
+  },
+  "legal": {
+    "terms": "Termini di Servizio",
+    "privacy": "Informativa sulla Privacy",
+    "backToApp": "Torna a S2BR",
+    "fallbackNotice": "Questo documento è attualmente disponibile solo in inglese."
+  },
+  "dashboard": {
+    "greeting": {
+      "morning": "Buongiorno, {name}",
+      "afternoon": "Buon pomeriggio, {name}",
+      "evening": "Buonasera, {name}"
+    },
+    "subtitle": "Ecco una rapida panoramica del tuo account.",
+    "setup": {
+      "title": "Completa la configurazione del tuo account",
+      "progress": "{done} di {total} completati",
+      "avatar": "Aggiungi una foto profilo",
+      "twoFactor": "Attiva l'autenticazione a due fattori",
+      "passkey": "Aggiungi una passkey",
+      "action": "Configura",
+      "doneTitle": "Tutto pronto",
+      "doneSubtitle": "Il tuo account è completamente configurato — ottimo lavoro."
+    },
+    "status": {
+      "twoFactor": "Due fattori",
+      "on": "Attivo",
+      "off": "Disattivo",
+      "passkeys": "Passkey",
+      "sessions": "Sessioni attive",
+      "memberSince": "Membro dal"
+    },
+    "modules": {
+      "title": "Prossimamente",
+      "subtitle": "Nuovi spazi sono in arrivo.",
+      "business": "Attività",
+      "businessDesc": "Gestisci il profilo della tua attività, le inserzioni e il tuo team.",
+      "community": "Comunità",
+      "communityDesc": "Connettiti con responsabili e membri vicino a te.",
+      "soon": "Presto"
+    }
+  },
+  "nav": {
+    "signOut": "Esci",
+    "settings": "Impostazioni",
+    "addAccount": "Aggiungi un altro account",
+    "signOutAll": "Esci da tutti gli account",
+    "portal": "Portale",
+    "businesses": "Attività",
+    "admin": "Amministrazione"
+  },
+  "profile": {
+    "title": "Profilo",
+    "email": "Email",
+    "emailVerified": "Email verificata",
+    "emailNotVerified": "Email non verificata",
+    "twoFactorOn": "Due fattori attivo",
+    "twoFactorOff": "Due fattori disattivo",
+    "memberSince": "Membro dal {date}",
+    "settingsTitle": "Impostazioni",
+    "settingsDescription": "Gestisci le impostazioni e le preferenze del tuo account.",
+    "nav": {
+      "profile": "Profilo",
+      "layout": "Layout",
+      "account": "Account",
+      "security": "Sicurezza",
+      "sessions": "Sessioni",
+      "danger": "Zona pericolosa"
+    }
+  },
+  "avatarSettings": {
+    "title": "Foto profilo",
+    "hint": "Una foto aiuta le persone a riconoscere il tuo account.",
+    "upload": "Carica una foto",
+    "replace": "Sostituisci",
+    "remove": "Rimuovi",
+    "dropHint": "o trascina qui un'immagine",
+    "constraints": "JPEG, PNG o WebP · fino a {max}",
+    "saving": "Salvataggio…",
+    "cropTitle": "Ritaglia la tua foto",
+    "cropHint": "Trascina per riposizionare e ridimensionare il cerchio.",
+    "cropCancel": "Annulla",
+    "cropConfirm": "Usa questa",
+    "savedToast": "Foto profilo aggiornata",
+    "removedToast": "Foto profilo rimossa",
+    "undo": "Annulla",
+    "uploading": "Caricamento… {percent}%",
+    "tooLarge": "Questa immagine è troppo grande (max 2 MB).",
+    "invalidType": "Scegli un'immagine JPEG, PNG o WebP.",
+    "error": "Caricamento non riuscito. Riprova."
+  },
+  "profileSettings": {
+    "title": "Dettagli del profilo",
+    "subtitle": "Il tuo nome, la data di nascita e le preferenze.",
+    "edit": "Modifica",
+    "save": "Salva modifiche",
+    "cancel": "Annulla",
+    "timezone": "Fuso orario",
+    "deviceDefault": "Predefinito del dispositivo",
+    "searchTimezone": "Cerca fusi orari…",
+    "noTimezone": "Nessun fuso orario trovato.",
+    "dateOfBirth": "Data di nascita",
+    "addDateOfBirth": "Aggiungi la tua data di nascita",
+    "born": "Nato il <b>{date}</b>",
+    "remove": "Rimuovi",
+    "clear": "Cancella",
+    "dobHint": "Devi avere almeno 13 anni. Solo tu puoi vederlo.",
+    "dobYear": "Anno",
+    "dobMonth": "Mese",
+    "dobDay": "Giorno",
+    "memberSince": "Membro dal",
+    "gender": "Genere",
+    "addGender": "Aggiungi il tuo genere",
+    "selectGender": "Seleziona…",
+    "genderHint": "Facoltativo. Solo tu puoi vederlo.",
+    "genders": {
+      "male": "Uomo",
+      "female": "Donna",
+      "non_binary": "Non binario",
+      "prefer_not_to_say": "Preferisco non dirlo"
+    },
+    "distanceUnit": "Unità di distanza",
+    "distanceUnitHint": "Come vengono mostrate le distanze (come \"vicino a me\") su tutta la piattaforma.",
+    "distanceUnits": {
+      "km": "Chilometri",
+      "mi": "Miglia"
+    },
+    "language": "Lingua",
+    "languageHint": "La tua lingua per l'interfaccia e le email che ti inviamo."
+  },
+  "sessions": {
+    "title": "Sessioni attive",
+    "empty": "Nessuna sessione attiva.",
+    "current": "Questo dispositivo",
+    "unknownDevice": "Dispositivo sconosciuto",
+    "unknownIp": "Posizione sconosciuta",
+    "lastActive": "Ultima attività {when}",
+    "signOut": "Esci",
+    "signOutOthers": "Esci da tutti gli altri dispositivi",
+    "error": "Qualcosa è andato storto. Riprova.",
+    "revoked": "Sessione chiusa su quel dispositivo",
+    "revokedOthers": "Sessione chiusa sugli altri dispositivi"
+  },
+  "twoFactor": {
+    "title": "Autenticazione a due fattori",
+    "description": "Aggiungi un secondo passaggio di accesso con un'app di autenticazione.",
+    "statusOn": "Attivata",
+    "statusOff": "Disattivata",
+    "enable": "Attiva",
+    "disable": "Disattiva",
+    "scan": "Scansiona questo codice QR con la tua app di autenticazione.",
+    "orEnter": "Oppure inserisci questa chiave manualmente:",
+    "confirm": "Conferma",
+    "cancel": "Annulla",
+    "recoveryTitle": "Salva i tuoi codici di recupero",
+    "recoverySubtitle": "Conservali in un luogo sicuro. Ognuno può essere usato una volta se perdi il tuo autenticatore.",
+    "done": "Li ho salvati",
+    "disablePrompt": "Inserisci la tua password per disattivare l'autenticazione a due fattori.",
+    "regenerate": "Rigenera i codici di recupero",
+    "regeneratePrompt": "Inserisci la tua password per generare un nuovo insieme di codici di recupero. I tuoi codici attuali smetteranno di funzionare.",
+    "enabledToast": "L'autenticazione a due fattori è attiva",
+    "disabledToast": "L'autenticazione a due fattori è disattivata",
+    "codesRegenerated": "Nuovi codici di recupero generati"
+  },
+  "emailSettings": {
+    "title": "Indirizzo email",
+    "hint": "L'email che usi per accedere e ricevere notifiche.",
+    "change": "Cambia email",
+    "newEmail": "Nuova email",
+    "submit": "Invia codice di verifica",
+    "verifyTitle": "Verifica la tua nuova email",
+    "verifySubtitle": "Inserisci il codice che abbiamo inviato a {email}.",
+    "verifySubmit": "Conferma",
+    "cancel": "Annulla"
+  },
+  "passwordSettings": {
+    "title": "Password",
+    "hint": "Cambia la password del tuo account.",
+    "change": "Cambia password",
+    "currentPassword": "Password attuale",
+    "newPassword": "Nuova password",
+    "submit": "Aggiorna password",
+    "cancel": "Annulla",
+    "success": "Password aggiornata. Le sessioni sugli altri dispositivi sono state chiuse."
+  },
+  "passkeys": {
+    "title": "Passkey",
+    "description": "Accedi senza password usando la biometria o il PIN del tuo dispositivo.",
+    "add": "Aggiungi una passkey",
+    "remove": "Rimuovi",
+    "cancel": "Annulla",
+    "empty": "Non hai ancora aggiunto nessuna passkey.",
+    "unsupported": "Questo browser non supporta le passkey.",
+    "defaultName": "La mia passkey",
+    "addError": "Non siamo riusciti ad aggiungere quella passkey. Riprova.",
+    "addedToast": "Passkey aggiunta",
+    "removedToast": "Passkey rimossa",
+    "nameLabel": "Nome",
+    "namePlaceholder": "es. Il mio laptop",
+    "lastUsed": "Ultimo utilizzo il {date}",
+    "neverUsed": "Mai usata",
+    "removePrompt": "Inserisci la tua password per rimuovere questa passkey."
+  },
+  "deleteAccount": {
+    "title": "Elimina account",
+    "description": "Chiudi definitivamente il tuo account. Verrai disconnesso da ogni dispositivo.",
+    "retentionNotice": "Per motivi di conformità, il tuo account viene disattivato subito ed eliminato definitivamente {days} giorni dopo.",
+    "delete": "Elimina account",
+    "confirm": "Elimina il mio account",
+    "cancel": "Annulla"
+  },
+  "theme": {
+    "label": "Tema",
+    "light": "Chiaro",
+    "dark": "Scuro",
+    "system": "Sistema"
+  },
+  "layoutSettings": {
+    "theme": {
+      "title": "Tema",
+      "description": "Scegli l'aspetto dell'interfaccia."
+    },
+    "direction": {
+      "title": "Direzione",
+      "description": "Imposta come scorre il layout nella pagina.",
+      "ltr": "Da sinistra a destra",
+      "rtl": "Da destra a sinistra"
+    },
+    "language": {
+      "title": "Lingua",
+      "description": "Scegli la lingua dell'interfaccia."
+    }
+  },
+  "locale": {
+    "label": "Lingua"
+  },
+  "verify": {
+    "title": "Conferma che sei tu",
+    "description": "Verifica la tua identità per continuare.",
+    "usePasskey": "Usa una passkey",
+    "or": "oppure",
+    "confirm": "Conferma",
+    "cancel": "Annulla",
+    "passkeyError": "Non siamo riusciti a verificare la tua passkey. Riprova."
+  },
+  "consent": {
+    "message": "Usiamo cookie analitici per vedere quali pagine sono più utili. Nessuna pubblicità, e non vendiamo mai i tuoi dati.",
+    "learnMore": "Informativa sulla Privacy",
+    "accept": "Accetta",
+    "decline": "Rifiuta"
+  },
+  "marketing": {
+    "nav": {
+      "login": "Accedi"
+    },
+    "hero": {
+      "title": "Uniamo le comunità.",
+      "subtitle": "La tua comunità brasiliana, ovunque la vita ti porti. Esplora negozi, gastronomia, eventi e servizi nelle vicinanze — pensato per i brasiliani in tutto il mondo.",
+      "ctaPrimary": "Inizia",
+      "ctaSecondary": "Accedi",
+      "caption": "Brasiliani in tutto il mondo, connessi tramite S2BR",
+      "launchPrefix": "Lancio il",
+      "launchDate": "7 settembre 2026"
+    },
+    "notify": {
+      "open": "Avvisami al lancio",
+      "title": "Ricevi un avviso al lancio",
+      "description": "Lascia il tuo nome e la tua email — ti avviseremo appena S2BR sarà online.",
+      "name": "Il tuo nome",
+      "email": "Indirizzo email",
+      "submit": "Avvisami",
+      "success": "Sei nella lista! Ti invieremo un'email quando S2BR verrà lanciato.",
+      "errors": {
+        "name": "Inserisci il tuo nome.",
+        "email": "Inserisci un indirizzo email valido.",
+        "captcha": "Completa il captcha.",
+        "rateLimited": "Troppi tentativi. Riprova tra un momento.",
+        "generic": "Qualcosa è andato storto. Riprova."
+      }
+    },
+    "features": {
+      "stores": "Negozi",
+      "food": "Gastronomia",
+      "events": "Eventi",
+      "services": "Servizi"
+    },
+    "footer": {
+      "products": "Prodotti",
+      "services": "Servizi",
+      "news": "Notizie",
+      "events": "Eventi",
+      "social": "Social",
+      "rights": "© {year} S2BR"
+    }
+  },
+  "social": {
+    "comingTitle": "Il tuo feed arriverà presto",
+    "comingSubtitle": "Qui vedrai cosa succede intorno a te e nelle tue comunità. Lo stiamo costruendo — torna presto.",
+    "getStartedTitle": "Inizia",
+    "getStartedSubtitle": "Aggiungi il tuo mondo a S2BR — comincia dalla tua attività. Eventi, servizi e altro sono in arrivo."
+  },
+  "create": {
+    "business": {
+      "title": "Crea un'attività",
+      "subtitle": "Inserisci la tua azienda così la tua comunità potrà trovarla."
+    }
+  },
+  "businessNew": {
+    "subtitle": "Comincia dalle basi — potrai aggiungere dettagli come indirizzo, orari e descrizione più avanti.",
+    "nameLabel": "Nome dell'attività",
+    "namePlaceholder": "es. Acme Roasters",
+    "typeLabel": "Che tipo di attività è?",
+    "moreInfo": "Maggiori informazioni",
+    "types": {
+      "company": {
+        "title": "Azienda",
+        "description": "Un'impresa o organizzazione registrata.",
+        "info": "Un'organizzazione che fornisce beni o servizi, in genere con più dipendenti e una struttura formale."
+      },
+      "selfEmployed": {
+        "title": "Libero professionista",
+        "description": "Lavori per conto tuo — freelance, autonomo, indipendente.",
+        "info": "Un individuo o professionista che lavora per conto proprio e non è impiegato da un'azienda, spesso offrendo servizi specializzati o lavoro freelance."
+      }
+    },
+    "submit": "Crea attività",
+    "submitting": "Creazione…",
+    "createdToast": "Attività creata.",
+    "errorNameRequired": "Inserisci il nome dell'attività.",
+    "errorPhoneCountry": "Scegli un paese per ogni numero di telefono.",
+    "errorTypeRequired": "Scegli un tipo di attività.",
+    "errorGeneric": "Qualcosa è andato storto. Riprova."
+  },
+  "businesses": {
+    "title": "Le mie attività",
+    "subtitle": "Le attività che gestisci. Selezionane una per vederla o modificarla.",
+    "reorder": "Riordina",
+    "reorderError": "Non è stato possibile salvare il nuovo ordine. Riprova.",
+    "empty": "Non hai ancora aggiunto nessuna attività.",
+    "createFirst": "Crea la tua prima attività",
+    "createAnother": "Aggiungi attività",
+    "locked": {
+      "title": "Questa inserzione è bloccata",
+      "body": "Un operatore ha bloccato questa inserzione, quindi al momento non può essere modificata né mostrata pubblicamente. Per domande, contatta l'assistenza.",
+      "badge": "Bloccata"
+    },
+    "directory": {
+      "title": "Esplora le attività",
+      "subtitle": "Scopri le attività della comunità.",
+      "searchPlaceholder": "Cerca attività…",
+      "all": "Tutte",
+      "count": "{count, plural, one {# attività} other {# attività}}",
+      "emptyTitle": "Nessuna attività trovata",
+      "emptyBody": "Prova con un'altra ricerca o categoria.",
+      "pagination": "Paginazione",
+      "previous": "Precedente",
+      "next": "Successivo",
+      "pageOf": "Pagina {current} di {total}",
+      "mapLabel": "Mappa dei risultati",
+      "filters": "Filtri",
+      "clearFilters": "Cancella",
+      "expand": "Espandi",
+      "collapse": "Comprimi",
+      "facetCategory": "Categoria",
+      "facetAmenities": "Servizi",
+      "facetType": "Tipo",
+      "facetCity": "Città",
+      "showMore": "+ Mostra altro",
+      "showLess": "− Mostra meno",
+      "nearMe": "Vicino a me",
+      "nearYouExact": "Vicino a te",
+      "nearYouApprox": "Vicino a te (approssimativo)",
+      "turnOff": "Disattiva",
+      "distanceKm": "{km} km",
+      "distanceM": "{m} m",
+      "locating": "Localizzazione…",
+      "locationBlocked": "Posizione non disponibile — controlla l'autorizzazione alla posizione del browser.",
+      "within": "Fino a",
+      "anyDistance": "Qualsiasi",
+      "noneNearbyTitle": "Niente nelle vicinanze",
+      "noneNearbyBody": "Nessuna attività entro {distance} da te.",
+      "showAll": "Mostra tutte",
+      "openNow": "Aperto ora",
+      "distanceMi": "{mi} mi",
+      "distanceFt": "{ft} ft"
+    },
+    "public": {
+      "reviews": {
+        "readReviews": "Leggi le recensioni",
+        "beFirst": "Sii il primo a recensire questa attività",
+        "backToProfile": "Torna al profilo",
+        "leaveReview": "Lascia una recensione",
+        "allReviews": "Tutte le recensioni",
+        "sortLabel": "Ordina",
+        "showAll": "Mostra tutte",
+        "filterByStars": "Mostra solo le recensioni da {star} stelle",
+        "sort": {
+          "recent": "Più recenti",
+          "oldest": "Meno recenti",
+          "highest": "Voto più alto",
+          "lowest": "Voto più basso"
+        },
+        "title": "Recensioni",
+        "count": "{count, plural, one {# recensione} other {# recensioni}}",
+        "writeTitle": "Scrivi una recensione",
+        "yourReview": "La tua recensione",
+        "signInPrompt": "Accedi per lasciare una recensione.",
+        "placeholder": "Racconta la tua esperienza (facoltativo)",
+        "submit": "Pubblica recensione",
+        "update": "Aggiorna recensione",
+        "delete": "Elimina",
+        "loadMore": "Mostra altre recensioni",
+        "empty": "Ancora nessuna recensione — sii il primo.",
+        "ownerReply": "Risposta del titolare",
+        "report": "Segnala",
+        "reported": "Grazie, daremo un'occhiata.",
+        "ratingRequired": "Scegli una valutazione in stelle.",
+        "cannotReviewOwn": "Non puoi recensire la tua attività.",
+        "saved": "Recensione pubblicata",
+        "removed": "Recensione rimossa",
+        "error": "Qualcosa è andato storto.",
+        "stars": "{count, plural, one {# stella} other {# stelle}}"
+      },
+      "about": "Informazioni",
+      "amenities": "Servizi",
+      "photos": "Foto",
+      "closures": "Festività e orari speciali",
+      "hours": "Orari",
+      "location": "Posizione",
+      "contact": "Contatti",
+      "directions": "Indicazioni",
+      "call": "Chiama",
+      "website": "Sito web",
+      "share": "Condividi",
+      "linkCopied": "Link copiato",
+      "closed": "Chiuso",
+      "photoAlt": "{name} — foto {number}"
+    },
+    "publish": {
+      "checklistTitle": "Non ancora online",
+      "checklistBody": "Solo tu puoi vedere questa attività. Completa questi passaggi per pubblicarla:",
+      "progress": "{done} di {total} completati",
+      "readyTitle": "Pronta per la pubblicazione",
+      "readyBody": "Al momento solo tu puoi vedere questa attività. Pubblicala per farla apparire nella ricerca e sulla tua pagina pubblica.",
+      "cta": "Pubblica",
+      "disabledHint": "Completa la lista per pubblicare questa attività.",
+      "notReadyToast": "Questa attività non è ancora pronta per la pubblicazione — mancano alcuni dettagli.",
+      "requirements": {
+        "name": {
+          "label": "Dai un nome alla tua attività",
+          "hint": "Il nome che vedranno i clienti."
+        },
+        "description": {
+          "label": "Aggiungi una descrizione",
+          "hint": "Spiega cosa fa la tua attività."
+        },
+        "category": {
+          "label": "Scegli una categoria",
+          "hint": "Così i clienti possono trovarti."
+        },
+        "contactable": {
+          "label": "Aggiungi un modo per contattarti",
+          "hint": "Un indirizzo, un telefono, un'email o un sito web."
+        }
+      }
+    },
+    "detail": {
+      "back": "Torna alle mie attività",
+      "edit": "Modifica",
+      "delete": "Elimina",
+      "save": "Salva",
+      "saving": "Salvataggio…",
+      "cancel": "Annulla",
+      "savedToast": "Modifiche salvate.",
+      "unsavedChanges": "Modifiche non salvate",
+      "leaveConfirm": "Hai modifiche non salvate. Uscire senza salvare?",
+      "leaveTitle": "Ignorare le modifiche non salvate?",
+      "leaveBody": "Hai modifiche non salvate. Se esci ora, andranno perse.",
+      "leaveStay": "Continua a modificare",
+      "leaveDiscard": "Ignora le modifiche",
+      "deletedToast": "Attività eliminata.",
+      "notFound": "Questa attività non esiste, o non hai accesso ad essa.",
+      "created": "Aggiunta il {date}",
+      "deleteTitle": "Eliminare questa attività?",
+      "deleteBody": "Questo rimuove “{name}” dalle tue attività.",
+      "deleteConfirm": "Elimina attività",
+      "deleting": "Eliminazione…",
+      "sections": {
+        "basics": {
+          "title": "Informazioni di base",
+          "description": "Il tuo logo, il nome dell'attività, lo slogan e una breve descrizione."
+        },
+        "businessType": {
+          "title": "Tipo di attività",
+          "description": "Seleziona il tipo che descrive meglio la tua attività."
+        },
+        "categories": {
+          "title": "Categoria e sottocategoria",
+          "description": "Seleziona una o più categorie che si adattano meglio alla tua attività. Le sottocategorie saranno filtrate in base alla categoria selezionata."
+        },
+        "website": {
+          "title": "Sito web",
+          "description": "Fornisci le informazioni di contatto della tua attività. Questo aiuterà i clienti a raggiungerti facilmente."
+        },
+        "phone": {
+          "title": "Telefono",
+          "description": "Aggiungi uno o più numeri di telefono per la tua attività. I clienti possono usare questi numeri per contattarti direttamente. Puoi indicare un'etichetta per ogni numero (es. \"Linea principale\", \"Assistenza clienti\") per specificarne lo scopo."
+        },
+        "email": {
+          "title": "Email",
+          "description": "Aggiungi uno o più indirizzi email per la tua attività. I clienti possono usare queste email per contattarti direttamente. Puoi indicare un'etichetta per ogni email (es. \"Richieste generali\", \"Assistenza\") per specificarne lo scopo."
+        },
+        "amenities": {
+          "title": "Servizi",
+          "description": "Seleziona i servizi e le caratteristiche offerti dalla tua attività."
+        },
+        "address": {
+          "title": "Indirizzo dell'attività",
+          "description": "Inizia a digitare il tuo indirizzo nella casella di ricerca. Seleziona l'indirizzo corretto dal menu a discesa e gli altri campi si compileranno automaticamente con le informazioni corrette. Puoi apportare modifiche a qualsiasi campo se necessario."
+        },
+        "hours": {
+          "title": "Orari di apertura dell'attività",
+          "description": "Imposta gli orari di apertura della tua attività per ogni giorno della settimana. Puoi indicare più intervalli di orario per ogni giorno (es. 9:00 - 12:00, 13:00 - 17:00) per gestire pause o turni spezzati. Queste informazioni aiuteranno i clienti a sapere quando la tua attività è aperta."
+        },
+        "closures": {
+          "title": "Festività e orari speciali",
+          "description": "Segna i giorni in cui la tua attività è chiusa — o aperta con orari speciali — come festività, una chiusura occasionale o una mezza giornata. Scegli la data o le date sul calendario, dai loro un nome e segna quelle che si ripetono ogni anno."
+        },
+        "socials": {
+          "title": "Link ai social media",
+          "description": "Aggiungi i link ai tuoi profili sui social media. Questo aiuterà i clienti a trovarti e seguirti sui social."
+        },
+        "branding": {
+          "title": "Brand",
+          "description": "Carica un'immagine banner che rappresenti la tua attività. Verrà mostrata in evidenza sulla pagina della tua inserzione. Puoi anche scegliere un colore primario in linea con il tuo brand, che sarà usato per accenti ed evidenziazioni nella tua inserzione."
+        },
+        "images": {
+          "title": "Immagini",
+          "description": "Carica immagini aggiuntive per mettere in mostra la tua attività. Queste immagini appariranno in una galleria sulla pagina della tua inserzione, permettendoti di evidenziare i tuoi prodotti, servizi o ambienti. Consigliamo di usare immagini di alta qualità con proporzioni 16:9 per una resa ottimale."
+        }
+      },
+      "fields": {
+        "name": "Nome dell'attività",
+        "headline": "Titolo",
+        "description": "Descrizione",
+        "email": "Email",
+        "phone": "Telefono",
+        "website": "Sito web",
+        "line1": "Indirizzo",
+        "line2": "Indirizzo riga 2",
+        "city": "Città",
+        "region": "Regione o provincia",
+        "postalCode": "CAP",
+        "country": "Paese (codice di 2 lettere)",
+        "categorySuggestion": "Suggerimento di categoria",
+        "contactValue": "Valore",
+        "contactLabel": "Etichetta (facoltativo)",
+        "handle": "Nome utente o URL",
+        "color": "Colore principale",
+        "apartmentSuite": "Appartamento / interno",
+        "stateProvince": "Regione o provincia",
+        "latitude": "Latitudine",
+        "longitude": "Longitudine",
+        "location": "Posizione",
+        "notes": "Note",
+        "open": "Apre",
+        "close": "Chiude",
+        "categories": "Categorie"
+      },
+      "empty": {
+        "headline": "Ancora nessun titolo.",
+        "description": "Ancora nessuna descrizione.",
+        "contact": "Ancora nessun dato di contatto.",
+        "address": "Ancora nessun indirizzo.",
+        "hours": "Ancora nessun orario di apertura.",
+        "socials": "Ancora nessun social.",
+        "branding": "Ancora nessun colore del brand.",
+        "categories": "Ancora nessuna categoria scelta.",
+        "amenities": "Ancora nessun servizio selezionato.",
+        "closures": "Ancora nessuna data di chiusura."
+      },
+      "tabs": {
+        "general": "Generale",
+        "contact": "Contatti",
+        "address": "Indirizzo",
+        "hours": "Orari di apertura",
+        "socials": "Social",
+        "branding": "Brand",
+        "amenities": "Servizi"
+      },
+      "days": {
+        "monday": "Lunedì",
+        "tuesday": "Martedì",
+        "wednesday": "Mercoledì",
+        "thursday": "Giovedì",
+        "friday": "Venerdì",
+        "saturday": "Sabato",
+        "sunday": "Domenica"
+      },
+      "categoryHint": "Non trovi la tua categoria? Dicci quale si adatta e ci daremo un'occhiata.",
+      "categorySuggest": {
+        "trigger": "Non trovi la tua categoria?",
+        "helper": "Se non trovi una categoria adatta, descrivila e il nostro team la esaminerà e la aggiungerà quando opportuno.",
+        "label": "Il tuo suggerimento",
+        "prompt": "Es. \"Categoria: Caffetterie, Sottocategoria: Caffetterie vegane\"",
+        "submit": "Salva suggerimento",
+        "remove": "Rimuovi",
+        "successTitle": "Suggerimento salvato",
+        "successDescription": "Il nostro team lo esaminerà e aggiornerà la tua inserzione se opportuno."
+      },
+      "closedAllDay": "Chiuso",
+      "previousMonth": "Mese precedente",
+      "nextMonth": "Mese successivo",
+      "closuresHint": "Clicca su un giorno per chiuderlo, o su un giorno iniziale e uno finale per chiudere un intervallo.",
+      "cancelSelection": "Annulla",
+      "closureName": "Nome della chiusura",
+      "closureNamePlaceholder": "Nome (facoltativo) — es. Natale",
+      "repeatsYearly": "Si ripete ogni anno",
+      "everyYear": "Ogni anno",
+      "removeClosure": "Rimuovi data di chiusura",
+      "addClosedDate": "Aggiungi data",
+      "specialHours": "Apri con orari speciali",
+      "closuresGroupSingle": "Singole",
+      "closuresGroupRecurring": "Ricorrenti",
+      "timezoneLabel": "Fuso orario",
+      "timezoneHint": "Tutti gli orari qui sotto — settimanali e festivi — usano questo fuso. È preso dal tuo indirizzo principale.",
+      "timezonePlaceholder": "Seleziona un fuso orario",
+      "searchTimezone": "Cerca fusi orari…",
+      "noTimezone": "Nessun fuso orario trovato",
+      "timezoneReadout": "Orari mostrati nell'ora di {zone}.",
+      "published": "Pubblicata",
+      "draft": "Bozza",
+      "publishToggle": "Attiva o disattiva la pubblicazione di questa inserzione",
+      "publishedToast": "Inserzione pubblicata",
+      "unpublishedToast": "Inserzione ritirata",
+      "colorHint": "Il colore principale del tuo brand.",
+      "addSocial": "Aggiungi social",
+      "lookup": {
+        "placeholder": "Cerca un indirizzo…"
+      },
+      "mainAddress": "Indirizzo principale",
+      "reorder": "Riordina",
+      "makeMainQuestion": "Rendere questo l'indirizzo principale?",
+      "setAsMain": "Imposta come principale",
+      "linkedin": {
+        "person": "Sono un professionista",
+        "company": "Sono un'azienda"
+      },
+      "addAddress": "Aggiungi indirizzo",
+      "newAddress": "Nuovo indirizzo",
+      "addressNoteTitle": "Perché è richiesto il mio indirizzo?",
+      "addressNoteBody": "Anche se la tua attività opera da remoto o non ha una sede fisica, il tuo indirizzo è necessario per essere aggiunto all'inserzione corretta e assicurare che la tua attività appaia nei risultati di ricerca pertinenti. Se non hai un indirizzo fisico, puoi usare il tuo indirizzo di casa o un punto di riferimento vicino. Puoi anche scegliere di nascondere il tuo indirizzo dall'inserzione pubblica, se preferisci.",
+      "hideAddress": "Nascondi il mio indirizzo dall'inserzione pubblica",
+      "hideAddressHint": "Rimane registrato per l'inserzione e la ricerca corrette, ma non sarà mostrato pubblicamente.",
+      "addressHidden": "Nascosto",
+      "locationHint": "Trascina il segnaposto o tocca la mappa per correggere il punto esatto.",
+      "locationEmpty": "Scegli un indirizzo qui sopra per posizionarlo sulla mappa.",
+      "openMap": "Ingrandisci la mappa",
+      "mapEditPin": "Regola il segnaposto",
+      "mapPreviewHint": "Sposta e ingrandisci per esplorare questa posizione.",
+      "removeAddress": "Rimuovi indirizzo",
+      "editAddress": "Modifica indirizzo",
+      "collapseAddress": "Comprimi indirizzo",
+      "categoriesEmpty": "Ancora nessuna categoria disponibile.",
+      "clearSelection": "Cancella tutto",
+      "categoriesSelectedCount": "{count, plural, one {# selezionata} other {# selezionate}}",
+      "searchAmenities": "Cerca servizi…",
+      "amenitiesEmpty": "Nessun servizio corrisponde — scegli una categoria per vederne altri.",
+      "media": {
+        "logoTitle": "Logo",
+        "cropTitle": "Ritaglia il tuo logo",
+        "cropHint": "Posiziona e ridimensiona il quadrato sul tuo logo.",
+        "cropCancel": "Annulla",
+        "cropConfirm": "Usa questo",
+        "logoHint": "Un'immagine quadrata funziona meglio",
+        "bannerTitle": "Banner",
+        "bannerHint": "Un'immagine di copertina ampia per la tua pagina",
+        "repositionHint": "Trascina per riposizionare",
+        "reposition": "Riposiziona",
+        "done": "Fatto",
+        "resetFocal": "Rimetti al centro",
+        "galleryTitle": "Galleria",
+        "galleryHint": "Mostra il tuo spazio, i prodotti o il team",
+        "upload": "Carica",
+        "replace": "Sostituisci",
+        "remove": "Rimuovi",
+        "addImages": "Aggiungi immagini",
+        "uploading": "Caricamento… {percent}%",
+        "finalizing": "Finalizzazione…",
+        "constraints": "JPG, PNG o WebP · fino a {max}",
+        "tooLarge": "Questa immagine è troppo grande",
+        "invalidType": "Scegli un'immagine JPG, PNG o WebP",
+        "savedToast": "Immagine aggiornata",
+        "removedToast": "Immagine rimossa",
+        "error": "Qualcosa è andato storto. Riprova"
+      },
+      "loadError": "Non è stato possibile caricare questa attività. Riprova.",
+      "retry": "Riprova",
+      "addTime": "Aggiungi orario",
+      "removeTime": "Rimuovi orario",
+      "unavailable": "Non disponibile",
+      "copyTo": "Copia in…",
+      "everyDay": "Tutti i giorni",
+      "apply": "Applica",
+      "phone": {
+        "country": "Paese",
+        "countrySearch": "Cerca paesi…",
+        "countryEmpty": "Nessun paese trovato",
+        "number": "Numero di telefono"
+      },
+      "addWebsite": "Aggiungi sito web",
+      "addPhone": "Aggiungi telefono",
+      "addEmail": "Aggiungi email"
+    },
+    "workspace": {
+      "reviews": {
+        "title": "Recensioni",
+        "subtitle": "Tutto ciò che dicono della tua attività — puoi rispondere a ognuna.",
+        "empty": "Ancora nessuna recensione. Appariranno qui man mano che i clienti le lasciano.",
+        "hidden": "Nascosta",
+        "reports": "{count, plural, one {# segnalazione} other {# segnalazioni}}",
+        "reply": "Rispondi",
+        "editReply": "Modifica",
+        "removeReply": "Rimuovi",
+        "replyPlaceholder": "Scrivi una risposta pubblica…",
+        "save": "Salva risposta",
+        "cancel": "Annulla",
+        "yourReply": "La tua risposta",
+        "saved": "Risposta salvata",
+        "removed": "Risposta rimossa",
+        "error": "Qualcosa è andato storto.",
+        "loadMore": "Mostra altre"
+      },
+      "create": "Crea nuova azienda",
+      "nav": {
+        "reviews": "Recensioni",
+        "dashboard": "Dashboard",
+        "information": "Informazioni sull'azienda",
+        "products": "Prodotti",
+        "services": "Servizi"
+      },
+      "groups": {
+        "manage": "Gestione",
+        "offerings": "Offerte"
+      },
+      "comingSoon": {
+        "subtitle": "Questa sezione arriverà presto."
+      },
+      "dashboard": {
+        "subtitle": "Gestisci tutto ciò che riguarda la tua azienda qui.",
+        "soon": "Presto",
+        "yourCompany": "la tua azienda",
+        "insights": {
+          "title": "Le statistiche sono in arrivo",
+          "body": "Presto vedrai come le persone scoprono e interagiscono con {name} — visualizzazioni del profilo, preferiti, recensioni e altro."
+        },
+        "stats": {
+          "views": "Visualizzazioni del profilo",
+          "favorites": "Preferiti",
+          "reviews": "Recensioni",
+          "rating": "Valutazione"
+        },
+        "chart": {
+          "title": "Visualizzazioni del profilo",
+          "period": "Ultimi 30 giorni"
+        }
+      },
+      "searchPlaceholder": "Cerca aziende…",
+      "noResults": "Nessuna azienda trovata",
+      "openMenu": "Apri il menu dell'azienda",
+      "menuTitle": "Menu dell'azienda"
+    }
+  },
+  "admin": {
+    "title": "Amministrazione",
+    "nav": {
+      "reports": "Segnalazioni",
+      "businesses": "Attività"
+    },
+    "reports": {
+      "title": "Segnalazioni",
+      "subtitle": "Attività e recensioni segnalate. Le segnalazioni prioritarie appaiono per prime.",
+      "empty": "Nessuna segnalazione corrisponde a questi filtri."
+    },
+    "filters": {
+      "status": "Stato",
+      "reason": "Motivo",
+      "type": "Tipo",
+      "allStatuses": "Tutti gli stati",
+      "allReasons": "Tutti i motivi",
+      "allTypes": "Tutti i tipi"
+    },
+    "status": {
+      "open": "Aperta",
+      "reviewing": "In esame",
+      "resolved": "Risolta",
+      "dismissed": "Respinta"
+    },
+    "targets": {
+      "business": "Attività",
+      "review": "Recensione",
+      "deleted": "Elemento eliminato"
+    },
+    "priority": "Prioritaria",
+    "table": {
+      "target": "Elemento",
+      "reason": "Motivo",
+      "reporter": "Segnalante",
+      "reported": "Segnalata",
+      "status": "Stato",
+      "actions": "Azioni"
+    },
+    "actions": {
+      "hide": "Nascondi recensione",
+      "unhide": "Mostra recensione",
+      "lock": "Blocca attività",
+      "unlock": "Sblocca attività",
+      "resolve": "Risolvi segnalazione",
+      "dismiss": "Respingi segnalazione"
+    },
+    "confirm": {
+      "reasonLabel": "Motivo interno (facoltativo)",
+      "noteLabel": "Nota interna (facoltativa)",
+      "notePlaceholder": "Visibile solo ai moderatori.",
+      "cancel": "Annulla",
+      "hide": {
+        "title": "Nascondere questa recensione?",
+        "description": "Viene rimossa dalla vista pubblica e dalla valutazione dell'attività finché non viene mostrata di nuovo.",
+        "confirm": "Nascondi recensione"
+      },
+      "lock": {
+        "title": "Bloccare questa attività?",
+        "description": "Viene rimossa dalle inserzioni pubbliche e congelata per il suo titolare fino allo sblocco.",
+        "confirm": "Blocca attività"
+      },
+      "resolve": {
+        "title": "Risolvere questa segnalazione?",
+        "description": "Segnala come gestita — azione intrapresa.",
+        "confirm": "Risolvi"
+      },
+      "dismiss": {
+        "title": "Respingere questa segnalazione?",
+        "description": "Segnala come esaminata — nessuna azione necessaria.",
+        "confirm": "Respingi"
+      }
+    },
+    "toast": {
+      "hide": "Recensione nascosta.",
+      "unhide": "Recensione ripristinata.",
+      "lock": "Attività bloccata.",
+      "unlock": "Attività sbloccata.",
+      "resolve": "Segnalazione risolta.",
+      "dismiss": "Segnalazione respinta."
+    },
+    "pagination": {
+      "page": "Pagina {page} di {total}",
+      "previous": "Precedente",
+      "next": "Successiva"
+    },
+    "forbidden": "Non hai accesso a questo.",
+    "loadError": "Non è stato possibile caricare le segnalazioni.",
+    "actionError": "Qualcosa è andato storto.",
+    "detail": {
+      "reporterLabel": "Segnalata da",
+      "reporterMessage": "Messaggio del segnalante",
+      "noMessage": "Nessun messaggio fornito.",
+      "reportedResource": "Risorsa segnalata",
+      "viewPublic": "Vedi la pagina pubblica",
+      "resolution": "Risoluzione",
+      "resolvedAt": "Risolta",
+      "noResolutionNote": "Nessuna nota lasciata.",
+      "noteLabel": "Nota interna (facoltativa)"
+    },
+    "expired": {
+      "title": "Sessione di amministrazione scaduta",
+      "description": "Il tuo accesso amministrativo è scaduto per inattività. Rientra per continuare.",
+      "reenter": "Rientra come amministratore",
+      "back": "Torna alla dashboard"
+    },
+    "businesses": {
+      "title": "Attività",
+      "subtitle": "Tutte le attività della piattaforma. Cerca, filtra e aprine una per gestirla.",
+      "search": "Cerca",
+      "searchPlaceholder": "Cerca per nome…",
+      "empty": "Nessuna attività corrisponde a questi filtri.",
+      "unclaimed": "Non rivendicata",
+      "forbidden": "Non hai accesso a questo.",
+      "loadError": "Non è stato possibile caricare le attività.",
+      "filters": {
+        "status": "Stato",
+        "type": "Tipo",
+        "allStatuses": "Tutti gli stati",
+        "allTypes": "Tutti i tipi"
+      },
+      "status": {
+        "published": "Pubblicata",
+        "draft": "Bozza",
+        "locked": "Bloccata",
+        "unclaimed": "Non rivendicata",
+        "deleted": "Eliminata"
+      },
+      "types": {
+        "company": "Azienda",
+        "self_employed": "Libero professionista"
+      },
+      "table": {
+        "business": "Attività",
+        "owners": "Titolari",
+        "status": "Stato",
+        "created": "Creata"
+      },
+      "pagination": {
+        "page": "Pagina {page} di {total}",
+        "previous": "Precedente",
+        "next": "Successiva"
+      },
+      "editor": {
+        "back": "Torna alle attività",
+        "notFound": "Attività non trovata.",
+        "unclaimed": "Nessun titolare (non rivendicata).",
+        "owners": "Titolari",
+        "lockedReason": "Motivo del blocco",
+        "audit": "Audit",
+        "lock": "Blocca",
+        "unlock": "Sblocca",
+        "publish": "Forza pubblicazione",
+        "unpublish": "Ritira pubblicazione",
+        "restore": "Ripristina",
+        "deletedBanner": "Questa attività è eliminata. Ripristinala per modificarla.",
+        "forbidden": "Non hai accesso a questo.",
+        "actionError": "Qualcosa è andato storto.",
+        "toast": {
+          "lock": "Attività bloccata.",
+          "unlock": "Attività sbloccata.",
+          "publish": "Attività pubblicata.",
+          "unpublish": "Pubblicazione dell'attività ritirata.",
+          "restore": "Attività ripristinata."
+        },
+        "auditTitle": "Registro di audit",
+        "auditSubtitle": "Azioni dell'operatore su questa attività, dalle più recenti.",
+        "auditEmpty": "Ancora nessuna azione registrata.",
+        "actions": {
+          "business": {
+            "updated": "Modificata",
+            "locked": "Bloccata",
+            "unlocked": "Sbloccata",
+            "published": "Pubblicata",
+            "unpublished": "Pubblicazione ritirata",
+            "deleted": "Eliminata",
+            "restored": "Ripristinata",
+            "owner_added": "Titolare aggiunto",
+            "owner_removed": "Titolare rimosso",
+            "claimed": "Rivendicata"
+          }
+        }
+      },
+      "owners": {
+        "title": "Titolari",
+        "subtitle": "Account che possono gestire questa attività.",
+        "add": "Aggiungi titolare",
+        "searchPlaceholder": "Cerca per nome o email…",
+        "searchHint": "Digita per cercare gli utenti.",
+        "noResults": "Nessun utente corrispondente.",
+        "empty": "Ancora nessun titolare (non rivendicata).",
+        "added": "Titolare aggiunto.",
+        "removed": "Titolare rimosso.",
+        "remove": "Rimuovi titolare",
+        "forbidden": "Non hai accesso a questo.",
+        "error": "Qualcosa è andato storto."
+      },
+      "newButton": "Nuova attività",
+      "new": {
+        "title": "Nuova attività",
+        "subtitle": "Crea un'attività, poi compila i suoi dettagli e assegna un titolare dall'editor."
+      }
+    }
+  },
+  "session": {
+    "accountFallback": "La tua sessione precedente è terminata — ora hai effettuato l'accesso come {account}."
+  }
+}
