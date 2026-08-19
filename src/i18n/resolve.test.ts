@@ -22,7 +22,11 @@ describe("negotiateLocale", () => {
   });
 
   it("falls back to English for an unsupported language", () => {
-    expect(negotiateLocale("de-DE,ja;q=0.7")).toBe("en");
+    expect(negotiateLocale("de-DE,zh;q=0.7")).toBe("en");
+  });
+
+  it("matches Japanese when the browser prefers it", () => {
+    expect(negotiateLocale("de-DE,ja;q=0.7")).toBe("ja");
   });
 
   it("takes the first matching segment in the browser's order", () => {
