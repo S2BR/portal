@@ -915,7 +915,8 @@
   "admin": {
     "title": "Admin",
     "nav": {
-      "reports": "Reports"
+      "reports": "Reports",
+      "businesses": "Businesses"
     },
     "reports": {
       "title": "Reports",
@@ -1016,6 +1017,98 @@
       "description": "Your admin access timed out after inactivity. Re-enter to continue.",
       "reenter": "Re-enter admin",
       "back": "Back to dashboard"
+    },
+    "businesses": {
+      "title": "Businesses",
+      "subtitle": "Every business on the platform. Search, filter, and open one to manage it.",
+      "search": "Search",
+      "searchPlaceholder": "Search by name…",
+      "empty": "No businesses match these filters.",
+      "unclaimed": "Unclaimed",
+      "forbidden": "You don't have access to this.",
+      "loadError": "Couldn't load businesses.",
+      "filters": {
+        "status": "Status",
+        "type": "Type",
+        "allStatuses": "All statuses",
+        "allTypes": "All types"
+      },
+      "status": {
+        "published": "Published",
+        "draft": "Draft",
+        "locked": "Locked",
+        "unclaimed": "Unclaimed",
+        "deleted": "Deleted"
+      },
+      "types": {
+        "company": "Company",
+        "self_employed": "Self-employed"
+      },
+      "table": {
+        "business": "Business",
+        "owners": "Owners",
+        "status": "Status",
+        "created": "Created"
+      },
+      "pagination": {
+        "page": "Page {page} of {total}",
+        "previous": "Previous",
+        "next": "Next"
+      },
+      "editor": {
+        "back": "Back to businesses",
+        "notFound": "Business not found.",
+        "unclaimed": "No owner (unclaimed).",
+        "owners": "Owners",
+        "lockedReason": "Lock reason",
+        "audit": "Audit",
+        "lock": "Lock",
+        "unlock": "Unlock",
+        "publish": "Force publish",
+        "unpublish": "Unpublish",
+        "restore": "Restore",
+        "deletedBanner": "This business is deleted. Restore it to edit.",
+        "forbidden": "You don't have access to this.",
+        "actionError": "Something went wrong.",
+        "toast": {
+          "lock": "Business locked.",
+          "unlock": "Business unlocked.",
+          "publish": "Business published.",
+          "unpublish": "Business unpublished.",
+          "restore": "Business restored."
+        },
+        "auditTitle": "Audit trail",
+        "auditSubtitle": "Operator actions on this business, newest first.",
+        "auditEmpty": "No recorded actions yet.",
+        "actions": {
+          "business": {
+            "updated": "Edited",
+            "locked": "Locked",
+            "unlocked": "Unlocked",
+            "published": "Published",
+            "unpublished": "Unpublished",
+            "deleted": "Deleted",
+            "restored": "Restored",
+            "owner_added": "Owner added",
+            "owner_removed": "Owner removed",
+            "claimed": "Claimed"
+          }
+        }
+      },
+      "owners": {
+        "title": "Owners",
+        "subtitle": "Accounts that can manage this business.",
+        "add": "Add owner",
+        "searchPlaceholder": "Search by name or email…",
+        "searchHint": "Type to search users.",
+        "noResults": "No matching users.",
+        "empty": "No owners yet (unclaimed).",
+        "added": "Owner added.",
+        "removed": "Owner removed.",
+        "remove": "Remove owner",
+        "forbidden": "You don't have access to this.",
+        "error": "Something went wrong."
+      }
     }
   },
   "session": {

@@ -915,7 +915,8 @@
   "admin": {
     "title": "Administration",
     "nav": {
-      "reports": "Signalements"
+      "reports": "Signalements",
+      "businesses": "Entreprises"
     },
     "reports": {
       "title": "Signalements",
@@ -1016,6 +1017,98 @@
       "description": "Votre accès administrateur a expiré après inactivité. Ré-entrez pour continuer.",
       "reenter": "Ré-entrer",
       "back": "Retour au tableau de bord"
+    },
+    "businesses": {
+      "title": "Entreprises",
+      "subtitle": "Toutes les entreprises de la plateforme. Cherchez, filtrez et ouvrez-en une pour la gérer.",
+      "search": "Rechercher",
+      "searchPlaceholder": "Rechercher par nom…",
+      "empty": "Aucune entreprise ne correspond à ces filtres.",
+      "unclaimed": "Non réclamée",
+      "forbidden": "Vous n'avez pas accès à ceci.",
+      "loadError": "Impossible de charger les entreprises.",
+      "filters": {
+        "status": "Statut",
+        "type": "Type",
+        "allStatuses": "Tous les statuts",
+        "allTypes": "Tous les types"
+      },
+      "status": {
+        "published": "Publiée",
+        "draft": "Brouillon",
+        "locked": "Verrouillée",
+        "unclaimed": "Non réclamée",
+        "deleted": "Supprimée"
+      },
+      "types": {
+        "company": "Entreprise",
+        "self_employed": "Travailleur autonome"
+      },
+      "table": {
+        "business": "Entreprise",
+        "owners": "Propriétaires",
+        "status": "Statut",
+        "created": "Créée"
+      },
+      "pagination": {
+        "page": "Page {page} sur {total}",
+        "previous": "Précédent",
+        "next": "Suivant"
+      },
+      "editor": {
+        "back": "Retour aux entreprises",
+        "notFound": "Entreprise introuvable.",
+        "unclaimed": "Aucun propriétaire (non réclamée).",
+        "owners": "Propriétaires",
+        "lockedReason": "Motif du verrouillage",
+        "audit": "Audit",
+        "lock": "Verrouiller",
+        "unlock": "Déverrouiller",
+        "publish": "Forcer la publication",
+        "unpublish": "Dépublier",
+        "restore": "Restaurer",
+        "deletedBanner": "Cette entreprise est supprimée. Restaurez-la pour la modifier.",
+        "forbidden": "Vous n'avez pas accès à ceci.",
+        "actionError": "Une erreur s'est produite.",
+        "toast": {
+          "lock": "Entreprise verrouillée.",
+          "unlock": "Entreprise déverrouillée.",
+          "publish": "Entreprise publiée.",
+          "unpublish": "Entreprise dépubliée.",
+          "restore": "Entreprise restaurée."
+        },
+        "auditTitle": "Journal d'audit",
+        "auditSubtitle": "Actions de l'opérateur sur cette entreprise, plus récentes d'abord.",
+        "auditEmpty": "Aucune action enregistrée pour l'instant.",
+        "actions": {
+          "business": {
+            "updated": "Modifiée",
+            "locked": "Verrouillée",
+            "unlocked": "Déverrouillée",
+            "published": "Publiée",
+            "unpublished": "Dépubliée",
+            "deleted": "Supprimée",
+            "restored": "Restaurée",
+            "owner_added": "Propriétaire ajouté",
+            "owner_removed": "Propriétaire retiré",
+            "claimed": "Réclamée"
+          }
+        }
+      },
+      "owners": {
+        "title": "Propriétaires",
+        "subtitle": "Comptes pouvant gérer cette entreprise.",
+        "add": "Ajouter un propriétaire",
+        "searchPlaceholder": "Rechercher par nom ou courriel…",
+        "searchHint": "Tapez pour rechercher des utilisateurs.",
+        "noResults": "Aucun utilisateur correspondant.",
+        "empty": "Aucun propriétaire (non réclamée).",
+        "added": "Propriétaire ajouté.",
+        "removed": "Propriétaire retiré.",
+        "remove": "Retirer le propriétaire",
+        "forbidden": "Vous n'avez pas accès à ceci.",
+        "error": "Une erreur s'est produite."
+      }
     }
   },
   "session": {

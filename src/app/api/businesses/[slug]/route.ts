@@ -36,9 +36,7 @@ const closureSchema = z.object({
   start_date: z.string(),
   end_date: z.string(),
   is_recurring: z.boolean().optional(),
-  hours: z
-    .array(z.object({ open: z.string(), close: z.string() }))
-    .optional(),
+  hours: z.array(z.object({ open: z.string(), close: z.string() })).optional(),
 });
 
 const addressSchema = z.object({
@@ -57,7 +55,7 @@ const addressSchema = z.object({
   is_hidden: z.boolean().optional(),
 });
 
-const updateSchema = z
+export const updateSchema = z
   .object({
     name: z.string().trim().min(1).max(255).optional(),
     type: z.enum(["company", "self_employed"]).optional(),
@@ -115,10 +113,7 @@ export async function GET(
 
   // An operator-locked listing (403) — relay the marker so the workspace shows the lock notice
   // rather than the generic "something went wrong". The API serves no business data here.
-  if (
-    response.status === 403 &&
-    response.data?.status === "business_locked"
-  ) {
+  if (response.status === 403 && response.data?.status === "business_locked") {
     return NextResponse.json({ status: "business_locked" }, { status: 403 });
   }
 
@@ -175,10 +170,7 @@ export async function PATCH(
   // Publishing was refused because the business hasn't met the minimum bar — relay the marker and the
   // unmet requirement keys so the workspace can point the owner at what's missing (defense in depth;
   // the client already hides Publish when it isn't publishable).
-  if (
-    response.status === 422 &&
-    response.data?.status === "not_publishable"
-  ) {
+  if (response.status === 422 && response.data?.status === "not_publishable") {
     return NextResponse.json(
       { status: "not_publishable", requirements: response.data.requirements },
       { status: 422 },

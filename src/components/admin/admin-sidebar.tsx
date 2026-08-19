@@ -1,6 +1,6 @@
 "use client";
 
-import { Flag, ShieldCheck, type LucideIcon } from "lucide-react";
+import { Building2, Flag, ShieldCheck, type LucideIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -9,7 +9,7 @@ import { useCurrentUser } from "@/components/auth/current-user";
 
 import { cn } from "@/lib/utils";
 
-type NavKey = "reports";
+type NavKey = "reports" | "businesses";
 // requiredRoles gates a section to specific admin roles (community admins, moderators, …). Empty =
 // visible to anyone who can open the panel. Only Reports exists today, so nothing is gated yet.
 type NavItem = {
@@ -21,6 +21,7 @@ type NavItem = {
 
 const ITEMS: NavItem[] = [
   { key: "reports", href: "/portal/admin/reports", icon: Flag },
+  { key: "businesses", href: "/portal/admin/businesses", icon: Building2 },
 ];
 
 /**

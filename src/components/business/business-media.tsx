@@ -62,6 +62,7 @@ export function BusinessImageField({
   value,
   focal: focalProp = null,
   onUpdated,
+  basePath = "/api/businesses",
 }: {
   slug: string;
   kind: "logo" | "banner";
@@ -69,6 +70,8 @@ export function BusinessImageField({
   /** The banner's stored focal point (object-position); ignored for the logo. */
   focal?: BannerFocal | null;
   onUpdated: (business: Business) => void;
+  /** BFF base for the focal-point PATCH — owner default; the admin editor passes its own. */
+  basePath?: string;
 }) {
   const t = useTranslations("businesses.detail.media");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -213,7 +216,7 @@ export function BusinessImageField({
   // Persist the banner focal point via the business PATCH, then hand display back to the (now
   // updated, or on failure unchanged) `focalProp`. `dragFocal` holds the value across the round-trip.
   async function saveFocal(next: BannerFocal) {
-    const response = await fetch(`/api/businesses/${encodeURIComponent(slug)}`, {
+    const response = await fetch(`${basePath}/${encodeURIComponent(slug)}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ banner_focal: next }),
@@ -244,10 +247,14 @@ export function BusinessImageField({
   ): BannerFocal {
     return {
       x: Math.round(
-        clampFocal(drag.startFocal.x - ((clientX - drag.startX) / drag.width) * 100),
+        clampFocal(
+          drag.startFocal.x - ((clientX - drag.startX) / drag.width) * 100,
+        ),
       ),
       y: Math.round(
-        clampFocal(drag.startFocal.y - ((clientY - drag.startY) / drag.height) * 100),
+        clampFocal(
+          drag.startFocal.y - ((clientY - drag.startY) / drag.height) * 100,
+        ),
       ),
     };
   }

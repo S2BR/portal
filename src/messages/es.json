@@ -915,7 +915,8 @@
   "admin": {
     "title": "Administración",
     "nav": {
-      "reports": "Denuncias"
+      "reports": "Denuncias",
+      "businesses": "Negocios"
     },
     "reports": {
       "title": "Denuncias",
@@ -1016,6 +1017,98 @@
       "description": "Tu acceso de administración caducó por inactividad. Vuelve a entrar para continuar.",
       "reenter": "Volver a entrar",
       "back": "Volver al panel"
+    },
+    "businesses": {
+      "title": "Negocios",
+      "subtitle": "Todos los negocios de la plataforma. Busca, filtra y abre uno para gestionarlo.",
+      "search": "Buscar",
+      "searchPlaceholder": "Buscar por nombre…",
+      "empty": "Ningún negocio coincide con estos filtros.",
+      "unclaimed": "Sin reclamar",
+      "forbidden": "No tienes acceso a esto.",
+      "loadError": "No se pudieron cargar los negocios.",
+      "filters": {
+        "status": "Estado",
+        "type": "Tipo",
+        "allStatuses": "Todos los estados",
+        "allTypes": "Todos los tipos"
+      },
+      "status": {
+        "published": "Publicado",
+        "draft": "Borrador",
+        "locked": "Bloqueado",
+        "unclaimed": "Sin reclamar",
+        "deleted": "Eliminado"
+      },
+      "types": {
+        "company": "Empresa",
+        "self_employed": "Autónomo"
+      },
+      "table": {
+        "business": "Negocio",
+        "owners": "Propietarios",
+        "status": "Estado",
+        "created": "Creado"
+      },
+      "pagination": {
+        "page": "Página {page} de {total}",
+        "previous": "Anterior",
+        "next": "Siguiente"
+      },
+      "editor": {
+        "back": "Volver a negocios",
+        "notFound": "Negocio no encontrado.",
+        "unclaimed": "Sin propietario (sin reclamar).",
+        "owners": "Propietarios",
+        "lockedReason": "Motivo del bloqueo",
+        "audit": "Auditoría",
+        "lock": "Bloquear",
+        "unlock": "Desbloquear",
+        "publish": "Forzar publicación",
+        "unpublish": "Despublicar",
+        "restore": "Restaurar",
+        "deletedBanner": "Este negocio está eliminado. Restáuralo para editarlo.",
+        "forbidden": "No tienes acceso a esto.",
+        "actionError": "Algo salió mal.",
+        "toast": {
+          "lock": "Negocio bloqueado.",
+          "unlock": "Negocio desbloqueado.",
+          "publish": "Negocio publicado.",
+          "unpublish": "Negocio despublicado.",
+          "restore": "Negocio restaurado."
+        },
+        "auditTitle": "Registro de auditoría",
+        "auditSubtitle": "Acciones del operador en este negocio, más recientes primero.",
+        "auditEmpty": "Aún no hay acciones registradas.",
+        "actions": {
+          "business": {
+            "updated": "Editado",
+            "locked": "Bloqueado",
+            "unlocked": "Desbloqueado",
+            "published": "Publicado",
+            "unpublished": "Despublicado",
+            "deleted": "Eliminado",
+            "restored": "Restaurado",
+            "owner_added": "Propietario añadido",
+            "owner_removed": "Propietario eliminado",
+            "claimed": "Reclamado"
+          }
+        }
+      },
+      "owners": {
+        "title": "Propietarios",
+        "subtitle": "Cuentas que pueden gestionar este negocio.",
+        "add": "Añadir propietario",
+        "searchPlaceholder": "Buscar por nombre o correo…",
+        "searchHint": "Escribe para buscar usuarios.",
+        "noResults": "No hay usuarios coincidentes.",
+        "empty": "Aún no hay propietarios (sin reclamar).",
+        "added": "Propietario añadido.",
+        "removed": "Propietario eliminado.",
+        "remove": "Eliminar propietario",
+        "forbidden": "No tienes acceso a esto.",
+        "error": "Algo salió mal."
+      }
     }
   },
   "session": {
