@@ -927,12 +927,69 @@
     "title": "Admin",
     "nav": {
       "reports": "Reports",
+      "claims": "Claims",
       "businesses": "Businesses"
     },
     "reports": {
       "title": "Reports",
       "subtitle": "Reported businesses and reviews. Priority reports appear first.",
       "empty": "No reports match these filters."
+    },
+    "claims": {
+      "title": "Business claims",
+      "subtitle": "Ownership claims awaiting review. Pending claims appear first.",
+      "empty": "No claims match these filters.",
+      "forbidden": "You don't have access to this.",
+      "loadError": "Couldn't load claims.",
+      "actionError": "Something went wrong.",
+      "filters": {
+        "status": "Status",
+        "allStatuses": "All statuses"
+      },
+      "status": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "auto_approved": "Auto-approved"
+      },
+      "method": {
+        "email_match": "Email match",
+        "admin_review": "Admin review"
+      },
+      "table": {
+        "business": "Business",
+        "claimant": "Claimant",
+        "method": "Method",
+        "status": "Status",
+        "submitted": "Submitted"
+      },
+      "detail": {
+        "claimant": "Claimant",
+        "message": "Claimant's message",
+        "noMessage": "No message provided.",
+        "proof": "Proof",
+        "proofAlt": "Proof {index}",
+        "noProof": "No proof submitted.",
+        "viewPublic": "View public page",
+        "review": "Review",
+        "reviewer": "Reviewed by",
+        "noReviewNote": "No note left.",
+        "noteLabel": "Internal note (optional)",
+        "notePlaceholder": "Only visible to moderators."
+      },
+      "actions": {
+        "approve": "Approve claim",
+        "reject": "Reject claim"
+      },
+      "toast": {
+        "approve": "Claim approved.",
+        "reject": "Claim rejected."
+      },
+      "pagination": {
+        "page": "Page {page} of {total}",
+        "previous": "Previous",
+        "next": "Next"
+      }
     },
     "filters": {
       "status": "Status",
@@ -1129,5 +1186,19 @@
   },
   "session": {
     "accountFallback": "Your previous session ended — you're now signed in as {account}."
+  },
+  "businessClaim": {
+    "cta": "Claim this business",
+    "signInPrompt": "Please log in to claim a business.",
+    "title": "Claim this business",
+    "description": "Tell us you're the owner. If your account email matches the email listed for this business, you'll get access right away — otherwise our team will review your request.",
+    "messageLabel": "Message (optional)",
+    "messagePlaceholder": "How are you connected to this business?",
+    "reviewNote": "We review claims that can't be verified automatically.",
+    "cancel": "Cancel",
+    "submit": "Submit claim",
+    "submitted": "Your claim has been submitted for review.",
+    "autoApproved": "This business is now yours to manage.",
+    "error": "Something went wrong. Please try again."
   }
 }

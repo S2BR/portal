@@ -15,6 +15,7 @@ import { StarRating } from "@/components/business/public/star-rating";
 import { ReportDialog } from "@/components/moderation/report-dialog";
 import { ClosuresReadout } from "@/components/business/closures-editor";
 import { flagEmoji, formatPhone } from "@/components/business/phone-format";
+import { ClaimBusinessButton } from "@/components/business/public/claim-business-button";
 import { ShareButton } from "@/components/business/public/share-button";
 import { Badge } from "@/components/ui/badge";
 import { formatBusinessAddress } from "@/lib/format-address";
@@ -182,6 +183,10 @@ export async function BusinessProfile({
               </a>
             ) : null}
             <ShareButton title={business.name} />
+            <ClaimBusinessButton
+              businessId={business.id}
+              isClaimed={business.is_claimed}
+            />
           </div>
         </div>
 
