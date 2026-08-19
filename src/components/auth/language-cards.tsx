@@ -32,7 +32,7 @@ export function LanguageCards({
   onSelect: (locale: Locale) => void;
 }) {
   return (
-    <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
+    <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
       {locales.map((option) => (
         <PreviewCard
           key={option}

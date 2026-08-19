@@ -22,14 +22,14 @@ describe("negotiateLocale", () => {
   });
 
   it("falls back to English for an unsupported language", () => {
-    expect(negotiateLocale("de-DE,zh;q=0.7")).toBe("en");
+    expect(negotiateLocale("xx-XX,zz;q=0.7")).toBe("en");
   });
 
   it("matches Japanese when the browser prefers it", () => {
-    expect(negotiateLocale("de-DE,ja;q=0.7")).toBe("ja");
+    expect(negotiateLocale("xx-XX,ja;q=0.7")).toBe("ja");
   });
 
   it("takes the first matching segment in the browser's order", () => {
-    expect(negotiateLocale("de,pt-BR;q=0.9,en;q=0.8")).toBe("pt-BR");
+    expect(negotiateLocale("xx,pt-BR;q=0.9,en;q=0.8")).toBe("pt-BR");
   });
 });
