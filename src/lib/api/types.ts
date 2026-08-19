@@ -38,6 +38,10 @@ export interface AuthUser {
   date_of_birth: string | null;
   // The account's self-selected gender, or null if unset.
   gender: Gender | null;
+  // Preferred distance unit ("km" | "mi"), or null → default km. Governs all distance rendering.
+  distance_unit?: "km" | "mi" | null;
+  // Preferred UI + email language (BCP-47), or null → negotiated from the browser.
+  locale?: string | null;
   created_at: string;
   // Platform role names carried from the access token's `roles` claim (not from the account
   // payload) — e.g. `["super_admin"]`. Absent/empty for an ordinary account. Gates the admin UI;

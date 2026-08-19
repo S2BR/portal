@@ -21,6 +21,12 @@ import type { CategoryNode } from "@/components/business/public/category-tree-no
 import { DirectoryMap } from "@/components/business/public/directory-map";
 import { FacetList } from "@/components/business/public/facet-list";
 import { OpenNowToggle } from "@/components/business/public/open-now-toggle";
+import { useCurrentUser } from "@/components/auth/current-user";
+import {
+  formatDistance,
+  formatRadius,
+  resolveDistanceUnit,
+} from "@/lib/distance";
 import { cn } from "@/lib/utils";
 import {
   useDirectoryLocation,
@@ -210,15 +216,15 @@ function Hits({
 }) {
   const t = useTranslations("businesses.directory");
   const { items } = useHits<DirectoryHit>();
+  const { user } = useCurrentUser();
+  const unit = resolveDistanceUnit(user?.distance_unit);
 
   const distanceLabel = (hit: DirectoryHit): string | undefined => {
     if (!location || !hit._geoloc) {
       return undefined;
     }
     const meters = distanceMeters(location, hit._geoloc.lat, hit._geoloc.lng);
-    return meters < 1000
-      ? t("distanceM", { m: Math.round(meters) })
-      : t("distanceKm", { km: (meters / 1000).toFixed(1) });
+    return formatDistance(meters, unit, t);
   };
 
   if (items.length === 0) {
@@ -229,7 +235,9 @@ function Hits({
         <div className="rounded-2xl border border-dashed py-16 text-center">
           <p className="font-medium">{t("noneNearbyTitle")}</p>
           <p className="text-muted-foreground mt-1 text-sm">
-            {t("noneNearbyBody", { km: nearMeRadius })}
+            {t("noneNearbyBody", {
+              distance: formatRadius(nearMeRadius, unit, t),
+            })}
           </p>
           <button
             type="button"
@@ -346,6 +354,8 @@ function RadiusPicker({
   onChange: (value: number | null) => void;
 }) {
   const t = useTranslations("businesses.directory");
+  const { user } = useCurrentUser();
+  const unit = resolveDistanceUnit(user?.distance_unit);
   const options: (number | null)[] = [10, 25, 50, 100, null];
   return (
     <span className="inline-flex flex-wrap items-center gap-1">
@@ -362,7 +372,7 @@ function RadiusPicker({
               : "border-input text-muted-foreground hover:bg-accent",
           )}
         >
-          {option === null ? t("anyDistance") : t("distanceKm", { km: option })}
+          {option === null ? t("anyDistance") : formatRadius(option, unit, t)}
         </button>
       ))}
     </span>

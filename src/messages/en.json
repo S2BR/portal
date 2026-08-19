@@ -270,7 +270,15 @@
       "female": "Female",
       "non_binary": "Non-binary",
       "prefer_not_to_say": "Prefer not to say"
-    }
+    },
+    "distanceUnit": "Distance unit",
+    "distanceUnitHint": "How distances (like \"near me\") are shown across the platform.",
+    "distanceUnits": {
+      "km": "Kilometers",
+      "mi": "Miles"
+    },
+    "language": "Language",
+    "languageHint": "Your language for the interface and the emails we send you."
   },
   "sessions": {
     "title": "Active sessions",
@@ -522,9 +530,11 @@
       "within": "Up to",
       "anyDistance": "Any",
       "noneNearbyTitle": "Nothing nearby",
-      "noneNearbyBody": "No businesses within {km} km of you.",
+      "noneNearbyBody": "No businesses within {distance} of you.",
       "showAll": "Show all",
-      "openNow": "Open now"
+      "openNow": "Open now",
+      "distanceMi": "{mi} mi",
+      "distanceFt": "{ft} ft"
     },
     "public": {
       "reviews": {
