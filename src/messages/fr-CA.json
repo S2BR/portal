@@ -523,7 +523,8 @@
       "anyDistance": "Toutes",
       "noneNearbyTitle": "Rien à proximité",
       "noneNearbyBody": "Aucune entreprise à moins de {km} km de vous.",
-      "showAll": "Tout afficher"
+      "showAll": "Tout afficher",
+      "openNow": "Ouvert maintenant"
     },
     "public": {
       "reviews": {

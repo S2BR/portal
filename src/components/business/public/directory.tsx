@@ -20,6 +20,7 @@ import { CategoryTree } from "@/components/business/public/category-tree";
 import type { CategoryNode } from "@/components/business/public/category-tree-nodes";
 import { DirectoryMap } from "@/components/business/public/directory-map";
 import { FacetList } from "@/components/business/public/facet-list";
+import { OpenNowToggle } from "@/components/business/public/open-now-toggle";
 import { cn } from "@/lib/utils";
 import {
   useDirectoryLocation,
@@ -125,7 +126,9 @@ function ResultCount() {
   const t = useTranslations("businesses.directory");
   const { nbHits } = useStats();
   return (
-    <p className="text-muted-foreground text-sm">{t("count", { count: nbHits })}</p>
+    <p className="text-muted-foreground text-sm">
+      {t("count", { count: nbHits })}
+    </p>
   );
 }
 
@@ -355,7 +358,11 @@ function Pagination() {
 }
 
 /** The map, fed by the current hits that carry coordinates. */
-function HitsMap({ categoryLabels }: { categoryLabels: Record<string, string> }) {
+function HitsMap({
+  categoryLabels,
+}: {
+  categoryLabels: Record<string, string>;
+}) {
   const t = useTranslations("businesses.directory");
   const { items } = useHits<DirectoryHit>();
   const located = items
@@ -392,9 +399,18 @@ function Sidebar({
         </h2>
         <ClearFilters />
       </div>
+      <OpenNowToggle />
       <CategoryTree title={t("facetCategory")} tree={categoryTree} />
-      <FacetList attribute="amenities" title={t("facetAmenities")} labels={labels.amenities} />
-      <FacetList attribute="type" title={t("facetType")} labels={labels.types} />
+      <FacetList
+        attribute="amenities"
+        title={t("facetAmenities")}
+        labels={labels.amenities}
+      />
+      <FacetList
+        attribute="type"
+        title={t("facetType")}
+        labels={labels.types}
+      />
       <FacetList attribute="city" title={t("facetCity")} />
     </aside>
   );
@@ -437,7 +453,11 @@ export function Directory({
       .then((response) => (response.ok ? response.json() : null))
       .then((data) => {
         if (active && data?.key) {
-          setCredentials({ key: data.key, host: data.host, expiresAt: data.expires_at });
+          setCredentials({
+            key: data.key,
+            host: data.host,
+            expiresAt: data.expires_at,
+          });
         }
       })
       .catch(() => {});
@@ -451,13 +471,20 @@ export function Directory({
     if (!credentials) {
       return;
     }
-    const delay = Math.max(credentials.expiresAt * 1000 - Date.now() - 30_000, 10_000);
+    const delay = Math.max(
+      credentials.expiresAt * 1000 - Date.now() - 30_000,
+      10_000,
+    );
     const timer = setTimeout(() => {
       fetch("/api/search/key?refresh=1")
         .then((response) => (response.ok ? response.json() : null))
         .then((data) => {
           if (data?.key) {
-            setCredentials({ key: data.key, host: data.host, expiresAt: data.expires_at });
+            setCredentials({
+              key: data.key,
+              host: data.host,
+              expiresAt: data.expires_at,
+            });
           }
         })
         .catch(() => {});
@@ -499,7 +526,10 @@ export function Directory({
 
   if (!searchClient) {
     return (
-      <div className="bg-muted h-64 w-full animate-pulse rounded-2xl border" aria-hidden />
+      <div
+        className="bg-muted h-64 w-full animate-pulse rounded-2xl border"
+        aria-hidden
+      />
     );
   }
 

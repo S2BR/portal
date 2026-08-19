@@ -523,7 +523,8 @@
       "anyDistance": "Any",
       "noneNearbyTitle": "Nothing nearby",
       "noneNearbyBody": "No businesses within {km} km of you.",
-      "showAll": "Show all"
+      "showAll": "Show all",
+      "openNow": "Open now"
     },
     "public": {
       "reviews": {
