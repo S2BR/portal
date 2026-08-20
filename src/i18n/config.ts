@@ -1,11 +1,11 @@
 export const locales = [
   "en",
+  "pt-BR",
   "es",
   "fr-CA",
-  "pt-BR",
-  "ja",
   "it",
   "de",
+  "ja",
   "ar",
 ] as const;
 
@@ -19,13 +19,25 @@ export const LOCALE_COOKIE = "NEXT_LOCALE";
 /** Autonyms — each language is shown in its own language in the switcher. */
 export const localeNames: Record<Locale, string> = {
   en: "English",
+  "pt-BR": "Português (Brasil)",
   es: "Español",
   "fr-CA": "Français (Canada)",
-  "pt-BR": "Português (Brasil)",
-  ja: "日本語",
   it: "Italiano",
   de: "Deutsch",
+  ja: "日本語",
   ar: "العربية",
+};
+
+/** A short native greeting per language — the hero of each language card. */
+export const localeGreetings: Record<Locale, string> = {
+  en: "Hello",
+  "pt-BR": "Olá",
+  es: "Hola",
+  "fr-CA": "Bonjour",
+  it: "Ciao",
+  de: "Hallo",
+  ja: "こんにちは",
+  ar: "مرحبا",
 };
 
 export function isLocale(value: unknown): value is Locale {

@@ -1,50 +1,92 @@
 "use client";
 
-import { PreviewCard } from "@/components/ui/preview-card";
-import { localeNames, locales, type Locale } from "@/i18n/config";
+import {
+  getDirection,
+  localeGreetings,
+  localeNames,
+  locales,
+  type Locale,
+} from "@/i18n/config";
+import { cn } from "@/lib/utils";
 
-/** A round flag for a locale, from /public/images/flags/<locale>.png. Decorative — the card's label
- * carries the native name. A plain <img> paints the cached flag instantly. */
-function LanguageMock({ locale }: { locale: Locale }) {
+/**
+ * One language option, fully centered: a large round flag up top, with the greeting (in the
+ * language's own words) and the language's own name stacked and centered near the bottom. `dir` is
+ * scoped to the greeting text so Arabic shapes correctly without affecting the centered layout.
+ */
+function LanguageCard({
+  locale,
+  selected,
+  onSelect,
+}: {
+  locale: Locale;
+  selected: boolean;
+  onSelect: () => void;
+}) {
   return (
-    <div className="flex h-14 items-center justify-center">
+    <button
+      type="button"
+      onClick={onSelect}
+      aria-pressed={selected}
+      className={cn(
+        "focus-visible:ring-ring relative flex min-h-[7.5rem] flex-col items-center rounded-xl px-2 pt-5 pb-3 text-center outline-none transition-colors focus-visible:ring-2 focus-visible:ring-inset",
+        selected ? "bg-muted-foreground/10" : "bg-muted/40 hover:bg-muted/70",
+      )}
+    >
+      {/* Selection dot, pinned to the top end corner (top-right in LTR, flips with direction). */}
+      {selected ? (
+        <span
+          className="bg-brand-green absolute end-2 top-2 size-2 rounded-full"
+          aria-hidden
+        />
+      ) : null}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={`/images/flags/${locale}.png`}
         alt=""
-        width={44}
-        height={44}
-        className="size-11 rounded-full object-cover"
+        width={48}
+        height={48}
+        className="size-12 rounded-full object-cover ring-1 ring-black/5 dark:ring-0"
       />
-    </div>
+      <span className="mt-auto flex flex-col items-center gap-0.5 pt-3">
+        <span
+          dir={getDirection(locale)}
+          className="text-base leading-tight font-bold tracking-tight"
+        >
+          {localeGreetings[locale]}
+        </span>
+        <span className="text-muted-foreground text-[11px] font-semibold">
+          {localeNames[locale].replace(/\s*\(.+\)$/, "")}
+        </span>
+      </span>
+    </button>
   );
 }
 
 /**
- * The language picker as a row of flag preview cards — the same control used in the layout settings.
- * Controlled: `value` is the selected locale, `onSelect` fires on a card click.
+ * The language picker as a grid of centered greeting cards — each greets you in its own language,
+ * with a large flag above and the language's own name below. Backs the layout settings, the profile
+ * language picker, and the header switcher. Controlled: `value` is the selected locale, `onSelect`
+ * fires on a card click. `className` can override the grid density (e.g. the header popover).
  */
 export function LanguageCards({
   value,
   onSelect,
+  className,
 }: {
   value: Locale;
   onSelect: (locale: Locale) => void;
+  className?: string;
 }) {
   return (
-    <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
+    <div className={cn("grid grid-cols-3 gap-3 sm:grid-cols-4", className)}>
       {locales.map((option) => (
-        <PreviewCard
+        <LanguageCard
           key={option}
+          locale={option}
           selected={option === value}
-          onClick={() => onSelect(option)}
-          framed={false}
-          // Drop the parenthetical region (e.g. "Français (Canada)" → "Français")
-          // so the labels stay short under the flag — the flag already conveys the region.
-          label={localeNames[option].replace(/\s*\(.+\)$/, "")}
-        >
-          <LanguageMock locale={option} />
-        </PreviewCard>
+          onSelect={() => onSelect(option)}
+        />
       ))}
     </div>
   );
