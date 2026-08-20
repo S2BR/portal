@@ -945,7 +945,8 @@
     "nav": {
       "reports": "報告",
       "claims": "オーナー申請",
-      "businesses": "ビジネス"
+      "businesses": "ビジネス",
+      "uploads": "アップロード"
     },
     "reports": {
       "title": "報告",
@@ -1206,6 +1207,64 @@
       "new": {
         "title": "新しいビジネス",
         "subtitle": "ビジネスを作成し、エディターで詳細を入力してオーナーを割り当てます。"
+      }
+    },
+    "uploads": {
+      "title": "アップロード",
+      "subtitle": "ストレージにアップロードされたすべてのファイル。新しい順。",
+      "empty": "この条件に一致するアップロードはありません。",
+      "forbidden": "これにアクセスする権限がありません。",
+      "loadError": "アップロードを読み込めませんでした。",
+      "actionError": "問題が発生しました。",
+      "previewAlt": "アップロードのプレビュー",
+      "filters": {
+        "type": "種類",
+        "allTypes": "すべての種類",
+        "status": "ステータス",
+        "allStatuses": "すべてのステータス"
+      },
+      "type": {
+        "avatar": "アバター",
+        "business-logo": "ビジネスのロゴ",
+        "business-banner": "ビジネスのバナー",
+        "business-gallery": "ビジネスのギャラリー",
+        "claim-proof": "申請の証明"
+      },
+      "status": {
+        "pending": "保留中",
+        "confirmed": "確定"
+      },
+      "table": {
+        "preview": "プレビュー",
+        "type": "種類",
+        "boundTo": "紐付け先",
+        "size": "サイズ",
+        "uploader": "アップロード者",
+        "status": "ステータス",
+        "uploaded": "アップロード日時",
+        "actions": "操作"
+      },
+      "actions": {
+        "delete": "アップロードを削除",
+        "download": "ダウンロード"
+      },
+      "delete": {
+        "title": "このアップロードを削除しますか？",
+        "description": "ファイルはストレージと記録から完全に削除されます。この操作は取り消せません。",
+        "cancel": "キャンセル",
+        "confirm": "削除"
+      },
+      "toast": {
+        "deleted": "アップロードを削除しました。"
+      },
+      "pagination": {
+        "page": "{total} ページ中 {page} ページ",
+        "previous": "前へ",
+        "next": "次へ"
+      },
+      "widgets": {
+        "files": "ファイル数",
+        "totalSize": "合計サイズ"
       }
     }
   },

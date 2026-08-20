@@ -945,7 +945,8 @@
     "nav": {
       "reports": "Denuncias",
       "claims": "Reclamaciones",
-      "businesses": "Negocios"
+      "businesses": "Negocios",
+      "uploads": "Subidas"
     },
     "reports": {
       "title": "Denuncias",
@@ -1206,6 +1207,64 @@
       "new": {
         "title": "Nuevo negocio",
         "subtitle": "Crea un negocio y luego completa sus datos y asigna un propietario desde el editor."
+      }
+    },
+    "uploads": {
+      "title": "Subidas",
+      "subtitle": "Todos los archivos subidos al almacenamiento. Más recientes primero.",
+      "empty": "Ninguna subida coincide con estos filtros.",
+      "forbidden": "No tienes acceso a esto.",
+      "loadError": "No se pudieron cargar las subidas.",
+      "actionError": "Algo salió mal.",
+      "previewAlt": "Vista previa de la subida",
+      "filters": {
+        "type": "Tipo",
+        "allTypes": "Todos los tipos",
+        "status": "Estado",
+        "allStatuses": "Todos los estados"
+      },
+      "type": {
+        "avatar": "Avatar",
+        "business-logo": "Logotipo del negocio",
+        "business-banner": "Banner del negocio",
+        "business-gallery": "Galería del negocio",
+        "claim-proof": "Prueba de reclamación"
+      },
+      "status": {
+        "pending": "Pendiente",
+        "confirmed": "Confirmada"
+      },
+      "table": {
+        "preview": "Vista previa",
+        "type": "Tipo",
+        "boundTo": "Vinculado a",
+        "size": "Tamaño",
+        "uploader": "Subido por",
+        "status": "Estado",
+        "uploaded": "Subido",
+        "actions": "Acciones"
+      },
+      "actions": {
+        "delete": "Eliminar subida",
+        "download": "Descargar"
+      },
+      "delete": {
+        "title": "¿Eliminar esta subida?",
+        "description": "Esto elimina permanentemente el archivo del almacenamiento y su registro. No se puede deshacer.",
+        "cancel": "Cancelar",
+        "confirm": "Eliminar"
+      },
+      "toast": {
+        "deleted": "Subida eliminada."
+      },
+      "pagination": {
+        "page": "Página {page} de {total}",
+        "previous": "Anterior",
+        "next": "Siguiente"
+      },
+      "widgets": {
+        "files": "Archivos",
+        "totalSize": "Tamaño total"
       }
     }
   },

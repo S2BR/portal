@@ -945,7 +945,8 @@
     "nav": {
       "reports": "Meldungen",
       "claims": "Ansprüche",
-      "businesses": "Unternehmen"
+      "businesses": "Unternehmen",
+      "uploads": "Uploads"
     },
     "reports": {
       "title": "Meldungen",
@@ -1206,6 +1207,64 @@
       "new": {
         "title": "Neues Unternehmen",
         "subtitle": "Erstellen Sie ein Unternehmen, füllen Sie dann seine Details aus und weisen Sie im Editor einen Inhaber zu."
+      }
+    },
+    "uploads": {
+      "title": "Uploads",
+      "subtitle": "Alle in den Speicher hochgeladenen Dateien. Neueste zuerst.",
+      "empty": "Keine Uploads entsprechen diesen Filtern.",
+      "forbidden": "Du hast darauf keinen Zugriff.",
+      "loadError": "Uploads konnten nicht geladen werden.",
+      "actionError": "Etwas ist schiefgelaufen.",
+      "previewAlt": "Upload-Vorschau",
+      "filters": {
+        "type": "Typ",
+        "allTypes": "Alle Typen",
+        "status": "Status",
+        "allStatuses": "Alle Status"
+      },
+      "type": {
+        "avatar": "Avatar",
+        "business-logo": "Unternehmenslogo",
+        "business-banner": "Unternehmens-Banner",
+        "business-gallery": "Unternehmensgalerie",
+        "claim-proof": "Anspruchsnachweis"
+      },
+      "status": {
+        "pending": "Ausstehend",
+        "confirmed": "Bestätigt"
+      },
+      "table": {
+        "preview": "Vorschau",
+        "type": "Typ",
+        "boundTo": "Zugeordnet zu",
+        "size": "Größe",
+        "uploader": "Hochgeladen von",
+        "status": "Status",
+        "uploaded": "Hochgeladen",
+        "actions": "Aktionen"
+      },
+      "actions": {
+        "delete": "Upload löschen",
+        "download": "Herunterladen"
+      },
+      "delete": {
+        "title": "Diesen Upload löschen?",
+        "description": "Dies entfernt die Datei dauerhaft aus dem Speicher und den Datensatz. Nicht widerrufbar.",
+        "cancel": "Abbrechen",
+        "confirm": "Löschen"
+      },
+      "toast": {
+        "deleted": "Upload gelöscht."
+      },
+      "pagination": {
+        "page": "Seite {page} von {total}",
+        "previous": "Zurück",
+        "next": "Weiter"
+      },
+      "widgets": {
+        "files": "Dateien",
+        "totalSize": "Gesamtgröße"
       }
     }
   },

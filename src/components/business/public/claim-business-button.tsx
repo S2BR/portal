@@ -28,7 +28,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
   fetchUploadConfig,
-  uploadPresignedObject,
+  stageUpload,
   type UploadConfig,
 } from "@/lib/uploads/upload";
 
@@ -36,7 +36,8 @@ type Proof = {
   id: string;
   name: string;
   status: "uploading" | "done" | "error";
-  key?: string;
+  /** The staged upload's ledger id — confirmed + promoted by the API when the claim is submitted. */
+  uploadId?: string;
 };
 
 /**
@@ -105,26 +106,30 @@ export function ClaimBusinessButton({
     const room = maxFiles - proofs.length;
     for (const file of Array.from(list).slice(0, Math.max(0, room))) {
       const id = String(++nextId.current);
+
+      // Size cap comes from the API (config); reject before uploading, naming the limit. The API
+      // also re-enforces it (the plan's POST policy) on the object itself.
+      if (config && file.size > config.max_bytes) {
+        toast.error(
+          t("proofTooLarge", {
+            size: `${Math.round(config.max_bytes / (1024 * 1024))} MB`,
+          }),
+        );
+        continue;
+      }
+
       setProofs((current) => [
         ...current,
         { id, name: file.name, status: "uploading" },
       ]);
-      void uploadPresignedObject("claim-proof", file, {
+      void stageUpload("claim-proof", file, {
         context: { type: "business", id: businessId },
       }).then((result) => {
-        // Size limit comes from the API (the presign response); the message names its value too.
-        if (!result.ok && result.error === "size") {
-          toast.error(
-            t("proofTooLarge", {
-              size: `${Math.round((config?.max_bytes ?? 0) / (1024 * 1024))} MB`,
-            }),
-          );
-        }
         setProofs((current) =>
           current.map((proof) =>
             proof.id === id
               ? result.ok
-                ? { ...proof, status: "done", key: result.key }
+                ? { ...proof, status: "done", uploadId: result.upload }
                 : { ...proof, status: "error" }
               : proof,
           ),
@@ -137,8 +142,8 @@ export function ClaimBusinessButton({
     setBusy(true);
     try {
       const proof = proofs
-        .filter((entry) => entry.status === "done" && entry.key)
-        .map((entry) => entry.key as string);
+        .filter((entry) => entry.status === "done" && entry.uploadId)
+        .map((entry) => entry.uploadId as string);
 
       const response = await fetch("/api/claims", {
         method: "POST",

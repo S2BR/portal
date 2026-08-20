@@ -4,6 +4,7 @@ import {
   BadgeCheck,
   Building2,
   Flag,
+  ImageIcon,
   ShieldCheck,
   type LucideIcon,
 } from "lucide-react";
@@ -15,7 +16,7 @@ import { useCurrentUser } from "@/components/auth/current-user";
 
 import { cn } from "@/lib/utils";
 
-type NavKey = "reports" | "claims" | "businesses";
+type NavKey = "reports" | "claims" | "businesses" | "uploads";
 // requiredRoles gates a section to specific admin roles (community admins, moderators, …). Empty =
 // visible to anyone who can open the panel. Only Reports exists today, so nothing is gated yet.
 type NavItem = {
@@ -29,6 +30,7 @@ const ITEMS: NavItem[] = [
   { key: "reports", href: "/portal/admin/reports", icon: Flag },
   { key: "claims", href: "/portal/admin/claims", icon: BadgeCheck },
   { key: "businesses", href: "/portal/admin/businesses", icon: Building2 },
+  { key: "uploads", href: "/portal/admin/uploads", icon: ImageIcon },
 ];
 
 /**

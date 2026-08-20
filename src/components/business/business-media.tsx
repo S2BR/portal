@@ -22,14 +22,15 @@ import {
   focalObjectPosition,
 } from "@/lib/banner-focal";
 import { normalizeImage } from "@/lib/uploads/image";
-import { removeUpload, uploadFile } from "@/lib/uploads/upload";
+import {
+  fetchUploadConfig,
+  removeUpload,
+  upload,
+  type UploadConfig,
+} from "@/lib/uploads/upload";
 import { cn } from "@/lib/utils";
 
 type BusinessPayload = { business: Business };
-
-const ACCEPTED = ["image/jpeg", "image/png", "image/webp"];
-const MAX_BYTES = 5 * 1024 * 1024;
-const GALLERY_MAX = 12;
 
 /** Largest side (px) the browser downscales to before upload, per slot. */
 const MAX_SIDE: Record<"logo" | "banner" | "gallery", number> = {
@@ -40,15 +41,29 @@ const MAX_SIDE: Record<"logo" | "banner" | "gallery", number> = {
 
 type Phase = "idle" | "uploading" | "finalizing";
 
-/** Validate a picked file against the shared image constraints; a message key on failure. */
-function rejectReason(file: File): "invalidType" | "tooLarge" | null {
-  if (!ACCEPTED.includes(file.type)) {
+/**
+ * Validate a picked file against the type's limits FROM THE API (nothing hardcoded); a message key on
+ * failure. Until the config has loaded it lets the file through — the API re-enforces on upload.
+ */
+function rejectReason(
+  file: File,
+  config: UploadConfig | null,
+): "invalidType" | "tooLarge" | null {
+  if (!config) {
+    return null;
+  }
+  if (!config.mime_types.includes(file.type)) {
     return "invalidType";
   }
-  if (file.size > MAX_BYTES) {
+  if (file.size > config.max_bytes) {
     return "tooLarge";
   }
   return null;
+}
+
+/** Human size label for a byte cap (e.g. "5 MB"), or empty until the config has loaded. */
+function maxLabelFor(config: UploadConfig | null): string {
+  return config ? `${Math.round(config.max_bytes / 1024 / 1024)} MB` : "";
 }
 
 /**
@@ -82,6 +97,12 @@ export function BusinessImageField({
   const [progress, setProgress] = useState(0);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [config, setConfig] = useState<UploadConfig | null>(null);
+
+  // Accepted types + size cap come from the API (source of truth), so nothing here is hardcoded.
+  useEffect(() => {
+    void fetchUploadConfig(`business-${kind}`).then(setConfig);
+  }, [kind]);
 
   // Banner focal point. Reposition is a deliberate mode (entered from a hover button) so a stray
   // click or drag can't disturb the banner. `dragFocal` is a live override while dragging (and until
@@ -135,7 +156,7 @@ export function BusinessImageField({
   const busy = phase !== "idle" || pending;
   const isLogo = kind === "logo";
   const shown = preview ?? value;
-  const maxLabel = `${Math.round(MAX_BYTES / 1024 / 1024)} MB`;
+  const maxLabel = maxLabelFor(config);
   const focal = dragFocal ?? focalProp ?? CENTER_FOCAL;
 
   async function onFileChange(event: ChangeEvent<HTMLInputElement>) {
@@ -145,7 +166,7 @@ export function BusinessImageField({
       return;
     }
     setError(null);
-    const reason = rejectReason(file);
+    const reason = rejectReason(file, config);
     if (reason) {
       setError(t(reason));
       return;
@@ -174,15 +195,11 @@ export function BusinessImageField({
     setPhase("uploading");
     setProgress(0);
 
-    const result = await uploadFile<BusinessPayload>(
-      `business-${kind}`,
-      prepared,
-      {
-        onProgress: setProgress,
-        onPhase: setPhase,
-        context: { business: slug },
-      },
-    );
+    const result = await upload<BusinessPayload>(`business-${kind}`, prepared, {
+      onProgress: setProgress,
+      onPhase: setPhase,
+      context: { business: slug },
+    });
 
     setPhase("idle");
     setPreview(null);
@@ -317,7 +334,7 @@ export function BusinessImageField({
     <input
       ref={inputRef}
       type="file"
-      accept={ACCEPTED.join(",")}
+      accept={config?.mime_types.join(",")}
       className="hidden"
       onChange={onFileChange}
     />
@@ -569,11 +586,18 @@ export function BusinessGallery({
   const [progress, setProgress] = useState(0);
   const [removingId, setRemovingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [config, setConfig] = useState<UploadConfig | null>(null);
+
+  // Accepted types, size cap, and the image count cap all come from the API (source of truth).
+  useEffect(() => {
+    void fetchUploadConfig("business-gallery").then(setConfig);
+  }, []);
 
   const gallery = images ?? [];
   const busy = phase !== "idle" || removingId !== null;
-  const full = gallery.length >= GALLERY_MAX;
-  const maxLabel = `${Math.round(MAX_BYTES / 1024 / 1024)} MB`;
+  // Until the config loads, don't cap (add stays available); the API enforces the real limit.
+  const full = config != null && gallery.length >= (config.max_files ?? 0);
+  const maxLabel = maxLabelFor(config);
 
   async function onFileChange(event: ChangeEvent<HTMLInputElement>) {
     const files = Array.from(event.target.files ?? []);
@@ -585,8 +609,9 @@ export function BusinessGallery({
 
     let uploaded = 0;
     for (const file of files) {
-      if (rejectReason(file)) {
-        setError(t(rejectReason(file) as "invalidType" | "tooLarge"));
+      const reason = rejectReason(file, config);
+      if (reason) {
+        setError(t(reason));
         continue;
       }
       const prepared = await normalizeImage(file, {
@@ -595,15 +620,11 @@ export function BusinessGallery({
       });
       setPhase("uploading");
       setProgress(0);
-      const result = await uploadFile<BusinessPayload>(
-        "business-gallery",
-        prepared,
-        {
-          onProgress: setProgress,
-          onPhase: setPhase,
-          context: { business: slug },
-        },
-      );
+      const result = await upload<BusinessPayload>("business-gallery", prepared, {
+        onProgress: setProgress,
+        onPhase: setPhase,
+        context: { business: slug },
+      });
       setPhase("idle");
       if (result.ok && result.data) {
         onUpdated(result.data.business);
@@ -680,7 +701,7 @@ export function BusinessGallery({
       <input
         ref={inputRef}
         type="file"
-        accept={ACCEPTED.join(",")}
+        accept={config?.mime_types.join(",")}
         multiple
         className="hidden"
         onChange={onFileChange}

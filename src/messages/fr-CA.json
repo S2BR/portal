@@ -945,7 +945,8 @@
     "nav": {
       "reports": "Signalements",
       "claims": "Revendications",
-      "businesses": "Entreprises"
+      "businesses": "Entreprises",
+      "uploads": "Téléversements"
     },
     "reports": {
       "title": "Signalements",
@@ -1206,6 +1207,64 @@
       "new": {
         "title": "Nouvelle entreprise",
         "subtitle": "Créez une entreprise, puis remplissez ses détails et attribuez un propriétaire depuis l'éditeur."
+      }
+    },
+    "uploads": {
+      "title": "Téléversements",
+      "subtitle": "Tous les fichiers téléversés vers le stockage. Les plus récents d'abord.",
+      "empty": "Aucun téléversement ne correspond à ces filtres.",
+      "forbidden": "Vous n'avez pas accès à ceci.",
+      "loadError": "Impossible de charger les téléversements.",
+      "actionError": "Une erreur est survenue.",
+      "previewAlt": "Aperçu du téléversement",
+      "filters": {
+        "type": "Type",
+        "allTypes": "Tous les types",
+        "status": "Statut",
+        "allStatuses": "Tous les statuts"
+      },
+      "type": {
+        "avatar": "Avatar",
+        "business-logo": "Logo de l'entreprise",
+        "business-banner": "Bannière de l'entreprise",
+        "business-gallery": "Galerie de l'entreprise",
+        "claim-proof": "Preuve de revendication"
+      },
+      "status": {
+        "pending": "En attente",
+        "confirmed": "Confirmé"
+      },
+      "table": {
+        "preview": "Aperçu",
+        "type": "Type",
+        "boundTo": "Rattaché à",
+        "size": "Taille",
+        "uploader": "Téléversé par",
+        "status": "Statut",
+        "uploaded": "Téléversé",
+        "actions": "Actions"
+      },
+      "actions": {
+        "delete": "Supprimer le téléversement",
+        "download": "Télécharger"
+      },
+      "delete": {
+        "title": "Supprimer ce téléversement?",
+        "description": "Ceci supprime définitivement le fichier du stockage et son enregistrement. Action irréversible.",
+        "cancel": "Annuler",
+        "confirm": "Supprimer"
+      },
+      "toast": {
+        "deleted": "Téléversement supprimé."
+      },
+      "pagination": {
+        "page": "Page {page} sur {total}",
+        "previous": "Précédent",
+        "next": "Suivant"
+      },
+      "widgets": {
+        "files": "Fichiers",
+        "totalSize": "Taille totale"
       }
     }
   },
