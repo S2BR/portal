@@ -1129,6 +1129,14 @@
         "unclaimed": "Sem proprietário (não reivindicado).",
         "owners": "Proprietários",
         "lockedReason": "Motivo do bloqueio",
+        "lockDialog": {
+          "title": "Bloquear negócio",
+          "description": "Ele é retirado da visualização pública e congelado para o proprietário. Adicione um motivo ao registro de auditoria.",
+          "reasonLabel": "Motivo",
+          "reasonPlaceholder": "Por que isto está sendo bloqueado?",
+          "cancel": "Cancelar",
+          "confirm": "Bloquear negócio"
+        },
         "audit": "Auditoria",
         "lock": "Bloquear",
         "unlock": "Desbloquear",

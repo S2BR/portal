@@ -24,12 +24,23 @@ import { BusinessDetail } from "@/components/business/business-detail";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Textarea } from "@/components/ui/textarea";
 
 type LifecycleAction = "lock" | "unlock" | "publish" | "unpublish" | "restore";
 
@@ -49,6 +60,8 @@ export function AdminBusinessEditor({ id }: { id: string }) {
   const [busy, setBusy] = useState(false);
   const [formKey, setFormKey] = useState(0);
   const [auditOpen, setAuditOpen] = useState(false);
+  const [lockOpen, setLockOpen] = useState(false);
+  const [lockReason, setLockReason] = useState("");
 
   const loadHeader = useCallback(async () => {
     try {
@@ -76,7 +89,7 @@ export function AdminBusinessEditor({ id }: { id: string }) {
     void loadHeader();
   }, [loadHeader]);
 
-  async function runLifecycle(action: LifecycleAction) {
+  async function runLifecycle(action: LifecycleAction, reason?: string | null) {
     setBusy(true);
     try {
       const response = await fetch(
@@ -84,7 +97,7 @@ export function AdminBusinessEditor({ id }: { id: string }) {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ action }),
+          body: JSON.stringify({ action, reason: reason ?? null }),
         },
       );
       if (!response.ok) {
@@ -172,7 +185,7 @@ export function AdminBusinessEditor({ id }: { id: string }) {
                 variant="outline"
                 size="sm"
                 disabled={busy}
-                onClick={() => void runLifecycle("lock")}
+                onClick={() => setLockOpen(true)}
               >
                 <Lock className="size-4" />
                 {t("lock")}
@@ -240,6 +253,56 @@ export function AdminBusinessEditor({ id }: { id: string }) {
       )}
 
       <AuditSheet id={id} open={auditOpen} onOpenChange={setAuditOpen} t={t} />
+
+      {/* Locking asks for an optional reason — recorded on the business + the audit trail. */}
+      <Dialog
+        open={lockOpen}
+        onOpenChange={(next) => {
+          setLockOpen(next);
+          if (!next) {
+            setLockReason("");
+          }
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("lockDialog.title")}</DialogTitle>
+            <DialogDescription>
+              {t("lockDialog.description")}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2">
+            <Label htmlFor="lock-reason">{t("lockDialog.reasonLabel")}</Label>
+            <Textarea
+              id="lock-reason"
+              value={lockReason}
+              onChange={(event) => setLockReason(event.target.value)}
+              placeholder={t("lockDialog.reasonPlaceholder")}
+              rows={3}
+            />
+          </div>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button type="button" variant="outline">
+                {t("lockDialog.cancel")}
+              </Button>
+            </DialogClose>
+            <Button
+              type="button"
+              disabled={busy}
+              onClick={() => {
+                const reason = lockReason.trim() || null;
+                setLockOpen(false);
+                setLockReason("");
+                void runLifecycle("lock", reason);
+              }}
+            >
+              <Lock className="size-4" />
+              {t("lockDialog.confirm")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

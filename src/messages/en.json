@@ -1129,6 +1129,14 @@
         "unclaimed": "No owner (unclaimed).",
         "owners": "Owners",
         "lockedReason": "Lock reason",
+        "lockDialog": {
+          "title": "Lock business",
+          "description": "It's pulled from public view and frozen for its owner. Add a reason for the audit trail.",
+          "reasonLabel": "Reason",
+          "reasonPlaceholder": "Why is this being locked?",
+          "cancel": "Cancel",
+          "confirm": "Lock business"
+        },
         "audit": "Audit",
         "lock": "Lock",
         "unlock": "Unlock",

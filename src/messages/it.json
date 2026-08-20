@@ -1129,6 +1129,14 @@
         "unclaimed": "Nessun titolare (non rivendicata).",
         "owners": "Titolari",
         "lockedReason": "Motivo del blocco",
+        "lockDialog": {
+          "title": "Blocca attività",
+          "description": "Viene rimossa dalla vista pubblica e congelata per il suo proprietario. Aggiungi un motivo alla pista di controllo.",
+          "reasonLabel": "Motivo",
+          "reasonPlaceholder": "Perché viene bloccata?",
+          "cancel": "Annulla",
+          "confirm": "Blocca attività"
+        },
         "audit": "Audit",
         "lock": "Blocca",
         "unlock": "Sblocca",
