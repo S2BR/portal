@@ -1,7 +1,6 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import Script from "next/script";
 import { useEffect } from "react";
 
 import {
@@ -11,19 +10,13 @@ import {
 } from "@/lib/analytics/consent";
 
 /**
- * Google Analytics 4 under Consent Mode v2. The tag loads with every storage default set to
- * `denied`, so nothing is written to the device until the visitor accepts in the banner — which
- * makes it legal-by-default even before a choice is made. Page views are sent manually on each
- * route change (App Router client navigations don't reload), tagged with the surface's content
- * group so the landing, social feed, and owner portal report separately in one property.
+ * Google Analytics 4 SPA page-view tracking under Consent Mode v2. The gtag base + loader scripts
+ * are emitted server-side from the root layout (an inline script rendered by a client component
+ * isn't executed by React on the client). This component only lifts previously-granted consent on
+ * load and sends a page_view on each App Router navigation (which don't reload the page), tagged
+ * with the surface's content group so landing, social feed, and owner portal report separately.
  */
-export function Analytics({
-  gaId,
-  authenticated,
-}: {
-  gaId: string;
-  authenticated: boolean;
-}) {
+export function Analytics({ authenticated }: { authenticated: boolean }) {
   const pathname = usePathname();
 
   // Return visit where consent was already granted — lift the default-denied state on load.
@@ -33,8 +26,8 @@ export function Analytics({
     }
   }, []);
 
-  // A page_view per route change. `send_page_view:false` disables gtag's automatic first hit, so
-  // this one path covers both the initial load and every client navigation.
+  // A page_view per route change. `send_page_view:false` (set in the base script) disables gtag's
+  // automatic first hit, so this one path covers both the initial load and every client navigation.
   useEffect(() => {
     if (typeof window.gtag !== "function") {
       return;
@@ -45,29 +38,5 @@ export function Analytics({
     });
   }, [pathname, authenticated]);
 
-  return (
-    <>
-      <Script
-        id="ga-base"
-        strategy="afterInteractive"
-        // Inline scripts must be set via dangerouslySetInnerHTML, not passed as children:
-        // a client component rendering a <script> with text children trips React's
-        // "scripts inside React components are never executed on the client" warning.
-        dangerouslySetInnerHTML={{
-          __html: `
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          window.gtag = gtag;
-          gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});
-          gtag('js', new Date());
-          gtag('config','${gaId}',{send_page_view:false,anonymize_ip:true});
-        `,
-        }}
-      />
-      <Script
-        src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
-        strategy="afterInteractive"
-      />
-    </>
-  );
+  return null;
 }

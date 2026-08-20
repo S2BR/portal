@@ -118,7 +118,32 @@ export default async function RootLayout({
           </DirectionProvider>
           <Toaster />
         </ThemeProvider>
-        {gaId ? <Analytics gaId={gaId} authenticated={authenticated} /> : null}
+        {gaId ? (
+          <>
+            {/* GA base + loader emitted server-side. An inline <script> rendered by a CLIENT
+                component isn't executed by React on the client (React 19 warns); server-rendered
+                scripts run natively. The base sets Consent Mode v2 to denied-by-default. Analytics
+                (client) only sends SPA page_views. */}
+            <script
+              id="ga-base"
+              dangerouslySetInnerHTML={{
+                __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  window.gtag = gtag;
+                  gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});
+                  gtag('js', new Date());
+                  gtag('config','${gaId}',{send_page_view:false,anonymize_ip:true});
+                `,
+              }}
+            />
+            <script
+              async
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+            />
+            <Analytics authenticated={authenticated} />
+          </>
+        ) : null}
         <SpeedInsights />
       </body>
     </html>
