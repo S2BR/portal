@@ -140,7 +140,10 @@ export async function uploadPresignedObject(
   const urlResponse = await fetch(`/api/uploads/${type}/url`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ content_type: file.type }),
+    body: JSON.stringify({
+      content_type: file.type,
+      ...(options.context ? { context: options.context } : {}),
+    }),
   });
   if (!urlResponse.ok) {
     return { ok: false, error: "url" };

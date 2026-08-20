@@ -109,7 +109,9 @@ export function ClaimBusinessButton({
         ...current,
         { id, name: file.name, status: "uploading" },
       ]);
-      void uploadPresignedObject("claim-proof", file).then((result) => {
+      void uploadPresignedObject("claim-proof", file, {
+        context: { type: "business", id: businessId },
+      }).then((result) => {
         // Size limit comes from the API (the presign response); the message names its value too.
         if (!result.ok && result.error === "size") {
           toast.error(
