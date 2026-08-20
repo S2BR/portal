@@ -1228,7 +1228,8 @@
     "submit": "Invia rivendicazione",
     "submitted": "La tua rivendicazione è stata inviata per l'esame.",
     "autoApproved": "Ora puoi gestire questa attività.",
-    "error": "Qualcosa è andato storto. Riprova."
+    "error": "Qualcosa è andato storto. Riprova.",
+    "proofTooLarge": "Ogni documento deve essere inferiore a 10 MB."
   },
   "claimableAlert": {
     "title": "Puoi rivendicare {count, plural, one {# scheda} other {# schede}}",
