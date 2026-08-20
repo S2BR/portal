@@ -47,16 +47,23 @@ export function Analytics({
 
   return (
     <>
-      <Script id="ga-base" strategy="afterInteractive">
-        {`
+      <Script
+        id="ga-base"
+        strategy="afterInteractive"
+        // Inline scripts must be set via dangerouslySetInnerHTML, not passed as children:
+        // a client component rendering a <script> with text children trips React's
+        // "scripts inside React components are never executed on the client" warning.
+        dangerouslySetInnerHTML={{
+          __html: `
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           window.gtag = gtag;
           gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});
           gtag('js', new Date());
           gtag('config','${gaId}',{send_page_view:false,anonymize_ip:true});
-        `}
-      </Script>
+        `,
+        }}
+      />
       <Script
         src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
         strategy="afterInteractive"
