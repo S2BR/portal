@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  BadgeCheck,
   Building2,
   CalendarDays,
   Camera,
@@ -14,6 +15,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { useCurrentUser } from "@/components/auth/current-user";
@@ -69,6 +71,12 @@ function DashboardContent({ user }: { user: AuthUser }) {
     passkeys: number;
     sessions: number;
   } | null>(null);
+  // Resolved on the client only (see the effect below): computing the time-of-day greeting during
+  // SSR risks a hydration mismatch when the server and client land on different sides of a period
+  // boundary (e.g. noon). Until it resolves, a time-neutral greeting is shown.
+  const [greeting, setGreeting] = useState<
+    "morning" | "afternoon" | "evening" | null
+  >(null);
 
   useEffect(() => {
     let active = true;
@@ -95,7 +103,29 @@ function DashboardContent({ user }: { user: AuthUser }) {
     };
   }, []);
 
-  const hour = new Date().getHours();
+  useEffect(() => {
+    // Prefer the user's configured timezone (their location); fall back to the device clock.
+    const hour = ((): number => {
+      if (user.timezone) {
+        try {
+          return Number(
+            new Intl.DateTimeFormat("en-US", {
+              hour: "2-digit",
+              hourCycle: "h23",
+              timeZone: user.timezone,
+            }).format(new Date()),
+          );
+        } catch {
+          // Unknown/invalid zone — fall through to the device clock.
+        }
+      }
+      return new Date().getHours();
+    })();
+    // Client-only derive on mount to avoid an SSR hydration mismatch across a period boundary.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setGreeting(greetingKey(hour));
+  }, [user.timezone]);
+
   const steps: {
     key: string;
     done: boolean;
@@ -140,7 +170,9 @@ function DashboardContent({ user }: { user: AuthUser }) {
           />
           <div className="min-w-0">
             <h1 className="font-heading truncate text-2xl font-semibold tracking-tight sm:text-3xl">
-              {t(`greeting.${greetingKey(hour)}`, { name: user.name })}
+              {greeting
+                ? t(`greeting.${greeting}`, { name: user.name })
+                : t("greeting.generic", { name: user.name })}
             </h1>
             <p className="text-muted-foreground text-sm">{t("subtitle")}</p>
           </div>
@@ -259,7 +291,13 @@ function DashboardContent({ user }: { user: AuthUser }) {
             icon={Building2}
             title={t("modules.business")}
             description={t("modules.businessDesc")}
-            soon={t("modules.soon")}
+            href="/portal/businesses"
+          />
+          <ModuleCard
+            icon={BadgeCheck}
+            title={t("modules.claims")}
+            description={t("modules.claimsDesc")}
+            href="/portal/claims"
           />
           <ModuleCard
             icon={Users}
@@ -326,33 +364,56 @@ function StatTile({
   );
 }
 
-/** A placeholder card for an upcoming product area. */
+/** A product-area card: a real link when `href` is set, otherwise a "soon" placeholder. */
 function ModuleCard({
   icon: Icon,
   title,
   description,
+  href,
   soon,
 }: {
   icon: LucideIcon;
   title: string;
   description: string;
-  soon: string;
+  href?: string;
+  soon?: string;
 }) {
-  return (
-    <div className="bg-muted/40 flex items-start gap-4 rounded-xl p-5">
+  const inner = (
+    <div
+      className={cn(
+        "bg-muted/40 flex items-center gap-4 rounded-xl p-5",
+        href && "hover:bg-muted/70 transition-colors",
+      )}
+    >
       <span className="bg-muted text-muted-foreground flex size-11 shrink-0 items-center justify-center rounded-lg">
         <Icon className="size-5" />
       </span>
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
           <h3 className="font-medium">{title}</h3>
-          <Badge variant="gold" className="text-[10px] uppercase">
-            {soon}
-          </Badge>
+          {soon ? (
+            <Badge variant="gold" className="text-[10px] uppercase">
+              {soon}
+            </Badge>
+          ) : null}
         </div>
         <p className="text-muted-foreground mt-1 text-sm">{description}</p>
       </div>
+      {href ? (
+        <ChevronRight className="text-muted-foreground size-5 shrink-0 rtl:rotate-180" />
+      ) : null}
     </div>
+  );
+
+  return href ? (
+    <Link
+      href={href}
+      className="focus-visible:ring-ring block rounded-xl outline-none focus-visible:ring-2"
+    >
+      {inner}
+    </Link>
+  ) : (
+    inner
   );
 }
 

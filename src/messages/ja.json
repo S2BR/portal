@@ -161,7 +161,8 @@
     "greeting": {
       "morning": "おはようございます、{name} さん",
       "afternoon": "こんにちは、{name} さん",
-      "evening": "こんばんは、{name} さん"
+      "evening": "こんばんは、{name} さん",
+      "generic": "こんにちは、{name}さん"
     },
     "subtitle": "アカウントの概要をご覧いただけます。",
     "setup": {
@@ -183,13 +184,29 @@
       "memberSince": "登録日"
     },
     "modules": {
-      "title": "近日公開",
-      "subtitle": "新しいスペースを準備中です。",
+      "title": "あなたのスペース",
+      "subtitle": "管理している項目にすぐアクセスできます。",
       "business": "ビジネス",
       "businessDesc": "ビジネスのプロフィール、掲載情報、チームを管理できます。",
+      "claims": "申請",
+      "claimsDesc": "申請したビジネスとそのステータスを確認できます。",
       "community": "コミュニティ",
       "communityDesc": "近くの運営者やメンバーとつながりましょう。",
       "soon": "近日公開"
+    }
+  },
+  "myClaims": {
+    "title": "自分の申請",
+    "subtitle": "提出した所有権の申請と、その状況。",
+    "empty": "まだ何も申請していません。ディレクトリであなたのビジネスを見つけて申請しましょう。",
+    "status": {
+      "pending": "審査中",
+      "approved": "承認済み",
+      "auto_approved": "承認済み",
+      "rejected": "非承認"
+    },
+    "type": {
+      "business": "ビジネス"
     }
   },
   "nav": {

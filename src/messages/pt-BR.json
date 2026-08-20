@@ -161,7 +161,8 @@
     "greeting": {
       "morning": "Bom dia, {name}",
       "afternoon": "Boa tarde, {name}",
-      "evening": "Boa noite, {name}"
+      "evening": "Boa noite, {name}",
+      "generic": "Olá, {name}"
     },
     "subtitle": "Uma visão rápida da sua conta.",
     "setup": {
@@ -183,13 +184,29 @@
       "memberSince": "Membro desde"
     },
     "modules": {
-      "title": "Em breve",
-      "subtitle": "Novos espaços estão a caminho.",
+      "title": "Seus espaços",
+      "subtitle": "Acesse o que você gerencia.",
       "business": "Negócios",
       "businessDesc": "Gerencie o perfil da sua empresa, seus anúncios e sua equipe.",
+      "claims": "Reivindicações",
+      "claimsDesc": "Acompanhe os negócios que você reivindicou e o status de cada um.",
       "community": "Comunidade",
       "communityDesc": "Conecte-se com operadores e membros perto de você.",
       "soon": "Em breve"
+    }
+  },
+  "myClaims": {
+    "title": "Minhas reivindicações",
+    "subtitle": "Reivindicações de propriedade que você enviou e a situação de cada uma.",
+    "empty": "Você ainda não reivindicou nada. Encontre seu negócio no diretório e reivindique-o.",
+    "status": {
+      "pending": "Em análise",
+      "approved": "Aprovada",
+      "auto_approved": "Aprovada",
+      "rejected": "Não aprovada"
+    },
+    "type": {
+      "business": "Negócio"
     }
   },
   "nav": {
