@@ -957,7 +957,7 @@
         "admin_review": "Examen par un administrateur"
       },
       "table": {
-        "business": "Entreprise",
+        "target": "Fiche",
         "claimant": "Revendicateur",
         "method": "Méthode",
         "status": "Statut",
@@ -982,8 +982,8 @@
         "reject": "Rejeter la revendication"
       },
       "toast": {
-        "approve": "Revendication approuvée.",
-        "reject": "Revendication rejetée."
+        "approved": "Revendication approuvée.",
+        "rejected": "Revendication rejetée."
       },
       "pagination": {
         "page": "Page {page} sur {total}",
@@ -1200,5 +1200,11 @@
     "submitted": "Votre revendication a été envoyée pour examen.",
     "autoApproved": "Vous pouvez maintenant gérer cette entreprise.",
     "error": "Une erreur est survenue. Veuillez réessayer."
+  },
+  "claimableAlert": {
+    "title": "Vous pouvez revendiquer {count, plural, one {# fiche} other {# fiches}}",
+    "body": "Votre courriel correspond. Prenez le contrôle pour {count, plural, one {la} other {les}} gérer.",
+    "cta": "{count, plural, one {Revendiquer} other {Les revendiquer}}",
+    "dismiss": "Ignorer"
   }
 }

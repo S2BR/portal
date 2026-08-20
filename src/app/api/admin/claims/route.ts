@@ -3,13 +3,20 @@ import { NextResponse } from "next/server";
 import { callWithAuth } from "@/lib/api/authed";
 import { rateLimitedResponse } from "@/lib/api/rate-limit";
 
-/** A business-ownership claim as the admin review queue shows it. */
+/** Where a claim points — a generic, polymorphic target (a business, a community, …). */
+export interface AdminClaimTarget {
+  type: string;
+  id: string;
+  label: string;
+}
+
+/** An ownership claim as the admin review queue shows it. */
 export interface AdminClaim {
   id: string;
   status: "pending" | "approved" | "rejected" | "auto_approved";
   method: "email_match" | "admin_review";
   claimant: { name: string | null; email: string | null };
-  business: { id: string; name: string; slug: string; is_claimed: boolean };
+  target: AdminClaimTarget;
   message: string | null;
   proof: string[];
   review_note: string | null;
@@ -31,9 +38,9 @@ const EMPTY: AdminClaimsPage = {
 const FILTERS = ["status", "page"] as const;
 
 /**
- * BFF: the operator business-claims review queue. Forwards the whitelisted filters to the admin API,
- * which enforces the super_admin role — a non-admin gets a 403 surfaced here. Degrades to an empty
- * page on an upstream blip so the surface stays intact.
+ * BFF: the operator claims review queue. Forwards the whitelisted filters to the admin API, which
+ * enforces the super_admin role — a non-admin gets a 403 surfaced here. Degrades to an empty page on
+ * an upstream blip so the surface stays intact.
  */
 export async function GET(request: Request): Promise<NextResponse> {
   const incoming = new URL(request.url).searchParams;
@@ -48,7 +55,7 @@ export async function GET(request: Request): Promise<NextResponse> {
 
   const response = await callWithAuth<
     AdminClaimsPage & { retry_after?: number | null; message?: string }
-  >({ method: "GET", path: `/admin/business-claims${suffix}` });
+  >({ method: "GET", path: `/admin/claims${suffix}` });
 
   if (response.ok) {
     return NextResponse.json({

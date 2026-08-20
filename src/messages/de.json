@@ -957,7 +957,7 @@
         "admin_review": "Prüfung durch Administrator"
       },
       "table": {
-        "business": "Unternehmen",
+        "target": "Eintrag",
         "claimant": "Antragsteller",
         "method": "Methode",
         "status": "Status",
@@ -982,8 +982,8 @@
         "reject": "Anspruch ablehnen"
       },
       "toast": {
-        "approve": "Anspruch genehmigt.",
-        "reject": "Anspruch abgelehnt."
+        "approved": "Anspruch genehmigt.",
+        "rejected": "Anspruch abgelehnt."
       },
       "pagination": {
         "page": "Seite {page} von {total}",
@@ -1200,5 +1200,11 @@
     "submitted": "Ihr Anspruch wurde zur Prüfung eingereicht.",
     "autoApproved": "Sie können dieses Unternehmen jetzt verwalten.",
     "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut."
+  },
+  "claimableAlert": {
+    "title": "Du kannst {count, plural, one {# Eintrag} other {# Einträge}} beanspruchen",
+    "body": "Deine E-Mail stimmt überein. Übernimm die Kontrolle, um {count, plural, one {ihn} other {sie}} zu verwalten.",
+    "cta": "{count, plural, one {Beanspruchen} other {Alle beanspruchen}}",
+    "dismiss": "Schließen"
   }
 }

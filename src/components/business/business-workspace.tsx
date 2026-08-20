@@ -5,6 +5,7 @@ import { useEffect, useState, type ReactNode } from "react";
 
 import { BusinessLocked } from "@/components/business/business-locked";
 import {
+  BusinessContentSkeleton,
   BusinessDashboardSkeleton,
   BusinessFormSkeleton,
 } from "@/components/business/business-skeletons";
@@ -91,8 +92,7 @@ export function BusinessWorkspace({
         setRateLimited(null);
         setUnavailable(false);
         const business = data?.business as
-          | { slug?: string; is_locked?: boolean }
-          | undefined;
+          { slug?: string; is_locked?: boolean } | undefined;
         setCanonicalSlug(business?.slug ?? null);
         setLocked(business?.is_locked ?? false);
         setAccess(business ? "granted" : "denied");
@@ -143,13 +143,21 @@ export function BusinessWorkspace({
   if (access !== "granted") {
     // Show the shape of the page being entered (the sidebar is already rendered by the layout)
     // instead of a spinner, so the workspace appears immediately and only the content fills in once
-    // access is confirmed. The information page is the detail form; everything else lands on the
-    // dashboard-style overview.
-    return pathname.endsWith("/information") ? (
-      <BusinessFormSkeleton />
-    ) : (
-      <BusinessDashboardSkeleton />
-    );
+    // access is confirmed. Each sub-page gets a skeleton matching its own loading state, so the
+    // access-check placeholder flows straight into the page (no dashboard flash on a content page):
+    // the information page is the detail form; reviews and offerings are content lists; the base
+    // route is the dashboard overview.
+    if (pathname.endsWith("/information")) {
+      return <BusinessFormSkeleton />;
+    }
+    if (
+      pathname.endsWith("/reviews") ||
+      pathname.endsWith("/services") ||
+      pathname.endsWith("/products")
+    ) {
+      return <BusinessContentSkeleton />;
+    }
+    return <BusinessDashboardSkeleton />;
   }
 
   return <>{children}</>;

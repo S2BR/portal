@@ -127,6 +127,27 @@ export function BusinessFormSkeleton() {
  * header, the insights banner, the row of stat cards, the trend chart, and the manage quick-links —
  * so the designed page shows immediately and only fills in.
  */
+/**
+ * The loading shape for a business content sub-page (reviews, offerings) — a heading plus a short
+ * stack of list cards. Deliberately matches those pages' own in-page loading state so the access-check
+ * placeholder flows straight into it, instead of flashing the full dashboard skeleton first.
+ */
+export function BusinessContentSkeleton() {
+  return (
+    <div className="space-y-8">
+      <div className="space-y-2">
+        <Skeleton className="h-8 w-48" />
+        <Skeleton className="h-4 w-72" />
+      </div>
+      <div className="space-y-4">
+        {Array.from({ length: 3 }).map((_, index) => (
+          <Skeleton key={index} className="h-28 w-full rounded-2xl" />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function BusinessDashboardSkeleton() {
   return (
     <div className="space-y-8">

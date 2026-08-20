@@ -58,14 +58,15 @@ export function ClaimBusinessButton({
   async function submit() {
     setBusy(true);
     try {
-      const response = await fetch(
-        `/api/businesses/${encodeURIComponent(businessId)}/claim`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: message.trim() || null }),
-        },
-      );
+      const response = await fetch("/api/claims", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "business",
+          id: businessId,
+          message: message.trim() || null,
+        }),
+      });
       const data = (await response.json()) as {
         status?: string;
         claim?: { status?: string };

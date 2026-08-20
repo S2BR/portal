@@ -5,24 +5,23 @@ import { rateLimitedResponse } from "@/lib/api/rate-limit";
 
 import type { AdminClaim } from "../route";
 
-/** Reviewing a claim from the queue: the action taken plus an optional internal note. */
+/** Reviewing a claim from the queue: the decision taken plus an optional internal note. */
 interface ReviewBody {
-  action?: "approve" | "reject";
+  decision?: "approved" | "rejected";
   note?: string | null;
 }
 
 /**
- * BFF: approve or reject a business-ownership claim. Maps the action to the matching admin API
- * endpoint; the API records the operator + note and enforces the super_admin role (a 403 is
- * surfaced here).
+ * BFF: approve or reject an ownership claim. Forwards the decision + note to the generic admin API
+ * endpoint; the API records the operator and enforces the super_admin role (a 403 is surfaced here).
  */
-export async function PUT(
+export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ): Promise<NextResponse> {
   const { id } = await params;
   const body = (await request.json().catch(() => ({}))) as ReviewBody;
-  const action = body.action === "reject" ? "reject" : "approve";
+  const decision = body.decision === "rejected" ? "rejected" : "approved";
 
   const response = await callWithAuth<
     { data: AdminClaim } & {
@@ -31,9 +30,9 @@ export async function PUT(
       retry_after?: number | null;
     }
   >({
-    method: "PUT",
-    path: `/admin/business-claims/${encodeURIComponent(id)}/${action}`,
-    body: { note: body.note ?? null },
+    method: "PATCH",
+    path: `/admin/claims/${encodeURIComponent(id)}`,
+    body: { decision, note: body.note ?? null },
   });
 
   if (response.ok) {

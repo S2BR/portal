@@ -957,7 +957,7 @@
         "admin_review": "Esame dell'amministratore"
       },
       "table": {
-        "business": "Attività",
+        "target": "Scheda",
         "claimant": "Richiedente",
         "method": "Metodo",
         "status": "Stato",
@@ -982,8 +982,8 @@
         "reject": "Rifiuta rivendicazione"
       },
       "toast": {
-        "approve": "Rivendicazione approvata.",
-        "reject": "Rivendicazione rifiutata."
+        "approved": "Rivendicazione approvata.",
+        "rejected": "Rivendicazione rifiutata."
       },
       "pagination": {
         "page": "Pagina {page} di {total}",
@@ -1200,5 +1200,11 @@
     "submitted": "La tua rivendicazione è stata inviata per l'esame.",
     "autoApproved": "Ora puoi gestire questa attività.",
     "error": "Qualcosa è andato storto. Riprova."
+  },
+  "claimableAlert": {
+    "title": "Puoi rivendicare {count, plural, one {# scheda} other {# schede}}",
+    "body": "La tua email corrisponde. Prendi il controllo per gestir{count, plural, one {la} other {le}}.",
+    "cta": "{count, plural, one {Rivendica} other {Rivendicale}}",
+    "dismiss": "Ignora"
   }
 }

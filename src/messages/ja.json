@@ -957,7 +957,7 @@
         "admin_review": "管理者による審査"
       },
       "table": {
-        "business": "ビジネス",
+        "target": "対象",
         "claimant": "申請者",
         "method": "方法",
         "status": "ステータス",
@@ -982,8 +982,8 @@
         "reject": "申請を却下"
       },
       "toast": {
-        "approve": "申請を承認しました。",
-        "reject": "申請を却下しました。"
+        "approved": "申請を承認しました。",
+        "rejected": "申請を却下しました。"
       },
       "pagination": {
         "page": "{total} ページ中 {page} ページ",
@@ -1200,5 +1200,11 @@
     "submitted": "申請を審査のため送信しました。",
     "autoApproved": "このビジネスをご自身で管理できるようになりました。",
     "error": "問題が発生しました。もう一度お試しください。"
+  },
+  "claimableAlert": {
+    "title": "{count}件のリスティングを申請できます",
+    "body": "メールアドレスが一致しました。所有権を取得して管理しましょう。",
+    "cta": "申請する",
+    "dismiss": "閉じる"
   }
 }

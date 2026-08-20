@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import type {
   AdminClaim,
   AdminClaimsPage,
-} from "@/app/api/admin/business-claims/route";
+} from "@/app/api/admin/claims/route";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -53,7 +53,7 @@ const STATUS_VARIANT: Record<string, BadgeVariant> = {
 };
 
 /**
- * The operator business-claims review queue: pending ownership claims first, filterable by status.
+ * The operator claims review queue: pending ownership claims first, filterable by status.
  * A row opens a detail panel with the claimant's message, the submitted proof images, and — for a
  * pending claim — the approve/reject actions with an optional internal note. The API enforces the
  * super_admin role.
@@ -75,9 +75,7 @@ export function ClaimsQueue() {
     if (status !== ALL) query.set("status", status);
     if (page > 1) query.set("page", String(page));
     try {
-      const response = await fetch(
-        `/api/admin/business-claims?${query.toString()}`,
-      );
+      const response = await fetch(`/api/admin/claims?${query.toString()}`);
       if (response.status === 403) {
         toast.error(t("forbidden"));
         return;
@@ -151,7 +149,7 @@ export function ClaimsQueue() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>{t("table.business")}</TableHead>
+                <TableHead>{t("table.target")}</TableHead>
                 <TableHead>{t("table.claimant")}</TableHead>
                 <TableHead>{t("table.method")}</TableHead>
                 <TableHead>{t("table.status")}</TableHead>
@@ -167,7 +165,7 @@ export function ClaimsQueue() {
                 >
                   <TableCell>
                     <span className="block max-w-xs truncate font-medium">
-                      {claim.business.name}
+                      {claim.target.label}
                     </span>
                   </TableCell>
                   <TableCell className="text-muted-foreground">
@@ -264,14 +262,14 @@ function ClaimDetail({
     return null;
   }
 
-  async function review(action: "approve" | "reject") {
+  async function review(decision: "approved" | "rejected") {
     setBusy(true);
     const response = await fetch(
-      `/api/admin/business-claims/${encodeURIComponent(claim!.id)}`,
+      `/api/admin/claims/${encodeURIComponent(claim!.id)}`,
       {
-        method: "PUT",
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action, note: note.trim() || null }),
+        body: JSON.stringify({ decision, note: note.trim() || null }),
       },
     );
     setBusy(false);
@@ -279,7 +277,7 @@ function ClaimDetail({
       toast.error(t(response.status === 403 ? "forbidden" : "actionError"));
       return;
     }
-    toast.success(t(`toast.${action}`));
+    toast.success(t(`toast.${decision}`));
     await onActioned();
   }
 
@@ -299,7 +297,7 @@ function ClaimDetail({
               </Badge>
               <Badge variant="neutral">{t(`method.${claim.method}`)}</Badge>
             </div>
-            <SheetTitle className="text-xl">{claim.business.name}</SheetTitle>
+            <SheetTitle className="text-xl">{claim.target.label}</SheetTitle>
             <SheetDescription>
               {t("detail.claimant")}:{" "}
               {claim.claimant.name ?? claim.claimant.email ?? "—"} ·{" "}
@@ -307,17 +305,19 @@ function ClaimDetail({
             </SheetDescription>
           </div>
 
-          {/* Business link */}
-          <Button asChild variant="outline" size="sm">
-            <Link
-              href={`/businesses/${encodeURIComponent(claim.business.slug)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <ExternalLink className="size-4" />
-              {t("detail.viewPublic")}
-            </Link>
-          </Button>
+          {/* Public page link — only targets with a public surface (a business today) */}
+          {claim.target.type === "business" ? (
+            <Button asChild variant="outline" size="sm">
+              <Link
+                href={`/businesses/${encodeURIComponent(claim.target.id)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <ExternalLink className="size-4" />
+                {t("detail.viewPublic")}
+              </Link>
+            </Button>
+          ) : null}
 
           {/* Claimant, in full */}
           <Section title={t("detail.claimant")}>
@@ -408,7 +408,7 @@ function ClaimDetail({
                   type="button"
                   size="sm"
                   disabled={busy}
-                  onClick={() => void review("approve")}
+                  onClick={() => void review("approved")}
                 >
                   {t("actions.approve")}
                 </Button>
@@ -417,7 +417,7 @@ function ClaimDetail({
                   variant="destructive"
                   size="sm"
                   disabled={busy}
-                  onClick={() => void review("reject")}
+                  onClick={() => void review("rejected")}
                 >
                   {t("actions.reject")}
                 </Button>

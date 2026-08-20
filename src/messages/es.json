@@ -957,7 +957,7 @@
         "admin_review": "Revisión de administrador"
       },
       "table": {
-        "business": "Negocio",
+        "target": "Ficha",
         "claimant": "Reclamante",
         "method": "Método",
         "status": "Estado",
@@ -982,8 +982,8 @@
         "reject": "Rechazar reclamación"
       },
       "toast": {
-        "approve": "Reclamación aprobada.",
-        "reject": "Reclamación rechazada."
+        "approved": "Reclamación aprobada.",
+        "rejected": "Reclamación rechazada."
       },
       "pagination": {
         "page": "Página {page} de {total}",
@@ -1200,5 +1200,11 @@
     "submitted": "Tu reclamación se ha enviado para revisión.",
     "autoApproved": "Este negocio ya es tuyo para administrarlo.",
     "error": "Algo salió mal. Inténtalo de nuevo."
+  },
+  "claimableAlert": {
+    "title": "Puedes reclamar {count, plural, one {# ficha} other {# fichas}}",
+    "body": "Tu correo coincide. Toma el control para gestionar{count, plural, one {la} other {las}}.",
+    "cta": "{count, plural, one {Reclamar} other {Reclamarlas}}",
+    "dismiss": "Descartar"
   }
 }
