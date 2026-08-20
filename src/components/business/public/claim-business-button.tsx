@@ -1,9 +1,16 @@
 "use client";
 
-import { BadgeCheck } from "lucide-react";
+import {
+  AlertCircle,
+  BadgeCheck,
+  Check,
+  Loader2,
+  Paperclip,
+  X,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { useCurrentUser } from "@/components/auth/current-user";
@@ -19,13 +26,24 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { uploadPresignedObject } from "@/lib/uploads/upload";
+
+const MAX_PROOFS = 6;
+const ACCEPT = "image/jpeg,image/png,image/webp,application/pdf";
+
+type Proof = {
+  id: string;
+  name: string;
+  status: "uploading" | "done" | "error";
+  key?: string;
+};
 
 /**
  * "Claim this business" — shown on an unclaimed public profile so the real owner can take ownership.
  * Self-contained (renders its own trigger) so it drops into the server-rendered profile like the
  * report dialog. A verified email match is granted instantly by the API (we route the new owner to
- * the editor); otherwise the claim + message is queued for operator review. Signed-out visitors are
- * sent to log in first.
+ * the editor); otherwise the claim + message + any proof documents are queued for operator review.
+ * Signed-out visitors are sent to log in first.
  */
 export function ClaimBusinessButton({
   businessId,
@@ -40,7 +58,12 @@ export function ClaimBusinessButton({
 
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
+  const [proofs, setProofs] = useState<Proof[]>([]);
   const [busy, setBusy] = useState(false);
+  const fileInput = useRef<HTMLInputElement>(null);
+  const nextId = useRef(0);
+
+  const uploading = proofs.some((proof) => proof.status === "uploading");
 
   if (isClaimed) {
     return null;
@@ -55,9 +78,46 @@ export function ClaimBusinessButton({
     setOpen(true);
   }
 
+  function reset(next: boolean) {
+    setOpen(next);
+    if (!next) {
+      setMessage("");
+      setProofs([]);
+    }
+  }
+
+  function addFiles(list: FileList | null) {
+    if (!list) {
+      return;
+    }
+    const room = MAX_PROOFS - proofs.length;
+    for (const file of Array.from(list).slice(0, Math.max(0, room))) {
+      const id = String(++nextId.current);
+      setProofs((current) => [
+        ...current,
+        { id, name: file.name, status: "uploading" },
+      ]);
+      void uploadPresignedObject("claim-proof", file).then((result) => {
+        setProofs((current) =>
+          current.map((proof) =>
+            proof.id === id
+              ? result.ok
+                ? { ...proof, status: "done", key: result.key }
+                : { ...proof, status: "error" }
+              : proof,
+          ),
+        );
+      });
+    }
+  }
+
   async function submit() {
     setBusy(true);
     try {
+      const proof = proofs
+        .filter((entry) => entry.status === "done" && entry.key)
+        .map((entry) => entry.key as string);
+
       const response = await fetch("/api/claims", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -65,6 +125,7 @@ export function ClaimBusinessButton({
           type: "business",
           id: businessId,
           message: message.trim() || null,
+          ...(proof.length > 0 ? { proof } : {}),
         }),
       });
       const data = (await response.json()) as {
@@ -74,7 +135,7 @@ export function ClaimBusinessButton({
       };
 
       if (data.status === "ok") {
-        setOpen(false);
+        reset(false);
         if (data.claim?.status === "auto_approved") {
           toast.success(t("autoApproved"));
           router.push("/portal/businesses");
@@ -103,7 +164,7 @@ export function ClaimBusinessButton({
         {t("cta")}
       </button>
 
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={reset}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{t("title")}</DialogTitle>
@@ -123,13 +184,74 @@ export function ClaimBusinessButton({
             <p className="text-muted-foreground text-xs">{t("reviewNote")}</p>
           </div>
 
+          <div className="space-y-2">
+            <Label>{t("proofLabel")}</Label>
+            <p className="text-muted-foreground text-xs">{t("proofHint")}</p>
+
+            {proofs.length > 0 ? (
+              <ul className="space-y-1.5">
+                {proofs.map((proof) => (
+                  <li
+                    key={proof.id}
+                    className="bg-muted/40 flex items-center gap-2 rounded-lg px-3 py-2 text-sm"
+                  >
+                    {proof.status === "uploading" ? (
+                      <Loader2 className="text-muted-foreground size-4 shrink-0 animate-spin" />
+                    ) : proof.status === "error" ? (
+                      <AlertCircle className="text-destructive size-4 shrink-0" />
+                    ) : (
+                      <Check className="text-brand-green size-4 shrink-0" />
+                    )}
+                    <span className="min-w-0 flex-1 truncate">{proof.name}</span>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setProofs((current) =>
+                          current.filter((entry) => entry.id !== proof.id),
+                        )
+                      }
+                      className="text-muted-foreground hover:text-foreground shrink-0"
+                      aria-label={t("proofRemove")}
+                    >
+                      <X className="size-4" />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+
+            {proofs.length < MAX_PROOFS ? (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={busy}
+                onClick={() => fileInput.current?.click()}
+              >
+                <Paperclip className="size-4" />
+                {t("proofAdd")}
+              </Button>
+            ) : null}
+            <input
+              ref={fileInput}
+              type="file"
+              accept={ACCEPT}
+              multiple
+              hidden
+              onChange={(event) => {
+                addFiles(event.target.files);
+                event.target.value = "";
+              }}
+            />
+          </div>
+
           <DialogFooter>
             <DialogClose asChild>
               <Button variant="ghost" disabled={busy}>
                 {t("cancel")}
               </Button>
             </DialogClose>
-            <Button onClick={submit} disabled={busy}>
+            <Button onClick={submit} disabled={busy || uploading}>
               {t("submit")}
             </Button>
           </DialogFooter>

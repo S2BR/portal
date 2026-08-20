@@ -91,6 +91,35 @@ export async function removeUpload<T = unknown>(
   return { ok: true, data: (await response.json()) as T };
 }
 
+/**
+ * Upload a file for a PRESIGN-ONLY upload type — one whose object is referenced elsewhere rather
+ * than confirmed here (e.g. claim proof, whose key is stored on the claim submission). Mints a
+ * presigned PUT url, uploads straight to S3, and returns the object KEY; there is no attach step.
+ */
+export async function uploadPresignedObject(
+  type: string,
+  file: File,
+  options: UploadOptions = {},
+): Promise<{ ok: boolean; key?: string; error?: "url" | "s3" }> {
+  const urlResponse = await fetch(`/api/uploads/${type}/url`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ content_type: file.type }),
+  });
+  if (!urlResponse.ok) {
+    return { ok: false, error: "url" };
+  }
+  const signed = (await urlResponse.json()) as SignedUpload;
+
+  options.onPhase?.("uploading");
+  try {
+    await putToS3(signed, file, options);
+  } catch {
+    return { ok: false, error: "s3" };
+  }
+  return { ok: true, key: signed.key };
+}
+
 /** PUT the file straight to the presigned S3 url. XHR, not fetch, for upload progress. */
 export function putToS3(
   signed: SignedUpload,
