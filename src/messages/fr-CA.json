@@ -161,7 +161,8 @@
     "greeting": {
       "morning": "Bonjour, {name}",
       "afternoon": "Bon après-midi, {name}",
-      "evening": "Bonsoir, {name}"
+      "evening": "Bonsoir, {name}",
+      "generic": "Bonjour, {name}"
     },
     "subtitle": "Un aperçu rapide de votre compte.",
     "setup": {
@@ -183,13 +184,29 @@
       "memberSince": "Membre depuis"
     },
     "modules": {
-      "title": "Bientôt disponible",
-      "subtitle": "De nouveaux espaces arrivent.",
+      "title": "Vos espaces",
+      "subtitle": "Accédez à ce que vous gérez.",
       "business": "Entreprise",
       "businessDesc": "Gérez le profil de votre entreprise, vos annonces et votre équipe.",
+      "claims": "Revendications",
+      "claimsDesc": "Suivez les entreprises que vous avez revendiquées et leur statut.",
       "community": "Communauté",
       "communityDesc": "Connectez-vous avec des responsables et des membres près de chez vous.",
       "soon": "Bientôt"
+    }
+  },
+  "myClaims": {
+    "title": "Mes revendications",
+    "subtitle": "Revendications de propriété que vous avez soumises et leur état.",
+    "empty": "Vous n'avez encore rien revendiqué. Trouvez votre entreprise dans le répertoire et revendiquez-la.",
+    "status": {
+      "pending": "En cours d'examen",
+      "approved": "Approuvée",
+      "auto_approved": "Approuvée",
+      "rejected": "Non approuvée"
+    },
+    "type": {
+      "business": "Entreprise"
     }
   },
   "nav": {

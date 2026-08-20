@@ -161,7 +161,8 @@
     "greeting": {
       "morning": "Good morning, {name}",
       "afternoon": "Good afternoon, {name}",
-      "evening": "Good evening, {name}"
+      "evening": "Good evening, {name}",
+      "generic": "Hello, {name}"
     },
     "subtitle": "Here's a quick look at your account.",
     "setup": {
@@ -183,13 +184,29 @@
       "memberSince": "Member since"
     },
     "modules": {
-      "title": "Coming soon",
-      "subtitle": "New spaces are on the way.",
+      "title": "Your spaces",
+      "subtitle": "Jump into what you manage.",
       "business": "Business",
       "businessDesc": "Manage your business profile, listings, and team.",
+      "claims": "Claims",
+      "claimsDesc": "Track the businesses you've claimed and their status.",
       "community": "Community",
       "communityDesc": "Connect with operators and members near you.",
       "soon": "Soon"
+    }
+  },
+  "myClaims": {
+    "title": "My claims",
+    "subtitle": "Ownership claims you've submitted and where they stand.",
+    "empty": "You haven't claimed anything yet. Find your business in the directory and claim it.",
+    "status": {
+      "pending": "Under review",
+      "approved": "Approved",
+      "auto_approved": "Approved",
+      "rejected": "Not approved"
+    },
+    "type": {
+      "business": "Business"
     }
   },
   "nav": {

@@ -161,7 +161,8 @@
     "greeting": {
       "morning": "Buongiorno, {name}",
       "afternoon": "Buon pomeriggio, {name}",
-      "evening": "Buonasera, {name}"
+      "evening": "Buonasera, {name}",
+      "generic": "Ciao, {name}"
     },
     "subtitle": "Ecco una rapida panoramica del tuo account.",
     "setup": {
@@ -183,13 +184,29 @@
       "memberSince": "Membro dal"
     },
     "modules": {
-      "title": "Prossimamente",
-      "subtitle": "Nuovi spazi sono in arrivo.",
+      "title": "I tuoi spazi",
+      "subtitle": "Entra in ciò che gestisci.",
       "business": "Attività",
       "businessDesc": "Gestisci il profilo della tua attività, le inserzioni e il tuo team.",
+      "claims": "Rivendicazioni",
+      "claimsDesc": "Tieni traccia delle attività che hai rivendicato e del loro stato.",
       "community": "Comunità",
       "communityDesc": "Connettiti con responsabili e membri vicino a te.",
       "soon": "Presto"
+    }
+  },
+  "myClaims": {
+    "title": "Le mie rivendicazioni",
+    "subtitle": "Rivendicazioni di proprietà che hai inviato e il loro stato.",
+    "empty": "Non hai ancora rivendicato nulla. Trova la tua attività nella directory e rivendicala.",
+    "status": {
+      "pending": "In revisione",
+      "approved": "Approvata",
+      "auto_approved": "Approvata",
+      "rejected": "Non approvata"
+    },
+    "type": {
+      "business": "Attività"
     }
   },
   "nav": {

@@ -161,7 +161,8 @@
     "greeting": {
       "morning": "Guten Morgen, {name}",
       "afternoon": "Guten Tag, {name}",
-      "evening": "Guten Abend, {name}"
+      "evening": "Guten Abend, {name}",
+      "generic": "Hallo, {name}"
     },
     "subtitle": "Hier ist ein kurzer Überblick über Ihr Konto.",
     "setup": {
@@ -183,13 +184,29 @@
       "memberSince": "Mitglied seit"
     },
     "modules": {
-      "title": "Demnächst verfügbar",
-      "subtitle": "Neue Bereiche sind unterwegs.",
+      "title": "Ihre Bereiche",
+      "subtitle": "Springen Sie direkt zu dem, was Sie verwalten.",
       "business": "Unternehmen",
       "businessDesc": "Verwalten Sie Ihr Unternehmensprofil, Ihre Einträge und Ihr Team.",
+      "claims": "Ansprüche",
+      "claimsDesc": "Behalten Sie die von Ihnen beanspruchten Unternehmen und deren Status im Blick.",
       "community": "Community",
       "communityDesc": "Vernetzen Sie sich mit Betreibern und Mitgliedern in Ihrer Nähe.",
       "soon": "Bald"
+    }
+  },
+  "myClaims": {
+    "title": "Meine Ansprüche",
+    "subtitle": "Eigentumsansprüche, die Sie eingereicht haben, und deren Stand.",
+    "empty": "Sie haben noch nichts beansprucht. Finden Sie Ihr Unternehmen im Verzeichnis und beanspruchen Sie es.",
+    "status": {
+      "pending": "In Prüfung",
+      "approved": "Genehmigt",
+      "auto_approved": "Genehmigt",
+      "rejected": "Nicht genehmigt"
+    },
+    "type": {
+      "business": "Unternehmen"
     }
   },
   "nav": {

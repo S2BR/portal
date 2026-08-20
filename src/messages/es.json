@@ -161,7 +161,8 @@
     "greeting": {
       "morning": "Buenos días, {name}",
       "afternoon": "Buenas tardes, {name}",
-      "evening": "Buenas noches, {name}"
+      "evening": "Buenas noches, {name}",
+      "generic": "Hola, {name}"
     },
     "subtitle": "Un vistazo rápido a tu cuenta.",
     "setup": {
@@ -183,13 +184,29 @@
       "memberSince": "Miembro desde"
     },
     "modules": {
-      "title": "Próximamente",
-      "subtitle": "Pronto llegarán nuevos espacios.",
+      "title": "Tus espacios",
+      "subtitle": "Entra en lo que gestionas.",
       "business": "Negocios",
       "businessDesc": "Gestiona el perfil de tu negocio, tus anuncios y tu equipo.",
+      "claims": "Reclamaciones",
+      "claimsDesc": "Haz seguimiento de los negocios que has reclamado y su estado.",
       "community": "Comunidad",
       "communityDesc": "Conecta con operadores y miembros cerca de ti.",
       "soon": "Pronto"
+    }
+  },
+  "myClaims": {
+    "title": "Mis reclamaciones",
+    "subtitle": "Reclamaciones de propiedad que has enviado y su situación.",
+    "empty": "Aún no has reclamado nada. Encuentra tu negocio en el directorio y reclámalo.",
+    "status": {
+      "pending": "En revisión",
+      "approved": "Aprobada",
+      "auto_approved": "Aprobada",
+      "rejected": "No aprobada"
+    },
+    "type": {
+      "business": "Negocio"
     }
   },
   "nav": {
