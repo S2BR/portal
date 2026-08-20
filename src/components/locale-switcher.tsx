@@ -2,15 +2,16 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
+import { createPortal } from "react-dom";
 
+import { LanguageCards } from "@/components/auth/language-cards";
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { setLocale } from "@/i18n/actions";
 import { isLocale, localeNames, locales, type Locale } from "@/i18n/config";
 import { cn } from "@/lib/utils";
@@ -37,6 +38,11 @@ function LocaleFlag({
   );
 }
 
+/**
+ * The header language switcher: a compact flag button that opens the same greeting-card picker used
+ * in Settings, at a two-column density in a narrow popover — so the header and settings share one
+ * control and one look. Selecting a language persists it and refreshes the tree.
+ */
 export function LocaleSwitcher({
   variant = "ghost",
 }: {
@@ -47,8 +53,13 @@ export function LocaleSwitcher({
   const t = useTranslations("locale");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [open, setOpen] = useState(false);
 
   function selectLocale(next: Locale) {
+    setOpen(false);
+    if (next === activeLocale) {
+      return;
+    }
     startTransition(async () => {
       await setLocale(next);
       router.refresh();
@@ -56,31 +67,48 @@ export function LocaleSwitcher({
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant={variant}
-          size="icon"
-          aria-label={t("label")}
-          disabled={isPending}
+    <>
+      {/* A soft blur scrim behind the open picker — the same effect as the category "Can't find
+          your category?" feedback popover. Portaled to <body> so `fixed` covers the whole viewport
+          (rendered in the header, an ancestor's containing block would clip it to the header strip),
+          at z-[9] — just under the header's z-10 — so the page blurs while the header (and its
+          language button) stay crisp on top. The popover content (z-50) sits above it. */}
+      {open && typeof document !== "undefined"
+        ? createPortal(
+            <div
+              aria-hidden
+              onPointerDown={() => setOpen(false)}
+              className="animate-in fade-in-0 fixed inset-0 z-[9] bg-black/10 backdrop-blur-[3px]"
+            />,
+            document.body,
+          )
+        : null}
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant={variant}
+            aria-label={t("label")}
+            disabled={isPending}
+            className="gap-2"
+          >
+            <LocaleFlag locale={activeLocale} />
+            {/* The current language's own name — region dropped so the trigger stays compact. */}
+            <span className="text-sm font-medium">
+              {localeNames[activeLocale].replace(/\s*\(.+\)$/, "")}
+            </span>
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent
+          align="end"
+          className="w-[34rem] max-w-[calc(100vw-2rem)] p-4"
         >
-          <LocaleFlag locale={activeLocale} />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-56">
-        {locales.map((option) => (
-          <DropdownMenuItem key={option} onClick={() => selectLocale(option)}>
-            <LocaleFlag locale={option} />
-            <span className="whitespace-nowrap">{localeNames[option]}</span>
-            {option === activeLocale ? (
-              <span
-                className="bg-brand-green ms-auto size-2 shrink-0 rounded-full"
-                aria-hidden
-              />
-            ) : null}
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+          <LanguageCards
+            value={activeLocale}
+            onSelect={selectLocale}
+            className="grid-cols-4 sm:grid-cols-4"
+          />
+        </PopoverContent>
+      </Popover>
+    </>
   );
 }
