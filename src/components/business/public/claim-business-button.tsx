@@ -29,6 +29,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { uploadPresignedObject } from "@/lib/uploads/upload";
 
 const MAX_PROOFS = 6;
+// Keep in step with the API's `uploads.documents.max_bytes` (10 MB). A client guard so an oversized
+// file never uploads; the API re-checks on submit and rejects anyway.
+const MAX_BYTES = 10 * 1024 * 1024;
 const ACCEPT = "image/jpeg,image/png,image/webp,application/pdf";
 
 type Proof = {
@@ -92,6 +95,10 @@ export function ClaimBusinessButton({
     }
     const room = MAX_PROOFS - proofs.length;
     for (const file of Array.from(list).slice(0, Math.max(0, room))) {
+      if (file.size > MAX_BYTES) {
+        toast.error(t("proofTooLarge"));
+        continue;
+      }
       const id = String(++nextId.current);
       setProofs((current) => [
         ...current,

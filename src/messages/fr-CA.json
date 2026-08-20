@@ -1228,7 +1228,8 @@
     "submit": "Envoyer la revendication",
     "submitted": "Votre revendication a été envoyée pour examen.",
     "autoApproved": "Vous pouvez maintenant gérer cette entreprise.",
-    "error": "Une erreur est survenue. Veuillez réessayer."
+    "error": "Une erreur est survenue. Veuillez réessayer.",
+    "proofTooLarge": "Chaque document doit faire moins de 10 Mo."
   },
   "claimableAlert": {
     "title": "Vous pouvez revendiquer {count, plural, one {# fiche} other {# fiches}}",

@@ -1228,7 +1228,8 @@
     "submit": "Enviar reivindicação",
     "submitted": "Sua reivindicação foi enviada para análise.",
     "autoApproved": "Agora este negócio é seu para administrar.",
-    "error": "Algo deu errado. Tente novamente."
+    "error": "Algo deu errado. Tente novamente.",
+    "proofTooLarge": "Cada documento deve ter menos de 10 MB."
   },
   "claimableAlert": {
     "title": "Você pode reivindicar {count, plural, one {# ficha} other {# fichas}}",

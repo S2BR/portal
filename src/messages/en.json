@@ -1228,7 +1228,8 @@
     "submit": "Submit claim",
     "submitted": "Your claim has been submitted for review.",
     "autoApproved": "This business is now yours to manage.",
-    "error": "Something went wrong. Please try again."
+    "error": "Something went wrong. Please try again.",
+    "proofTooLarge": "Each document must be under 10 MB."
   },
   "claimableAlert": {
     "title": "You can claim {count, plural, one {# listing} other {# listings}}",
