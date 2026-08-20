@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { useCurrentUser } from "@/components/auth/current-user";
@@ -26,13 +26,11 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { uploadPresignedObject } from "@/lib/uploads/upload";
-
-const MAX_PROOFS = 6;
-// Keep in step with the API's `uploads.documents.max_bytes` (10 MB). A client guard so an oversized
-// file never uploads; the API re-checks on submit and rejects anyway.
-const MAX_BYTES = 10 * 1024 * 1024;
-const ACCEPT = "image/jpeg,image/png,image/webp,application/pdf";
+import {
+  fetchUploadConfig,
+  uploadPresignedObject,
+  type UploadConfig,
+} from "@/lib/uploads/upload";
 
 type Proof = {
   id: string;
@@ -63,10 +61,21 @@ export function ClaimBusinessButton({
   const [message, setMessage] = useState("");
   const [proofs, setProofs] = useState<Proof[]>([]);
   const [busy, setBusy] = useState(false);
+  const [config, setConfig] = useState<UploadConfig | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
   const nextId = useRef(0);
 
+  // Load the claim-proof upload limits from the API (accepted types + file cap) the first time the
+  // dialog opens — the source of truth, so nothing here is hardcoded.
+  useEffect(() => {
+    if (open && !config) {
+      void fetchUploadConfig("claim-proof").then(setConfig);
+    }
+  }, [open, config]);
+
   const uploading = proofs.some((proof) => proof.status === "uploading");
+  const maxFiles = config?.max_files ?? 0;
+  const accept = config?.mime_types.join(",");
 
   if (isClaimed) {
     return null;
@@ -93,18 +102,22 @@ export function ClaimBusinessButton({
     if (!list) {
       return;
     }
-    const room = MAX_PROOFS - proofs.length;
+    const room = maxFiles - proofs.length;
     for (const file of Array.from(list).slice(0, Math.max(0, room))) {
-      if (file.size > MAX_BYTES) {
-        toast.error(t("proofTooLarge"));
-        continue;
-      }
       const id = String(++nextId.current);
       setProofs((current) => [
         ...current,
         { id, name: file.name, status: "uploading" },
       ]);
       void uploadPresignedObject("claim-proof", file).then((result) => {
+        // Size limit comes from the API (the presign response); the message names its value too.
+        if (!result.ok && result.error === "size") {
+          toast.error(
+            t("proofTooLarge", {
+              size: `${Math.round((config?.max_bytes ?? 0) / (1024 * 1024))} MB`,
+            }),
+          );
+        }
         setProofs((current) =>
           current.map((proof) =>
             proof.id === id
@@ -227,7 +240,7 @@ export function ClaimBusinessButton({
               </ul>
             ) : null}
 
-            {proofs.length < MAX_PROOFS ? (
+            {proofs.length < maxFiles ? (
               <Button
                 type="button"
                 variant="outline"
@@ -242,7 +255,7 @@ export function ClaimBusinessButton({
             <input
               ref={fileInput}
               type="file"
-              accept={ACCEPT}
+              accept={accept}
               multiple
               hidden
               onChange={(event) => {

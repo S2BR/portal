@@ -2,13 +2,43 @@ export interface SignedUpload {
   url: string;
   headers: Record<string, string>;
   key: string;
+  /** The type's server-side limits, so the client enforces the same source of truth. */
+  max_bytes: number;
+  mime_types: string[];
 }
 
 export interface UploadOutcome<T> {
   ok: boolean;
   data?: T;
-  /** Where it failed: minting the url, the S3 PUT, or the confirm step. */
-  error?: "url" | "s3" | "attach";
+  /** Where it failed: file too large, minting the url, the S3 PUT, or the confirm step. */
+  error?: "size" | "url" | "s3" | "attach";
+}
+
+/** An upload type's client-facing limits, from the API — the frontend hardcodes none of these. */
+export interface UploadConfig {
+  max_bytes: number;
+  mime_types: string[];
+  /** How many objects the target may hold, or null for a single-object kind (avatar, logo). */
+  max_files: number | null;
+}
+
+/**
+ * Fetch an upload type's limits (accepted types, size cap, file-count cap) from the API — the source
+ * of truth — so the picker never hardcodes them and an API change applies with no frontend edit.
+ * Returns null on any failure (the caller falls back to letting the API enforce on upload).
+ */
+export async function fetchUploadConfig(
+  type: string,
+): Promise<UploadConfig | null> {
+  try {
+    const response = await fetch(`/api/uploads/${type}/config`);
+    if (!response.ok) {
+      return null;
+    }
+    return (await response.json()) as UploadConfig;
+  } catch {
+    return null;
+  }
 }
 
 export interface UploadOptions {
@@ -48,6 +78,12 @@ export async function uploadFile<T = unknown>(
     return { ok: false, error: "url" };
   }
   const signed = (await urlResponse.json()) as SignedUpload;
+
+  // Enforce the API's size limit (the source of truth, carried in the presign response) before the
+  // upload — the server also re-checks on attach.
+  if (file.size > signed.max_bytes) {
+    return { ok: false, error: "size" };
+  }
 
   options.onPhase?.("uploading");
   try {
@@ -100,7 +136,7 @@ export async function uploadPresignedObject(
   type: string,
   file: File,
   options: UploadOptions = {},
-): Promise<{ ok: boolean; key?: string; error?: "url" | "s3" }> {
+): Promise<{ ok: boolean; key?: string; error?: "size" | "url" | "s3" }> {
   const urlResponse = await fetch(`/api/uploads/${type}/url`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -110,6 +146,11 @@ export async function uploadPresignedObject(
     return { ok: false, error: "url" };
   }
   const signed = (await urlResponse.json()) as SignedUpload;
+
+  // Enforce the API's size limit (carried in the presign response) before the upload.
+  if (file.size > signed.max_bytes) {
+    return { ok: false, error: "size" };
+  }
 
   options.onPhase?.("uploading");
   try {

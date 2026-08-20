@@ -1229,7 +1229,7 @@
     "submitted": "Tu reclamación se ha enviado para revisión.",
     "autoApproved": "Este negocio ya es tuyo para administrarlo.",
     "error": "Algo salió mal. Inténtalo de nuevo.",
-    "proofTooLarge": "Cada documento debe pesar menos de 10 MB."
+    "proofTooLarge": "Cada documento debe pesar menos de {size}."
   },
   "claimableAlert": {
     "title": "Puedes reclamar {count, plural, one {# ficha} other {# fichas}}",

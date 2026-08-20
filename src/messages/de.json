@@ -1229,7 +1229,7 @@
     "submitted": "Ihr Anspruch wurde zur Prüfung eingereicht.",
     "autoApproved": "Sie können dieses Unternehmen jetzt verwalten.",
     "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
-    "proofTooLarge": "Jedes Dokument darf höchstens 10 MB groß sein."
+    "proofTooLarge": "Jedes Dokument darf höchstens {size} groß sein."
   },
   "claimableAlert": {
     "title": "Du kannst {count, plural, one {# Eintrag} other {# Einträge}} beanspruchen",
