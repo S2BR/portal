@@ -128,9 +128,17 @@ async function clientGeoHeaders(): Promise<Record<string, string>> {
 }
 
 /**
+ * How long to wait for the portal API before giving up. A hung or unreachable
+ * upstream must never hold a frontend request open — undici's default headers
+ * timeout is 5 minutes, which is effectively "forever" for a page render.
+ */
+const PORTAL_API_TIMEOUT_MS = 15_000;
+
+/**
  * Low-level call to the portal API. Server-only — never import from a client
  * component. Returns the status so callers can branch on the auth flow's
- * `status` discriminators; it does not throw on non-2xx responses.
+ * `status` discriminators; it does not throw on non-2xx responses — a timeout or
+ * network failure is surfaced as a failed-closed response, not an exception.
  */
 export async function portalFetch<T = unknown>(
   request: PortalRequest,
@@ -149,12 +157,26 @@ export async function portalFetch<T = unknown>(
   Object.assign(requestHeaders, await clientDeviceHeaders());
   Object.assign(requestHeaders, await clientGeoHeaders());
 
-  const response = await fetch(`${env.PORTAL_API_URL}${request.path}`, {
-    method: request.method ?? "GET",
-    headers: requestHeaders,
-    body: request.body !== undefined ? JSON.stringify(request.body) : undefined,
-    cache: "no-store",
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${env.PORTAL_API_URL}${request.path}`, {
+      method: request.method ?? "GET",
+      headers: requestHeaders,
+      body: request.body !== undefined ? JSON.stringify(request.body) : undefined,
+      cache: "no-store",
+      signal: AbortSignal.timeout(PORTAL_API_TIMEOUT_MS),
+    });
+  } catch (error) {
+    // A timeout or network failure is an upstream outage, not a response. Fail
+    // closed with a synthetic 5xx so callers branch on `ok:false` (and the auth
+    // flow never mints a session from it) instead of the exception bubbling into
+    // a page render that hangs until undici's multi-minute default timeout.
+    const timedOut = error instanceof Error && error.name === "TimeoutError";
+    console.error(
+      `[portalFetch] ${timedOut ? "timeout" : "network error"} on ${request.method ?? "GET"} ${request.path}: ${String(error)}`,
+    );
+    return { ok: false, status: timedOut ? 504 : 502, data: {} as T };
+  }
 
   // The portal API always speaks JSON. Read the body as text and parse it
   // ourselves so a 2xx carrying a non-JSON payload is never mistaken for a
