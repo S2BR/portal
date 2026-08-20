@@ -1,6 +1,7 @@
 import { MapPin, Navigation, Star } from "lucide-react";
 import Link from "next/link";
 
+import { BusinessBannerPlaceholder } from "@/components/business/public/business-banner-placeholder";
 import { BusinessLogo } from "@/components/business/business-logo";
 import { Badge } from "@/components/ui/badge";
 
@@ -20,20 +21,22 @@ export function BusinessCard({
       href={`/businesses/${business.slug}`}
       className="group hover:border-primary/40 bg-card focus-visible:ring-ring flex flex-col overflow-hidden rounded-2xl border transition-colors focus-visible:ring-2 focus-visible:outline-none"
     >
-      <div className="from-brand-green to-brand-green-deep relative h-20 bg-gradient-to-br">
+      <div className="bg-muted relative h-20">
         {business.banner ? (
           // Decorative — the business name is the heading below. A plain <img> paints the cached,
-          // presigned banner instantly; the gradient shows through until it loads / when there's none.
+          // presigned banner instantly; the gray placeholder shows until it loads / when there's none.
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={business.banner}
             alt=""
             className="absolute inset-0 size-full object-cover"
           />
-        ) : null}
+        ) : (
+          <BusinessBannerPlaceholder />
+        )}
         {distanceLabel ? (
           // Pinned to the banner's top-right over a translucent scrim so it stays legible on any
-          // banner image (or the gradient when there's none).
+          // banner image (or the gray placeholder when there's none).
           <span className="text-brand-green-deep dark:text-brand-green absolute end-2 top-2 inline-flex items-center gap-1 rounded-full bg-white/80 px-2.5 py-1 text-xs font-medium backdrop-blur-sm dark:bg-black/75">
             <Navigation className="size-3" aria-hidden />
             {distanceLabel}

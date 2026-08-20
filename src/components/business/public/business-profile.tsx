@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import { AddressLines } from "@/components/address/address-lines";
 import { BusinessLogo } from "@/components/business/business-logo";
+import { BusinessBannerPlaceholder } from "@/components/business/public/business-banner-placeholder";
 import { focalObjectPosition } from "@/lib/banner-focal";
 import {
   DAYS,
@@ -66,7 +67,7 @@ export async function BusinessProfile({
       {/* Full-span banner — a real full-width element (its own block, not a max-w breakout), so it
           needs no viewport-width tricks or overflow clipping and renders edge-to-edge everywhere,
           Safari included. No rounded corners. */}
-      <div className="from-brand-green to-brand-green-deep relative h-48 w-full overflow-hidden bg-gradient-to-br sm:h-72 lg:h-80">
+      <div className="bg-muted relative h-48 w-full overflow-hidden sm:h-72 lg:h-80">
         {business.banner ? (
           // eslint-disable-next-line @next/next/no-img-element -- presigned S3 url, not a bundled asset
           <img
@@ -78,7 +79,7 @@ export async function BusinessProfile({
             }}
           />
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-t from-black/15 to-transparent" />
+          <BusinessBannerPlaceholder />
         )}
       </div>
 
