@@ -3,9 +3,9 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { createPortal } from "react-dom";
 
 import { LanguageCards } from "@/components/auth/language-cards";
+import { BlurScrim } from "@/components/ui/blur-scrim";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -68,21 +68,7 @@ export function LocaleSwitcher({
 
   return (
     <>
-      {/* A soft blur scrim behind the open picker — the same effect as the category "Can't find
-          your category?" feedback popover. Portaled to <body> so `fixed` covers the whole viewport
-          (rendered in the header, an ancestor's containing block would clip it to the header strip),
-          at z-[9] — just under the header's z-10 — so the page blurs while the header (and its
-          language button) stay crisp on top. The popover content (z-50) sits above it. */}
-      {open && typeof document !== "undefined"
-        ? createPortal(
-            <div
-              aria-hidden
-              onPointerDown={() => setOpen(false)}
-              className="animate-in fade-in-0 fixed inset-0 z-[9] bg-black/10 backdrop-blur-[3px]"
-            />,
-            document.body,
-          )
-        : null}
+      <BlurScrim open={open} onClose={() => setOpen(false)} />
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button

@@ -46,7 +46,7 @@ function LanguageCard({
         alt=""
         width={48}
         height={48}
-        className="size-12 rounded-full object-cover ring-1 ring-black/5 dark:ring-0"
+        className="size-12 rounded-full object-cover"
       />
       <span className="mt-auto flex flex-col items-center gap-0.5 pt-3">
         <span

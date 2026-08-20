@@ -1,27 +1,22 @@
 "use client";
 
-import { Monitor, Moon, Sun, type LucideIcon } from "lucide-react";
+import { Monitor, Moon, Sun } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
+import { useState } from "react";
 
+import { ThemeSegmentedControl } from "@/components/theme-segmented-control";
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   ThemeToggler,
   type Resolved,
   type ThemeSelection,
 } from "@/components/ui/theme-toggler";
-
-const MODES: { value: ThemeSelection; Icon: LucideIcon }[] = [
-  { value: "light", Icon: Sun },
-  { value: "dark", Icon: Moon },
-  { value: "system", Icon: Monitor },
-];
 
 function iconFor(mode: ThemeSelection) {
   if (mode === "light") {
@@ -34,9 +29,9 @@ function iconFor(mode: ThemeSelection) {
 }
 
 /**
- * Theme control as a dropdown menu (light / dark / system). Picking an option transitions the
- * whole page with the gradual clip-path wipe (it wraps the ThemeToggler primitive). Used on the
- * auth and legal screens; the authenticated app houses the theme control in the user menu.
+ * Theme control for the unauthenticated header: a compact icon button that opens the SAME segmented
+ * light/dark/system switcher used inside the user menu, behind a soft blur scrim — mirroring the
+ * language switcher. The authenticated app keeps its theme control in the user menu instead.
  */
 export function ThemeToggle({
   variant = "ghost",
@@ -45,6 +40,7 @@ export function ThemeToggle({
 } = {}) {
   const { theme, resolvedTheme, setTheme } = useTheme();
   const t = useTranslations("theme");
+  const [open, setOpen] = useState(false);
 
   return (
     <ThemeToggler
@@ -52,28 +48,21 @@ export function ThemeToggle({
       resolvedTheme={resolvedTheme as Resolved | undefined}
       setTheme={setTheme}
     >
-      {({ effective, toggleTheme }) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+      {({ effective }) => (
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
             <Button variant={variant} size="icon" aria-label={t("label")}>
               {iconFor(effective)}
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="min-w-40">
-            {MODES.map(({ value, Icon }) => (
-              <DropdownMenuItem key={value} onClick={() => toggleTheme(value)}>
-                <Icon className="size-4" />
-                {t(value)}
-                {effective === value ? (
-                  <span
-                    className="bg-brand-green ms-auto size-2 shrink-0 rounded-full"
-                    aria-hidden
-                  />
-                ) : null}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+          </PopoverTrigger>
+          <PopoverContent align="end" className="w-56 p-3">
+            {/* The exact presentation used inside the user menu: a small label over the control. */}
+            <p className="text-muted-foreground mb-1.5 px-0.5 text-xs font-medium">
+              {t("label")}
+            </p>
+            <ThemeSegmentedControl />
+          </PopoverContent>
+        </Popover>
       )}
     </ThemeToggler>
   );
