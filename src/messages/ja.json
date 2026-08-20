@@ -1229,7 +1229,7 @@
     "submitted": "申請を審査のため送信しました。",
     "autoApproved": "このビジネスをご自身で管理できるようになりました。",
     "error": "問題が発生しました。もう一度お試しください。",
-    "proofTooLarge": "各ファイルは10MB未満にしてください。"
+    "proofTooLarge": "各ファイルは{size}未満にしてください。"
   },
   "claimableAlert": {
     "title": "{count}件のリスティングを申請できます",

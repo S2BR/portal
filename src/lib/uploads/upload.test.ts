@@ -62,6 +62,8 @@ const signed = {
   url: "https://s2br.s3.amazonaws.com/avatars/1/x.jpg?sig=1",
   headers: { "Content-Type": "image/png", Host: "s3", "x-amz-meta-a": "b" },
   key: "1/x.jpg",
+  max_bytes: 5 * 1024 * 1024,
+  mime_types: ["image/jpeg", "image/png", "image/webp"],
 };
 
 function jsonResponse(ok: boolean, data: unknown) {
