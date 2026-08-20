@@ -945,7 +945,8 @@
     "nav": {
       "reports": "Reports",
       "claims": "Claims",
-      "businesses": "Businesses"
+      "businesses": "Businesses",
+      "uploads": "Uploads"
     },
     "reports": {
       "title": "Reports",
@@ -1206,6 +1207,64 @@
       "new": {
         "title": "New business",
         "subtitle": "Create a business, then fill in its details and assign an owner from the editor."
+      }
+    },
+    "uploads": {
+      "title": "Uploads",
+      "subtitle": "Every file uploaded to storage. Newest first.",
+      "empty": "No uploads match these filters.",
+      "forbidden": "You don't have access to this.",
+      "loadError": "Couldn't load uploads.",
+      "actionError": "Something went wrong.",
+      "previewAlt": "Upload preview",
+      "filters": {
+        "type": "Type",
+        "allTypes": "All types",
+        "status": "Status",
+        "allStatuses": "All statuses"
+      },
+      "type": {
+        "avatar": "Avatar",
+        "business-logo": "Business logo",
+        "business-banner": "Business banner",
+        "business-gallery": "Business gallery",
+        "claim-proof": "Claim proof"
+      },
+      "status": {
+        "pending": "Pending",
+        "confirmed": "Confirmed"
+      },
+      "table": {
+        "preview": "Preview",
+        "type": "Type",
+        "boundTo": "Attached to",
+        "size": "Size",
+        "uploader": "Uploaded by",
+        "status": "Status",
+        "uploaded": "Uploaded",
+        "actions": "Actions"
+      },
+      "actions": {
+        "delete": "Delete upload",
+        "download": "Download"
+      },
+      "delete": {
+        "title": "Delete this upload?",
+        "description": "This permanently removes the file from storage and its record. This can't be undone.",
+        "cancel": "Cancel",
+        "confirm": "Delete"
+      },
+      "toast": {
+        "deleted": "Upload deleted."
+      },
+      "pagination": {
+        "page": "Page {page} of {total}",
+        "previous": "Previous",
+        "next": "Next"
+      },
+      "widgets": {
+        "files": "Files",
+        "totalSize": "Total size"
       }
     }
   },

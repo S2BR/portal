@@ -16,11 +16,13 @@ import { UserAvatar } from "@/components/auth/user-avatar";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { SettingGroup } from "@/components/ui/setting-tile";
-import { uploadFile } from "@/lib/uploads/upload";
+import {
+  fetchUploadConfig,
+  upload,
+  type UploadConfig,
+} from "@/lib/uploads/upload";
 import { cn } from "@/lib/utils";
 
-const ACCEPTED = ["image/jpeg", "image/png", "image/webp"];
-const MAX_BYTES = 2 * 1024 * 1024;
 const UNDO_MS = 5000;
 
 type Phase = "idle" | "uploading" | "finalizing";
@@ -49,6 +51,13 @@ export function AvatarSettings() {
   const [pending, setPending] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [config, setConfig] = useState<UploadConfig | null>(null);
+
+  // The avatar's accepted types + size cap come from the API (the source of truth), so nothing here
+  // is hardcoded — a backend change applies with no frontend edit. The API also re-enforces on upload.
+  useEffect(() => {
+    void fetchUploadConfig("avatar").then(setConfig);
+  }, []);
 
   const setPreview = (url: string | null) => {
     if (previewRef.current) {
@@ -99,11 +108,11 @@ export function AvatarSettings() {
   function pickFile(file: File) {
     cancelRemove();
     setError(null);
-    if (!ACCEPTED.includes(file.type)) {
+    if (config && !config.mime_types.includes(file.type)) {
       setError(t("invalidType"));
       return;
     }
-    if (file.size > MAX_BYTES) {
+    if (config && file.size > config.max_bytes) {
       setError(t("tooLarge"));
       return;
     }
@@ -121,7 +130,7 @@ export function AvatarSettings() {
     setPhase("uploading");
     setProgress(0);
 
-    const result = await uploadFile("avatar", prepared, {
+    const result = await upload("avatar", prepared, {
       onProgress: setProgress,
       onPhase: setPhase,
     });
@@ -217,7 +226,9 @@ export function AvatarSettings() {
   }
 
   const shownAvatar = removed ? null : (preview ?? user.avatar);
-  const maxLabel = `${Math.round(MAX_BYTES / 1024 / 1024)} MB`;
+  const maxLabel = config
+    ? `${Math.round(config.max_bytes / 1024 / 1024)} MB`
+    : "";
 
   return (
     <SettingGroup title={t("title")} description={t("hint")}>
@@ -242,7 +253,7 @@ export function AvatarSettings() {
               <input
                 ref={inputRef}
                 type="file"
-                accept={ACCEPTED.join(",")}
+                accept={config?.mime_types.join(",")}
                 className="hidden"
                 onChange={onFileChange}
               />

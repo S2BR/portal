@@ -945,7 +945,8 @@
     "nav": {
       "reports": "Segnalazioni",
       "claims": "Rivendicazioni",
-      "businesses": "Attività"
+      "businesses": "Attività",
+      "uploads": "Caricamenti"
     },
     "reports": {
       "title": "Segnalazioni",
@@ -1206,6 +1207,64 @@
       "new": {
         "title": "Nuova attività",
         "subtitle": "Crea un'attività, poi compila i suoi dettagli e assegna un titolare dall'editor."
+      }
+    },
+    "uploads": {
+      "title": "Caricamenti",
+      "subtitle": "Tutti i file caricati nello storage. Prima i più recenti.",
+      "empty": "Nessun caricamento corrisponde a questi filtri.",
+      "forbidden": "Non hai accesso a questo.",
+      "loadError": "Impossibile caricare i caricamenti.",
+      "actionError": "Qualcosa è andato storto.",
+      "previewAlt": "Anteprima del caricamento",
+      "filters": {
+        "type": "Tipo",
+        "allTypes": "Tutti i tipi",
+        "status": "Stato",
+        "allStatuses": "Tutti gli stati"
+      },
+      "type": {
+        "avatar": "Avatar",
+        "business-logo": "Logo dell'attività",
+        "business-banner": "Banner dell'attività",
+        "business-gallery": "Galleria dell'attività",
+        "claim-proof": "Prova di rivendicazione"
+      },
+      "status": {
+        "pending": "In attesa",
+        "confirmed": "Confermato"
+      },
+      "table": {
+        "preview": "Anteprima",
+        "type": "Tipo",
+        "boundTo": "Collegato a",
+        "size": "Dimensione",
+        "uploader": "Caricato da",
+        "status": "Stato",
+        "uploaded": "Caricato",
+        "actions": "Azioni"
+      },
+      "actions": {
+        "delete": "Elimina caricamento",
+        "download": "Scarica"
+      },
+      "delete": {
+        "title": "Eliminare questo caricamento?",
+        "description": "Questo rimuove definitivamente il file dallo storage e il suo record. Non è reversibile.",
+        "cancel": "Annulla",
+        "confirm": "Elimina"
+      },
+      "toast": {
+        "deleted": "Caricamento eliminato."
+      },
+      "pagination": {
+        "page": "Pagina {page} di {total}",
+        "previous": "Precedente",
+        "next": "Successiva"
+      },
+      "widgets": {
+        "files": "File",
+        "totalSize": "Dimensione totale"
       }
     }
   },

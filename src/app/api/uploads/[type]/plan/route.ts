@@ -6,6 +6,7 @@ import type { ApiError } from "@/lib/api/types";
 
 const bodySchema = z.object({
   content_type: z.string().min(1),
+  size: z.number().int().positive(),
   // Optional target for scoped upload kinds (e.g. `{ business: slug }`); forwarded verbatim,
   // the API's upload type validates it.
   context: z.record(z.string(), z.unknown()).optional(),
@@ -13,15 +14,10 @@ const bodySchema = z.object({
 
 const TYPE = /^[a-z][a-z0-9-]*$/;
 
-interface SignedUpload {
-  url: string;
-  headers: Record<string, string>;
-  key: string;
-}
-
 /**
- * BFF: mint a presigned S3 PUT url for an upload type. The browser then uploads the file
- * DIRECTLY to `url` (never through here) and confirms via POST /api/uploads/{type}.
+ * BFF: mint an upload plan for a file. The API picks the mechanism by size and returns a
+ * discriminated plan (a presigned POST, or a resumable multipart upload). The browser then uploads
+ * DIRECTLY to S3 (never through here) and confirms via POST /api/uploads/{type}/confirm.
  */
 export async function POST(
   request: Request,
@@ -37,9 +33,9 @@ export async function POST(
     return NextResponse.json({ status: "invalid" }, { status: 422 });
   }
 
-  const response = await callWithAuth<SignedUpload & Partial<ApiError>>({
+  const response = await callWithAuth<Record<string, unknown> & Partial<ApiError>>({
     method: "POST",
-    path: `/uploads/${type}/url`,
+    path: `/uploads/${type}/plan`,
     body: parsed.data,
   });
 
