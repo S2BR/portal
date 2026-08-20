@@ -1129,6 +1129,14 @@
         "unclaimed": "Kein Inhaber (nicht beansprucht).",
         "owners": "Inhaber",
         "lockedReason": "Grund für die Sperrung",
+        "lockDialog": {
+          "title": "Unternehmen sperren",
+          "description": "Es wird aus der öffentlichen Ansicht entfernt und für seinen Inhaber eingefroren. Geben Sie einen Grund für das Prüfprotokoll an.",
+          "reasonLabel": "Grund",
+          "reasonPlaceholder": "Warum wird es gesperrt?",
+          "cancel": "Abbrechen",
+          "confirm": "Unternehmen sperren"
+        },
         "audit": "Prüfung",
         "lock": "Sperren",
         "unlock": "Entsperren",

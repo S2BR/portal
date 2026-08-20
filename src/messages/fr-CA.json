@@ -1129,6 +1129,14 @@
         "unclaimed": "Aucun propriétaire (non réclamée).",
         "owners": "Propriétaires",
         "lockedReason": "Motif du verrouillage",
+        "lockDialog": {
+          "title": "Verrouiller l'entreprise",
+          "description": "Elle est retirée de l'affichage public et gelée pour son propriétaire. Ajoutez un motif à la piste de vérification.",
+          "reasonLabel": "Motif",
+          "reasonPlaceholder": "Pourquoi ceci est-il verrouillé?",
+          "cancel": "Annuler",
+          "confirm": "Verrouiller l'entreprise"
+        },
         "audit": "Audit",
         "lock": "Verrouiller",
         "unlock": "Déverrouiller",

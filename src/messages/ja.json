@@ -1129,6 +1129,14 @@
         "unclaimed": "オーナーなし（未登録）。",
         "owners": "オーナー",
         "lockedReason": "ロックの理由",
+        "lockDialog": {
+          "title": "ビジネスをロック",
+          "description": "公開ビューから削除され、オーナーに対して凍結されます。監査証跡のために理由を追加してください。",
+          "reasonLabel": "理由",
+          "reasonPlaceholder": "なぜロックするのですか？",
+          "cancel": "キャンセル",
+          "confirm": "ビジネスをロック"
+        },
         "audit": "監査",
         "lock": "ロック",
         "unlock": "ロック解除",
