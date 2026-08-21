@@ -2,6 +2,7 @@
 
 import { Download, ImageIcon, Trash2 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -9,6 +10,7 @@ import type {
   AdminUpload,
   AdminUploadsPage,
 } from "@/app/api/admin/uploads/route";
+import { DataFilters } from "@/components/admin/data-filters";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,13 +22,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -36,6 +31,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import type { FilterFieldDef } from "@/lib/filters/tree";
 
 const TYPES = [
   "avatar",
@@ -45,7 +41,6 @@ const TYPES = [
   "claim-proof",
 ] as const;
 const STATUSES = ["pending", "confirmed"] as const;
-const ALL = "all";
 
 type BadgeVariant = "neutral" | "green" | "gold" | "red" | "outline";
 const STATUS_VARIANT: Record<string, BadgeVariant> = {
@@ -53,10 +48,7 @@ const STATUS_VARIANT: Record<string, BadgeVariant> = {
   pending: "gold",
 };
 
-/**
- * A byte count as a compact human label with one decimal (e.g. "99.2 KB", "1.4 MB"), or an em dash
- * when unknown. The single decimal is kept so per-row sizes visibly add up to the total widget.
- */
+/** A byte count as a compact human label with one decimal (e.g. "99.2 KB"), or an em dash. */
 function formatBytes(bytes: number | null): string {
   if (bytes === null) {
     return "—";
@@ -75,33 +67,52 @@ function formatBytes(bytes: number | null): string {
 }
 
 /**
- * The operator upload manager: every direct-to-S3 upload in the ledger, newest first, filterable by
- * type and status. Each row shows a preview, the bound resource, size/mime, uploader, and status;
- * an orphan (or anything unwanted) can be deleted, which purges the S3 object(s) and the row. The API
- * enforces the super_admin role.
+ * The operator upload manager. Every direct-to-S3 upload in the ledger, filtered SERVER-SIDE via the
+ * shared operator {@see DataFilters} builder (field → operator → value, AND/OR/groups). The whole
+ * query lives in the URL, so the view is shareable + refresh-safe; this component reads the same URL
+ * params for its fetch. Rows show a preview, bound resource, size/mime, uploader, and status; each can
+ * be downloaded or deleted (which purges the S3 object[s] + row). The API enforces the super_admin role.
  */
 export function UploadsManager() {
   const t = useTranslations("admin.uploads");
   const format = useFormatter();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
 
   const [uploads, setUploads] = useState<AdminUpload[]>([]);
   const [meta, setMeta] = useState({ current_page: 1, last_page: 1, total: 0 });
   const [summary, setSummary] = useState({ count: 0, size: 0 });
   const [loading, setLoading] = useState(true);
-  const [type, setType] = useState<string>(ALL);
-  const [status, setStatus] = useState<string>(ALL);
-  const [page, setPage] = useState(1);
   const [pendingDelete, setPendingDelete] = useState<AdminUpload | null>(null);
   const [deleting, setDeleting] = useState(false);
 
+  const query = searchParams.toString();
+
+  const fields: FilterFieldDef[] = [
+    {
+      name: "type",
+      label: t("filters.type"),
+      type: "select",
+      quick: true,
+      options: TYPES.map((key) => ({ value: key, label: t(`type.${key}`) })),
+    },
+    {
+      name: "status",
+      label: t("filters.status"),
+      type: "select",
+      quick: true,
+      options: STATUSES.map((key) => ({ value: key, label: t(`status.${key}`) })),
+    },
+    { name: "size", label: t("filters.size"), type: "number" },
+    { name: "mime", label: t("filters.mime"), type: "text" },
+    { name: "created_at", label: t("filters.uploaded"), type: "date" },
+  ];
+
   const load = useCallback(async () => {
     setLoading(true);
-    const query = new URLSearchParams();
-    if (type !== ALL) query.set("type", type);
-    if (status !== ALL) query.set("status", status);
-    if (page > 1) query.set("page", String(page));
     try {
-      const response = await fetch(`/api/admin/uploads?${query.toString()}`);
+      const response = await fetch(`/api/admin/uploads?${query}`);
       if (response.status === 403) {
         toast.error(t("forbidden"));
         return;
@@ -115,18 +126,39 @@ export function UploadsManager() {
     } finally {
       setLoading(false);
     }
-  }, [type, status, page, t]);
+  }, [query, t]);
 
   useEffect(() => {
-    // Refetch on mount and whenever a filter/page changes; setState runs after the async response.
+    // Refetch on mount and whenever the URL (filters/page) changes.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     void load();
   }, [load]);
 
-  function onFilter(setter: (value: string) => void, value: string) {
-    setter(value);
-    setPage(1);
+  function setPage(page: number) {
+    const params = new URLSearchParams(searchParams.toString());
+    if (page > 1) {
+      params.set("page", String(page));
+    } else {
+      params.delete("page");
+    }
+    router.replace(params.toString() ? `${pathname}?${params.toString()}` : pathname, {
+      scroll: false,
+    });
   }
+
+  const formatDate = (value: string | null) =>
+    value
+      ? format.dateTime(new Date(value), {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+      : "";
+
+  const typeLabel = (key: string) =>
+    (TYPES as readonly string[]).includes(key) ? t(`type.${key}`) : key;
 
   async function confirmDelete() {
     if (!pendingDelete) {
@@ -147,20 +179,6 @@ export function UploadsManager() {
     await load();
   }
 
-  const formatDate = (value: string | null) =>
-    value
-      ? format.dateTime(new Date(value), {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-        })
-      : "";
-
-  const typeLabel = (key: string) =>
-    (TYPES as readonly string[]).includes(key) ? t(`type.${key}`) : key;
-
   return (
     <div className="space-y-8">
       <header>
@@ -170,7 +188,6 @@ export function UploadsManager() {
         <p className="text-muted-foreground mt-1 text-sm">{t("subtitle")}</p>
       </header>
 
-      {/* Totals for the active filter set (updates as the filters change). */}
       <div className="grid grid-cols-2 gap-3 sm:max-w-md">
         <StatCard
           label={t("widgets.files")}
@@ -184,25 +201,7 @@ export function UploadsManager() {
         />
       </div>
 
-      <div className="flex flex-wrap gap-3">
-        <FilterSelect
-          label={t("filters.type")}
-          value={type}
-          onChange={(value) => onFilter(setType, value)}
-          allLabel={t("filters.allTypes")}
-          options={TYPES.map((key) => ({ value: key, label: t(`type.${key}`) }))}
-        />
-        <FilterSelect
-          label={t("filters.status")}
-          value={status}
-          onChange={(value) => onFilter(setStatus, value)}
-          allLabel={t("filters.allStatuses")}
-          options={STATUSES.map((key) => ({
-            value: key,
-            label: t(`status.${key}`),
-          }))}
-        />
-      </div>
+      <DataFilters fields={fields} />
 
       {loading ? (
         <div className="space-y-3">
@@ -235,7 +234,7 @@ export function UploadsManager() {
                   <TableCell>
                     <Preview upload={upload} alt={t("previewAlt")} />
                   </TableCell>
-                  <TableCell className="whitespace-nowrap font-medium">
+                  <TableCell className="font-medium whitespace-nowrap">
                     {typeLabel(upload.type)}
                   </TableCell>
                   <TableCell className="text-muted-foreground">
@@ -251,7 +250,7 @@ export function UploadsManager() {
                       "—"
                     )}
                   </TableCell>
-                  <TableCell className="text-muted-foreground whitespace-nowrap tabular-nums">
+                  <TableCell className="text-muted-foreground tabular-nums whitespace-nowrap">
                     {formatBytes(upload.size)}
                     {upload.mime ? (
                       <span className="text-muted-foreground/70 block text-xs">
@@ -320,7 +319,7 @@ export function UploadsManager() {
               variant="outline"
               size="sm"
               disabled={loading || meta.current_page <= 1}
-              onClick={() => setPage((current) => Math.max(1, current - 1))}
+              onClick={() => setPage(meta.current_page - 1)}
             >
               {t("pagination.previous")}
             </Button>
@@ -329,7 +328,7 @@ export function UploadsManager() {
               variant="outline"
               size="sm"
               disabled={loading || meta.current_page >= meta.last_page}
-              onClick={() => setPage((current) => current + 1)}
+              onClick={() => setPage(meta.current_page + 1)}
             >
               {t("pagination.next")}
             </Button>
@@ -366,28 +365,6 @@ export function UploadsManager() {
   );
 }
 
-/** A small image thumbnail for an upload, or a neutral placeholder tile. */
-function Preview({ upload, alt }: { upload: AdminUpload; alt: string }) {
-  if (upload.preview) {
-    return (
-      // eslint-disable-next-line @next/next/no-img-element -- presigned S3 url, not a bundled asset
-      <img
-        src={upload.preview}
-        alt={alt}
-        className="bg-muted size-10 rounded-md border object-cover"
-      />
-    );
-  }
-  return (
-    <div
-      className="bg-muted text-muted-foreground flex size-10 items-center justify-center rounded-md border"
-      aria-hidden
-    >
-      <ImageIcon className="size-4" />
-    </div>
-  );
-}
-
 /** A compact summary tile — a label over a large value (a skeleton while the list is loading). */
 function StatCard({
   label,
@@ -412,37 +389,24 @@ function StatCard({
   );
 }
 
-function FilterSelect({
-  label,
-  value,
-  onChange,
-  allLabel,
-  options,
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  allLabel: string;
-  options: { value: string; label: string }[];
-}) {
+/** A small image thumbnail for an upload, or a neutral placeholder tile. */
+function Preview({ upload, alt }: { upload: AdminUpload; alt: string }) {
+  if (upload.preview) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element -- presigned S3 url, not a bundled asset
+      <img
+        src={upload.preview}
+        alt={alt}
+        className="bg-muted size-10 rounded-md border object-cover"
+      />
+    );
+  }
   return (
-    <div className="space-y-1.5">
-      <label className="text-muted-foreground text-xs font-medium">
-        {label}
-      </label>
-      <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className="w-48">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value={ALL}>{allLabel}</SelectItem>
-          {options.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+    <div
+      className="bg-muted text-muted-foreground flex size-10 items-center justify-center rounded-md border"
+      aria-hidden
+    >
+      <ImageIcon className="size-4" />
     </div>
   );
 }

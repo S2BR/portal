@@ -45,20 +45,23 @@ const EMPTY: AdminUploadsPage = {
   summary: { count: 0, size: 0 },
 };
 
-const FILTERS = ["type", "status", "uploadable_type", "page"] as const;
-
 /**
- * BFF: the operator upload manager. Forwards the whitelisted filters to the admin API, which enforces
- * the super_admin role — a non-admin gets a 403 surfaced here. Degrades to an empty page on an
- * upstream blip so the surface stays intact.
+ * BFF: the operator upload manager. Forwards the query-builder params — `filter[…]`, `sort`, `page`
+ * — to the admin API, which is the real allow-list (it rejects any filter/sort it doesn't permit)
+ * and enforces the super_admin role (a non-admin gets a 403 surfaced here). Degrades to an empty page
+ * on an upstream blip so the surface stays intact.
  */
 export async function GET(request: Request): Promise<NextResponse> {
   const incoming = new URL(request.url).searchParams;
   const query = new URLSearchParams();
-  for (const key of FILTERS) {
-    const value = incoming.get(key);
-    if (value) {
-      query.set(key, value);
+  for (const [key, value] of incoming.entries()) {
+    const forwarded =
+      key === "filter" || // the base64url rule tree (OR / nested groups)
+      (key.startsWith("filter[") && key.endsWith("]")) ||
+      key === "sort" ||
+      key === "page";
+    if (forwarded && value) {
+      query.append(key, value);
     }
   }
   const suffix = query.toString() ? `?${query.toString()}` : "";
