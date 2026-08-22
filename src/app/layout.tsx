@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 import { Analytics } from "@/components/analytics/analytics";
 import { ConsentBanner } from "@/components/analytics/consent-banner";
@@ -99,25 +100,27 @@ export default async function RootLayout({
       {/* suppressHydrationWarning: browser extensions (e.g. Grammarly) inject data-* attributes on
           <body> before hydration; this silences that element's attribute mismatch only. */}
       <body className="flex min-h-full flex-col" suppressHydrationWarning>
-        <ThemeProvider>
-          <DirectionProvider dir={dir}>
-            <NextIntlClientProvider>
-              {/* One provider for the whole app — mounted here so it never remounts on navigation.
+        <NuqsAdapter>
+          <ThemeProvider>
+            <DirectionProvider dir={dir}>
+              <NextIntlClientProvider>
+                {/* One provider for the whole app — mounted here so it never remounts on navigation.
                   redirectOnFailure is false: public pages must not bounce to /login; protected
                   routes still guard server-side in AppShell. */}
-              <CurrentUserProvider
-                initialUser={cookieUser}
-                authenticated={authenticated}
-                redirectOnFailure={false}
-              >
-                <SettingsDialogProvider>{children}</SettingsDialogProvider>
-              </CurrentUserProvider>
-              {/* Inside the intl provider — the banner is translated. */}
-              {gaId ? <ConsentBanner /> : null}
-            </NextIntlClientProvider>
-          </DirectionProvider>
-          <Toaster />
-        </ThemeProvider>
+                <CurrentUserProvider
+                  initialUser={cookieUser}
+                  authenticated={authenticated}
+                  redirectOnFailure={false}
+                >
+                  <SettingsDialogProvider>{children}</SettingsDialogProvider>
+                </CurrentUserProvider>
+                {/* Inside the intl provider — the banner is translated. */}
+                {gaId ? <ConsentBanner /> : null}
+              </NextIntlClientProvider>
+            </DirectionProvider>
+            <Toaster />
+          </ThemeProvider>
+        </NuqsAdapter>
         {gaId ? (
           <>
             {/* GA base + loader emitted server-side. An inline <script> rendered by a CLIENT
