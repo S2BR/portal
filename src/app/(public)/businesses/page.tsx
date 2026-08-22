@@ -7,6 +7,7 @@ import { getEdgeLocation } from "@/lib/edge-location";
 import {
   getPublicAmenities,
   getPublicCategories,
+  taxonomyById,
   taxonomyLabels,
 } from "@/lib/public-business";
 import { businessPagesRobots } from "@/lib/seo";
@@ -37,7 +38,7 @@ export default async function DirectoryPage() {
   ]);
 
   const labels = {
-    categories: taxonomyLabels(categories),
+    categories: taxonomyById(categories),
     amenities: taxonomyLabels(amenities),
     types: {
       company: types("company.title"),

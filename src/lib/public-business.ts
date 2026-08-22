@@ -260,11 +260,12 @@ export async function getPublicAmenities(): Promise<PublicAmenity[]> {
 
 /**
  * Flatten a category/amenity tree into a `{ slug: localized name }` map, used to label the Typesense
- * facet values (the index stores slugs). Recurses through the child key (`subcategories` / `amenities`).
+ * facet values — the index stores ids (a slug rename never re-indexes). Recurses through the child
+ * key (`subcategories` / `amenities`).
  */
 export function taxonomyLabels(
   nodes: Array<{
-    slug: string;
+    id: number;
     name: string;
     subcategories?: unknown;
     amenities?: unknown;
@@ -273,7 +274,7 @@ export function taxonomyLabels(
   const labels: Record<string, string> = {};
   const walk = (list: typeof nodes) => {
     for (const node of list) {
-      labels[node.slug] = node.name;
+      labels[String(node.id)] = node.name;
       const children = (node.subcategories ?? node.amenities) as
         typeof nodes | undefined;
       if (Array.isArray(children)) {
@@ -283,4 +284,32 @@ export function taxonomyLabels(
   };
   walk(nodes);
   return labels;
+}
+
+/**
+ * Flatten a tree into a `{ id: { slug, name } }` map — for the directory card's category chips,
+ * which resolve the indexed id to its localized name (+ slug, a stable key).
+ */
+export function taxonomyById(
+  nodes: Array<{
+    id: number;
+    slug: string;
+    name: string;
+    subcategories?: unknown;
+    amenities?: unknown;
+  }>,
+): Record<string, { slug: string; name: string }> {
+  const map: Record<string, { slug: string; name: string }> = {};
+  const walk = (list: typeof nodes) => {
+    for (const node of list) {
+      map[String(node.id)] = { slug: node.slug, name: node.name };
+      const children = (node.subcategories ?? node.amenities) as
+        typeof nodes | undefined;
+      if (Array.isArray(children)) {
+        walk(children);
+      }
+    }
+  };
+  walk(nodes);
+  return map;
 }
