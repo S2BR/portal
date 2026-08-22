@@ -946,7 +946,8 @@
       "reports": "Denuncias",
       "claims": "Reclamaciones",
       "businesses": "Negocios",
-      "uploads": "Subidas"
+      "uploads": "Subidas",
+      "taxonomy": "Taxonomía"
     },
     "reports": {
       "title": "Denuncias",
@@ -1265,6 +1266,78 @@
       "widgets": {
         "files": "Archivos",
         "totalSize": "Tamaño total"
+      }
+    },
+    "taxonomy": {
+      "title": "Categorías y servicios",
+      "subtitle": "Gestiona el árbol de categorías y los grupos de servicios que definen las fichas de negocios.",
+      "tabs": {
+        "categories": "Categorías",
+        "amenities": "Servicios"
+      },
+      "forbidden": "No tienes acceso a esto.",
+      "loadError": "No se pudo cargar la taxonomía.",
+      "saveError": "Algo salió mal. Inténtalo de nuevo.",
+      "tree": {
+        "empty": "Aún no hay nada. Añade tu primera entrada.",
+        "reorder": "Arrastra para reordenar",
+        "active": "Activo",
+        "edit": "Editar",
+        "remove": "Eliminar",
+        "usage": "{count, plural, one {# uso} other {# usos}}",
+        "boundCount": "{count, plural, one {# categoría} other {# categorías}}",
+        "add": {
+          "categoryRoot": "Añadir categoría",
+          "categoryChild": "Añadir subcategoría",
+          "amenityRoot": "Añadir grupo",
+          "amenityChild": "Añadir servicio"
+        }
+      },
+      "dialog": {
+        "title": {
+          "createCategoryRoot": "Añadir categoría",
+          "createCategoryChild": "Añadir subcategoría",
+          "createAmenityRoot": "Añadir grupo de servicios",
+          "createAmenityChild": "Añadir servicio",
+          "editCategoryRoot": "Editar categoría",
+          "editCategoryChild": "Editar subcategoría",
+          "editAmenityRoot": "Editar grupo de servicios",
+          "editAmenityChild": "Editar servicio"
+        },
+        "help": "Los nombres aparecen en el selector. El inglés es obligatorio; los demás idiomas son opcionales.",
+        "name": "Nombre",
+        "namePlaceholder": "Nombre ({locale})",
+        "nameRequired": "Se requiere un nombre en inglés.",
+        "description": "Descripción",
+        "slug": "Slug",
+        "slugPlaceholder": "Se genera a partir del nombre",
+        "bindings": "Se muestra en las categorías",
+        "bindingsHelp": "Déjalo vacío para mostrarlo en todas partes. Si no, solo aparece en las categorías seleccionadas.",
+        "global": "Global",
+        "noCategories": "Añade categorías primero para vincularlo a ellas.",
+        "active": "Activo",
+        "activeHelp": "Las entradas inactivas se ocultan del selector.",
+        "cancel": "Cancelar",
+        "save": "Guardar",
+        "add": "Añadir",
+        "bindingsSearch": "Buscar categorías…",
+        "bindingsSelected": "{count} seleccionadas",
+        "noMatches": "Sin resultados.",
+        "unsaved": "Cambios sin guardar"
+      },
+      "delete": {
+        "title": "¿Eliminar «{name}»?",
+        "usage": "{count, plural, =0 {No lo usa ninguna ficha.} one {Lo usa # ficha.} other {Lo usan # fichas.}}",
+        "children": "{count, plural, one {Tiene # elemento hijo, que también se elimina.} other {Tiene # elementos hijos, que también se eliminan.}}",
+        "help": "Desactívalo para ocultarlo conservando los datos, o elimínalo para quitarlo.",
+        "deactivate": "Desactivar",
+        "delete": "Eliminar"
+      },
+      "toast": {
+        "created": "Añadido.",
+        "saved": "Guardado.",
+        "deleted": "Eliminado.",
+        "deactivated": "Desactivado."
       }
     }
   },

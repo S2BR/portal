@@ -946,7 +946,8 @@
       "reports": "Denúncias",
       "claims": "Reivindicações",
       "businesses": "Negócios",
-      "uploads": "Uploads"
+      "uploads": "Uploads",
+      "taxonomy": "Taxonomia"
     },
     "reports": {
       "title": "Denúncias",
@@ -1265,6 +1266,78 @@
       "widgets": {
         "files": "Arquivos",
         "totalSize": "Tamanho total"
+      }
+    },
+    "taxonomy": {
+      "title": "Categorias e comodidades",
+      "subtitle": "Gerencie a árvore de categorias e os grupos de comodidades que estruturam os perfis de negócios.",
+      "tabs": {
+        "categories": "Categorias",
+        "amenities": "Comodidades"
+      },
+      "forbidden": "Você não tem acesso a isto.",
+      "loadError": "Não foi possível carregar a taxonomia.",
+      "saveError": "Algo deu errado. Tente novamente.",
+      "tree": {
+        "empty": "Nada aqui ainda. Adicione a primeira entrada.",
+        "reorder": "Arraste para reordenar",
+        "active": "Ativo",
+        "edit": "Editar",
+        "remove": "Remover",
+        "usage": "{count, plural, one {# uso} other {# usos}}",
+        "boundCount": "{count, plural, one {# categoria} other {# categorias}}",
+        "add": {
+          "categoryRoot": "Adicionar categoria",
+          "categoryChild": "Adicionar subcategoria",
+          "amenityRoot": "Adicionar grupo",
+          "amenityChild": "Adicionar comodidade"
+        }
+      },
+      "dialog": {
+        "title": {
+          "createCategoryRoot": "Adicionar categoria",
+          "createCategoryChild": "Adicionar subcategoria",
+          "createAmenityRoot": "Adicionar grupo de comodidades",
+          "createAmenityChild": "Adicionar comodidade",
+          "editCategoryRoot": "Editar categoria",
+          "editCategoryChild": "Editar subcategoria",
+          "editAmenityRoot": "Editar grupo de comodidades",
+          "editAmenityChild": "Editar comodidade"
+        },
+        "help": "Os nomes aparecem no seletor. O inglês é obrigatório; os outros idiomas são opcionais.",
+        "name": "Nome",
+        "namePlaceholder": "Nome ({locale})",
+        "nameRequired": "É necessário um nome em inglês.",
+        "description": "Descrição",
+        "slug": "Slug",
+        "slugPlaceholder": "Gerado a partir do nome",
+        "bindings": "Exibido nas categorias",
+        "bindingsHelp": "Deixe vazio para exibir em todos os lugares. Caso contrário, aparece apenas nas categorias selecionadas.",
+        "global": "Global",
+        "noCategories": "Adicione categorias primeiro para vinculá-lo a elas.",
+        "active": "Ativo",
+        "activeHelp": "Entradas inativas ficam ocultas no seletor.",
+        "cancel": "Cancelar",
+        "save": "Salvar",
+        "add": "Adicionar",
+        "bindingsSearch": "Buscar categorias…",
+        "bindingsSelected": "{count} selecionadas",
+        "noMatches": "Nenhum resultado.",
+        "unsaved": "Alterações não salvas"
+      },
+      "delete": {
+        "title": "Remover “{name}”?",
+        "usage": "{count, plural, =0 {Não usado por nenhum perfil.} one {Usado por # perfil.} other {Usado por # perfis.}}",
+        "children": "{count, plural, one {Tem # subitem, removido junto.} other {Tem # subitens, removidos junto.}}",
+        "help": "Desative para ocultar mantendo os dados, ou exclua para remover.",
+        "deactivate": "Desativar",
+        "delete": "Excluir"
+      },
+      "toast": {
+        "created": "Adicionado.",
+        "saved": "Salvo.",
+        "deleted": "Excluído.",
+        "deactivated": "Desativado."
       }
     }
   },

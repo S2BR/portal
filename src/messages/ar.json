@@ -946,7 +946,8 @@
       "reports": "البلاغات",
       "claims": "المطالبات",
       "businesses": "الأنشطة التجارية",
-      "uploads": "التحميلات"
+      "uploads": "التحميلات",
+      "taxonomy": "التصنيف"
     },
     "reports": {
       "title": "البلاغات",
@@ -1265,6 +1266,78 @@
       "widgets": {
         "files": "الملفات",
         "totalSize": "الحجم الإجمالي"
+      }
+    },
+    "taxonomy": {
+      "title": "الفئات والمرافق",
+      "subtitle": "أدر شجرة الفئات ومجموعات المرافق التي تنظّم بطاقات الأنشطة التجارية.",
+      "tabs": {
+        "categories": "الفئات",
+        "amenities": "المرافق"
+      },
+      "forbidden": "ليس لديك صلاحية الوصول إلى هذا.",
+      "loadError": "تعذّر تحميل التصنيف.",
+      "saveError": "حدث خطأ ما. يُرجى المحاولة مرة أخرى.",
+      "tree": {
+        "empty": "لا يوجد شيء بعد. أضف أول عنصر.",
+        "reorder": "اسحب لإعادة الترتيب",
+        "active": "مفعّل",
+        "edit": "تعديل",
+        "remove": "إزالة",
+        "usage": "{count, plural, other {# استخدام}}",
+        "boundCount": "{count, plural, other {# فئة}}",
+        "add": {
+          "categoryRoot": "إضافة فئة",
+          "categoryChild": "إضافة فئة فرعية",
+          "amenityRoot": "إضافة مجموعة",
+          "amenityChild": "إضافة مرفق"
+        }
+      },
+      "dialog": {
+        "title": {
+          "createCategoryRoot": "إضافة فئة",
+          "createCategoryChild": "إضافة فئة فرعية",
+          "createAmenityRoot": "إضافة مجموعة مرافق",
+          "createAmenityChild": "إضافة مرفق",
+          "editCategoryRoot": "تعديل الفئة",
+          "editCategoryChild": "تعديل الفئة الفرعية",
+          "editAmenityRoot": "تعديل مجموعة المرافق",
+          "editAmenityChild": "تعديل المرفق"
+        },
+        "help": "تظهر الأسماء في أداة الاختيار. الإنجليزية مطلوبة، واللغات الأخرى اختيارية.",
+        "name": "الاسم",
+        "namePlaceholder": "الاسم ({locale})",
+        "nameRequired": "الاسم بالإنجليزية مطلوب.",
+        "description": "الوصف",
+        "slug": "المعرّف",
+        "slugPlaceholder": "يُنشأ تلقائيًا من الاسم",
+        "bindings": "يظهر للفئات",
+        "bindingsHelp": "اتركه فارغًا ليظهر في كل مكان، وإلا فسيظهر فقط للفئات المحددة.",
+        "global": "عام",
+        "noCategories": "أضف فئات أولًا لربطه بها.",
+        "active": "مفعّل",
+        "activeHelp": "العناصر غير المفعّلة تُخفى من أداة الاختيار.",
+        "cancel": "إلغاء",
+        "save": "حفظ",
+        "add": "إضافة",
+        "bindingsSearch": "ابحث عن الفئات…",
+        "bindingsSelected": "{count} محددة",
+        "noMatches": "لا توجد نتائج.",
+        "unsaved": "تغييرات غير محفوظة"
+      },
+      "delete": {
+        "title": "إزالة «{name}»؟",
+        "usage": "{count, plural, =0 {غير مستخدم في أي بطاقة.} other {مستخدم في # بطاقة.}}",
+        "children": "{count, plural, other {يحتوي على # عنصر فرعي، ستتم إزالته معه.}}",
+        "help": "عطّله لإخفائه مع الاحتفاظ بالبيانات، أو احذفه لإزالته.",
+        "deactivate": "تعطيل",
+        "delete": "حذف"
+      },
+      "toast": {
+        "created": "تمت الإضافة.",
+        "saved": "تم الحفظ.",
+        "deleted": "تم الحذف.",
+        "deactivated": "تم التعطيل."
       }
     }
   },

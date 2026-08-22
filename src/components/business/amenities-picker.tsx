@@ -52,7 +52,10 @@ export function AmenitiesPicker({
     const bindings = amenity.category_slugs ?? [];
     const scoped =
       bindings.length === 0 || bindings.some((slug) => subs.has(slug));
-    const matches = query === "" || amenity.name.toLowerCase().includes(query);
+    // Match name, slug, and description (parity with the admin taxonomy source of truth).
+    const haystack =
+      `${amenity.name} ${amenity.slug} ${amenity.description ?? ""}`.toLowerCase();
+    const matches = query === "" || haystack.includes(query);
     return scoped && matches;
   };
 
