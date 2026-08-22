@@ -882,7 +882,9 @@
       },
       "addWebsite": "ウェブサイトを追加",
       "addPhone": "電話番号を追加",
-      "addEmail": "メールを追加"
+      "addEmail": "メールを追加",
+      "searchSocial": "プラットフォームを検索…",
+      "noSocial": "プラットフォームが見つかりません。"
     },
     "workspace": {
       "reviews": {

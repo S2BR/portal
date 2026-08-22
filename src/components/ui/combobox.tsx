@@ -17,7 +17,12 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
-export type ComboboxOption = { value: string; label: string };
+export type ComboboxOption = {
+  value: string;
+  label: string;
+  /** Optional leading glyph shown in the trigger + list item (e.g. a brand icon). */
+  icon?: React.ReactNode;
+};
 
 /**
  * A searchable single-select. The trigger matches {@link Input}/{@link Select}; the panel is a
@@ -60,12 +65,15 @@ function Combobox({
           data-slot="combobox-trigger"
           disabled={disabled}
           className={cn(
-            "border-input focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 flex h-11 w-full items-center justify-between gap-2 rounded-lg border bg-background px-3.5 py-2 text-base transition-colors outline-none focus-visible:ring-3 disabled:pointer-events-none disabled:opacity-50",
+            "border-input focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 bg-background flex h-11 w-full items-center justify-between gap-2 rounded-lg border px-3.5 py-2 text-base transition-colors outline-none focus-visible:ring-3 disabled:pointer-events-none disabled:opacity-50",
             !selected && "text-muted-foreground",
             className,
           )}
         >
-          <span className="truncate">{selected?.label ?? placeholder}</span>
+          <span className="flex min-w-0 items-center gap-2">
+            {selected?.icon}
+            <span className="truncate">{selected?.label ?? placeholder}</span>
+          </span>
           <ChevronsUpDownIcon
             className="text-muted-foreground size-4 shrink-0"
             aria-hidden
@@ -96,6 +104,7 @@ function Combobox({
                   )}
                   aria-hidden
                 />
+                {option.icon}
                 <span className="truncate">{option.label}</span>
               </CommandItem>
             ))}

@@ -882,7 +882,9 @@
       },
       "addWebsite": "إضافة موقع إلكتروني",
       "addPhone": "إضافة هاتف",
-      "addEmail": "إضافة بريد إلكتروني"
+      "addEmail": "إضافة بريد إلكتروني",
+      "searchSocial": "البحث عن منصة…",
+      "noSocial": "لم يتم العثور على منصة."
     },
     "workspace": {
       "reviews": {
