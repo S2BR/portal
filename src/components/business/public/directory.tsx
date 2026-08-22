@@ -109,7 +109,7 @@ type DirectoryHit = {
   name: string;
   headline: string | null;
   type: PublicBusinessCard["type"];
-  categories?: string[];
+  category_ids?: string[];
   city?: string;
   // Presigned logo + banner urls, kept fresh by the nightly re-index; absent when the business
   // has none (the API only indexes the keys when set).
@@ -132,7 +132,7 @@ function slugify(value: string): string {
 
 function hitToCard(
   hit: DirectoryHit,
-  categoryLabels: Record<string, string>,
+  categoryLabels: Record<string, { slug: string; name: string }>,
 ): PublicBusinessCard {
   return {
     id: hit.id,
@@ -145,17 +145,16 @@ function hitToCard(
     city: hit.city ?? null,
     latitude: hit._geoloc?.lat ?? null,
     longitude: hit._geoloc?.lng ?? null,
-    categories: (hit.categories ?? []).map((slug) => ({
-      slug,
-      name: categoryLabels[slug] ?? slug,
-    })),
+    categories: (hit.category_ids ?? []).map(
+      (id) => categoryLabels[id] ?? { slug: id, name: id },
+    ),
     rating_avg: hit.rating_avg ?? 0,
     rating_count: hit.rating_count ?? 0,
   };
 }
 
 type Labels = {
-  categories: Record<string, string>;
+  categories: Record<string, { slug: string; name: string }>;
   amenities: Record<string, string>;
   types: Record<string, string>;
 };
@@ -213,7 +212,7 @@ function Hits({
   nearMeRadius,
   onClearRadius,
 }: {
-  categoryLabels: Record<string, string>;
+  categoryLabels: Record<string, { slug: string; name: string }>;
   location: DirectoryLocation | null;
   nearMeRadius: number | null;
   onClearRadius: () => void;
@@ -422,7 +421,7 @@ function Pagination() {
 function HitsMap({
   categoryLabels,
 }: {
-  categoryLabels: Record<string, string>;
+  categoryLabels: Record<string, { slug: string; name: string }>;
 }) {
   const t = useTranslations("businesses.directory");
   const { items } = useHits<DirectoryHit>();
@@ -463,7 +462,7 @@ function Sidebar({
       <OpenNowToggle />
       <CategoryTree title={t("facetCategory")} tree={categoryTree} />
       <FacetList
-        attribute="amenities"
+        attribute="amenity_ids"
         title={t("facetAmenities")}
         labels={labels.amenities}
       />

@@ -19,7 +19,11 @@ afterEach(() => {
 
 describe("getPublicBusiness", () => {
   it("returns the business on a 200, calling the public endpoint with no token", async () => {
-    const business = { id: "fjmi7z", slug: "padaria-central-fjmi7z", name: "Padaria" };
+    const business = {
+      id: "fjmi7z",
+      slug: "padaria-central-fjmi7z",
+      name: "Padaria",
+    };
     vi.mocked(portalFetch).mockResolvedValue({
       ok: true,
       status: 200,
@@ -135,32 +139,36 @@ describe("getPublicAmenities", () => {
     });
     await expect(getPublicAmenities()).resolves.toEqual(amenities);
 
-    vi.mocked(portalFetch).mockResolvedValue({ ok: false, status: 500, data: {} });
+    vi.mocked(portalFetch).mockResolvedValue({
+      ok: false,
+      status: 500,
+      data: {},
+    });
     await expect(getPublicAmenities()).resolves.toEqual([]);
   });
 });
 
 describe("taxonomyLabels", () => {
-  it("flattens category + amenity trees to a slug→name map", () => {
+  it("flattens category + amenity trees to an id→name map", () => {
     expect(
       taxonomyLabels([
         {
-          slug: "food",
+          id: 1,
           name: "Food",
-          subcategories: [{ slug: "bakeries", name: "Bakeries" }],
+          subcategories: [{ id: 2, name: "Bakeries" }],
         },
       ]),
-    ).toEqual({ food: "Food", bakeries: "Bakeries" });
+    ).toEqual({ "1": "Food", "2": "Bakeries" });
 
     expect(
       taxonomyLabels([
         {
-          slug: "connectivity",
+          id: 3,
           name: "Connectivity",
-          amenities: [{ slug: "wifi", name: "Wi-Fi" }],
+          amenities: [{ id: 4, name: "Wi-Fi" }],
         },
       ]),
-    ).toEqual({ connectivity: "Connectivity", wifi: "Wi-Fi" });
+    ).toEqual({ "3": "Connectivity", "4": "Wi-Fi" });
   });
 });
 
