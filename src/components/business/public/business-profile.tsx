@@ -15,6 +15,7 @@ import { ProfileMap } from "@/components/business/public/profile-map";
 import { StarRating } from "@/components/business/public/star-rating";
 import { ReportDialog } from "@/components/moderation/report-dialog";
 import { ClosuresReadout } from "@/components/business/closures-editor";
+import { SocialIcon } from "@/components/business/social-icon";
 import { OpenStatusBadge } from "@/components/business/public/open-status-badge";
 import { flagEmoji, formatPhone } from "@/components/business/phone-format";
 import { ClaimBusinessButton } from "@/components/business/public/claim-business-button";
@@ -364,7 +365,10 @@ export async function BusinessProfile({
                   ))}
                   {business.socials.map((social) => (
                     <li key={social.id} className="flex items-center gap-3">
-                      <Globe className="text-muted-foreground size-4 shrink-0" />
+                      <SocialIcon
+                        platform={social.platform}
+                        className="text-muted-foreground size-4"
+                      />
                       <a
                         href={socialDisplay(social.platform, social.handle)}
                         target="_blank"

@@ -889,7 +889,9 @@
       },
       "addWebsite": "Agregar sitio web",
       "addPhone": "Agregar teléfono",
-      "addEmail": "Agregar correo"
+      "addEmail": "Agregar correo",
+      "searchSocial": "Buscar plataforma…",
+      "noSocial": "No se encontró ninguna plataforma."
     },
     "workspace": {
       "reviews": {

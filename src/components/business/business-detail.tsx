@@ -50,6 +50,7 @@ import {
 } from "@/components/business/business-constants";
 import { useBusinessIdentity } from "@/components/business/business-identity-context";
 import { BusinessLogo } from "@/components/business/business-logo";
+import { SocialIcon } from "@/components/business/social-icon";
 import type { Amenity } from "@/app/api/amenities/route";
 import type { Category } from "@/app/api/categories/route";
 import {
@@ -118,12 +119,12 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
 } from "@/components/ui/select";
 import { BusinessFormSkeleton } from "@/components/business/business-skeletons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { Combobox } from "@/components/ui/combobox";
 import { TimezoneCombobox } from "@/components/ui/timezone-combobox";
 import { apiErrorText } from "@/lib/api/error-text";
 import { todayISO } from "@/lib/calendar";
@@ -1533,26 +1534,25 @@ export function BusinessDetail({
                   })}
                   renderRow={(row, update) => (
                     <>
-                      <Select
+                      <Combobox
                         value={row.platform}
-                        onValueChange={(value) =>
+                        onChange={(value) =>
                           update({ platform: value as BusinessSocialNetwork })
                         }
-                      >
-                        <SelectTrigger className="sm:w-48">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {SOCIAL_NETWORKS.map((network) => (
-                            <SelectItem
-                              key={network.value}
-                              value={network.value}
-                            >
-                              {network.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                        options={SOCIAL_NETWORKS.map((network) => ({
+                          value: network.value,
+                          label: network.label,
+                          icon: (
+                            <SocialIcon
+                              platform={network.value}
+                              className="size-4"
+                            />
+                          ),
+                        }))}
+                        searchPlaceholder={t("searchSocial")}
+                        emptyText={t("noSocial")}
+                        className="sm:w-48"
+                      />
                       {row.platform === "linkedin" ? (
                         <LinkedinInput
                           value={row.handle}
@@ -1577,7 +1577,11 @@ export function BusinessDetail({
                       key={index}
                       className="flex items-center justify-between gap-3 py-3 text-sm"
                     >
-                      <span className="shrink-0 font-medium">
+                      <span className="inline-flex shrink-0 items-center gap-2 font-medium">
+                        <SocialIcon
+                          platform={social.platform}
+                          className="size-4"
+                        />
                         {socialLabel(social.platform)}
                       </span>
                       <LinkPreview
