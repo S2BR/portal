@@ -1168,28 +1168,32 @@ export function BusinessDetail({
 
           {/* Amenities */}
           <TabsContent value="amenities">
-            <FormSection
-              editing={editing}
-              title={sections("amenities.title")}
-              description={sections("amenities.description")}
-            >
-              {editing && edit ? (
-                <AmenitiesPicker
-                  groups={amenityGroups}
-                  selectedRootSlugs={selectedRootSlugs}
-                  selectedSubSlugs={selectedSubSlugs}
-                  value={edit.amenityIds}
-                  onChange={(amenityIds) => patch({ amenityIds })}
-                />
-              ) : business.amenities && business.amenities.length > 0 ? (
-                <AmenityReadout
-                  amenities={business.amenities}
-                  groups={amenityGroups}
-                />
-              ) : (
-                <Muted>{blank("amenities")}</Muted>
-              )}
-            </FormSection>
+            {editing && edit ? (
+              // Full-width so each amenity group is its own aside (title/description left, options
+              // right); the picker carries its own group headings, so no outer section wrapper.
+              <AmenitiesPicker
+                groups={amenityGroups}
+                selectedRootSlugs={selectedRootSlugs}
+                selectedSubSlugs={selectedSubSlugs}
+                value={edit.amenityIds}
+                onChange={(amenityIds) => patch({ amenityIds })}
+              />
+            ) : (
+              <FormSection
+                editing={editing}
+                title={sections("amenities.title")}
+                description={sections("amenities.description")}
+              >
+                {business.amenities && business.amenities.length > 0 ? (
+                  <AmenityReadout
+                    amenities={business.amenities}
+                    groups={amenityGroups}
+                  />
+                ) : (
+                  <Muted>{blank("amenities")}</Muted>
+                )}
+              </FormSection>
+            )}
           </TabsContent>
 
           {/* Contact — Website / Phone / Email */}
