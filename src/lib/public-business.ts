@@ -62,6 +62,11 @@ export interface PublicBusiness {
   rating_avg: number;
   rating_count: number;
   is_claimed: boolean;
+  /**
+   * Absolute UTC 15-minute "open" epoch slots over a rolling window — drives the live open/closed
+   * status badge (see `computeOpenState`). Empty when the business has no usable hours.
+   */
+  open_slots: number[];
   created_at: string | null;
 }
 
@@ -162,6 +167,10 @@ export interface PublicBusinessCard {
   /** Aggregate rating from publicly-visible reviews; `rating_avg` is 0 when there are none. */
   rating_avg: number;
   rating_count: number;
+  /** Absolute UTC 15-minute "open" epoch slots — powers the "Closes at" hint under the open-now filter. */
+  open_slots: number[];
+  /** The business's IANA zone, so the "Closes at" time renders in local time; null when unknown. */
+  timezone: string | null;
 }
 
 /** One entry in the public business sitemap feed. */
@@ -221,4 +230,3 @@ export async function getPublicDirectory(params: {
 
   return response.ok ? response.data : EMPTY_DIRECTORY;
 }
-

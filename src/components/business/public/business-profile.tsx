@@ -16,6 +16,7 @@ import { StarRating } from "@/components/business/public/star-rating";
 import { ReportDialog } from "@/components/moderation/report-dialog";
 import { ClosuresReadout } from "@/components/business/closures-editor";
 import { SocialIcon } from "@/components/business/social-icon";
+import { OpenStatusBadge } from "@/components/business/public/open-status-badge";
 import { flagEmoji, formatPhone } from "@/components/business/phone-format";
 import { ClaimBusinessButton } from "@/components/business/public/claim-business-button";
 import { ShareButton } from "@/components/business/public/share-button";
@@ -263,7 +264,13 @@ export async function BusinessProfile({
           <div className="space-y-4">
             {business.opening_hours.length > 0 ? (
               <div className="bg-muted/40 rounded-2xl p-5">
-                <h2 className="mb-3 text-sm font-semibold">{t("hours")}</h2>
+                <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1">
+                  <h2 className="text-sm font-semibold">{t("hours")}</h2>
+                  <OpenStatusBadge
+                    slots={business.open_slots}
+                    timezone={business.timezone}
+                  />
+                </div>
                 <ul className="space-y-1.5 text-sm tabular-nums">
                   {DAYS.map((day) => {
                     const entry = business.opening_hours.find(

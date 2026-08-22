@@ -606,7 +606,14 @@
       "share": "Partager",
       "linkCopied": "Lien copié",
       "closed": "Fermé",
-      "photoAlt": "{name} — photo {number}"
+      "photoAlt": "{name} — photo {number}",
+      "statusOpen": "Ouvert",
+      "statusClosingSoon": "Ferme bientôt",
+      "statusOpeningSoon": "Ouvre bientôt",
+      "statusClosed": "Fermé",
+      "closesAt": "Ferme à {time}",
+      "opensAt": "Ouvre à {time}",
+      "opensAtDay": "Ouvre {day} à {time}"
     },
     "publish": {
       "checklistTitle": "Pas encore en ligne",

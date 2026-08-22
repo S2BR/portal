@@ -606,7 +606,14 @@
       "share": "共有",
       "linkCopied": "リンクをコピーしました",
       "closed": "休業",
-      "photoAlt": "{name} — 写真 {number}"
+      "photoAlt": "{name} — 写真 {number}",
+      "statusOpen": "営業中",
+      "statusClosingSoon": "まもなく閉店",
+      "statusOpeningSoon": "まもなく開店",
+      "statusClosed": "閉店",
+      "closesAt": "{time}に閉店",
+      "opensAt": "{time}に開店",
+      "opensAtDay": "{day} {time}に開店"
     },
     "publish": {
       "checklistTitle": "まだ公開されていません",

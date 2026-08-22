@@ -606,7 +606,14 @@
       "share": "مشاركة",
       "linkCopied": "تم نسخ الرابط",
       "closed": "مغلق",
-      "photoAlt": "{name} — صورة {number}"
+      "photoAlt": "{name} — صورة {number}",
+      "statusOpen": "مفتوح",
+      "statusClosingSoon": "يغلق قريباً",
+      "statusOpeningSoon": "يفتح قريباً",
+      "statusClosed": "مغلق",
+      "closesAt": "يغلق في {time}",
+      "opensAt": "يفتح في {time}",
+      "opensAtDay": "يفتح {day} في {time}"
     },
     "publish": {
       "checklistTitle": "غير منشور بعد",
