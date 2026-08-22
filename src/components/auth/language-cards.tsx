@@ -1,5 +1,6 @@
 "use client";
 
+import { LocaleFlag } from "@/components/locale-flag";
 import {
   getDirection,
   localeGreetings,
@@ -29,7 +30,7 @@ function LanguageCard({
       onClick={onSelect}
       aria-pressed={selected}
       className={cn(
-        "focus-visible:ring-ring relative flex min-h-[7.5rem] flex-col items-center rounded-xl px-2 pt-5 pb-3 text-center outline-none transition-colors focus-visible:ring-2 focus-visible:ring-inset",
+        "focus-visible:ring-ring relative flex min-h-[7.5rem] flex-col items-center rounded-xl px-2 pt-5 pb-3 text-center transition-colors outline-none focus-visible:ring-2 focus-visible:ring-inset",
         selected ? "bg-muted-foreground/10" : "bg-muted/40 hover:bg-muted/70",
       )}
     >
@@ -40,14 +41,7 @@ function LanguageCard({
           aria-hidden
         />
       ) : null}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={`/images/flags/${locale}.png`}
-        alt=""
-        width={48}
-        height={48}
-        className="size-12 rounded-full object-cover"
-      />
+      <LocaleFlag locale={locale} className="size-12" />
       <span className="mt-auto flex flex-col items-center gap-0.5 pt-3">
         <span
           dir={getDirection(locale)}

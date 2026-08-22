@@ -946,7 +946,8 @@
       "reports": "報告",
       "claims": "オーナー申請",
       "businesses": "ビジネス",
-      "uploads": "アップロード"
+      "uploads": "アップロード",
+      "taxonomy": "分類"
     },
     "reports": {
       "title": "報告",
@@ -1275,6 +1276,78 @@
       "widgets": {
         "files": "ファイル数",
         "totalSize": "合計サイズ"
+      }
+    },
+    "taxonomy": {
+      "title": "カテゴリーと設備",
+      "subtitle": "ビジネス掲載を構成するカテゴリーツリーと設備グループを管理します。",
+      "tabs": {
+        "categories": "カテゴリー",
+        "amenities": "設備"
+      },
+      "forbidden": "これにアクセスする権限がありません。",
+      "loadError": "分類を読み込めませんでした。",
+      "saveError": "問題が発生しました。もう一度お試しください。",
+      "tree": {
+        "empty": "まだ何もありません。最初の項目を追加してください。",
+        "reorder": "ドラッグして並べ替え",
+        "active": "有効",
+        "edit": "編集",
+        "remove": "削除",
+        "usage": "{count, plural, other {# 件で使用}}",
+        "boundCount": "{count, plural, other {# カテゴリー}}",
+        "add": {
+          "categoryRoot": "カテゴリーを追加",
+          "categoryChild": "サブカテゴリーを追加",
+          "amenityRoot": "グループを追加",
+          "amenityChild": "設備を追加"
+        }
+      },
+      "dialog": {
+        "title": {
+          "createCategoryRoot": "カテゴリーを追加",
+          "createCategoryChild": "サブカテゴリーを追加",
+          "createAmenityRoot": "設備グループを追加",
+          "createAmenityChild": "設備を追加",
+          "editCategoryRoot": "カテゴリーを編集",
+          "editCategoryChild": "サブカテゴリーを編集",
+          "editAmenityRoot": "設備グループを編集",
+          "editAmenityChild": "設備を編集"
+        },
+        "help": "名前はセレクターに表示されます。英語は必須で、その他の言語は任意です。",
+        "name": "名前",
+        "namePlaceholder": "名前（{locale}）",
+        "nameRequired": "英語の名前は必須です。",
+        "description": "説明",
+        "slug": "スラッグ",
+        "slugPlaceholder": "名前から自動生成されます",
+        "bindings": "表示するカテゴリー",
+        "bindingsHelp": "空欄にするとすべてに表示されます。指定すると選択したカテゴリーにのみ表示されます。",
+        "global": "全体",
+        "noCategories": "先にカテゴリーを追加してから関連付けてください。",
+        "active": "有効",
+        "activeHelp": "無効な項目はセレクターに表示されません。",
+        "cancel": "キャンセル",
+        "save": "保存",
+        "add": "追加",
+        "bindingsSearch": "カテゴリーを検索…",
+        "bindingsSelected": "{count} 件選択中",
+        "noMatches": "一致するものがありません。",
+        "unsaved": "未保存の変更"
+      },
+      "delete": {
+        "title": "「{name}」を削除しますか？",
+        "usage": "{count, plural, =0 {どの掲載でも使用されていません。} other {# 件の掲載で使用されています。}}",
+        "children": "{count, plural, other {# 個の子項目があり、一緒に削除されます。}}",
+        "help": "データを残して非表示にするには無効化、完全に取り除くには削除してください。",
+        "deactivate": "無効化",
+        "delete": "削除"
+      },
+      "toast": {
+        "created": "追加しました。",
+        "saved": "保存しました。",
+        "deleted": "削除しました。",
+        "deactivated": "無効にしました。"
       }
     }
   },

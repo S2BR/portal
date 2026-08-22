@@ -946,7 +946,8 @@
       "reports": "Meldungen",
       "claims": "Ansprüche",
       "businesses": "Unternehmen",
-      "uploads": "Uploads"
+      "uploads": "Uploads",
+      "taxonomy": "Taxonomie"
     },
     "reports": {
       "title": "Meldungen",
@@ -1275,6 +1276,78 @@
       "widgets": {
         "files": "Dateien",
         "totalSize": "Gesamtgröße"
+      }
+    },
+    "taxonomy": {
+      "title": "Kategorien und Ausstattung",
+      "subtitle": "Verwalte den Kategorienbaum und die Ausstattungsgruppen, die Unternehmenseinträge strukturieren.",
+      "tabs": {
+        "categories": "Kategorien",
+        "amenities": "Ausstattung"
+      },
+      "forbidden": "Du hast darauf keinen Zugriff.",
+      "loadError": "Die Taxonomie konnte nicht geladen werden.",
+      "saveError": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
+      "tree": {
+        "empty": "Noch nichts vorhanden. Füge den ersten Eintrag hinzu.",
+        "reorder": "Zum Umsortieren ziehen",
+        "active": "Aktiv",
+        "edit": "Bearbeiten",
+        "remove": "Entfernen",
+        "usage": "{count, plural, one {# Verwendung} other {# Verwendungen}}",
+        "boundCount": "{count, plural, one {# Kategorie} other {# Kategorien}}",
+        "add": {
+          "categoryRoot": "Kategorie hinzufügen",
+          "categoryChild": "Unterkategorie hinzufügen",
+          "amenityRoot": "Gruppe hinzufügen",
+          "amenityChild": "Ausstattung hinzufügen"
+        }
+      },
+      "dialog": {
+        "title": {
+          "createCategoryRoot": "Kategorie hinzufügen",
+          "createCategoryChild": "Unterkategorie hinzufügen",
+          "createAmenityRoot": "Ausstattungsgruppe hinzufügen",
+          "createAmenityChild": "Ausstattung hinzufügen",
+          "editCategoryRoot": "Kategorie bearbeiten",
+          "editCategoryChild": "Unterkategorie bearbeiten",
+          "editAmenityRoot": "Ausstattungsgruppe bearbeiten",
+          "editAmenityChild": "Ausstattung bearbeiten"
+        },
+        "help": "Namen erscheinen in der Auswahl. Englisch ist erforderlich; andere Sprachen sind optional.",
+        "name": "Name",
+        "namePlaceholder": "Name ({locale})",
+        "nameRequired": "Ein englischer Name ist erforderlich.",
+        "description": "Beschreibung",
+        "slug": "Slug",
+        "slugPlaceholder": "Wird aus dem Namen erzeugt",
+        "bindings": "Für Kategorien angezeigt",
+        "bindingsHelp": "Leer lassen, um es überall anzuzeigen. Andernfalls erscheint es nur bei den gewählten Kategorien.",
+        "global": "Global",
+        "noCategories": "Füge zuerst Kategorien hinzu, um es zu verknüpfen.",
+        "active": "Aktiv",
+        "activeHelp": "Inaktive Einträge werden in der Auswahl ausgeblendet.",
+        "cancel": "Abbrechen",
+        "save": "Speichern",
+        "add": "Hinzufügen",
+        "bindingsSearch": "Kategorien suchen…",
+        "bindingsSelected": "{count} ausgewählt",
+        "noMatches": "Keine Treffer.",
+        "unsaved": "Nicht gespeicherte Änderungen"
+      },
+      "delete": {
+        "title": "„{name}“ entfernen?",
+        "usage": "{count, plural, =0 {Von keinem Eintrag verwendet.} one {Von # Eintrag verwendet.} other {Von # Einträgen verwendet.}}",
+        "children": "{count, plural, one {Hat # Unterelement, das mit entfernt wird.} other {Hat # Unterelemente, die mit entfernt werden.}}",
+        "help": "Deaktivieren, um es bei erhaltenen Daten auszublenden, oder löschen, um es zu entfernen.",
+        "deactivate": "Deaktivieren",
+        "delete": "Löschen"
+      },
+      "toast": {
+        "created": "Hinzugefügt.",
+        "saved": "Gespeichert.",
+        "deleted": "Gelöscht.",
+        "deactivated": "Deaktiviert."
       }
     }
   },

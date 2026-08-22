@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
 import { LanguageCards } from "@/components/auth/language-cards";
+import { LocaleFlag } from "@/components/locale-flag";
 import { BlurScrim } from "@/components/ui/blur-scrim";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,29 +15,6 @@ import {
 } from "@/components/ui/popover";
 import { setLocale } from "@/i18n/actions";
 import { isLocale, localeNames, locales, type Locale } from "@/i18n/config";
-import { cn } from "@/lib/utils";
-
-/** The round flag for a locale, from /public/images/flags/<locale>.png. */
-function LocaleFlag({
-  locale,
-  className,
-}: {
-  locale: Locale;
-  className?: string;
-}) {
-  return (
-    // A plain <img> (not next/image) so the cached flag paints instantly when the header re-mounts
-    // on a layout change, with no loading transition.
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={`/images/flags/${locale}.png`}
-      alt=""
-      width={20}
-      height={20}
-      className={cn("size-5 shrink-0 rounded-full object-cover", className)}
-    />
-  );
-}
 
 /**
  * The header language switcher: a compact flag button that opens the same greeting-card picker used

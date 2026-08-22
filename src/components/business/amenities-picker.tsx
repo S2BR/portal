@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import type { Amenity } from "@/app/api/amenities/route";
+import { FormSection } from "@/components/business/form-section";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 
@@ -52,7 +53,10 @@ export function AmenitiesPicker({
     const bindings = amenity.category_slugs ?? [];
     const scoped =
       bindings.length === 0 || bindings.some((slug) => subs.has(slug));
-    const matches = query === "" || amenity.name.toLowerCase().includes(query);
+    // Match name, slug, and description (parity with the admin taxonomy source of truth).
+    const haystack =
+      `${amenity.name} ${amenity.slug} ${amenity.description ?? ""}`.toLowerCase();
+    const matches = query === "" || haystack.includes(query);
     return scoped && matches;
   };
 
@@ -65,56 +69,65 @@ export function AmenitiesPicker({
     .filter((entry) => entry.amenities.length > 0);
 
   return (
-    <div className="space-y-4">
-      {value.length > 0 ? (
-        <div className="flex justify-end">
+    <div className="space-y-6">
+      {/* Search + clear. */}
+      <div className="flex items-center gap-3">
+        <Input
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          placeholder={t("searchAmenities")}
+        />
+        {value.length > 0 ? (
           <button
             type="button"
             onClick={() => onChange([])}
-            className="text-muted-foreground hover:text-foreground text-xs font-medium"
+            className="text-muted-foreground hover:text-foreground shrink-0 text-xs font-medium"
           >
             {t("clearSelection")}
           </button>
-        </div>
-      ) : null}
-      <Input
-        value={search}
-        onChange={(event) => setSearch(event.target.value)}
-        placeholder={t("searchAmenities")}
-      />
+        ) : null}
+      </div>
 
       {visible.length === 0 ? (
         <p className="text-muted-foreground text-sm italic">
           {t("amenitiesEmpty")}
         </p>
       ) : (
-        visible.map(({ group, amenities }) => (
-          <fieldset key={group.id} className="space-y-3 rounded-xl border p-4">
-            <legend className="px-1 text-sm font-medium">{group.name}</legend>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {amenities.map((amenity) => (
-                <label
-                  key={amenity.id}
-                  className="flex items-start gap-2.5 text-sm"
-                >
-                  <Checkbox
-                    checked={selected.has(amenity.id)}
-                    onCheckedChange={() => toggle(amenity.id)}
-                    className="mt-0.5"
-                  />
-                  <span className="min-w-0">
-                    <span className="block">{amenity.name}</span>
-                    {amenity.description ? (
-                      <span className="text-muted-foreground block text-xs">
-                        {amenity.description}
-                      </span>
-                    ) : null}
-                  </span>
-                </label>
-              ))}
-            </div>
-          </fieldset>
-        ))
+        // Each group is an aside section: its name + description on the left, its options (each with
+        // their own description) on the right — mirroring the taxonomy source.
+        <div>
+          {visible.map(({ group, amenities }) => (
+            <FormSection
+              key={group.id}
+              editing
+              title={group.name}
+              description={group.description ?? undefined}
+            >
+              <div className="grid gap-x-6 gap-y-3 sm:grid-cols-2">
+                {amenities.map((amenity) => (
+                  <label
+                    key={amenity.id}
+                    className="flex items-start gap-2.5 text-sm"
+                  >
+                    <Checkbox
+                      checked={selected.has(amenity.id)}
+                      onCheckedChange={() => toggle(amenity.id)}
+                      className="mt-0.5"
+                    />
+                    <span className="min-w-0">
+                      <span className="block">{amenity.name}</span>
+                      {amenity.description ? (
+                        <span className="text-muted-foreground block text-xs">
+                          {amenity.description}
+                        </span>
+                      ) : null}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </FormSection>
+          ))}
+        </div>
       )}
     </div>
   );
