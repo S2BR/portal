@@ -1,7 +1,7 @@
 "use client";
 
 import { MapPin, Navigation, Search, SlidersHorizontal, X } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 import {
   Configure,
@@ -17,10 +17,16 @@ import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter";
 
 import { BusinessCard } from "@/components/business/public/business-card";
 import { CategoryTree } from "@/components/business/public/category-tree";
-import type { CategoryNode } from "@/components/business/public/category-tree-nodes";
+import {
+  taxonomyById,
+  taxonomyLabels,
+  toCategoryNodes,
+  type CategoryNode,
+} from "@/components/business/public/category-tree-nodes";
 import { DirectoryMap } from "@/components/business/public/directory-map";
 import { FacetList } from "@/components/business/public/facet-list";
 import { OpenNowToggle } from "@/components/business/public/open-now-toggle";
+import { StarFilter } from "@/components/business/public/star-filter";
 import { useCurrentUser } from "@/components/auth/current-user";
 import {
   formatDistance,
@@ -33,6 +39,8 @@ import {
   type DirectoryLocation,
   type LocationStatus,
 } from "@/components/business/public/use-directory-location";
+
+import { fetchTaxonomyFromTypesense } from "@/lib/taxonomy/typesense";
 
 import type { EdgeLocation } from "@/lib/edge-location";
 import type { PublicBusinessCard } from "@/lib/public-business";
@@ -466,6 +474,7 @@ function Sidebar({
         title={t("facetAmenities")}
         labels={labels.amenities}
       />
+      <StarFilter />
       <FacetList
         attribute="type"
         title={t("facetType")}
@@ -476,22 +485,59 @@ function Sidebar({
   );
 }
 
+type Taxonomy = Awaited<ReturnType<typeof fetchTaxonomyFromTypesense>>;
+
 /**
  * The public business directory as an InstantSearch app: the browser searches Typesense DIRECTLY with
  * a scoped key minted (once) from `/api/search/key`, so typing never touches Laravel. Instant results,
  * a faceted sidebar (only values with matches), and a live map — mirroring the mobile app's
- * direct-to-Typesense model.
+ * direct-to-Typesense model. The category/amenity facet labels + tree are loaded the same way, from
+ * the `categories`/`amenities` collections — the directory never reads the database.
  */
 export function Directory({
-  labels,
-  categoryTree,
+  typeLabels,
   ipLocation,
 }: {
-  labels: Labels;
-  categoryTree: CategoryNode[];
+  typeLabels: Record<string, string>;
   ipLocation: EdgeLocation | null;
 }) {
   const t = useTranslations("businesses.directory");
+  const locale = useLocale();
+
+  // Facet labels come straight from Typesense (browser → search host), localized to the active locale.
+  // Every failure degrades to an empty tree, so the shell still renders (facets just show ids/counts).
+  const [taxonomy, setTaxonomy] = useState<Taxonomy>({
+    categories: [],
+    amenities: [],
+  });
+
+  useEffect(() => {
+    let active = true;
+    fetchTaxonomyFromTypesense(locale)
+      .then((result) => {
+        if (active) {
+          setTaxonomy(result);
+        }
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [locale]);
+
+  const labels: Labels = useMemo(
+    () => ({
+      categories: taxonomyById(taxonomy.categories),
+      amenities: taxonomyLabels(taxonomy.amenities),
+      types: typeLabels,
+    }),
+    [taxonomy, typeLabels],
+  );
+  const categoryTree = useMemo(
+    () => toCategoryNodes(taxonomy.categories),
+    [taxonomy],
+  );
+
   const { location, status, turnOff, enable } =
     useDirectoryLocation(ipLocation);
   const geoIndex = location
