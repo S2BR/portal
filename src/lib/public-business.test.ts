@@ -5,12 +5,9 @@ vi.mock("@/lib/api/client", () => ({ portalFetch: vi.fn() }));
 import { portalFetch } from "@/lib/api/client";
 
 import {
-  getPublicAmenities,
   getPublicBusiness,
   getPublicBusinessSitemap,
-  getPublicCategories,
   getPublicDirectory,
-  taxonomyLabels,
 } from "./public-business";
 
 afterEach(() => {
@@ -107,68 +104,6 @@ describe("getPublicDirectory", () => {
       data: [],
       meta: { current_page: 1, last_page: 1, total: 0 },
     });
-  });
-});
-
-describe("getPublicCategories", () => {
-  it("returns the category tree, or an empty list on failure", async () => {
-    const categories = [{ id: 1, slug: "food", name: "Food" }];
-    vi.mocked(portalFetch).mockResolvedValue({
-      ok: true,
-      status: 200,
-      data: { categories },
-    });
-    await expect(getPublicCategories()).resolves.toEqual(categories);
-
-    vi.mocked(portalFetch).mockResolvedValue({
-      ok: false,
-      status: 500,
-      data: {},
-    });
-    await expect(getPublicCategories()).resolves.toEqual([]);
-  });
-});
-
-describe("getPublicAmenities", () => {
-  it("returns the amenity tree, or an empty list on failure", async () => {
-    const amenities = [{ id: 1, slug: "wifi", name: "Wi-Fi" }];
-    vi.mocked(portalFetch).mockResolvedValue({
-      ok: true,
-      status: 200,
-      data: { amenities },
-    });
-    await expect(getPublicAmenities()).resolves.toEqual(amenities);
-
-    vi.mocked(portalFetch).mockResolvedValue({
-      ok: false,
-      status: 500,
-      data: {},
-    });
-    await expect(getPublicAmenities()).resolves.toEqual([]);
-  });
-});
-
-describe("taxonomyLabels", () => {
-  it("flattens category + amenity trees to an id→name map", () => {
-    expect(
-      taxonomyLabels([
-        {
-          id: 1,
-          name: "Food",
-          subcategories: [{ id: 2, name: "Bakeries" }],
-        },
-      ]),
-    ).toEqual({ "1": "Food", "2": "Bakeries" });
-
-    expect(
-      taxonomyLabels([
-        {
-          id: 3,
-          name: "Connectivity",
-          amenities: [{ id: 4, name: "Wi-Fi" }],
-        },
-      ]),
-    ).toEqual({ "3": "Connectivity", "4": "Wi-Fi" });
   });
 });
 

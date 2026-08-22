@@ -2,14 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { Directory } from "@/components/business/public/directory";
-import { toCategoryNodes } from "@/components/business/public/category-tree-nodes";
 import { getEdgeLocation } from "@/lib/edge-location";
-import {
-  getPublicAmenities,
-  getPublicCategories,
-  taxonomyById,
-  taxonomyLabels,
-} from "@/lib/public-business";
 import { businessPagesRobots } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -23,27 +16,20 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 /**
- * The public business directory. A light server shell (header + SEO + the facet LABEL maps) that hands
- * off to the client `Directory`, which searches Typesense directly (InstantSearch). The facet values
- * in the index are slugs/enums; the maps here turn them into localized labels.
+ * The public business directory. A light server shell (header + SEO + the edge-guess location) that
+ * hands off to the client `Directory`, which searches Typesense DIRECTLY (InstantSearch) AND loads
+ * the category/amenity facet labels straight from Typesense — nothing here touches the database. The
+ * only server-provided labels are the business `type` enum, which is translation copy, not taxonomy.
  */
 export default async function DirectoryPage() {
   const t = await getTranslations("businesses.directory");
   const types = await getTranslations("businessNew.types");
 
-  const [categories, amenities, ipLocation] = await Promise.all([
-    getPublicCategories(),
-    getPublicAmenities(),
-    getEdgeLocation(),
-  ]);
+  const ipLocation = await getEdgeLocation();
 
-  const labels = {
-    categories: taxonomyById(categories),
-    amenities: taxonomyLabels(amenities),
-    types: {
-      company: types("company.title"),
-      self_employed: types("selfEmployed.title"),
-    },
+  const typeLabels = {
+    company: types("company.title"),
+    self_employed: types("selfEmployed.title"),
   };
 
   return (
@@ -54,11 +40,7 @@ export default async function DirectoryPage() {
         </h1>
         <p className="text-muted-foreground mt-1">{t("subtitle")}</p>
       </header>
-      <Directory
-        labels={labels}
-        categoryTree={toCategoryNodes(categories)}
-        ipLocation={ipLocation}
-      />
+      <Directory typeLabels={typeLabels} ipLocation={ipLocation} />
     </div>
   );
 }

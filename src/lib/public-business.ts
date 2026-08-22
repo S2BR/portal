@@ -187,14 +187,6 @@ export interface PublicDirectory {
   meta: { current_page: number; last_page: number; total: number };
 }
 
-/** A category (with its subcategories) for the directory filter. */
-export interface PublicCategory {
-  id: number;
-  slug: string;
-  name: string;
-  subcategories?: PublicCategory[];
-}
-
 const EMPTY_DIRECTORY: PublicDirectory = {
   data: [],
   meta: { current_page: 1, last_page: 1, total: 0 },
@@ -230,86 +222,3 @@ export async function getPublicDirectory(params: {
   return response.ok ? response.data : EMPTY_DIRECTORY;
 }
 
-/** Fetch the category tree for the directory filter — unauthenticated, server-side. */
-export async function getPublicCategories(): Promise<PublicCategory[]> {
-  const response = await portalFetch<{ categories?: PublicCategory[] }>({
-    method: "GET",
-    path: "/public/categories",
-  });
-
-  return response.ok ? (response.data.categories ?? []) : [];
-}
-
-/** An amenity (with its children) for the directory filter labels. */
-export interface PublicAmenity {
-  id: number;
-  slug: string;
-  name: string;
-  amenities?: PublicAmenity[];
-}
-
-/** Fetch the amenity tree for the directory filter labels — unauthenticated, server-side. */
-export async function getPublicAmenities(): Promise<PublicAmenity[]> {
-  const response = await portalFetch<{ amenities?: PublicAmenity[] }>({
-    method: "GET",
-    path: "/public/amenities",
-  });
-
-  return response.ok ? (response.data.amenities ?? []) : [];
-}
-
-/**
- * Flatten a category/amenity tree into a `{ slug: localized name }` map, used to label the Typesense
- * facet values — the index stores ids (a slug rename never re-indexes). Recurses through the child
- * key (`subcategories` / `amenities`).
- */
-export function taxonomyLabels(
-  nodes: Array<{
-    id: number;
-    name: string;
-    subcategories?: unknown;
-    amenities?: unknown;
-  }>,
-): Record<string, string> {
-  const labels: Record<string, string> = {};
-  const walk = (list: typeof nodes) => {
-    for (const node of list) {
-      labels[String(node.id)] = node.name;
-      const children = (node.subcategories ?? node.amenities) as
-        typeof nodes | undefined;
-      if (Array.isArray(children)) {
-        walk(children);
-      }
-    }
-  };
-  walk(nodes);
-  return labels;
-}
-
-/**
- * Flatten a tree into a `{ id: { slug, name } }` map — for the directory card's category chips,
- * which resolve the indexed id to its localized name (+ slug, a stable key).
- */
-export function taxonomyById(
-  nodes: Array<{
-    id: number;
-    slug: string;
-    name: string;
-    subcategories?: unknown;
-    amenities?: unknown;
-  }>,
-): Record<string, { slug: string; name: string }> {
-  const map: Record<string, { slug: string; name: string }> = {};
-  const walk = (list: typeof nodes) => {
-    for (const node of list) {
-      map[String(node.id)] = { slug: node.slug, name: node.name };
-      const children = (node.subcategories ?? node.amenities) as
-        typeof nodes | undefined;
-      if (Array.isArray(children)) {
-        walk(children);
-      }
-    }
-  };
-  walk(nodes);
-  return map;
-}
