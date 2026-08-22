@@ -130,6 +130,7 @@ import { todayISO } from "@/lib/calendar";
 import { formatBusinessAddress } from "@/lib/format-address";
 import { parseRateLimit } from "@/lib/rate-limit";
 import { externalHref } from "@/lib/url";
+import { fetchTaxonomyFromTypesense } from "@/lib/taxonomy/typesense";
 import { useUnsavedChangesGuard } from "@/lib/use-unsaved-changes-guard";
 import { cn } from "@/lib/utils";
 
@@ -592,29 +593,23 @@ export function BusinessDetail({
     void load();
   }, [load]);
 
-  // Category tree + amenity groups for the pickers (reference data; loaded once).
+  // Category tree + amenity groups for the pickers — straight from Typesense (no DB), the same
+  // direct-to-Typesense model as the public directory. Reloads if the UI locale changes.
   useEffect(() => {
     let active = true;
-    void Promise.all([
-      fetch("/api/categories").then(
-        (response) => response.json() as Promise<{ categories?: Category[] }>,
-      ),
-      fetch("/api/amenities").then(
-        (response) => response.json() as Promise<{ amenities?: Amenity[] }>,
-      ),
-    ])
-      .then(([categories, amenities]) => {
+    void fetchTaxonomyFromTypesense(locale)
+      .then(({ categories, amenities }) => {
         if (!active) {
           return;
         }
-        setCategoryTree(categories.categories ?? []);
-        setAmenityGroups(amenities.amenities ?? []);
+        setCategoryTree(categories);
+        setAmenityGroups(amenities);
       })
       .catch(() => {});
     return () => {
       active = false;
     };
-  }, []);
+  }, [locale]);
 
   function startEditing() {
     if (!business) {
