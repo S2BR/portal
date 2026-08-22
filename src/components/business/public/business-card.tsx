@@ -1,4 +1,4 @@
-import { MapPin, Navigation, Star } from "lucide-react";
+import { Clock, MapPin, Navigation, Star } from "lucide-react";
 import Link from "next/link";
 
 import { BusinessBannerPlaceholder } from "@/components/business/public/business-banner-placeholder";
@@ -11,10 +11,13 @@ import type { PublicBusinessCard } from "@/lib/public-business";
 export function BusinessCard({
   business,
   distanceLabel,
+  closesLabel,
 }: {
   business: PublicBusinessCard;
   /** Pre-formatted, localized distance (e.g. "3.2 km"), shown when a "near me" sort is active. */
   distanceLabel?: string;
+  /** Pre-formatted, localized "Closes 6:00 PM" — shown only when the "open now" filter is active. */
+  closesLabel?: string;
 }) {
   return (
     <Link
@@ -83,6 +86,12 @@ export function BusinessCard({
               <span className="text-muted-foreground font-normal">
                 ({business.rating_count})
               </span>
+            </span>
+          ) : null}
+          {closesLabel ? (
+            <span className="text-brand-green-deep dark:text-brand-green inline-flex items-center gap-1 text-xs font-medium">
+              <Clock className="size-3" aria-hidden />
+              {closesLabel}
             </span>
           ) : null}
         </div>

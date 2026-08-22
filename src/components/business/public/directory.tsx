@@ -12,6 +12,7 @@ import {
   useSearchBox,
   useSortBy,
   useStats,
+  useToggleRefinement,
 } from "react-instantsearch";
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter";
 
@@ -40,6 +41,11 @@ import {
   type LocationStatus,
 } from "@/components/business/public/use-directory-location";
 
+import {
+  computeOpenState,
+  currentSlot,
+  formatBoundaryTime,
+} from "@/lib/business-hours";
 import { fetchTaxonomyFromTypesense } from "@/lib/taxonomy/typesense";
 
 import type { EdgeLocation } from "@/lib/edge-location";
@@ -125,6 +131,10 @@ type DirectoryHit = {
   banner?: string;
   rating_avg?: number;
   rating_count?: number;
+  // Absolute UTC 15-minute "open" slots + IANA zone — drive the "Closes at" label when the "open now"
+  // filter is active. `timezone` is stored display-only (not searchable).
+  open_slots?: number[];
+  timezone?: string;
   _geoloc?: { lat: number; lng: number };
 };
 
@@ -158,6 +168,8 @@ function hitToCard(
     ),
     rating_avg: hit.rating_avg ?? 0,
     rating_count: hit.rating_count ?? 0,
+    open_slots: hit.open_slots ?? [],
+    timezone: hit.timezone ?? null,
   };
 }
 
@@ -226,9 +238,19 @@ function Hits({
   onClearRadius: () => void;
 }) {
   const t = useTranslations("businesses.directory");
+  const pub = useTranslations("businesses.public");
+  const locale = useLocale();
   const { items } = useHits<DirectoryHit>();
   const { user } = useCurrentUser();
   const unit = resolveDistanceUnit(user?.distance_unit);
+
+  // Whether the "open now" filter is active — the "Closes at" hint only shows under it, as requested.
+  const openSlot = useMemo(() => currentSlot(), []);
+  const { value: openNow } = useToggleRefinement({
+    attribute: "open_slots",
+    on: openSlot,
+  });
+  const now = new Date();
 
   const distanceLabel = (hit: DirectoryHit): string | undefined => {
     if (!location || !hit._geoloc) {
@@ -236,6 +258,27 @@ function Hits({
     }
     const meters = distanceMeters(location, hit._geoloc.lat, hit._geoloc.lng);
     return formatDistance(meters, unit, t);
+  };
+
+  // "Closes 6:00 PM" for a currently-open result, in its own timezone — only when filtering by open now.
+  const closesLabel = (hit: DirectoryHit): string | undefined => {
+    if (!openNow.isRefined || !hit.open_slots?.length) {
+      return undefined;
+    }
+    const state = computeOpenState(hit.open_slots, now);
+    if (
+      (state.status === "open" || state.status === "closing_soon") &&
+      state.changeAt !== null
+    ) {
+      return pub("closesAt", {
+        time: formatBoundaryTime(
+          state.changeAt,
+          locale,
+          hit.timezone ?? undefined,
+        ),
+      });
+    }
+    return undefined;
   };
 
   if (items.length === 0) {
@@ -275,6 +318,7 @@ function Hits({
           key={hit.objectID}
           business={hitToCard(hit, categoryLabels)}
           distanceLabel={distanceLabel(hit)}
+          closesLabel={closesLabel(hit)}
         />
       ))}
     </div>
