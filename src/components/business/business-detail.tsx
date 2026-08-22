@@ -134,6 +134,7 @@ import { externalHref } from "@/lib/url";
 import { fetchTaxonomyFromTypesense } from "@/lib/taxonomy/typesense";
 import { useUnsavedChangesGuard } from "@/lib/use-unsaved-changes-guard";
 import { cn } from "@/lib/utils";
+import { pickChanged } from "@/lib/pick-changed";
 
 /** A website or email contact: the value plus an optional label. `key` is a stable client id for
  *  list rendering + drag reordering. */
@@ -635,7 +636,7 @@ export function BusinessDetail({
 
   async function save(event: FormEvent) {
     event.preventDefault();
-    if (!edit) {
+    if (!edit || !business) {
       return;
     }
     if (!edit.name.trim()) {
@@ -658,6 +659,18 @@ export function BusinessDetail({
       return;
     }
 
+    // Send only the sections that actually changed (the API leaves omitted sections untouched), so a
+    // one-field edit doesn't rewrite the whole business. Nothing changed ⇒ no request at all.
+    const payload = pickChanged(
+      buildPayload(edit),
+      buildPayload(toEditState(business)),
+    );
+    if (Object.keys(payload).length === 0) {
+      setEditing(false);
+      toast.success(t("savedToast"));
+      return;
+    }
+
     setSaving(true);
     setError(null);
     setNameError(null);
@@ -666,7 +679,7 @@ export function BusinessDetail({
       const response = await fetch(`${basePath}/${encodeURIComponent(slug)}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(buildPayload(edit)),
+        body: JSON.stringify(payload),
       });
       const data = (await response.json()) as {
         status?: string;
