@@ -1648,41 +1648,7 @@ export function BusinessDetail({
                     handle: "",
                   })}
                   renderRow={(row, update) => (
-                    <>
-                      <Combobox
-                        value={row.platform}
-                        onChange={(value) =>
-                          update({ platform: value as BusinessSocialNetwork })
-                        }
-                        options={SOCIAL_NETWORKS.map((network) => ({
-                          value: network.value,
-                          label: network.label,
-                          icon: (
-                            <SocialIcon
-                              platform={network.value}
-                              className="size-4"
-                            />
-                          ),
-                        }))}
-                        searchPlaceholder={t("searchSocial")}
-                        emptyText={t("noSocial")}
-                        className="sm:w-48"
-                      />
-                      {row.platform === "linkedin" ? (
-                        <LinkedinInput
-                          value={row.handle}
-                          onChange={(handle) => update({ handle })}
-                          placeholder={fields("handle")}
-                        />
-                      ) : (
-                        <PrefixInput
-                          prefix={`https://${SOCIAL_BASE_URL[row.platform]}`}
-                          value={row.handle}
-                          onChange={(handle) => update({ handle })}
-                          placeholder={fields("handle")}
-                        />
-                      )}
-                    </>
+                    <SocialRowEditor row={row} update={update} />
                   )}
                 />
               ) : business.socials && business.socials.length > 0 ? (
@@ -1862,6 +1828,69 @@ function Muted({ children }: { children: ReactNode }) {
 
 /** An input with a fixed, non-editable text prefix (e.g. `https://` or `instagram.com/`) — the user
  *  types only the part that follows, and the prefix is stripped from the stored value. */
+/**
+ * One social row in the editor: the searchable platform picker + the handle field. Splitting it out
+ * gives it a stable ref to the handle wrapper, so when the platform picker closes it hands focus to
+ * the handle field (instead of letting Radix return it to the picker trigger) — the user picks a
+ * platform and can type the handle straight away.
+ */
+function SocialRowEditor({
+  row,
+  update,
+}: {
+  row: SocialRow;
+  update: (changes: Partial<SocialRow>) => void;
+}) {
+  const t = useTranslations("businesses.detail");
+  const fields = useTranslations("businesses.detail.fields");
+  const handleWrapRef = useRef<HTMLDivElement>(null);
+
+  // Deferred so the handle input (which swaps between LinkedIn/prefix variants on a platform change)
+  // has re-rendered before we focus it.
+  const focusHandle = (event: Event) => {
+    event.preventDefault();
+    requestAnimationFrame(() => {
+      handleWrapRef.current?.querySelector<HTMLInputElement>("input")?.focus();
+    });
+  };
+
+  return (
+    <>
+      <Combobox
+        value={row.platform}
+        onChange={(value) =>
+          update({ platform: value as BusinessSocialNetwork })
+        }
+        options={SOCIAL_NETWORKS.map((network) => ({
+          value: network.value,
+          label: network.label,
+          icon: <SocialIcon platform={network.value} className="size-4" />,
+        }))}
+        searchPlaceholder={t("searchSocial")}
+        emptyText={t("noSocial")}
+        className="sm:w-48"
+        onCloseAutoFocus={focusHandle}
+      />
+      <div ref={handleWrapRef} className="min-w-0 flex-1">
+        {row.platform === "linkedin" ? (
+          <LinkedinInput
+            value={row.handle}
+            onChange={(handle) => update({ handle })}
+            placeholder={fields("handle")}
+          />
+        ) : (
+          <PrefixInput
+            prefix={`https://${SOCIAL_BASE_URL[row.platform]}`}
+            value={row.handle}
+            onChange={(handle) => update({ handle })}
+            placeholder={fields("handle")}
+          />
+        )}
+      </div>
+    </>
+  );
+}
+
 function PrefixInput({
   prefix,
   value,

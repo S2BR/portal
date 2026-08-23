@@ -39,6 +39,7 @@ function Combobox({
   emptyText,
   disabled,
   className,
+  onCloseAutoFocus,
 }: {
   options: ComboboxOption[];
   value: string;
@@ -49,6 +50,9 @@ function Combobox({
   emptyText?: string;
   disabled?: boolean;
   className?: string;
+  /** Redirect focus when the panel closes (default returns it to the trigger). Call
+   *  `event.preventDefault()` to send focus elsewhere instead. */
+  onCloseAutoFocus?: (event: Event) => void;
 }) {
   const [open, setOpen] = React.useState(false);
   const selected = options.find((option) => option.value === value);
@@ -83,6 +87,7 @@ function Combobox({
       <PopoverContent
         className="w-(--radix-popover-trigger-width) min-w-56"
         align="start"
+        onCloseAutoFocus={onCloseAutoFocus}
       >
         <Command>
           <CommandInput placeholder={searchPlaceholder} />
