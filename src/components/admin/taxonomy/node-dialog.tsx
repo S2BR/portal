@@ -83,6 +83,7 @@ export function NodeDialog({
   parentId = null,
   categories,
   onSaved,
+  onOptimisticEdit,
 }: {
   kind: NodeKind;
   open: boolean;
@@ -91,6 +92,8 @@ export function NodeDialog({
   parentId?: number | null;
   categories: AdminCategory[];
   onSaved: () => void;
+  /** Patch the edited node into the tree immediately (reverted on failure, reconciled on success). */
+  onOptimisticEdit?: (id: number, changes: Partial<TaxonomyNode>) => void;
 }) {
   const t = useTranslations("admin.taxonomy");
   const locale = useLocale();
@@ -116,6 +119,10 @@ export function NodeDialog({
   const [active, setActive] = useState(true);
   const [activeLocale, setActiveLocale] = useState<TaxonomyLocale>("en");
   const [saving, setSaving] = useState(false);
+  // An edit save hides the dialog immediately (optimistic) while it persists, but keeps it MOUNTED —
+  // so a failure can re-open it with the user's text intact. It only truly closes (unmounts, via
+  // onOpenChange) on success.
+  const [visible, setVisible] = useState(true);
   const [bindingSearch, setBindingSearch] = useState("");
 
   const editing = Boolean(node);
@@ -176,6 +183,19 @@ export function NodeDialog({
     }
 
     setSaving(true);
+
+    // Editing an existing node is optimistic: patch the tree + hide + confirm right away, persist in
+    // the background, and on failure revert the tree and re-open with the text intact. Creating stays
+    // pessimistic — there's no real node (or id) to show until the server makes it.
+    if (editing) {
+      onOptimisticEdit?.(node!.id, {
+        name: trimmedName,
+        slug: slug.trim() || node!.slug,
+      });
+      setVisible(false);
+      toast.success(t("toast.saved"));
+    }
+
     const response = await fetch(
       editing
         ? `/api/admin/taxonomy/${path}/${node!.id}`
@@ -186,13 +206,20 @@ export function NodeDialog({
         body: JSON.stringify(body),
       },
     );
-    setSaving(false);
 
     if (!response.ok) {
+      setSaving(false);
+      if (editing) {
+        onOptimisticEdit?.(node!.id, { name: node!.name, slug: node!.slug });
+        setVisible(true);
+      }
       toast.error(t(response.status === 403 ? "forbidden" : "saveError"));
       return;
     }
-    toast.success(t(editing ? "toast.saved" : "toast.created"));
+
+    if (!editing) {
+      toast.success(t("toast.created"));
+    }
     onOpenChange(false);
     onSaved();
   }
@@ -204,7 +231,16 @@ export function NodeDialog({
   const titleKey = `dialog.title.${editing ? "edit" : "create"}${kindPart}${levelPart}`;
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog
+      open={open && visible}
+      onOpenChange={(next) => {
+        // A user dismiss (esc / click-away) closes for real; our own optimistic hide sets `visible`
+        // directly and never routes through here.
+        if (!next) {
+          onOpenChange(false);
+        }
+      }}
+    >
       <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>{t(titleKey)}</DialogTitle>

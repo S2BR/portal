@@ -159,57 +159,82 @@ function ReviewRow({
   const [draft, setDraft] = useState(review.owner_reply ?? "");
   const [busy, setBusy] = useState(false);
 
+  // Optimistic: apply the reply to the list + close the editor at once, then persist in the
+  // background; on failure roll the reply back, re-open with the draft intact, and show the error.
   async function save() {
-    if (draft.trim().length === 0) {
+    if (busy || draft.trim().length === 0) {
       return;
     }
+    const previousReply = review.owner_reply;
+    const previousRepliedAt = review.owner_replied_at;
+    const body = draft.trim();
+
     setBusy(true);
+    onChange(review.id, {
+      owner_reply: body,
+      owner_replied_at: new Date().toISOString(),
+    });
+    setEditing(false);
+    toast.success(t("saved"));
+
+    let ok = false;
     try {
       const response = await fetch(
         `/api/businesses/${encodeURIComponent(slug)}/reviews/${encodeURIComponent(review.id)}/reply`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ body: draft.trim() }),
+          body: JSON.stringify({ body }),
         },
       );
-      if (response.ok) {
-        onChange(review.id, {
-          owner_reply: draft.trim(),
-          owner_replied_at: new Date().toISOString(),
-        });
-        setEditing(false);
-        toast.success(t("saved"));
-      } else {
-        toast.error(t("error"));
-      }
+      ok = response.ok;
     } catch {
-      toast.error(t("error"));
-    } finally {
-      setBusy(false);
+      ok = false;
     }
+    if (!ok) {
+      onChange(review.id, {
+        owner_reply: previousReply,
+        owner_replied_at: previousRepliedAt,
+      });
+      setEditing(true);
+      toast.error(t("error"));
+    }
+    setBusy(false);
   }
 
   async function remove() {
+    if (busy) {
+      return;
+    }
+    const previousReply = review.owner_reply;
+    const previousRepliedAt = review.owner_replied_at;
+
     setBusy(true);
+    onChange(review.id, { owner_reply: null, owner_replied_at: null });
+    setDraft("");
+    setEditing(false);
+    toast.success(t("removed"));
+
+    let ok = false;
     try {
       const response = await fetch(
         `/api/businesses/${encodeURIComponent(slug)}/reviews/${encodeURIComponent(review.id)}/reply`,
         { method: "DELETE" },
       );
-      if (response.ok) {
-        onChange(review.id, { owner_reply: null, owner_replied_at: null });
-        setDraft("");
-        setEditing(false);
-        toast.success(t("removed"));
-      } else {
-        toast.error(t("error"));
-      }
+      ok = response.ok;
     } catch {
-      toast.error(t("error"));
-    } finally {
-      setBusy(false);
+      ok = false;
     }
+    if (!ok) {
+      onChange(review.id, {
+        owner_reply: previousReply,
+        owner_replied_at: previousRepliedAt,
+      });
+      setDraft(previousReply ?? "");
+      setEditing(true);
+      toast.error(t("error"));
+    }
+    setBusy(false);
   }
 
   return (

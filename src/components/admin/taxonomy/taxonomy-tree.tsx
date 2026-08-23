@@ -87,6 +87,23 @@ export function TaxonomyTree({
     void persistOrder(next.map((node) => node.id));
   }
 
+  // Optimistically merge an edit into the tree (root or child) so the change shows the instant Save
+  // is clicked; the dialog reverts it on failure, and onChanged reconciles with the server on success.
+  function patchNode(id: number, changes: Partial<TaxonomyNode>) {
+    setRoots((current) =>
+      current.map((root) =>
+        root.id === id
+          ? { ...root, ...changes }
+          : {
+              ...root,
+              children: (root.children ?? []).map((child) =>
+                child.id === id ? { ...child, ...changes } : child,
+              ),
+            },
+      ),
+    );
+  }
+
   async function toggleActive(node: TaxonomyNode, active: boolean) {
     const response = await fetch(
       `/api/admin/taxonomy/${path}/${node.id}/activation`,
@@ -320,6 +337,7 @@ export function TaxonomyTree({
           parentId={dialog.mode === "create" ? dialog.parentId : null}
           categories={categories}
           onSaved={onChanged}
+          onOptimisticEdit={patchNode}
         />
       ) : null}
 
