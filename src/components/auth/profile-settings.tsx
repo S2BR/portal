@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 
 import type { Timezone } from "@/app/api/auth/timezones/route";
 import { useCurrentUser } from "@/components/auth/current-user";
-import type { Gender } from "@/lib/api/types";
+import type { AuthUser, Gender } from "@/lib/api/types";
 import { Button } from "@/components/ui/button";
 import { Combobox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
@@ -69,7 +69,7 @@ export function ProfileSettings() {
   const authErrors = useTranslations("auth.errors");
   const locale = useLocale();
   const format = useFormatter();
-  const { user, refresh } = useCurrentUser();
+  const { user, refresh, applyOptimistic } = useCurrentUser();
   const router = useRouter();
 
   const [editingField, setEditingField] = useState<EditableField | null>(null);
@@ -81,7 +81,6 @@ export function ProfileSettings() {
   const [language, setLanguage] = useState<Locale>(locale as Locale);
   const [timezones, setTimezones] = useState<Timezone[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [pending, setPending] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -122,15 +121,24 @@ export function ProfileSettings() {
     setError(null);
   }
 
-  /** Send a partial update and, on success, close the editor and refresh the user. */
-  async function patchAccount(body: Record<string, unknown>) {
-    setPending(true);
+  /**
+   * Optimistic partial update: close the field and paint the new value at once, then persist in the
+   * background. On success reconcile with the server record; on failure roll back (a `refresh` +
+   * optional `onFailure` for side effects like the locale cookie), re-open the field, and show why.
+   */
+  async function patchAccount(
+    patch: Partial<AuthUser>,
+    onFailure?: () => void | Promise<void>,
+  ) {
+    const field = editingField;
     setError(null);
+    setEditingField(null);
+    applyOptimistic(patch);
     try {
       const response = await fetch("/api/auth/account", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+        body: JSON.stringify(patch),
       });
       const data = (await response.json()) as {
         status?: string;
@@ -138,23 +146,29 @@ export function ProfileSettings() {
         errors?: Record<string, string[]>;
       };
       if (data.status === "ok") {
-        setEditingField(null);
+        // Reconcile with the server record (and rewrite the cookie). The signed-in user's timezone
+        // feeds next-intl's date formatting (a server config), so refresh the RSC tree too.
         await refresh();
-        // The signed-in user's timezone feeds next-intl's date formatting (a server config), so a
-        // change only takes effect after the RSC tree re-runs — refresh it rather than wait for a reload.
         router.refresh();
-      } else {
-        setError(apiErrorText(data) ?? authErrors("generic"));
+        return;
       }
+      await refresh();
+      await onFailure?.();
+      setEditingField(field);
+      setError(apiErrorText(data) ?? authErrors("generic"));
     } catch {
+      await refresh();
+      await onFailure?.();
+      setEditingField(field);
       setError(authErrors("generic"));
-    } finally {
-      setPending(false);
     }
   }
 
   /** Save just the field currently being edited. */
   async function saveField() {
+    if (!user) {
+      return;
+    }
     if (editingField === "name") {
       const trimmed = name.trim();
       if (!trimmed) {
@@ -171,9 +185,11 @@ export function ProfileSettings() {
     } else if (editingField === "distanceUnit") {
       await patchAccount({ distance_unit: distanceUnit });
     } else if (editingField === "language") {
-      // Set the locale cookie first so the RSC re-render (in patchAccount) picks up the new language.
+      // Set the locale cookie first so the RSC re-render (in patchAccount) picks up the new language;
+      // revert it if the save fails.
+      const previousLocale = (user.locale as Locale) ?? (locale as Locale);
       await setLocale(language);
-      await patchAccount({ locale: language });
+      await patchAccount({ locale: language }, () => setLocale(previousLocale));
     }
   }
 
@@ -184,10 +200,10 @@ export function ProfileSettings() {
 
   const footer = (
     <div className="flex items-center gap-2 pt-1">
-      <Button size="sm" onClick={saveField} disabled={pending}>
+      <Button size="sm" onClick={saveField}>
         {t("save")}
       </Button>
-      <Button size="sm" variant="ghost" onClick={cancel} disabled={pending}>
+      <Button size="sm" variant="ghost" onClick={cancel}>
         {t("cancel")}
       </Button>
       {error ? <span className="text-destructive text-sm">{error}</span> : null}
@@ -241,7 +257,6 @@ export function ProfileSettings() {
                   type="button"
                   variant="ghost"
                   size="sm"
-                  disabled={pending}
                   onClick={() => void patchAccount({ date_of_birth: null })}
                 >
                   {t("remove")}
@@ -302,7 +317,6 @@ export function ProfileSettings() {
                   type="button"
                   variant="ghost"
                   size="sm"
-                  disabled={pending}
                   onClick={() => void patchAccount({ gender: null })}
                 >
                   {t("remove")}
