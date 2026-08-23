@@ -498,7 +498,9 @@
     "errorNameRequired": "Inserisci il nome dell'attività.",
     "errorPhoneCountry": "Scegli un paese per ogni numero di telefono.",
     "errorTypeRequired": "Scegli un tipo di attività.",
-    "errorGeneric": "Qualcosa è andato storto. Riprova."
+    "errorGeneric": "Qualcosa è andato storto. Riprova.",
+    "errorClosurePast": "Una data speciale non può essere nel passato.",
+    "errorClosureHours": "L’orario di chiusura di un orario speciale deve essere successivo a quello di apertura."
   },
   "businesses": {
     "title": "Le mie attività",

@@ -498,7 +498,9 @@
     "errorNameRequired": "Veuillez saisir le nom de l'entreprise.",
     "errorPhoneCountry": "Choisissez un pays pour chaque numéro de téléphone.",
     "errorTypeRequired": "Veuillez choisir un type d'entreprise.",
-    "errorGeneric": "Une erreur s'est produite. Veuillez réessayer."
+    "errorGeneric": "Une erreur s'est produite. Veuillez réessayer.",
+    "errorClosurePast": "Une date spéciale ne peut pas être dans le passé.",
+    "errorClosureHours": "L’heure de fermeture d’un horaire spécial doit être après l’heure d’ouverture."
   },
   "businesses": {
     "title": "Mes entreprises",

@@ -498,7 +498,9 @@
     "errorNameRequired": "ビジネス名を入力してください。",
     "errorPhoneCountry": "電話番号ごとに国を選択してください。",
     "errorTypeRequired": "ビジネスの種類を選択してください。",
-    "errorGeneric": "問題が発生しました。もう一度お試しください。"
+    "errorGeneric": "問題が発生しました。もう一度お試しください。",
+    "errorClosurePast": "特別営業日を過去の日付にはできません。",
+    "errorClosureHours": "特別営業時間の終了時刻は開始時刻より後にしてください。"
   },
   "businesses": {
     "title": "マイビジネス",

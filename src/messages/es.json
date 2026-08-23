@@ -498,7 +498,9 @@
     "errorNameRequired": "Ingresa el nombre del negocio.",
     "errorPhoneCountry": "Elige un país para cada teléfono.",
     "errorTypeRequired": "Elige un tipo de negocio.",
-    "errorGeneric": "Algo salió mal. Inténtalo de nuevo."
+    "errorGeneric": "Algo salió mal. Inténtalo de nuevo.",
+    "errorClosurePast": "Una fecha especial no puede estar en el pasado.",
+    "errorClosureHours": "La hora de cierre de un horario especial debe ser posterior a la de apertura."
   },
   "businesses": {
     "title": "Mis negocios",

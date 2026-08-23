@@ -498,7 +498,9 @@
     "errorNameRequired": "Bitte geben Sie einen Unternehmensnamen ein.",
     "errorPhoneCountry": "Wählen Sie für jede Telefonnummer ein Land.",
     "errorTypeRequired": "Bitte wählen Sie eine Unternehmensart.",
-    "errorGeneric": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut."
+    "errorGeneric": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
+    "errorClosurePast": "Ein Sondertag darf nicht in der Vergangenheit liegen.",
+    "errorClosureHours": "Die Schlusszeit eines Sondertermins muss nach der Öffnungszeit liegen."
   },
   "businesses": {
     "title": "Meine Unternehmen",

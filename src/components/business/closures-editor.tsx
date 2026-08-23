@@ -3,8 +3,10 @@
 import { CalendarPlus } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRef, useState } from "react";
+import { toast } from "sonner";
 
 import type { BusinessClosure } from "@/app/api/businesses/route";
+import { closureHasInvalidWindow, closureIsPast } from "@/lib/closure-time";
 import {
   formatTime,
   TimeRanges,
@@ -68,12 +70,16 @@ function sortEntries<
 export function ClosuresEditor({
   value,
   onChange,
+  timezone,
 }: {
   value: ClosureEntry[];
   onChange: (value: ClosureEntry[]) => void;
+  /** The business timezone, so a past special date is judged in the business's own day. */
+  timezone?: string;
 }) {
   const t = useTranslations("businesses.detail");
   const fields = useTranslations("businesses.detail.fields");
+  const create = useTranslations("businessNew");
   const locale = useLocale();
   const today = todayISO();
   const blockRef = useRef<HTMLDivElement>(null);
@@ -118,6 +124,16 @@ export function ClosuresEditor({
 
   const save = () => {
     if (!draft || draft.startDate === "") {
+      return;
+    }
+    // Reject a past special date here (in the business timezone), so it never reaches the save with a
+    // window already over — a still-open window today, overnight, or closed-all-day today is fine.
+    if (closureIsPast(draft, timezone)) {
+      toast.error(create("errorClosurePast"));
+      return;
+    }
+    if (closureHasInvalidWindow(draft)) {
+      toast.error(create("errorClosureHours"));
       return;
     }
     onChange(

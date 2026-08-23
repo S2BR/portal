@@ -134,6 +134,7 @@ import { externalHref } from "@/lib/url";
 import { fetchTaxonomyFromTypesense } from "@/lib/taxonomy/typesense";
 import { useUnsavedChangesGuard } from "@/lib/use-unsaved-changes-guard";
 import { cn } from "@/lib/utils";
+import { closureHasInvalidWindow, closureIsPast } from "@/lib/closure-time";
 import { pickChanged } from "@/lib/pick-changed";
 
 /** A website or email contact: the value plus an optional label. `key` is a stable client id for
@@ -727,6 +728,22 @@ export function BusinessDetail({
       setInvalidPhoneKeys(new Set(phonesMissingCountry));
       setActiveTab("contact");
       toast.error(create("errorPhoneCountry"));
+      return;
+    }
+    // A one-off special date can't be in the past (in the business timezone) — block it here so the
+    // optimistic save never flashes "saved" before the server rejects it. The server enforces the
+    // same rule (a still-open window today, overnight, or closed-all-day today is fine).
+    if (
+      edit.closures.some((closure) => closureIsPast(closure, edit.timezone))
+    ) {
+      setActiveTab("hours");
+      toast.error(create("errorClosurePast"));
+      return;
+    }
+    // A special-hour window must close after it opens (mirrors the API's after:open rule).
+    if (edit.closures.some((closure) => closureHasInvalidWindow(closure))) {
+      setActiveTab("hours");
+      toast.error(create("errorClosureHours"));
       return;
     }
 
@@ -1603,6 +1620,7 @@ export function BusinessDetail({
                 <ClosuresEditor
                   value={edit.closures}
                   onChange={(closures) => patch({ closures })}
+                  timezone={edit.timezone}
                 />
               ) : business.closures && business.closures.length > 0 ? (
                 <ClosuresReadout closures={business.closures} />
