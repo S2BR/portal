@@ -2,28 +2,19 @@
 
 import { Clock } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useMemo } from "react";
 import { useToggleRefinement } from "react-instantsearch";
 
 import { cn } from "@/lib/utils";
 
 /**
- * The current absolute UTC 15-minute epoch slot — the value the "open now" filter matches against a
- * business's indexed `open_slots` (a rolling window of concrete dates). Mirrors the API's
- * `OpenNow::currentSlot`: floor(unix seconds / 900).
- */
-function currentOpenSlot(): number {
-  return Math.floor(Date.now() / 1000 / 900);
-}
-
-/**
  * "Open now" directory filter — a toggle bound to the `open_slots` Typesense facet. When on, it keeps
- * only businesses whose indexed open slots include the current UTC slot. The slot is fixed per mount
- * (a directory session is short); a session crossing a 15-minute boundary is at most that stale.
+ * only businesses whose indexed open slots include `slot` (the current absolute UTC 15-minute slot,
+ * `OpenNow::currentSlot`). The parent advances `slot` over time, so InstantSearch re-derives the
+ * filter and re-runs the search on the new slot — a business that just closed drops out on its own,
+ * rather than lingering on a slot frozen at mount until a full reload.
  */
-export function OpenNowToggle() {
+export function OpenNowToggle({ slot }: { slot: number }) {
   const t = useTranslations("businesses.directory");
-  const slot = useMemo(() => currentOpenSlot(), []);
   const { value, refine } = useToggleRefinement({
     attribute: "open_slots",
     on: slot,

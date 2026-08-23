@@ -231,11 +231,13 @@ function Hits({
   location,
   nearMeRadius,
   onClearRadius,
+  openSlot,
 }: {
   categoryLabels: Record<string, { slug: string; name: string }>;
   location: DirectoryLocation | null;
   nearMeRadius: number | null;
   onClearRadius: () => void;
+  openSlot: number;
 }) {
   const t = useTranslations("businesses.directory");
   const pub = useTranslations("businesses.public");
@@ -244,8 +246,8 @@ function Hits({
   const { user } = useCurrentUser();
   const unit = resolveDistanceUnit(user?.distance_unit);
 
-  // Whether the "open now" filter is active — the "Closes at" hint only shows under it, as requested.
-  const openSlot = useMemo(() => currentSlot(), []);
+  // Whether the "open now" filter is active — the "Closes at" hint only shows under it. Uses the same
+  // live slot as the toggle, so the two agree as time advances.
   const { value: openNow } = useToggleRefinement({
     attribute: "open_slots",
     on: openSlot,
@@ -497,9 +499,11 @@ function HitsMap({
 function Sidebar({
   labels,
   categoryTree,
+  openSlot,
 }: {
   labels: Labels;
   categoryTree: CategoryNode[];
+  openSlot: number;
 }) {
   const t = useTranslations("businesses.directory");
   return (
@@ -511,7 +515,7 @@ function Sidebar({
         </h2>
         <ClearFilters />
       </div>
-      <OpenNowToggle />
+      <OpenNowToggle slot={openSlot} />
       <CategoryTree title={t("facetCategory")} tree={categoryTree} />
       <FacetList
         attribute="amenity_ids"
@@ -547,6 +551,15 @@ export function Directory({
 }) {
   const t = useTranslations("businesses.directory");
   const locale = useLocale();
+
+  // The current "open now" slot, advanced over time. InstantSearch derives the filter from this each
+  // search cycle, so updating it re-runs the search on the new slot — a business that just closed
+  // drops out on its own, instead of lingering on the slot captured at mount until a full reload.
+  const [openSlot, setOpenSlot] = useState(() => currentSlot());
+  useEffect(() => {
+    const timer = setInterval(() => setOpenSlot(currentSlot()), 30_000);
+    return () => clearInterval(timer);
+  }, []);
 
   // Facet labels come straight from Typesense (browser → search host), localized to the active locale.
   // Every failure degrades to an empty tree, so the shell still renders (facets just show ids/counts).
@@ -727,7 +740,11 @@ export function Directory({
           : {})}
       />
       <div className="grid gap-8 lg:grid-cols-[220px_1fr_360px]">
-        <Sidebar labels={labels} categoryTree={categoryTree} />
+        <Sidebar
+          labels={labels}
+          categoryTree={categoryTree}
+          openSlot={openSlot}
+        />
         <div>
           <div className="mb-4 flex flex-wrap items-center gap-3">
             <div className="max-w-xl flex-1">
@@ -754,6 +771,7 @@ export function Directory({
             location={location}
             nearMeRadius={location ? radiusKm : null}
             onClearRadius={() => setRadiusKm(null)}
+            openSlot={openSlot}
           />
           <Pagination />
         </div>
