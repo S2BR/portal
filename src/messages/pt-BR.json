@@ -498,7 +498,9 @@
     "errorNameRequired": "Informe o nome do negócio.",
     "errorPhoneCountry": "Escolha um país para cada telefone.",
     "errorTypeRequired": "Escolha um tipo de negócio.",
-    "errorGeneric": "Algo deu errado. Tente novamente."
+    "errorGeneric": "Algo deu errado. Tente novamente.",
+    "errorClosurePast": "Uma data especial não pode estar no passado.",
+    "errorClosureHours": "O horário de fechamento de um horário especial deve ser após o de abertura."
   },
   "businesses": {
     "title": "Meus negócios",

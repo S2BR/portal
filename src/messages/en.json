@@ -498,7 +498,9 @@
     "errorNameRequired": "Please enter a business name.",
     "errorPhoneCountry": "Choose a country for each phone number.",
     "errorTypeRequired": "Please choose a business type.",
-    "errorGeneric": "Something went wrong. Please try again."
+    "errorGeneric": "Something went wrong. Please try again.",
+    "errorClosurePast": "A special date can’t be in the past.",
+    "errorClosureHours": "A special hour’s closing time must be after its opening time."
   },
   "businesses": {
     "title": "My businesses",
