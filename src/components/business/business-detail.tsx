@@ -306,6 +306,24 @@ function numberOrNull(value: string): number | null {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
+/** Flatten a category / amenity tree to an id→node map, to resolve selected ids back to display nodes. */
+function taxonomyNodesById<
+  T extends { id: number; subcategories?: T[]; amenities?: T[] },
+>(nodes: T[]): Map<number, T> {
+  const byId = new Map<number, T>();
+  const walk = (list: T[]): void => {
+    for (const node of list) {
+      byId.set(node.id, node);
+      const children = node.subcategories ?? node.amenities;
+      if (children) {
+        walk(children);
+      }
+    }
+  };
+  walk(nodes);
+  return byId;
+}
+
 function buildPayload(edit: EditState) {
   return {
     name: edit.name.trim(),
@@ -473,7 +491,9 @@ export function BusinessDetail({
   const [invalidPhoneKeys, setInvalidPhoneKeys] = useState<Set<string>>(
     () => new Set(),
   );
-  const [saving, setSaving] = useState(false);
+  // Optimistic save runs in the background, so no visible "saving" state — just a ref to block a
+  // concurrent submit while a request is still out.
+  const savingRef = useRef(false);
   const [publishing, setPublishing] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [categoryTree, setCategoryTree] = useState<Category[]>([]);
@@ -634,9 +654,60 @@ export function BusinessDetail({
     setEdit((prev) => (prev ? { ...prev, ...changes } : prev));
   }
 
+  /**
+   * Project the edit draft onto the loaded business so the read view can paint the change instantly
+   * (zero-flash), before the background save confirms. Reuses buildPayload for the child sections
+   * (same shapes), resolves selected category/amenity ids to their tree nodes, and keeps each
+   * unchanged address's server-resolved timezone. New rows get a temporary id until the reconcile
+   * replaces this whole object with the server's canonical copy.
+   */
+  function optimisticBusiness(base: Business, draft: EditState): Business {
+    const payload = buildPayload(draft);
+    const categoryById = taxonomyNodesById(categoryTree);
+    const amenityById = taxonomyNodesById(amenityGroups);
+    const zoneByAddressId = new Map(
+      (base.addresses ?? []).map((address) => [address.id, address.timezone]),
+    );
+    const withId = <T extends { id?: string }>(
+      row: T,
+      fallback: string,
+    ): T & { id: string } => ({ ...row, id: row.id ?? fallback });
+
+    return {
+      ...base,
+      name: payload.name,
+      type: payload.type ?? base.type,
+      headline: payload.headline,
+      description: payload.description,
+      timezone: payload.timezone,
+      colors: payload.colors,
+      category_suggestion: payload.category_suggestion,
+      contacts: payload.contacts.map((row, index) =>
+        withId(row, `optimistic-contact-${index}`),
+      ),
+      socials: payload.socials.map((row, index) =>
+        withId(row, `optimistic-social-${index}`),
+      ),
+      opening_hours: payload.opening_hours,
+      closures: payload.closures.map((row, index) =>
+        withId(row, `optimistic-closure-${index}`),
+      ),
+      addresses: payload.addresses.map((row, index) => ({
+        ...withId(row, `optimistic-address-${index}`),
+        timezone: (row.id ? zoneByAddressId.get(row.id) : null) ?? null,
+      })),
+      categories: draft.categoryIds
+        .map((id) => categoryById.get(id))
+        .filter((node): node is Category => node !== undefined),
+      amenities: draft.amenityIds
+        .map((id) => amenityById.get(id))
+        .filter((node): node is Amenity => node !== undefined),
+    };
+  }
+
   async function save(event: FormEvent) {
     event.preventDefault();
-    if (!edit || !business) {
+    if (!edit || !business || savingRef.current) {
       return;
     }
     if (!edit.name.trim()) {
@@ -671,9 +742,16 @@ export function BusinessDetail({
       return;
     }
 
-    setSaving(true);
+    // Optimistic: assume success — paint the edits into the read view immediately (zero-flash), close
+    // the editor, and confirm right away, then persist in the background. The edit draft survives
+    // closing, so any failure can roll the read view back and re-open the form with the edits intact.
+    savingRef.current = true;
     setError(null);
     setNameError(null);
+    const previous = business;
+    setBusiness(optimisticBusiness(business, edit));
+    setEditing(false);
+    toast.success(t("savedToast"));
 
     try {
       const response = await fetch(`${basePath}/${encodeURIComponent(slug)}`, {
@@ -690,33 +768,39 @@ export function BusinessDetail({
       };
 
       if (data.status === "ok" && data.business) {
+        // Reconcile the optimistic view with the canonical state (resolved timezone, self-healed
+        // slug, real row ids) quietly — the user already saw "Saved".
         setBusiness(data.business);
-        setEditing(false);
-        toast.success(t("savedToast"));
         return;
       }
+
+      // Persisting failed after we optimistically confirmed — undo the optimistic paint.
+      setBusiness(previous);
       if (response.status === 404) {
         setMissing(true);
         return;
       }
+
+      // Re-open the editor with the edits intact and surface the problem (the earlier success toast
+      // is superseded).
+      setEditing(true);
       const limit = parseRateLimit(response.status, data);
       if (limit) {
-        // Keep the user's edits intact — just tell them how long to wait before saving again.
         notifyRateLimited(limit.retryAfter);
         return;
       }
-      // Any other failure (422 validation, 500, …): keep the user's edits and tell them loudly with
-      // a toast — the inline footer message alone is easy to miss on a long, scrolled tab.
       const message = apiErrorText(data) ?? create("errorGeneric");
       setNameError(data.errors?.name?.[0] ?? null);
       setError(message);
       toast.error(message);
     } catch {
+      setBusiness(previous);
+      setEditing(true);
       const message = create("errorGeneric");
       setError(message);
       toast.error(message);
     } finally {
-      setSaving(false);
+      savingRef.current = false;
     }
   }
 
@@ -1700,10 +1784,9 @@ export function BusinessDetail({
             [
               {
                 id: "save",
-                label: saving ? t("saving") : t("save"),
+                label: t("save"),
                 icon: <Check />,
                 type: "submit",
-                disabled: saving,
                 tone: "success",
               },
               {
@@ -1711,7 +1794,6 @@ export function BusinessDetail({
                 label: t("cancel"),
                 icon: <X />,
                 onClick: () => leaveGuard.requestLeave(cancelEditing),
-                disabled: saving,
                 variant: "ghost",
               },
             ] satisfies ActionBarItem[]
