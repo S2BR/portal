@@ -17,12 +17,19 @@ interface CurrentUserState {
   user: AuthUser | null;
   loading: boolean;
   refresh: () => Promise<void>;
+  /**
+   * Optimistically merge a patch into the shown user (e.g. right after a settings save), before the
+   * server confirms. The next {@link refresh} reconciles with the real record (and rewrites the
+   * cookie), so a failure that refreshes rolls the optimistic value back.
+   */
+  applyOptimistic: (patch: Partial<AuthUser>) => void;
 }
 
 const CurrentUserContext = createContext<CurrentUserState>({
   user: null,
   loading: true,
   refresh: async () => {},
+  applyOptimistic: () => {},
 });
 
 export function useCurrentUser(): CurrentUserState {
@@ -98,8 +105,14 @@ export function CurrentUserProvider({
 
   const refresh = useCallback(() => load(false), [load]);
 
+  const applyOptimistic = useCallback((patch: Partial<AuthUser>) => {
+    setUser((current) => (current ? { ...current, ...patch } : current));
+  }, []);
+
   return (
-    <CurrentUserContext.Provider value={{ user, loading, refresh }}>
+    <CurrentUserContext.Provider
+      value={{ user, loading, refresh, applyOptimistic }}
+    >
       {children}
     </CurrentUserContext.Provider>
   );
