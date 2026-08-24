@@ -893,7 +893,8 @@
       "addPhone": "Adicionar telefone",
       "addEmail": "Adicionar e-mail",
       "searchSocial": "Buscar plataforma…",
-      "noSocial": "Nenhuma plataforma encontrada."
+      "noSocial": "Nenhuma plataforma encontrada.",
+      "closureOverlap": "Já existe uma data fechada aqui — abra-a para editar em vez de adicionar outra."
     },
     "workspace": {
       "reviews": {
@@ -1297,7 +1298,8 @@
       "subtitle": "Gerencie a árvore de categorias e os grupos de comodidades que estruturam os perfis de negócios.",
       "tabs": {
         "categories": "Categorias",
-        "amenities": "Comodidades"
+        "amenities": "Comodidades",
+        "suggestions": "Sugestões"
       },
       "forbidden": "Você não tem acesso a isto.",
       "loadError": "Não foi possível carregar a taxonomia.",
@@ -1362,6 +1364,29 @@
         "saved": "Salvo.",
         "deleted": "Excluído.",
         "deactivated": "Desativado."
+      },
+      "suggestions": {
+        "forbidden": "Você não tem acesso às sugestões de categorias.",
+        "loadError": "Não foi possível carregar as sugestões.",
+        "actionError": "Não foi possível atualizar a sugestão.",
+        "filter": {
+          "pending": "Pendentes",
+          "actioned": "Resolvidas",
+          "dismissed": "Descartadas"
+        },
+        "empty": {
+          "pending": "Nenhuma sugestão pendente.",
+          "actioned": "Nenhuma sugestão resolvida.",
+          "dismissed": "Nenhuma sugestão descartada."
+        },
+        "from": "Sugerido por <business></business>",
+        "createCategory": "Criar categoria",
+        "dismiss": "Descartar",
+        "status": {
+          "pending": "Pendente",
+          "actioned": "Resolvida",
+          "dismissed": "Descartada"
+        }
       }
     }
   },

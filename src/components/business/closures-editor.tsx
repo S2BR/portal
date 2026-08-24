@@ -17,7 +17,12 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { dateInClosure, formatClosureDate, todayISO } from "@/lib/calendar";
+import {
+  dateInClosure,
+  formatClosureDate,
+  overlappingClosure,
+  todayISO,
+} from "@/lib/calendar";
 import { cn } from "@/lib/utils";
 
 /** A closed/special date as edited in the form. `key` is a stable client id; a single day has
@@ -136,6 +141,13 @@ export function ClosuresEditor({
       toast.error(create("errorClosureHours"));
       return;
     }
+    // Never let a draft land on a date another closure already covers — that's how a duplicate on the
+    // same day slips in. Clicking an occupied day opens that closure to edit instead (see `pick`), so
+    // this is the backstop for the "Add date" path.
+    if (overlappingClosure(draft, value, editingKey)) {
+      toast.error(t("closureOverlap"));
+      return;
+    }
     onChange(
       editingKey
         ? value.map((c) => (c.key === editingKey ? draft : c))
@@ -154,6 +166,17 @@ export function ClosuresEditor({
   const pick = (iso: string) => {
     if (iso < today) {
       return;
+    }
+    // Clicking a day that already belongs to another closure opens THAT one to edit — so you edit the
+    // existing date instead of silently starting a second closure on top of it.
+    if (pendingStart === null) {
+      const existing = value.find(
+        (c) => c.key !== editingKey && dateInClosure(iso, c),
+      );
+      if (existing) {
+        startEdit(existing);
+        return;
+      }
     }
     const base = draft ?? blank();
     if (pendingStart === null) {

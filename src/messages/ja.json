@@ -893,7 +893,8 @@
       "addPhone": "電話番号を追加",
       "addEmail": "メールを追加",
       "searchSocial": "プラットフォームを検索…",
-      "noSocial": "プラットフォームが見つかりません。"
+      "noSocial": "プラットフォームが見つかりません。",
+      "closureOverlap": "この日には既に休業日があります。別に追加せず、それを開いて編集してください。"
     },
     "workspace": {
       "reviews": {
@@ -1297,7 +1298,8 @@
       "subtitle": "ビジネス掲載を構成するカテゴリーツリーと設備グループを管理します。",
       "tabs": {
         "categories": "カテゴリー",
-        "amenities": "設備"
+        "amenities": "設備",
+        "suggestions": "提案"
       },
       "forbidden": "これにアクセスする権限がありません。",
       "loadError": "分類を読み込めませんでした。",
@@ -1362,6 +1364,29 @@
         "saved": "保存しました。",
         "deleted": "削除しました。",
         "deactivated": "無効にしました。"
+      },
+      "suggestions": {
+        "forbidden": "カテゴリ提案にアクセスする権限がありません。",
+        "loadError": "提案を読み込めませんでした。",
+        "actionError": "提案を更新できませんでした。",
+        "filter": {
+          "pending": "保留中",
+          "actioned": "対応済み",
+          "dismissed": "却下"
+        },
+        "empty": {
+          "pending": "保留中の提案はありません。",
+          "actioned": "対応済みの提案はありません。",
+          "dismissed": "却下された提案はありません。"
+        },
+        "from": "提案者：<business></business>",
+        "createCategory": "カテゴリを作成",
+        "dismiss": "却下",
+        "status": {
+          "pending": "保留中",
+          "actioned": "対応済み",
+          "dismissed": "却下"
+        }
       }
     }
   },

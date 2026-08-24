@@ -893,7 +893,8 @@
       "addPhone": "Add phone",
       "addEmail": "Add email",
       "searchSocial": "Search platform…",
-      "noSocial": "No platform found."
+      "noSocial": "No platform found.",
+      "closureOverlap": "There's already a closed date here — open it to edit instead of adding another."
     },
     "workspace": {
       "reviews": {
@@ -1297,7 +1298,8 @@
       "subtitle": "Manage the category tree and amenity groups that shape business listings.",
       "tabs": {
         "categories": "Categories",
-        "amenities": "Amenities"
+        "amenities": "Amenities",
+        "suggestions": "Suggestions"
       },
       "forbidden": "You don’t have access to this.",
       "loadError": "Couldn’t load the taxonomy.",
@@ -1362,6 +1364,29 @@
         "saved": "Saved.",
         "deleted": "Deleted.",
         "deactivated": "Deactivated."
+      },
+      "suggestions": {
+        "forbidden": "You don't have access to category suggestions.",
+        "loadError": "Couldn't load suggestions.",
+        "actionError": "Couldn't update the suggestion.",
+        "filter": {
+          "pending": "Pending",
+          "actioned": "Actioned",
+          "dismissed": "Dismissed"
+        },
+        "empty": {
+          "pending": "No pending suggestions.",
+          "actioned": "No actioned suggestions.",
+          "dismissed": "No dismissed suggestions."
+        },
+        "from": "Suggested by <business></business>",
+        "createCategory": "Create category",
+        "dismiss": "Dismiss",
+        "status": {
+          "pending": "Pending",
+          "actioned": "Actioned",
+          "dismissed": "Dismissed"
+        }
       }
     }
   },
