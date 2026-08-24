@@ -893,7 +893,8 @@
       "addPhone": "Ajouter un téléphone",
       "addEmail": "Ajouter un courriel",
       "searchSocial": "Rechercher une plateforme…",
-      "noSocial": "Aucune plateforme trouvée."
+      "noSocial": "Aucune plateforme trouvée.",
+      "closureOverlap": "Une date de fermeture existe déjà ici — ouvrez-la pour la modifier au lieu d'en ajouter une autre."
     },
     "workspace": {
       "reviews": {
@@ -1297,7 +1298,8 @@
       "subtitle": "Gérez l’arbre des catégories et les groupes de commodités qui structurent les fiches d’entreprise.",
       "tabs": {
         "categories": "Catégories",
-        "amenities": "Commodités"
+        "amenities": "Commodités",
+        "suggestions": "Suggestions"
       },
       "forbidden": "Vous n’avez pas accès à ceci.",
       "loadError": "Impossible de charger la taxonomie.",
@@ -1362,6 +1364,29 @@
         "saved": "Enregistré.",
         "deleted": "Supprimé.",
         "deactivated": "Désactivé."
+      },
+      "suggestions": {
+        "forbidden": "Vous n'avez pas accès aux suggestions de catégories.",
+        "loadError": "Impossible de charger les suggestions.",
+        "actionError": "Impossible de mettre à jour la suggestion.",
+        "filter": {
+          "pending": "En attente",
+          "actioned": "Traitées",
+          "dismissed": "Rejetées"
+        },
+        "empty": {
+          "pending": "Aucune suggestion en attente.",
+          "actioned": "Aucune suggestion traitée.",
+          "dismissed": "Aucune suggestion rejetée."
+        },
+        "from": "Suggéré par <business></business>",
+        "createCategory": "Créer une catégorie",
+        "dismiss": "Rejeter",
+        "status": {
+          "pending": "En attente",
+          "actioned": "Traitée",
+          "dismissed": "Rejetée"
+        }
       }
     }
   },

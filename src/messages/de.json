@@ -893,7 +893,8 @@
       "addPhone": "Telefon hinzufügen",
       "addEmail": "E-Mail hinzufügen",
       "searchSocial": "Plattform suchen…",
-      "noSocial": "Keine Plattform gefunden."
+      "noSocial": "Keine Plattform gefunden.",
+      "closureOverlap": "Für diesen Tag gibt es bereits ein Schließdatum – öffnen Sie es zum Bearbeiten, statt ein weiteres hinzuzufügen."
     },
     "workspace": {
       "reviews": {
@@ -1297,7 +1298,8 @@
       "subtitle": "Verwalte den Kategorienbaum und die Ausstattungsgruppen, die Unternehmenseinträge strukturieren.",
       "tabs": {
         "categories": "Kategorien",
-        "amenities": "Ausstattung"
+        "amenities": "Ausstattung",
+        "suggestions": "Vorschläge"
       },
       "forbidden": "Du hast darauf keinen Zugriff.",
       "loadError": "Die Taxonomie konnte nicht geladen werden.",
@@ -1362,6 +1364,29 @@
         "saved": "Gespeichert.",
         "deleted": "Gelöscht.",
         "deactivated": "Deaktiviert."
+      },
+      "suggestions": {
+        "forbidden": "Sie haben keinen Zugriff auf Kategorievorschläge.",
+        "loadError": "Vorschläge konnten nicht geladen werden.",
+        "actionError": "Vorschlag konnte nicht aktualisiert werden.",
+        "filter": {
+          "pending": "Ausstehend",
+          "actioned": "Bearbeitet",
+          "dismissed": "Abgelehnt"
+        },
+        "empty": {
+          "pending": "Keine ausstehenden Vorschläge.",
+          "actioned": "Keine bearbeiteten Vorschläge.",
+          "dismissed": "Keine abgelehnten Vorschläge."
+        },
+        "from": "Vorgeschlagen von <business></business>",
+        "createCategory": "Kategorie erstellen",
+        "dismiss": "Ablehnen",
+        "status": {
+          "pending": "Ausstehend",
+          "actioned": "Bearbeitet",
+          "dismissed": "Abgelehnt"
+        }
       }
     }
   },

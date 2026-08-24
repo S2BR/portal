@@ -893,7 +893,8 @@
       "addPhone": "Aggiungi telefono",
       "addEmail": "Aggiungi email",
       "searchSocial": "Cerca piattaforma…",
-      "noSocial": "Nessuna piattaforma trovata."
+      "noSocial": "Nessuna piattaforma trovata.",
+      "closureOverlap": "Esiste già una data di chiusura qui — aprila per modificarla invece di aggiungerne un'altra."
     },
     "workspace": {
       "reviews": {
@@ -1297,7 +1298,8 @@
       "subtitle": "Gestisci l’albero delle categorie e i gruppi di servizi che compongono le schede delle attività.",
       "tabs": {
         "categories": "Categorie",
-        "amenities": "Servizi"
+        "amenities": "Servizi",
+        "suggestions": "Suggerimenti"
       },
       "forbidden": "Non hai accesso a questa sezione.",
       "loadError": "Impossibile caricare la tassonomia.",
@@ -1362,6 +1364,29 @@
         "saved": "Salvato.",
         "deleted": "Eliminato.",
         "deactivated": "Disattivato."
+      },
+      "suggestions": {
+        "forbidden": "Non hai accesso ai suggerimenti di categoria.",
+        "loadError": "Impossibile caricare i suggerimenti.",
+        "actionError": "Impossibile aggiornare il suggerimento.",
+        "filter": {
+          "pending": "In sospeso",
+          "actioned": "Gestiti",
+          "dismissed": "Ignorati"
+        },
+        "empty": {
+          "pending": "Nessun suggerimento in sospeso.",
+          "actioned": "Nessun suggerimento gestito.",
+          "dismissed": "Nessun suggerimento ignorato."
+        },
+        "from": "Suggerito da <business></business>",
+        "createCategory": "Crea categoria",
+        "dismiss": "Ignora",
+        "status": {
+          "pending": "In sospeso",
+          "actioned": "Gestito",
+          "dismissed": "Ignorato"
+        }
       }
     }
   },

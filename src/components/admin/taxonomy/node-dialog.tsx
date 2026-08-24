@@ -84,6 +84,7 @@ export function NodeDialog({
   categories,
   onSaved,
   onOptimisticEdit,
+  initialName,
 }: {
   kind: NodeKind;
   open: boolean;
@@ -94,6 +95,8 @@ export function NodeDialog({
   onSaved: () => void;
   /** Patch the edited node into the tree immediately (reverted on failure, reconciled on success). */
   onOptimisticEdit?: (id: number, changes: Partial<TaxonomyNode>) => void;
+  /** Seed the English name when creating (e.g. from a category suggestion). */
+  initialName?: string;
 }) {
   const t = useTranslations("admin.taxonomy");
   const locale = useLocale();
@@ -108,7 +111,9 @@ export function NodeDialog({
         } | null)
       : null;
 
-  const [name, setName] = useState<LocaleText>(node?.name ?? {});
+  const [name, setName] = useState<LocaleText>(
+    node?.name ?? (initialName ? { en: initialName } : {}),
+  );
   const [description, setDescription] = useState<LocaleText>(
     amenityNode?.description ?? {},
   );

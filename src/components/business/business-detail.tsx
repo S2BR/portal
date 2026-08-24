@@ -127,14 +127,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Combobox } from "@/components/ui/combobox";
 import { TimezoneCombobox } from "@/components/ui/timezone-combobox";
 import { apiErrorText } from "@/lib/api/error-text";
-import { todayISO } from "@/lib/calendar";
 import { formatBusinessAddress } from "@/lib/format-address";
 import { parseRateLimit } from "@/lib/rate-limit";
 import { externalHref } from "@/lib/url";
 import { fetchTaxonomyFromTypesense } from "@/lib/taxonomy/typesense";
 import { useUnsavedChangesGuard } from "@/lib/use-unsaved-changes-guard";
 import { cn } from "@/lib/utils";
-import { closureHasInvalidWindow, closureIsPast } from "@/lib/closure-time";
+import { closureIsElapsedHistory, closureSaveError } from "@/lib/closure-time";
 import { pickChanged } from "@/lib/pick-changed";
 
 /** A website or email contact: the value plus an optional label. `key` is a stable client id for
@@ -213,6 +212,7 @@ function toEditState(business: Business): EditState {
   const mainAddress =
     (business.addresses ?? []).find((address) => address.is_main) ??
     (business.addresses ?? [])[0];
+  const zone = business.timezone ?? mainAddress?.timezone ?? deviceTimezone();
 
   return {
     name: business.name,
@@ -254,12 +254,24 @@ function toEditState(business: Business): EditState {
       handle: social.handle,
     })),
     hours,
-    timezone: business.timezone ?? mainAddress?.timezone ?? deviceTimezone(),
-    // Past one-off closures are read-only history (shown in read mode, pruned server-side); the
-    // editor only loads upcoming + recurring so you can't re-save or re-add a retroactive date.
+    timezone: zone,
+    // Elapsed one-off closures are read-only history (shown in read mode, owned by the daily server
+    // prune job); the editor loads only recurring + still-live ones — evaluated in the business zone,
+    // so a date whose windows have already passed TODAY drops off too — and so it never re-sends or
+    // re-validates a date that's already gone by.
     closures: (business.closures ?? [])
       .filter(
-        (closure) => closure.is_recurring || closure.end_date >= todayISO(),
+        (closure) =>
+          closure.is_recurring ||
+          !closureIsElapsedHistory(
+            {
+              startDate: closure.start_date,
+              endDate: closure.end_date,
+              isRecurring: closure.is_recurring,
+              hours: closure.hours ?? [],
+            },
+            zone,
+          ),
       )
       .map((closure) => ({
         key: crypto.randomUUID(),
@@ -730,29 +742,32 @@ export function BusinessDetail({
       toast.error(create("errorPhoneCountry"));
       return;
     }
-    // A one-off special date can't be in the past (in the business timezone) — block it here so the
-    // optimistic save never flashes "saved" before the server rejects it. The server enforces the
-    // same rule (a still-open window today, overnight, or closed-all-day today is fine).
-    if (
-      edit.closures.some((closure) => closureIsPast(closure, edit.timezone))
-    ) {
-      setActiveTab("hours");
-      toast.error(create("errorClosurePast"));
-      return;
-    }
-    // A special-hour window must close after it opens (mirrors the API's after:open rule).
-    if (edit.closures.some((closure) => closureHasInvalidWindow(closure))) {
-      setActiveTab("hours");
-      toast.error(create("errorClosureHours"));
-      return;
-    }
-
     // Send only the sections that actually changed (the API leaves omitted sections untouched), so a
     // one-field edit doesn't rewrite the whole business. Nothing changed ⇒ no request at all.
     const payload = pickChanged(
       buildPayload(edit),
       buildPayload(toEditState(business)),
     );
+
+    // Validate closures ONLY when the section is actually being sent — a pre-existing special date
+    // that has since elapsed is untouched history and stays out of the payload, so it must not block
+    // an unrelated edit (a suggestion, a phone). The server enforces the same rule on whatever
+    // closures it receives; blocking here just avoids the optimistic "saved" flash before a rejection.
+    const closureError = closureSaveError(
+      edit.closures,
+      edit.timezone,
+      "closures" in payload,
+    );
+    if (closureError) {
+      setActiveTab("hours");
+      toast.error(
+        create(
+          closureError === "past" ? "errorClosurePast" : "errorClosureHours",
+        ),
+      );
+      return;
+    }
+
     if (Object.keys(payload).length === 0) {
       setEditing(false);
       toast.success(t("savedToast"));

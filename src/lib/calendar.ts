@@ -29,11 +29,14 @@ export function monthOf(iso: string | null): YearMonth {
 }
 
 /** Step a {@link YearMonth} by ±N months, rolling the year over. */
-export function shiftMonth({ year, month }: YearMonth, delta: number): YearMonth {
+export function shiftMonth(
+  { year, month }: YearMonth,
+  delta: number,
+): YearMonth {
   const zeroBased = month - 1 + delta;
   return {
     year: year + Math.floor(zeroBased / 12),
-    month: ((zeroBased % 12) + 12) % 12 + 1,
+    month: (((zeroBased % 12) + 12) % 12) + 1,
   };
 }
 
@@ -125,6 +128,26 @@ export function dateInClosure(iso: string, closure: ClosurePeriod): boolean {
     : monthDay >= start || monthDay <= end;
 }
 
+/**
+ * The first entry (other than `exceptKey`) whose dates overlap `draft` — so the closures editor can
+ * keep two closures off the same date: clicking an occupied day opens that one to edit, and saving a
+ * draft that collides with another is blocked. Overlap is symmetric (either range's edge inside the
+ * other), which covers the common single-day and edge-touching cases.
+ */
+export function overlappingClosure<T extends ClosurePeriod & { key: string }>(
+  draft: ClosurePeriod,
+  entries: T[],
+  exceptKey: string | null,
+): T | undefined {
+  return entries.find(
+    (entry) =>
+      entry.key !== exceptKey &&
+      (dateInClosure(draft.startDate, entry) ||
+        dateInClosure(draft.endDate, entry) ||
+        dateInClosure(entry.startDate, draft)),
+  );
+}
+
 /** A localized display of a closure's date(s): a single date, or "start – end". Recurring drops the year. */
 export function formatClosureDate(
   locale: string,
@@ -141,7 +164,9 @@ export function formatClosureDate(
   if (!start || !end) {
     return startISO;
   }
-  const startDate = format.format(new Date(start.year, start.month - 1, start.day));
+  const startDate = format.format(
+    new Date(start.year, start.month - 1, start.day),
+  );
   if (startISO === endISO) {
     return startDate;
   }

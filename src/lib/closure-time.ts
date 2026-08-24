@@ -109,3 +109,86 @@ export function closureHasInvalidWindow(closure: {
     return open !== null && close !== null && close <= open;
   });
 }
+
+type ClosureLike = {
+  startDate: string;
+  endDate: string;
+  isRecurring: boolean;
+  hours: { open: string; close: string }[];
+};
+
+/**
+ * Whether a one-off closure is elapsed history: its range ended before today, or — for a range ending
+ * TODAY — today's last window has already closed. Unlike `closureIsPast` (which is start-based, so an
+ * ongoing multi-day range reads as "past"), this is END-based: an ongoing range whose end is
+ * today-or-later is NOT history and stays editable. Recurring closures are never history.
+ *
+ * The editor hides history (it's owned by the daily server prune job, not the user), and the server
+ * mirrors this exactly (`closureModelIsElapsedHistory`) to preserve those rows through a sync.
+ */
+export function closureIsElapsedHistory(
+  closure: ClosureLike,
+  timezone: string | undefined,
+  now: Date = new Date(),
+): boolean {
+  if (closure.isRecurring || !closure.startDate) {
+    return false;
+  }
+
+  const { today, nowMinutes } = nowInTimezone(timezone, now);
+  const end = closure.endDate || closure.startDate;
+
+  if (end < today) {
+    return true;
+  }
+  if (end > today) {
+    return false;
+  }
+
+  // Ends today: history only once every same-day window has closed (closed-all-day stays through the
+  // day; an overnight or still-open window keeps it live).
+  if (!closure.hours || closure.hours.length === 0) {
+    return false;
+  }
+  for (const window of closure.hours) {
+    const open = minutesOfDay(window.open);
+    const close = minutesOfDay(window.close);
+    if (open === null || close === null) {
+      continue;
+    }
+    if (close <= open) {
+      return false;
+    }
+    if (close > nowMinutes) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/**
+ * The blocking error (if any) to raise before a business save, given the closures the editor holds.
+ *
+ * CRITICAL: closures are validated ONLY when the closures section is actually being sent
+ * (`closuresChanged`). A pre-existing special date that has since elapsed is untouched history — it
+ * stays out of the PATCH payload, so it must never block an unrelated edit (a category suggestion, a
+ * phone number). Validating regardless of what changed was a real bug: every save got blocked by an
+ * old past date the user wasn't touching. Returns `"past"`, `"hours"`, or null (nothing to block).
+ */
+export function closureSaveError(
+  closures: ClosureLike[],
+  timezone: string | undefined,
+  closuresChanged: boolean,
+  now: Date = new Date(),
+): "past" | "hours" | null {
+  if (!closuresChanged) {
+    return null;
+  }
+  if (closures.some((closure) => closureIsPast(closure, timezone, now))) {
+    return "past";
+  }
+  if (closures.some((closure) => closureHasInvalidWindow(closure))) {
+    return "hours";
+  }
+  return null;
+}

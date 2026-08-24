@@ -1,6 +1,6 @@
 "use client";
 
-import { FolderTree, Sparkles } from "lucide-react";
+import { FolderTree, Lightbulb, Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { AdminAmenity, AdminCategory } from "@/lib/taxonomy/admin";
 
+import { CategorySuggestionsQueue } from "./category-suggestions-queue";
 import { TaxonomyTree } from "./taxonomy-tree";
 
 /**
@@ -87,6 +88,10 @@ export function TaxonomyManager() {
               <Sparkles className="size-4" aria-hidden />
               {t("tabs.amenities")}
             </TabsTrigger>
+            <TabsTrigger value="suggestions" className="px-4 py-2">
+              <Lightbulb className="size-4" aria-hidden />
+              {t("tabs.suggestions")}
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="categories" className="mt-6">
             <TaxonomyTree
@@ -105,6 +110,9 @@ export function TaxonomyManager() {
               categories={categories}
               onChanged={load}
             />
+          </TabsContent>
+          <TabsContent value="suggestions" className="mt-6">
+            <CategorySuggestionsQueue />
           </TabsContent>
         </Tabs>
       )}
