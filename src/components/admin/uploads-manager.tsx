@@ -39,6 +39,8 @@ const TYPES = [
   "business-banner",
   "business-gallery",
   "claim-proof",
+  "product-image",
+  "product-variant-image",
 ] as const;
 const STATUSES = ["pending", "confirmed"] as const;
 
