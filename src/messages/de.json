@@ -1580,6 +1580,12 @@
         "brandPlaceholder": "Marke suchen oder hinzufügen",
         "description": "Beschreibung"
       }
+    },
+    "groups": {
+      "catalog": "Katalog",
+      "moderation": "Moderation",
+      "directory": "Verzeichnis",
+      "media": "Medien"
     }
   },
   "session": {

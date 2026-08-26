@@ -1580,6 +1580,12 @@
         "brandPlaceholder": "ابحث عن علامة أو أضِفها",
         "description": "الوصف"
       }
+    },
+    "groups": {
+      "catalog": "الكتالوج",
+      "moderation": "الإشراف",
+      "directory": "الدليل",
+      "media": "الوسائط"
     }
   },
   "session": {

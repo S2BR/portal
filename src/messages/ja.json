@@ -1580,6 +1580,12 @@
         "brandPlaceholder": "ブランドを検索または追加",
         "description": "説明"
       }
+    },
+    "groups": {
+      "catalog": "カタログ",
+      "moderation": "モデレーション",
+      "directory": "ディレクトリ",
+      "media": "メディア"
     }
   },
   "session": {
