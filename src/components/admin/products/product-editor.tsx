@@ -4,7 +4,9 @@ import {
   ArrowLeft,
   Boxes,
   ImageIcon,
+  Keyboard,
   Loader2,
+  Merge,
   PackagePlus,
   Plus,
   ScanBarcode,
@@ -22,10 +24,11 @@ import type { AdminFamily } from "@/app/api/admin/families/route";
 import type {
   AdminProduct,
   AdminProductBody,
+  AdminProductListItem,
   BarcodeLookupResult,
   ModerationStatus,
 } from "@/app/api/admin/products/route";
-import type { SimilarProduct } from "@/app/api/admin/products/similar/route";
+import { searchCatalog, type CatalogHit } from "@/lib/products/typesense";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -79,7 +82,7 @@ type ImportDraft = {
   imageUrl: string | null;
   useImage: boolean;
   /** Existing catalog products that look like the same item — offer "add as SKU" instead of duplicating. */
-  similar: SimilarProduct[];
+  similar: CatalogHit[];
 };
 
 /**
@@ -107,7 +110,14 @@ export function ProductEditor({ productId }: { productId: string | null }) {
   const [importDraft, setImportDraft] = useState<ImportDraft | null>(null);
   const [families, setFamilies] = useState<AdminFamily[]>([]);
   const [brands, setBrands] = useState<AdminBrand[]>([]);
-  const [similarByName, setSimilarByName] = useState<SimilarProduct[]>([]);
+  const [similarByName, setSimilarByName] = useState<CatalogHit[]>([]);
+  // New products open on an intake chooser (barcode vs manual) before the form; editing skips it.
+  const [stage, setStage] = useState<"choose" | "form">(
+    productId === null ? "choose" : "form",
+  );
+  const [intakeBarcode, setIntakeBarcode] = useState("");
+  const [intakeLoading, setIntakeLoading] = useState(false);
+  const [mergeOpen, setMergeOpen] = useState(false);
 
   // Brands + families for the assign fields' autocomplete.
   useEffect(() => {
@@ -310,40 +320,35 @@ export function ProductEditor({ productId }: { productId: string | null }) {
     toast.success(t("lookupFound"));
   };
 
-  /** Ask the catalog whether a same-item product already exists (excluding the one being edited). */
+  /**
+   * Whether a same-item product already exists — searched DIRECTLY against Typesense (fuzzy,
+   * accent-tolerant), no API/DB in the path. Excludes the product being edited.
+   */
   const fetchSimilar = useCallback(
-    async (forName: string, forBrand: string): Promise<SimilarProduct[]> => {
-      if (forName.trim() === "" && forBrand.trim() === "") {
-        return [];
-      }
-      const params = new URLSearchParams();
-      params.set("name", forName.trim());
-      if (forBrand.trim() !== "") {
-        params.set("brand", forBrand.trim());
-      }
-      if (productId !== null) {
-        params.set("exclude", productId);
-      }
-      const response = await fetch(`/api/admin/products/similar?${params.toString()}`);
-      if (!response.ok) {
-        return [];
-      }
-      const data = (await response.json()) as { data: SimilarProduct[] };
-      return data.data ?? [];
+    async (forName: string, forBrand: string): Promise<CatalogHit[]> => {
+      const query = forName.trim() || forBrand.trim();
+      return searchCatalog(query, { excludeId: productId ?? undefined });
     },
     [productId],
   );
 
-  /** On leaving the name field, surface an inline banner if the catalog already has this product. */
-  const checkSimilarByName = async () => {
-    setSimilarByName(await fetchSimilar(name, brand));
-  };
+  // Live "does this already exist?" check as the name (or brand) is typed on a NEW product, so a
+  // duplicate is caught before it's created.
+  useEffect(() => {
+    if (productId !== null || stage !== "form") {
+      return;
+    }
+    const handle = setTimeout(() => {
+      void fetchSimilar(name, brand).then(setSimilarByName);
+    }, 400);
+    return () => clearTimeout(handle);
+  }, [name, brand, productId, stage, fetchSimilar]);
 
   /**
    * Add the scanned SKU under an EXISTING product instead of creating a duplicate: jump to that
    * product's editor with the barcode/size/image as a pending new SKU to review + save.
    */
-  const addAsSku = (candidate: SimilarProduct, barcode: string, size: string, imageUrl: string | null) => {
+  const addAsSku = (candidate: CatalogHit, barcode: string, size: string, imageUrl: string | null) => {
     const params = new URLSearchParams();
     params.set("addBarcode", barcode);
     if (size.trim() !== "") {
@@ -355,6 +360,54 @@ export function ProductEditor({ productId }: { productId: string | null }) {
     setImportDraft(null);
     setSimilarByName([]);
     router.push(`/portal/admin/products/${candidate.id}?${params.toString()}`);
+  };
+
+  /**
+   * Intake (new product): look the barcode up and open the form pre-filled with what OpenFoodFacts
+   * returns — name, brand, and a first SKU (size + barcode + image). No match just seeds the barcode
+   * so the operator continues manually. Similar existing products are surfaced either way.
+   */
+  const startFromBarcode = async () => {
+    const code = intakeBarcode.trim();
+    if (code === "") {
+      return;
+    }
+    setIntakeLoading(true);
+    try {
+      const response = await fetch(
+        `/api/admin/products/barcode-lookup?barcode=${encodeURIComponent(code)}`,
+      );
+      const data = response.ok
+        ? ((await response.json()) as {
+            found: boolean;
+            product: BarcodeLookupResult | null;
+          })
+        : { found: false, product: null };
+      const found = data.product;
+      if (data.found && found) {
+        setName(found.name ?? "");
+        setBrand(found.brand ?? "");
+        setVariants([
+          {
+            key: crypto.randomUUID(),
+            label: found.size ?? "",
+            size: found.size ?? "",
+            barcode: code,
+            imageUrl: found.image_url ?? undefined,
+          },
+        ]);
+        setSimilarByName(await fetchSimilar(found.name ?? "", found.brand ?? ""));
+        toast.success(t("lookupFound"));
+      } else {
+        setVariants([
+          { key: crypto.randomUUID(), label: "", size: "", barcode: code },
+        ]);
+        toast.info(t("lookupNotFound"));
+      }
+      setStage("form");
+    } finally {
+      setIntakeLoading(false);
+    }
   };
 
   const uploadImage = async (
@@ -412,22 +465,43 @@ export function ProductEditor({ productId }: { productId: string | null }) {
 
   return (
     <div className="space-y-8">
-      <div>
-        <button
-          type="button"
-          onClick={() => router.push(LIST)}
-          className="text-muted-foreground hover:text-foreground mb-3 inline-flex items-center gap-1.5 text-sm"
-        >
-          <ArrowLeft className="size-4" aria-hidden />
-          {t("backToCatalog")}
-        </button>
-        <h1 className="font-heading text-2xl font-semibold tracking-tight sm:text-3xl">
-          {productId === null ? t("new") : t("editTitle")}
-        </h1>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <button
+            type="button"
+            onClick={() => router.push(LIST)}
+            className="text-muted-foreground hover:text-foreground mb-3 inline-flex items-center gap-1.5 text-sm"
+          >
+            <ArrowLeft className="size-4" aria-hidden />
+            {t("backToCatalog")}
+          </button>
+          <h1 className="font-heading text-2xl font-semibold tracking-tight sm:text-3xl">
+            {productId === null ? t("new") : t("editTitle")}
+          </h1>
+        </div>
+        {productId !== null ? (
+          <Button
+            variant="outline"
+            size="sm"
+            className="mt-1 shrink-0 gap-1.5"
+            onClick={() => setMergeOpen(true)}
+          >
+            <Merge className="size-4" aria-hidden />
+            {t("mergeInto")}
+          </Button>
+        ) : null}
       </div>
 
       {!ready ? (
         <p className="text-muted-foreground text-sm">{t("loading")}</p>
+      ) : stage === "choose" ? (
+        <IntakeChooser
+          barcode={intakeBarcode}
+          onBarcodeChange={setIntakeBarcode}
+          onLookup={startFromBarcode}
+          onManual={() => setStage("form")}
+          loading={intakeLoading}
+        />
       ) : (
         <div className="grid gap-8 lg:grid-cols-3 lg:items-start">
           <div className="space-y-8 lg:col-span-2">
@@ -436,13 +510,22 @@ export function ProductEditor({ productId }: { productId: string | null }) {
                 <Input
                   value={name}
                   onChange={(event) => setName(event.target.value)}
-                  onBlur={checkSimilarByName}
                 />
               </Field>
 
               {similarByName.length > 0 ? (
                 <SimilarMatches
                   matches={similarByName}
+                  onAdd={(candidate) =>
+                    addAsSku(
+                      candidate,
+                      variants[0]?.barcode.trim() ?? "",
+                      variants[0]?.size.trim() ||
+                        variants[0]?.label.trim() ||
+                        "",
+                      variants[0]?.imageUrl ?? null,
+                    )
+                  }
                   onDismiss={() => setSimilarByName([])}
                 />
               ) : null}
@@ -664,17 +747,19 @@ export function ProductEditor({ productId }: { productId: string | null }) {
         </div>
       )}
 
-      <div className="flex justify-end gap-2 border-t pt-6">
-        <Button variant="ghost" onClick={() => router.push(LIST)}>
-          {t("cancel")}
-        </Button>
-        <Button
-          onClick={save}
-          disabled={saving || name.trim() === "" || !ready}
-        >
-          {t("save")}
-        </Button>
-      </div>
+      {stage === "form" ? (
+        <div className="flex justify-end gap-2 border-t pt-6">
+          <Button variant="ghost" onClick={() => router.push(LIST)}>
+            {t("cancel")}
+          </Button>
+          <Button
+            onClick={save}
+            disabled={saving || name.trim() === "" || !ready}
+          >
+            {t("save")}
+          </Button>
+        </div>
+      ) : null}
 
       <Dialog
         open={importDraft !== null}
@@ -774,6 +859,14 @@ export function ProductEditor({ productId }: { productId: string | null }) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {productId !== null ? (
+        <MergeDialog
+          sourceId={productId}
+          open={mergeOpen}
+          onOpenChange={setMergeOpen}
+        />
+      ) : null}
     </div>
   );
 }
@@ -788,8 +881,8 @@ function SimilarMatches({
   onAdd,
   onDismiss,
 }: {
-  matches: SimilarProduct[];
-  onAdd?: (candidate: SimilarProduct) => void;
+  matches: CatalogHit[];
+  onAdd?: (candidate: CatalogHit) => void;
   onDismiss?: () => void;
 }) {
   const t = useTranslations("admin.products");
@@ -827,24 +920,221 @@ function SimilarMatches({
                   .join(" · ")}
               </span>
             </div>
-            {onAdd ? (
-              <Button
-                size="sm"
-                variant="outline"
-                className="shrink-0 gap-1.5"
-                onClick={() => onAdd(match)}
-              >
-                <PackagePlus className="size-3.5" aria-hidden />
-                {t("addAsSku")}
-              </Button>
-            ) : (
-              <Button asChild size="sm" variant="outline" className="shrink-0">
+            <div className="flex shrink-0 items-center gap-1.5">
+              <Button asChild size="sm" variant="ghost">
                 <Link href={`/portal/admin/products/${match.id}`}>{t("open")}</Link>
               </Button>
-            )}
+              {onAdd ? (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="gap-1.5"
+                  onClick={() => onAdd(match)}
+                >
+                  <PackagePlus className="size-3.5" aria-hidden />
+                  {t("addAsSku")}
+                </Button>
+              ) : null}
+            </div>
           </li>
         ))}
       </ul>
+    </div>
+  );
+}
+
+/**
+ * Merge this product (the source) into another (the target): search the catalog, pick the keeper, and
+ * the source's SKUs/images/categories move to it and the source is soft-deleted. Cleans up duplicates.
+ */
+function MergeDialog({
+  sourceId,
+  open,
+  onOpenChange,
+}: {
+  sourceId: string;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  const t = useTranslations("admin.products");
+  const router = useRouter();
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<AdminProductListItem[]>([]);
+  const [merging, setMerging] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+    const handle = setTimeout(() => {
+      if (query.trim() === "") {
+        setResults([]);
+        return;
+      }
+      void (async () => {
+        const params = new URLSearchParams();
+        params.set("filter[name][contains]", query.trim());
+        params.set("visibility", "all");
+        const response = await fetch(`/api/admin/products?${params.toString()}`);
+        if (response.ok) {
+          const data = (await response.json()) as { data: AdminProductListItem[] };
+          setResults((data.data ?? []).filter((item) => item.id !== sourceId));
+        }
+      })();
+    }, 350);
+    return () => clearTimeout(handle);
+  }, [query, open, sourceId]);
+
+  const doMerge = async (target: AdminProductListItem) => {
+    setMerging(target.id);
+    try {
+      const response = await fetch(`/api/admin/products/${sourceId}/merge`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ into: target.id }),
+      });
+      if (!response.ok) {
+        toast.error(t("mergeError"));
+        return;
+      }
+      toast.success(t("merged"));
+      onOpenChange(false);
+      router.push(`/portal/admin/products/${target.id}`);
+    } finally {
+      setMerging(null);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{t("mergeTitle")}</DialogTitle>
+          <DialogDescription>{t("mergeDescription")}</DialogDescription>
+        </DialogHeader>
+        <Input
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder={t("mergeSearch")}
+        />
+        <div className="max-h-72 space-y-1.5 overflow-y-auto">
+          {results.length === 0 ? (
+            <p className="text-muted-foreground py-6 text-center text-sm">
+              {query.trim() === "" ? t("mergeHint") : t("mergeNoResults")}
+            </p>
+          ) : (
+            results.map((item) => (
+              <div
+                key={item.id}
+                className="bg-background flex items-center gap-2 rounded-md border px-2.5 py-1.5"
+              >
+                <div className="min-w-0 flex-1">
+                  <span className="block truncate text-sm font-medium">
+                    {item.name}
+                  </span>
+                  {item.brand ? (
+                    <span className="text-muted-foreground block truncate text-xs">
+                      {item.brand}
+                    </span>
+                  ) : null}
+                </div>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={merging !== null}
+                  onClick={() => doMerge(item)}
+                  className="shrink-0 gap-1.5"
+                >
+                  {merging === item.id ? (
+                    <Loader2 className="size-3.5 animate-spin" aria-hidden />
+                  ) : (
+                    <Merge className="size-3.5" aria-hidden />
+                  )}
+                  {t("mergeConfirm")}
+                </Button>
+              </div>
+            ))
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+/**
+ * The new-product intake: choose to start from a barcode (looked up on OpenFoodFacts and imported) or
+ * to fill the form in manually. Shown before the form for a brand-new product.
+ */
+function IntakeChooser({
+  barcode,
+  onBarcodeChange,
+  onLookup,
+  onManual,
+  loading,
+}: {
+  barcode: string;
+  onBarcodeChange: (value: string) => void;
+  onLookup: () => void;
+  onManual: () => void;
+  loading: boolean;
+}) {
+  const t = useTranslations("admin.products");
+  return (
+    <div className="mx-auto max-w-lg space-y-6 py-4">
+      <div className="text-center">
+        <h2 className="text-lg font-semibold">{t("intakeTitle")}</h2>
+        <p className="text-muted-foreground mt-1 text-sm">
+          {t("intakeSubtitle")}
+        </p>
+      </div>
+
+      <div className="space-y-3 rounded-xl border p-5">
+        <div className="flex items-center gap-2 text-sm font-medium">
+          <ScanBarcode className="size-4" aria-hidden />
+          {t("intakeBarcode")}
+        </div>
+        <p className="text-muted-foreground text-xs">{t("intakeBarcodeHint")}</p>
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            onLookup();
+          }}
+          className="flex gap-2"
+        >
+          <Input
+            value={barcode}
+            onChange={(event) => onBarcodeChange(event.target.value)}
+            placeholder={t("intakeBarcodePlaceholder")}
+            inputMode="numeric"
+            autoFocus
+          />
+          <Button
+            type="submit"
+            disabled={loading || barcode.trim() === ""}
+            className="shrink-0 gap-1.5"
+          >
+            {loading ? (
+              <Loader2 className="size-4 animate-spin" aria-hidden />
+            ) : (
+              <ScanBarcode className="size-4" aria-hidden />
+            )}
+            {t("intakeLookup")}
+          </Button>
+        </form>
+      </div>
+
+      <div className="text-muted-foreground flex items-center gap-3 text-xs">
+        <span className="bg-border h-px flex-1" />
+        {t("intakeOr")}
+        <span className="bg-border h-px flex-1" />
+      </div>
+
+      <div className="text-center">
+        <Button variant="outline" onClick={onManual} className="gap-1.5">
+          <Keyboard className="size-4" aria-hidden />
+          {t("intakeManual")}
+        </Button>
+      </div>
     </div>
   );
 }
