@@ -18,6 +18,8 @@ export interface CatalogVariant {
   id: string;
   label: string;
   barcode: string;
+  /** The SKU's own image (presigned url); null when it has none — fall back to the product cover. */
+  image: string | null;
 }
 
 /** A catalog product as a search hit — enough to recognize it and to add one of its SKUs. */
@@ -67,19 +69,23 @@ const str = (value: unknown): string =>
 
 function toHit(doc: Doc): CatalogHit {
   const variants = Array.isArray(doc.variants) ? (doc.variants as Doc[]) : [];
-  const barcodes = Array.isArray(doc.barcodes) ? (doc.barcodes as unknown[]) : [];
+  const barcodes = Array.isArray(doc.barcodes)
+    ? (doc.barcodes as unknown[])
+    : [];
   return {
     id: str(doc.id),
     name: str(doc.name),
     brand: str(doc.brand) || null,
     family: str(doc.family) || null,
-    sku_count: typeof doc.sku_count === "number" ? doc.sku_count : variants.length,
+    sku_count:
+      typeof doc.sku_count === "number" ? doc.sku_count : variants.length,
     image: str(doc.image) || null,
     barcodes: barcodes.map(str).filter(Boolean),
     variants: variants.map((variant) => ({
       id: str(variant.id),
       label: str(variant.label),
       barcode: str(variant.barcode),
+      image: str(variant.image) || null,
     })),
   };
 }

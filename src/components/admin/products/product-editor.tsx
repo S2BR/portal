@@ -28,6 +28,7 @@ import type {
   BarcodeLookupResult,
   ModerationStatus,
 } from "@/app/api/admin/products/route";
+import type { BarcodeOwner } from "@/app/api/admin/products/by-barcode/route";
 import { searchCatalog, type CatalogHit } from "@/lib/products/typesense";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -67,6 +68,33 @@ type VariantDraft = {
 
 function blankVariant(): VariantDraft {
   return { key: crypto.randomUUID(), label: "", size: "", barcode: "" };
+}
+
+/** Lowercased, accent-stripped words of length ≥ 3 — the significant tokens of a product name. */
+function significantTokens(value: string): string[] {
+  return value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/gu, "")
+    .replace(/[^a-z0-9]+/g, " ")
+    .split(" ")
+    .filter((token) => token.length >= 3);
+}
+
+/**
+ * Whether a catalog `name` is close enough to `query` to be a likely DUPLICATE (not merely the same
+ * category). Typesense's fuzzy search returns anything sharing a common word — "Farofa Pronta" for
+ * "Farofa Temperada Yoki" — so require that most of the query's significant words are present, which
+ * keeps real near-duplicates and drops same-word-different-product noise.
+ */
+function looksLikeDuplicate(query: string, name: string): boolean {
+  const queryTokens = significantTokens(query);
+  if (queryTokens.length === 0) {
+    return false;
+  }
+  const nameTokens = new Set(significantTokens(name));
+  const matched = queryTokens.filter((token) => nameTokens.has(token)).length;
+  return matched / queryTokens.length >= 0.6;
 }
 
 /**
@@ -118,6 +146,76 @@ export function ProductEditor({ productId }: { productId: string | null }) {
   const [intakeBarcode, setIntakeBarcode] = useState("");
   const [intakeLoading, setIntakeLoading] = useState(false);
   const [mergeOpen, setMergeOpen] = useState(false);
+
+  // Server-side validation errors, surfaced on the offending fields (keyed by variant `key`).
+  const [nameError, setNameError] = useState<string | null>(null);
+  const [variantErrors, setVariantErrors] = useState<Record<string, string>>(
+    {},
+  );
+  // For a barcode that's already taken: the existing product that owns it (with a note when it's
+  // hidden from search — private / pending / deleted), keyed by variant `key`, to link to.
+  const [barcodeConflicts, setBarcodeConflicts] = useState<
+    Record<string, { id: string; name: string; note: string | null }>
+  >({});
+
+  /**
+   * Resolve a barcode to the product that already carries it, from the DATABASE — authoritative across
+   * private / unapproved / soft-deleted products the search index can't see. Excludes the product being
+   * edited (its own barcodes aren't conflicts). Returns a `note` when the owner is hidden from search.
+   */
+  const findBarcodeOwner = useCallback(
+    async (
+      barcode: string,
+    ): Promise<{ id: string; name: string; note: string | null } | null> => {
+      try {
+        const response = await fetch(
+          `/api/admin/products/by-barcode?barcode=${encodeURIComponent(barcode)}`,
+        );
+        if (!response.ok) {
+          return null;
+        }
+        const data = (await response.json()) as {
+          found: boolean;
+          product: BarcodeOwner | null;
+        };
+        const owner = data.product;
+        if (!data.found || !owner || owner.id === productId) {
+          return null;
+        }
+        const note = owner.is_deleted
+          ? t("barcodeDeleted")
+          : !owner.is_shared
+            ? t("barcodePrivate")
+            : owner.moderation_status !== "approved"
+              ? t("barcodePending")
+              : null;
+        return { id: owner.id, name: owner.name, note };
+      } catch {
+        return null;
+      }
+    },
+    [productId, t],
+  );
+
+  /** Drop the validation error + conflict for one SKU row (called as its barcode is edited). */
+  const clearVariantError = (key: string) => {
+    setVariantErrors((prev) => {
+      if (!prev[key]) {
+        return prev;
+      }
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
+    setBarcodeConflicts((prev) => {
+      if (!prev[key]) {
+        return prev;
+      }
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
+  };
 
   // Brands + families for the assign fields' autocomplete.
   useEffect(() => {
@@ -194,7 +292,18 @@ export function ProductEditor({ productId }: { productId: string | null }) {
 
   const save = async () => {
     setSaving(true);
+    setNameError(null);
+    setVariantErrors({});
+    setBarcodeConflicts({});
     try {
+      // The SKUs actually sent (blank rows dropped) — the API keys its errors by this array's index.
+      const kept = variants.filter(
+        (variant) =>
+          variant.label.trim() !== "" ||
+          variant.size.trim() !== "" ||
+          variant.barcode.trim() !== "" ||
+          (variant.imageUrl ?? "") !== "",
+      );
       const body: AdminProductBody = {
         name: name.trim(),
         brand: brand.trim() || null,
@@ -202,21 +311,13 @@ export function ProductEditor({ productId }: { productId: string | null }) {
         is_homemade: isHomemade,
         description: description.trim() || null,
         moderation_status: moderation,
-        variants: variants
-          .filter(
-            (variant) =>
-              variant.label.trim() !== "" ||
-              variant.size.trim() !== "" ||
-              variant.barcode.trim() !== "" ||
-              (variant.imageUrl ?? "") !== "",
-          )
-          .map((variant) => ({
-            id: variant.id,
-            label: variant.label.trim() || null,
-            size: variant.size.trim() || null,
-            barcode: variant.barcode.trim() || null,
-            image_url: variant.imageUrl || null,
-          })),
+        variants: kept.map((variant) => ({
+          id: variant.id,
+          label: variant.label.trim() || null,
+          size: variant.size.trim() || null,
+          barcode: variant.barcode.trim() || null,
+          image_url: variant.imageUrl || null,
+        })),
       };
 
       const response = await fetch(
@@ -230,13 +331,73 @@ export function ProductEditor({ productId }: { productId: string | null }) {
         },
       );
       if (!response.ok) {
-        toast.error(t("saveError"));
+        await showSaveErrors(response, kept);
         return;
       }
       toast.success(t("saved"));
       router.push(LIST);
     } finally {
       setSaving(false);
+    }
+  };
+
+  /**
+   * Surface a failed save. A 422 carries per-field messages (`variants.0.barcode`, `name`, …) — map
+   * them onto the offending fields, and for a barcode that's already taken, look up which existing
+   * product owns it so the operator can jump straight there instead of hitting a dead end.
+   */
+  const showSaveErrors = async (response: Response, kept: VariantDraft[]) => {
+    const data = (await response.json().catch(() => null)) as {
+      errors?: Record<string, string[]>;
+    } | null;
+    const errors = data?.errors;
+    if (!errors) {
+      toast.error(t("saveError"));
+      return;
+    }
+
+    const nextVariantErrors: Record<string, string> = {};
+    const conflicts: { key: string; barcode: string }[] = [];
+    let firstName: string | null = null;
+    const others: string[] = [];
+
+    for (const [field, messages] of Object.entries(errors)) {
+      const message = messages[0] ?? "";
+      const match = field.match(/^variants\.(\d+)\.barcode$/);
+      if (match) {
+        const row = kept[Number(match[1])];
+        if (!row) {
+          continue;
+        }
+        const taken = /taken|unique|exist/i.test(message);
+        nextVariantErrors[row.key] = taken ? t("barcodeTaken") : message;
+        if (taken && row.barcode.trim() !== "") {
+          conflicts.push({ key: row.key, barcode: row.barcode.trim() });
+        }
+      } else if (field === "name") {
+        firstName = message;
+      } else {
+        others.push(message);
+      }
+    }
+
+    setVariantErrors(nextVariantErrors);
+    setNameError(firstName);
+    toast.error(
+      firstName ??
+        Object.values(nextVariantErrors)[0] ??
+        others[0] ??
+        t("saveError"),
+    );
+
+    // Resolve each taken barcode to the product that already carries it (authoritative DB lookup —
+    // finds it even when the owner is private / unapproved / soft-deleted).
+    for (const { key, barcode } of conflicts) {
+      void findBarcodeOwner(barcode).then((owner) => {
+        if (owner) {
+          setBarcodeConflicts((prev) => ({ ...prev, [key]: owner }));
+        }
+      });
     }
   };
 
@@ -271,7 +432,7 @@ export function ProductEditor({ productId }: { productId: string | null }) {
       const found = data.product;
       const draftName = name.trim() || (found.name ?? "");
       const draftBrand = brand.trim() || (found.brand ?? "");
-      const similar = await fetchSimilar(draftName, draftBrand);
+      const similar = await fetchSimilar(draftName);
 
       setImportDraft({
         rowKey: row.key,
@@ -325,9 +486,17 @@ export function ProductEditor({ productId }: { productId: string | null }) {
    * accent-tolerant), no API/DB in the path. Excludes the product being edited.
    */
   const fetchSimilar = useCallback(
-    async (forName: string, forBrand: string): Promise<CatalogHit[]> => {
-      const query = forName.trim() || forBrand.trim();
-      return searchCatalog(query, { excludeId: productId ?? undefined });
+    async (forName: string): Promise<CatalogHit[]> => {
+      // Duplicate detection keys on the NAME (a brand alone matches its whole line). Fuzzy Typesense
+      // hits are then filtered to genuine near-duplicates so unrelated same-word products don't show.
+      const query = forName.trim();
+      if (query.length < 3) {
+        return [];
+      }
+      const hits = await searchCatalog(query, {
+        excludeId: productId ?? undefined,
+      });
+      return hits.filter((hit) => looksLikeDuplicate(query, hit.name));
     },
     [productId],
   );
@@ -339,16 +508,67 @@ export function ProductEditor({ productId }: { productId: string | null }) {
       return;
     }
     const handle = setTimeout(() => {
-      void fetchSimilar(name, brand).then(setSimilarByName);
+      void fetchSimilar(name).then(setSimilarByName);
     }, 400);
     return () => clearTimeout(handle);
-  }, [name, brand, productId, stage, fetchSimilar]);
+  }, [name, productId, stage, fetchSimilar]);
+
+  // Live "already registered?" check: the moment a SKU barcode is entered (typed, scanned, or seeded
+  // from the barcode-intake step), look it up in the catalog and, if it's already there, flag the row
+  // with a link to the product that owns it — so a duplicate is caught on entry, not at save.
+  const barcodeSignature = variants
+    .map((variant) => `${variant.key}:${variant.barcode.trim()}`)
+    .join("|");
+  useEffect(() => {
+    const rows = barcodeSignature
+      .split("|")
+      .map((pair) => {
+        const separator = pair.indexOf(":");
+        return {
+          key: pair.slice(0, separator),
+          barcode: pair.slice(separator + 1),
+        };
+      })
+      .filter((row) => row.barcode !== "");
+    if (rows.length === 0) {
+      return;
+    }
+    const handle = setTimeout(() => {
+      for (const row of rows) {
+        void findBarcodeOwner(row.barcode).then((owner) => {
+          setBarcodeConflicts((prev) => {
+            if (owner) {
+              if (
+                prev[row.key]?.id === owner.id &&
+                prev[row.key]?.note === owner.note
+              ) {
+                return prev;
+              }
+              return { ...prev, [row.key]: owner };
+            }
+            if (!prev[row.key]) {
+              return prev;
+            }
+            const next = { ...prev };
+            delete next[row.key];
+            return next;
+          });
+        });
+      }
+    }, 400);
+    return () => clearTimeout(handle);
+  }, [barcodeSignature, findBarcodeOwner]);
 
   /**
    * Add the scanned SKU under an EXISTING product instead of creating a duplicate: jump to that
    * product's editor with the barcode/size/image as a pending new SKU to review + save.
    */
-  const addAsSku = (candidate: CatalogHit, barcode: string, size: string, imageUrl: string | null) => {
+  const addAsSku = (
+    candidate: CatalogHit,
+    barcode: string,
+    size: string,
+    imageUrl: string | null,
+  ) => {
     const params = new URLSearchParams();
     params.set("addBarcode", barcode);
     if (size.trim() !== "") {
@@ -396,7 +616,7 @@ export function ProductEditor({ productId }: { productId: string | null }) {
             imageUrl: found.image_url ?? undefined,
           },
         ]);
-        setSimilarByName(await fetchSimilar(found.name ?? "", found.brand ?? ""));
+        setSimilarByName(await fetchSimilar(found.name ?? ""));
         toast.success(t("lookupFound"));
       } else {
         setVariants([
@@ -506,10 +726,13 @@ export function ProductEditor({ productId }: { productId: string | null }) {
         <div className="grid gap-8 lg:grid-cols-3 lg:items-start">
           <div className="space-y-8 lg:col-span-2">
             <section className="space-y-4">
-              <Field label={t("name")}>
+              <Field label={t("name")} error={nameError}>
                 <Input
                   value={name}
-                  onChange={(event) => setName(event.target.value)}
+                  onChange={(event) => {
+                    setName(event.target.value);
+                    setNameError(null);
+                  }}
                 />
               </Field>
 
@@ -601,95 +824,130 @@ export function ProductEditor({ productId }: { productId: string | null }) {
             <section className="space-y-3">
               <h2 className="text-sm font-semibold">{t("variants")}</h2>
               {variants.map((variant, index) => (
-                <div key={variant.key} className="flex items-center gap-2">
-                  {variant.id ? (
-                    <ImageThumb
-                      // Prefer the SKU's stored image; before it's saved/imported, optimistically
-                      // show the pending lookup image so the thumbnail updates the moment you scan.
-                      url={variantImage(variant.id) ?? variant.imageUrl ?? null}
-                      busy={uploading}
-                      label={t("skuImage")}
-                      onFile={(file) =>
-                        uploadImage(
-                          "product-variant-image",
-                          file,
-                          { variant: variant.id ?? "" },
-                          800,
+                <div key={variant.key} className="space-y-1.5">
+                  <div className="flex items-center gap-2">
+                    {variant.id ? (
+                      <ImageThumb
+                        // Prefer the SKU's stored image; before it's saved/imported, optimistically
+                        // show the pending lookup image so the thumbnail updates the moment you scan.
+                        url={
+                          variantImage(variant.id) ?? variant.imageUrl ?? null
+                        }
+                        busy={uploading}
+                        label={t("skuImage")}
+                        onFile={(file) =>
+                          uploadImage(
+                            "product-variant-image",
+                            file,
+                            { variant: variant.id ?? "" },
+                            800,
+                          )
+                        }
+                      />
+                    ) : variant.imageUrl ? (
+                      <span
+                        className="bg-muted flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-md border"
+                        title={t("skuImagePending")}
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={variant.imageUrl}
+                          alt=""
+                          className="size-full object-cover"
+                        />
+                      </span>
+                    ) : null}
+                    <Input
+                      value={variant.label}
+                      onChange={(event) =>
+                        setVariants((current) =>
+                          current.map((row, rowIndex) =>
+                            rowIndex === index
+                              ? { ...row, label: event.target.value }
+                              : row,
+                          ),
                         )
                       }
+                      placeholder={t("variantLabel")}
                     />
-                  ) : variant.imageUrl ? (
-                    <span
-                      className="bg-muted flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-md border"
-                      title={t("skuImagePending")}
+                    <Input
+                      value={variant.barcode}
+                      aria-invalid={
+                        variantErrors[variant.key] ||
+                        barcodeConflicts[variant.key]
+                          ? true
+                          : undefined
+                      }
+                      onChange={(event) => {
+                        const value = event.target.value;
+                        setVariants((current) =>
+                          current.map((row, rowIndex) =>
+                            rowIndex === index
+                              ? { ...row, barcode: value }
+                              : row,
+                          ),
+                        );
+                        clearVariantError(variant.key);
+                      }}
+                      placeholder={t("variantBarcode")}
+                    />
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="shrink-0"
+                      disabled={
+                        variant.barcode.trim() === "" ||
+                        lookingUp === variant.key
+                      }
+                      onClick={() => lookupBarcode(index)}
+                      aria-label={t("lookupBarcode")}
+                      title={t("lookupBarcode")}
                     >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={variant.imageUrl}
-                        alt=""
-                        className="size-full object-cover"
-                      />
-                    </span>
+                      {lookingUp === variant.key ? (
+                        <Loader2 className="size-4 animate-spin" aria-hidden />
+                      ) : (
+                        <ScanBarcode className="size-4" aria-hidden />
+                      )}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="text-destructive shrink-0"
+                      onClick={() =>
+                        setVariants((current) =>
+                          current.length > 1
+                            ? current.filter(
+                                (_, rowIndex) => rowIndex !== index,
+                              )
+                            : current,
+                        )
+                      }
+                      aria-label={t("removeVariant")}
+                    >
+                      <Trash2 className="size-4" aria-hidden />
+                    </Button>
+                  </div>
+                  {barcodeConflicts[variant.key] ? (
+                    <p className="text-xs text-amber-600 dark:text-amber-500">
+                      {t("barcodeOwnedBy")}{" "}
+                      <Link
+                        href={`/portal/admin/products/${barcodeConflicts[variant.key]?.id}`}
+                        className="font-medium underline"
+                      >
+                        {barcodeConflicts[variant.key]?.name}
+                      </Link>
+                      {barcodeConflicts[variant.key]?.note ? (
+                        <span className="text-muted-foreground">
+                          {" "}
+                          ({barcodeConflicts[variant.key]?.note})
+                        </span>
+                      ) : null}
+                    </p>
+                  ) : variantErrors[variant.key] ? (
+                    <p className="text-destructive text-xs">
+                      {variantErrors[variant.key]}
+                    </p>
                   ) : null}
-                  <Input
-                    value={variant.label}
-                    onChange={(event) =>
-                      setVariants((current) =>
-                        current.map((row, rowIndex) =>
-                          rowIndex === index
-                            ? { ...row, label: event.target.value }
-                            : row,
-                        ),
-                      )
-                    }
-                    placeholder={t("variantLabel")}
-                  />
-                  <Input
-                    value={variant.barcode}
-                    onChange={(event) =>
-                      setVariants((current) =>
-                        current.map((row, rowIndex) =>
-                          rowIndex === index
-                            ? { ...row, barcode: event.target.value }
-                            : row,
-                        ),
-                      )
-                    }
-                    placeholder={t("variantBarcode")}
-                  />
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="shrink-0"
-                    disabled={
-                      variant.barcode.trim() === "" ||
-                      lookingUp === variant.key
-                    }
-                    onClick={() => lookupBarcode(index)}
-                    aria-label={t("lookupBarcode")}
-                    title={t("lookupBarcode")}
-                  >
-                    {lookingUp === variant.key ? (
-                      <Loader2 className="size-4 animate-spin" aria-hidden />
-                    ) : (
-                      <ScanBarcode className="size-4" aria-hidden />
-                    )}
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="text-destructive shrink-0"
-                    onClick={() =>
-                      setVariants((current) =>
-                        current.length > 1
-                          ? current.filter((_, rowIndex) => rowIndex !== index)
-                          : current,
-                      )
-                    }
-                    aria-label={t("removeVariant")}
-                  >
-                    <Trash2 className="size-4" aria-hidden />
-                  </Button>
                 </div>
               ))}
               <Button
@@ -813,7 +1071,10 @@ export function ProductEditor({ productId }: { productId: string | null }) {
                   <Input
                     value={importDraft.size}
                     onChange={(event) =>
-                      setImportDraft({ ...importDraft, size: event.target.value })
+                      setImportDraft({
+                        ...importDraft,
+                        size: event.target.value,
+                      })
                     }
                   />
                 </Field>
@@ -891,7 +1152,9 @@ function SimilarMatches({
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <p className="text-sm font-medium">{t("similarTitle")}</p>
-          <p className="text-muted-foreground text-xs">{t("similarDescription")}</p>
+          <p className="text-muted-foreground text-xs">
+            {t("similarDescription")}
+          </p>
         </div>
         {onDismiss ? (
           <button
@@ -915,14 +1178,20 @@ function SimilarMatches({
                 {match.name}
               </span>
               <span className="text-muted-foreground block truncate text-xs">
-                {[match.brand, match.family, t("similarSkus", { count: match.sku_count })]
+                {[
+                  match.brand,
+                  match.family,
+                  t("similarSkus", { count: match.sku_count }),
+                ]
                   .filter(Boolean)
                   .join(" · ")}
               </span>
             </div>
             <div className="flex shrink-0 items-center gap-1.5">
               <Button asChild size="sm" variant="ghost">
-                <Link href={`/portal/admin/products/${match.id}`}>{t("open")}</Link>
+                <Link href={`/portal/admin/products/${match.id}`}>
+                  {t("open")}
+                </Link>
               </Button>
               {onAdd ? (
                 <Button
@@ -975,9 +1244,13 @@ function MergeDialog({
         const params = new URLSearchParams();
         params.set("filter[name][contains]", query.trim());
         params.set("visibility", "all");
-        const response = await fetch(`/api/admin/products?${params.toString()}`);
+        const response = await fetch(
+          `/api/admin/products?${params.toString()}`,
+        );
         if (response.ok) {
-          const data = (await response.json()) as { data: AdminProductListItem[] };
+          const data = (await response.json()) as {
+            data: AdminProductListItem[];
+          };
           setResults((data.data ?? []).filter((item) => item.id !== sourceId));
         }
       })();
@@ -1093,7 +1366,9 @@ function IntakeChooser({
           <ScanBarcode className="size-4" aria-hidden />
           {t("intakeBarcode")}
         </div>
-        <p className="text-muted-foreground text-xs">{t("intakeBarcodeHint")}</p>
+        <p className="text-muted-foreground text-xs">
+          {t("intakeBarcodeHint")}
+        </p>
         <form
           onSubmit={(event) => {
             event.preventDefault();
