@@ -5,7 +5,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import type { CatalogSighting } from "@/app/api/businesses/[slug]/products/route";
-import type { CatalogMatch } from "@/app/api/businesses/[slug]/products/search/route";
+import {
+  searchCatalog,
+  type CatalogHit,
+  type CatalogVariant,
+} from "@/lib/products/typesense";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
@@ -303,10 +307,8 @@ function CatalogRow({
   );
 }
 
-type CatalogVariant = CatalogMatch["variants"][number];
-
 function variantLabel(variant: CatalogVariant, fallback: string): string {
-  return variant.label ?? variant.size ?? variant.barcode ?? fallback;
+  return variant.label || variant.barcode || fallback;
 }
 
 /** The "add a product" panel — search the catalog (pick a size/variant), or add a handmade item. */
@@ -315,8 +317,8 @@ function AddPanel({ base, onAdded }: { base: string; onAdded: () => void }) {
   const [mode, setMode] = useState<"idle" | "search" | "new">("idle");
 
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<CatalogMatch[]>([]);
-  const [selected, setSelected] = useState<CatalogMatch | null>(null);
+  const [results, setResults] = useState<CatalogHit[]>([]);
+  const [selected, setSelected] = useState<CatalogHit | null>(null);
   const [variant, setVariant] = useState<CatalogVariant | null>(null);
 
   const [name, setName] = useState("");
@@ -337,7 +339,7 @@ function AddPanel({ base, onAdded }: { base: string; onAdded: () => void }) {
   };
 
   /** Pick a product; auto-select its size when there's only one. */
-  const pickProduct = (match: CatalogMatch) => {
+  const pickProduct = (match: CatalogHit) => {
     setSelected(match);
     setVariant(
       match.variants.length === 1 ? (match.variants[0] ?? null) : null,
@@ -353,25 +355,16 @@ function AddPanel({ base, onAdded }: { base: string; onAdded: () => void }) {
     if (timer.current) {
       clearTimeout(timer.current);
     }
-    timer.current = setTimeout(async () => {
-      try {
-        const response = await fetch(
-          `${base}/search?q=${encodeURIComponent(query.trim())}`,
-        );
-        if (response.ok) {
-          const data = (await response.json()) as { products: CatalogMatch[] };
-          setResults(data.products ?? []);
-        }
-      } catch {
-        // A failed search just shows no matches.
-      }
+    timer.current = setTimeout(() => {
+      // Search the shared catalog DIRECTLY against Typesense (fuzzy, no API/DB in the path).
+      void searchCatalog(query.trim()).then(setResults);
     }, 300);
     return () => {
       if (timer.current) {
         clearTimeout(timer.current);
       }
     };
-  }, [base, mode, query, selected]);
+  }, [mode, query, selected]);
 
   const submit = async () => {
     setSaving(true);
