@@ -998,7 +998,8 @@
       "taxonomy": "Taxonomia",
       "products": "Produtos",
       "brands": "Marcas",
-      "families": "Famílias"
+      "families": "Famílias",
+      "dashboard": "Painel"
     },
     "reports": {
       "title": "Denúncias",
@@ -1602,7 +1603,30 @@
       "catalog": "Catálogo",
       "moderation": "Moderação",
       "directory": "Diretório",
-      "media": "Mídia"
+      "media": "Mídia",
+      "dashboard": "Painel"
+    },
+    "dashboard": {
+      "title": "Painel",
+      "subtitle": "Uma visão geral da plataforma e acesso rápido a todas as áreas administrativas.",
+      "shortcuts": {
+        "businesses": {
+          "label": "Negócios",
+          "description": "Revise, bloqueie e gerencie os anúncios de negócios."
+        },
+        "catalog": {
+          "label": "Catálogo",
+          "description": "Produtos, marcas, famílias e taxonomia."
+        },
+        "moderation": {
+          "label": "Moderação",
+          "description": "Denúncias e reivindicações de propriedade aguardando revisão."
+        },
+        "uploads": {
+          "label": "Uploads",
+          "description": "Mídia enviada em toda a plataforma."
+        }
+      }
     }
   },
   "session": {

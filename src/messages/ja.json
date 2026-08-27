@@ -998,7 +998,8 @@
       "taxonomy": "分類",
       "products": "製品",
       "brands": "ブランド",
-      "families": "ファミリー"
+      "families": "ファミリー",
+      "dashboard": "ダッシュボード"
     },
     "reports": {
       "title": "報告",
@@ -1602,7 +1603,30 @@
       "catalog": "カタログ",
       "moderation": "モデレーション",
       "directory": "ディレクトリ",
-      "media": "メディア"
+      "media": "メディア",
+      "dashboard": "ダッシュボード"
+    },
+    "dashboard": {
+      "title": "ダッシュボード",
+      "subtitle": "プラットフォームの概要と、各管理エリアへのクイックアクセス。",
+      "shortcuts": {
+        "businesses": {
+          "label": "ビジネス",
+          "description": "ビジネスの掲載を確認・ロック・管理します。"
+        },
+        "catalog": {
+          "label": "カタログ",
+          "description": "商品、ブランド、ファミリー、分類。"
+        },
+        "moderation": {
+          "label": "モデレーション",
+          "description": "レビュー待ちの通報と所有権の申請。"
+        },
+        "uploads": {
+          "label": "アップロード",
+          "description": "プラットフォーム全体でアップロードされたメディア。"
+        }
+      }
     }
   },
   "session": {
