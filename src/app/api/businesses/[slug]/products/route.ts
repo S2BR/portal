@@ -21,6 +21,7 @@ export interface CatalogSighting {
       name: string;
       brand: string | null;
       is_homemade: boolean;
+      image: string | null;
     } | null;
   } | null;
 }
