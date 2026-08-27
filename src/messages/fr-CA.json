@@ -998,7 +998,8 @@
       "taxonomy": "Taxonomie",
       "products": "Produits",
       "brands": "Marques",
-      "families": "Familles"
+      "families": "Familles",
+      "dashboard": "Tableau de bord"
     },
     "reports": {
       "title": "Signalements",
@@ -1602,7 +1603,30 @@
       "catalog": "Catalogue",
       "moderation": "Modération",
       "directory": "Répertoire",
-      "media": "Médias"
+      "media": "Médias",
+      "dashboard": "Tableau de bord"
+    },
+    "dashboard": {
+      "title": "Tableau de bord",
+      "subtitle": "Un aperçu de la plateforme et un accès rapide à toutes les sections d'administration.",
+      "shortcuts": {
+        "businesses": {
+          "label": "Entreprises",
+          "description": "Consultez, verrouillez et gérez les fiches d'entreprises."
+        },
+        "catalog": {
+          "label": "Catalogue",
+          "description": "Produits, marques, familles et taxonomie."
+        },
+        "moderation": {
+          "label": "Modération",
+          "description": "Signalements et revendications de propriété en attente de révision."
+        },
+        "uploads": {
+          "label": "Téléversements",
+          "description": "Médias téléversés sur l'ensemble de la plateforme."
+        }
+      }
     }
   },
   "session": {

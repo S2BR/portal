@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-/** The admin area opens on the moderation queue (its only surface for now). */
+/** The admin area opens on the dashboard. */
 export default function AdminIndexPage() {
-  redirect("/portal/admin/reports");
+  redirect("/portal/admin/dashboard");
 }

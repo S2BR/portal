@@ -6,6 +6,7 @@ import {
   Building2,
   Flag,
   ImageIcon,
+  LayoutDashboard,
   LayoutGrid,
   Package,
   ShieldCheck,
@@ -22,6 +23,7 @@ import {
 } from "@/components/nav/sectioned-sidebar";
 
 type LeafKey =
+  | "dashboard"
   | "reports"
   | "claims"
   | "businesses"
@@ -31,7 +33,7 @@ type LeafKey =
   | "taxonomy"
   | "uploads";
 
-type GroupKey = "catalog" | "moderation" | "directory" | "media";
+type GroupKey = "dashboard" | "catalog" | "moderation" | "directory" | "media";
 
 type LeafDef = { key: LeafKey; href: string; icon: LucideIcon; requiredRoles?: string[] };
 type GroupDef = { key: GroupKey; icon: LucideIcon; items: LeafDef[] };
@@ -39,6 +41,18 @@ type GroupDef = { key: GroupKey; icon: LucideIcon; items: LeafDef[] };
 // The admin sections, grouped like the portal--6 Filament clusters. `requiredRoles` gates a page to
 // specific admin roles; a group with no visible pages drops out entirely.
 const GROUPS: GroupDef[] = [
+  {
+    key: "dashboard",
+    icon: LayoutDashboard,
+    items: [
+      { key: "dashboard", href: "/portal/admin/dashboard", icon: LayoutDashboard },
+    ],
+  },
+  {
+    key: "directory",
+    icon: Building2,
+    items: [{ key: "businesses", href: "/portal/admin/businesses", icon: Building2 }],
+  },
   {
     key: "catalog",
     icon: LayoutGrid,
@@ -58,11 +72,6 @@ const GROUPS: GroupDef[] = [
     ],
   },
   {
-    key: "directory",
-    icon: Building2,
-    items: [{ key: "businesses", href: "/portal/admin/businesses", icon: Building2 }],
-  },
-  {
     key: "media",
     icon: ImageIcon,
     items: [{ key: "uploads", href: "/portal/admin/uploads", icon: ImageIcon }],
@@ -70,9 +79,9 @@ const GROUPS: GroupDef[] = [
 ];
 
 /**
- * The platform admin rail — a two-level {@see SectionedSidebar}: a group rail (Catalog, Moderation,
- * Directory, Media) that reveals a second rail of pages for multi-item groups. Grouped like the
- * portal--6 Filament clusters; new admin surfaces slot into a group as they're built.
+ * The platform admin rail — a two-level {@see SectionedSidebar}: a group rail (Dashboard, Businesses,
+ * Catalog, Moderation, Uploads) that reveals a second rail of pages for multi-item groups. Grouped
+ * like the portal--6 Filament clusters; new admin surfaces slot into a group as they're built.
  */
 export function AdminSidebar({ pathname }: { pathname?: string } = {}) {
   const t = useTranslations("admin");

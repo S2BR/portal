@@ -998,7 +998,8 @@
       "taxonomy": "Taxonomie",
       "products": "Produkte",
       "brands": "Marken",
-      "families": "Familien"
+      "families": "Familien",
+      "dashboard": "Dashboard"
     },
     "reports": {
       "title": "Meldungen",
@@ -1602,7 +1603,30 @@
       "catalog": "Katalog",
       "moderation": "Moderation",
       "directory": "Verzeichnis",
-      "media": "Medien"
+      "media": "Medien",
+      "dashboard": "Dashboard"
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "subtitle": "Ein Überblick über die Plattform und schneller Zugriff auf alle Verwaltungsbereiche.",
+      "shortcuts": {
+        "businesses": {
+          "label": "Unternehmen",
+          "description": "Einträge von Unternehmen prüfen, sperren und verwalten."
+        },
+        "catalog": {
+          "label": "Katalog",
+          "description": "Produkte, Marken, Familien und Taxonomie."
+        },
+        "moderation": {
+          "label": "Moderation",
+          "description": "Meldungen und Eigentumsansprüche, die auf Prüfung warten."
+        },
+        "uploads": {
+          "label": "Uploads",
+          "description": "Über die Plattform hochgeladene Medien."
+        }
+      }
     }
   },
   "session": {

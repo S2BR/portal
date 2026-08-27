@@ -998,7 +998,8 @@
       "taxonomy": "Taxonomy",
       "products": "Products",
       "brands": "Brands",
-      "families": "Families"
+      "families": "Families",
+      "dashboard": "Dashboard"
     },
     "reports": {
       "title": "Reports",
@@ -1602,7 +1603,30 @@
       "catalog": "Catalog",
       "moderation": "Moderation",
       "directory": "Directory",
-      "media": "Media"
+      "media": "Media",
+      "dashboard": "Dashboard"
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "subtitle": "An overview of the platform and quick access to every admin area.",
+      "shortcuts": {
+        "businesses": {
+          "label": "Businesses",
+          "description": "Review, lock, and manage business listings."
+        },
+        "catalog": {
+          "label": "Catalog",
+          "description": "Products, brands, families, and taxonomy."
+        },
+        "moderation": {
+          "label": "Moderation",
+          "description": "Reports and ownership claims awaiting review."
+        },
+        "uploads": {
+          "label": "Uploads",
+          "description": "Media uploaded across the platform."
+        }
+      }
     }
   },
   "session": {

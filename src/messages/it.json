@@ -998,7 +998,8 @@
       "taxonomy": "Tassonomia",
       "products": "Prodotti",
       "brands": "Marche",
-      "families": "Famiglie"
+      "families": "Famiglie",
+      "dashboard": "Dashboard"
     },
     "reports": {
       "title": "Segnalazioni",
@@ -1602,7 +1603,30 @@
       "catalog": "Catalogo",
       "moderation": "Moderazione",
       "directory": "Directory",
-      "media": "Media"
+      "media": "Media",
+      "dashboard": "Dashboard"
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "subtitle": "Una panoramica della piattaforma e accesso rapido a tutte le aree di amministrazione.",
+      "shortcuts": {
+        "businesses": {
+          "label": "Attività",
+          "description": "Rivedi, blocca e gestisci le schede delle attività."
+        },
+        "catalog": {
+          "label": "Catalogo",
+          "description": "Prodotti, marchi, famiglie e tassonomia."
+        },
+        "moderation": {
+          "label": "Moderazione",
+          "description": "Segnalazioni e richieste di proprietà in attesa di revisione."
+        },
+        "uploads": {
+          "label": "Caricamenti",
+          "description": "Contenuti multimediali caricati sulla piattaforma."
+        }
+      }
     }
   },
   "session": {
