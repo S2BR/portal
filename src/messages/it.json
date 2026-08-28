@@ -873,7 +873,8 @@
         "invalidType": "Scegli un'immagine JPG, PNG o WebP",
         "savedToast": "Immagine aggiornata",
         "removedToast": "Immagine rimossa",
-        "error": "Qualcosa è andato storto. Riprova"
+        "error": "Qualcosa è andato storto. Riprova",
+        "reorderImage": "Drag to reorder"
       },
       "loadError": "Non è stato possibile caricare questa attività. Riprova.",
       "retry": "Riprova",
@@ -1546,7 +1547,23 @@
       "mergeNoResults": "Nessun prodotto corrispondente.",
       "mergeConfirm": "Unisci",
       "merged": "Prodotti uniti.",
-      "mergeError": "Impossibile unire."
+      "mergeError": "Impossibile unire.",
+      "section": {
+        "general": {
+          "title": "General",
+          "description": "The product's name, brand, and how it's classified."
+        },
+        "skus": {
+          "title": "Sizes & barcodes",
+          "description": "Each sellable size (SKU) carries its own barcode and image."
+        },
+        "gallery": {
+          "title": "Gallery",
+          "description": "Photos of the product — the first is used as the cover."
+        }
+      },
+      "reorderSku": "Drag to reorder",
+      "reorderImage": "Drag to reorder"
     },
     "brands": {
       "title": "Marche",

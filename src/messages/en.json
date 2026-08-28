@@ -873,7 +873,8 @@
         "invalidType": "Choose a JPG, PNG or WebP image",
         "savedToast": "Image updated",
         "removedToast": "Image removed",
-        "error": "Something went wrong. Please try again"
+        "error": "Something went wrong. Please try again",
+        "reorderImage": "Drag to reorder"
       },
       "loadError": "Couldn't load this business. Please try again.",
       "retry": "Try again",
@@ -1546,7 +1547,23 @@
       "mergeNoResults": "No matching products.",
       "mergeConfirm": "Merge in",
       "merged": "Products merged.",
-      "mergeError": "Couldn’t merge."
+      "mergeError": "Couldn’t merge.",
+      "section": {
+        "general": {
+          "title": "General",
+          "description": "The product's name, brand, and how it's classified."
+        },
+        "skus": {
+          "title": "Sizes & barcodes",
+          "description": "Each sellable size (SKU) carries its own barcode and image."
+        },
+        "gallery": {
+          "title": "Gallery",
+          "description": "Photos of the product — the first is used as the cover."
+        }
+      },
+      "reorderSku": "Drag to reorder",
+      "reorderImage": "Drag to reorder"
     },
     "brands": {
       "title": "Brands",

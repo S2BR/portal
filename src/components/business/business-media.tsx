@@ -7,15 +7,23 @@ import {
   useRef,
   useState,
   type ChangeEvent,
-  type CSSProperties,
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { toast } from "sonner";
 
 import type { BannerFocal, Business } from "@/app/api/businesses/route";
+import {
+  AddImageTile,
+  ImageBox,
+  MediaSpinner,
+  RemovableImageTile,
+  UploadProgress,
+  type MediaUploadPhase,
+} from "@/components/media/media-tiles";
 import { Button } from "@/components/ui/button";
+import { DragHandle, overlayClass } from "@/components/ui/drag-handle";
 import { ImageCropDialog } from "@/components/ui/image-crop-dialog";
-import { Progress } from "@/components/ui/progress";
+import { SortableList } from "@/components/ui/sortable-list";
 import {
   CENTER_FOCAL,
   clampFocal,
@@ -38,8 +46,6 @@ const MAX_SIDE: Record<"logo" | "banner" | "gallery", number> = {
   banner: 1600,
   gallery: 1600,
 };
-
-type Phase = "idle" | "uploading" | "finalizing";
 
 /**
  * Validate a picked file against the type's limits FROM THE API (nothing hardcoded); a message key on
@@ -93,7 +99,7 @@ export function BusinessImageField({
   const previewRef = useRef<string | null>(null);
 
   const [preview, setPreviewState] = useState<string | null>(null);
-  const [phase, setPhase] = useState<Phase>("idle");
+  const [phase, setPhase] = useState<MediaUploadPhase>("idle");
   const [progress, setProgress] = useState(0);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -376,7 +382,7 @@ export function BusinessImageField({
           {options.withLabel ? (
             <span className="bg-background/95 text-foreground flex translate-y-1 items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium opacity-0 shadow-sm transition duration-200 ease-out group-hover:translate-y-0 group-hover:opacity-100">
               {phase !== "idle" ? (
-                <Spinner />
+                <MediaSpinner />
               ) : (
                 <ImagePlus className="size-4" aria-hidden />
               )}
@@ -385,7 +391,7 @@ export function BusinessImageField({
           ) : (
             <span className="bg-background/95 text-foreground flex size-9 scale-90 items-center justify-center rounded-full opacity-0 shadow-sm transition duration-200 ease-out group-hover:scale-100 group-hover:opacity-100">
               {phase !== "idle" ? (
-                <Spinner />
+                <MediaSpinner />
               ) : (
                 <ImagePlus className="size-4" aria-hidden />
               )}
@@ -406,7 +412,7 @@ export function BusinessImageField({
             options.removeClassName,
           )}
         >
-          {pending ? <Spinner /> : <X className="size-4" />}
+          {pending ? <MediaSpinner /> : <X className="size-4" />}
         </Button>
       ) : null}
     </div>
@@ -476,7 +482,7 @@ export function BusinessImageField({
               disabled={busy}
             >
               {phase !== "idle" ? (
-                <Spinner />
+                <MediaSpinner />
               ) : (
                 <ImagePlus className="size-4" aria-hidden />
               )}
@@ -502,7 +508,7 @@ export function BusinessImageField({
             onClick={remove}
             className="absolute end-2 top-2 size-7 opacity-0 shadow-sm transition-opacity duration-200 group-hover:opacity-100 focus-visible:opacity-100"
           >
-            {pending ? <Spinner /> : <X className="size-4" />}
+            {pending ? <MediaSpinner /> : <X className="size-4" />}
           </Button>
         </>
       )}
@@ -541,7 +547,14 @@ export function BusinessImageField({
         </div>
       )}
 
-      <UploadStatus phase={phase} progress={progress} />
+      <UploadProgress
+        phase={phase}
+        progress={progress}
+        labels={{
+          uploading: (percent) => t("uploading", { percent }),
+          finalizing: t("finalizing"),
+        }}
+      />
       {error ? (
         <p role="alert" className="text-destructive text-sm">
           {error}
@@ -582,7 +595,7 @@ export function BusinessGallery({
   const t = useTranslations("businesses.detail.media");
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const [phase, setPhase] = useState<Phase>("idle");
+  const [phase, setPhase] = useState<MediaUploadPhase>("idle");
   const [progress, setProgress] = useState(0);
   const [removingId, setRemovingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -593,7 +606,14 @@ export function BusinessGallery({
     void fetchUploadConfig("business-gallery").then(setConfig);
   }, []);
 
-  const gallery = images ?? [];
+  // A local copy so a drag reorder can apply optimistically; kept in sync with the prop.
+  const [gallery, setGallery] = useState<NonNullable<Business["images"]>>(
+    images ?? [],
+  );
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setGallery(images ?? []);
+  }, [images]);
   const busy = phase !== "idle" || removingId !== null;
   // Until the config loads, don't cap (add stays available); the API enforces the real limit.
   const full = config != null && gallery.length >= (config.max_files ?? 0);
@@ -620,11 +640,15 @@ export function BusinessGallery({
       });
       setPhase("uploading");
       setProgress(0);
-      const result = await upload<BusinessPayload>("business-gallery", prepared, {
-        onProgress: setProgress,
-        onPhase: setPhase,
-        context: { business: slug },
-      });
+      const result = await upload<BusinessPayload>(
+        "business-gallery",
+        prepared,
+        {
+          onProgress: setProgress,
+          onPhase: setPhase,
+          context: { business: slug },
+        },
+      );
       setPhase("idle");
       if (result.ok && result.data) {
         onUpdated(result.data.business);
@@ -653,6 +677,30 @@ export function BusinessGallery({
     }
   }
 
+  async function reorder(next: NonNullable<Business["images"]>) {
+    const previous = gallery;
+    setGallery(next); // optimistic
+    const response = await fetch(
+      `/api/businesses/${encodeURIComponent(slug)}/images`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: next.map((image) => image.id) }),
+      },
+    );
+    if (!response.ok) {
+      setGallery(previous); // rollback
+      toast.error(t("error"));
+      return;
+    }
+    const data = (await response.json().catch(() => null)) as {
+      business?: Business;
+    } | null;
+    if (data?.business) {
+      onUpdated(data.business);
+    }
+  }
+
   return (
     <div className="space-y-3">
       <h3 className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
@@ -660,41 +708,57 @@ export function BusinessGallery({
       </h3>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-        {gallery.map((image) => (
-          <div key={image.id} className="group relative">
-            <ImageBox
-              src={image.url}
-              alt={t("galleryTitle")}
-              className="aspect-square w-full rounded-lg"
-            />
-            <Button
-              type="button"
-              variant="secondary"
-              size="icon"
-              aria-label={t("remove")}
-              disabled={busy}
-              onClick={() => remove(image.id)}
-              className="absolute end-1.5 top-1.5 size-7 opacity-90 shadow-sm"
+        <SortableList
+          items={gallery}
+          getId={(image) => image.id}
+          onReorder={reorder}
+          strategy="rect"
+          className="contents"
+          renderOverlay={(image) => (
+            <div className={cn("overflow-hidden rounded-lg", overlayClass)}>
+              <ImageBox
+                src={image.url}
+                alt={t("galleryTitle")}
+                className="aspect-square w-full"
+              />
+            </div>
+          )}
+          renderItem={(image, render) => (
+            <div
+              ref={render.setNodeRef}
+              style={render.style}
+              className={cn(
+                "group/tile relative",
+                render.isDragging && "opacity-40",
+              )}
             >
-              {removingId === image.id ? <Spinner /> : <X className="size-4" />}
-            </Button>
-          </div>
-        ))}
+              <RemovableImageTile
+                src={image.url}
+                alt={t("galleryTitle")}
+                onRemove={() => remove(image.id)}
+                removeLabel={t("remove")}
+                removing={removingId === image.id}
+                disabled={busy}
+              />
+              {gallery.length > 1 ? (
+                <DragHandle
+                  ref={render.handle.ref}
+                  {...render.handle.attributes}
+                  {...render.handle.listeners}
+                  label={t("reorderImage")}
+                  className="bg-background/90 absolute start-1 top-1 rounded p-0.5 opacity-0 shadow-sm transition-opacity group-hover/tile:opacity-100"
+                />
+              ) : null}
+            </div>
+          )}
+        />
 
         {!full ? (
-          <button
-            type="button"
-            disabled={busy}
+          <AddImageTile
             onClick={() => inputRef.current?.click()}
-            className="border-input text-muted-foreground hover:border-primary hover:text-primary flex aspect-square w-full flex-col items-center justify-center gap-1.5 rounded-lg border border-dashed text-xs transition-colors disabled:opacity-60"
-          >
-            {phase !== "idle" ? (
-              <Spinner />
-            ) : (
-              <ImagePlus className="size-5" aria-hidden />
-            )}
-            {t("addImages")}
-          </button>
+            label={t("addImages")}
+            busy={busy}
+          />
         ) : null}
       </div>
 
@@ -711,84 +775,19 @@ export function BusinessGallery({
         {t("galleryHint")} · {t("constraints", { max: maxLabel })}
       </p>
 
-      <UploadStatus phase={phase} progress={progress} />
+      <UploadProgress
+        phase={phase}
+        progress={progress}
+        labels={{
+          uploading: (percent) => t("uploading", { percent }),
+          finalizing: t("finalizing"),
+        }}
+      />
       {error ? (
         <p role="alert" className="text-destructive text-sm">
           {error}
         </p>
       ) : null}
     </div>
-  );
-}
-
-/** An image preview box, or a neutral placeholder tile when empty. */
-function ImageBox({
-  src,
-  alt,
-  className,
-  style,
-}: {
-  src: string | null;
-  alt: string;
-  className?: string;
-  /** Inline styles for the image — carries the banner's `object-position` focal point. */
-  style?: CSSProperties;
-}) {
-  if (!src) {
-    return (
-      <div
-        className={cn(
-          "bg-muted text-muted-foreground flex items-center justify-center",
-          className,
-        )}
-        aria-hidden
-      >
-        <ImagePlus className="size-5" />
-      </div>
-    );
-  }
-  return (
-    // eslint-disable-next-line @next/next/no-img-element -- presigned S3 / local object URL, not a bundled asset
-    <img
-      src={src}
-      alt={alt}
-      // The image is dragged to reposition the banner; block the browser's native image-drag ghost.
-      draggable={false}
-      style={style}
-      className={cn("bg-muted border-input border object-cover", className)}
-    />
-  );
-}
-
-/** Progress bar while streaming to S3, then a spinner during the confirm round-trip. */
-function UploadStatus({ phase, progress }: { phase: Phase; progress: number }) {
-  const t = useTranslations("businesses.detail.media");
-  return (
-    <div role="status" aria-live="polite">
-      {phase === "uploading" ? (
-        <div className="space-y-1.5">
-          <Progress value={progress} />
-          <p className="text-muted-foreground text-xs">
-            {t("uploading", { percent: progress })}
-          </p>
-        </div>
-      ) : null}
-      {phase === "finalizing" ? (
-        <p className="text-muted-foreground flex items-center gap-2 text-xs">
-          <Spinner />
-          {t("finalizing")}
-        </p>
-      ) : null}
-    </div>
-  );
-}
-
-/** Small inline spinner matching the app's loading affordance. */
-function Spinner() {
-  return (
-    <span
-      aria-hidden
-      className="size-3.5 animate-spin rounded-full border-2 border-current/30 border-t-current"
-    />
   );
 }

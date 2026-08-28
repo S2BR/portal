@@ -15,6 +15,7 @@ import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import {
   SortableContext,
   arrayMove,
+  rectSortingStrategy,
   sortableKeyboardCoordinates,
   useSortable,
   verticalListSortingStrategy,
@@ -87,6 +88,7 @@ export function SortableList<T>({
   renderItem,
   renderOverlay,
   className,
+  strategy = "vertical",
 }: {
   items: T[];
   getId: (item: T) => string;
@@ -96,17 +98,23 @@ export function SortableList<T>({
   renderItem: (item: T, render: SortableItemRender) => ReactNode;
   renderOverlay: (item: T) => ReactNode;
   className?: string;
+  /** "vertical" for a list, "rect" for a wrapping grid (e.g. an image gallery). */
+  strategy?: "vertical" | "rect";
 }) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const sensors = useSensors(
     // A few px of travel before a drag starts, so a click on the handle still behaves like a click.
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
   );
 
   const ids = items.map(getId);
   const activeItem =
-    activeId === null ? null : (items.find((item) => getId(item) === activeId) ?? null);
+    activeId === null
+      ? null
+      : (items.find((item) => getId(item) === activeId) ?? null);
 
   const handleDragEnd = (event: DragEndEvent) => {
     setActiveId(null);
@@ -135,7 +143,14 @@ export function SortableList<T>({
         onDragEnd?.();
       }}
     >
-      <SortableContext items={ids} strategy={verticalListSortingStrategy}>
+      <SortableContext
+        items={ids}
+        strategy={
+          strategy === "rect"
+            ? rectSortingStrategy
+            : verticalListSortingStrategy
+        }
+      >
         <div className={className}>
           {items.map((item) => (
             <SortableRow key={getId(item)} id={getId(item)}>
