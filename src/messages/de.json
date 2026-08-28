@@ -873,7 +873,8 @@
         "invalidType": "Wählen Sie ein JPG-, PNG- oder WebP-Bild",
         "savedToast": "Bild aktualisiert",
         "removedToast": "Bild entfernt",
-        "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut"
+        "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut",
+        "reorderImage": "Drag to reorder"
       },
       "loadError": "Dieses Unternehmen konnte nicht geladen werden. Bitte versuchen Sie es erneut.",
       "retry": "Erneut versuchen",
@@ -1546,7 +1547,23 @@
       "mergeNoResults": "Keine passenden Produkte.",
       "mergeConfirm": "Zusammenführen",
       "merged": "Produkte zusammengeführt.",
-      "mergeError": "Zusammenführen fehlgeschlagen."
+      "mergeError": "Zusammenführen fehlgeschlagen.",
+      "section": {
+        "general": {
+          "title": "General",
+          "description": "The product's name, brand, and how it's classified."
+        },
+        "skus": {
+          "title": "Sizes & barcodes",
+          "description": "Each sellable size (SKU) carries its own barcode and image."
+        },
+        "gallery": {
+          "title": "Gallery",
+          "description": "Photos of the product — the first is used as the cover."
+        }
+      },
+      "reorderSku": "Drag to reorder",
+      "reorderImage": "Drag to reorder"
     },
     "brands": {
       "title": "Marken",

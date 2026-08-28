@@ -873,7 +873,8 @@
         "invalidType": "Elige una imagen JPG, PNG o WebP",
         "savedToast": "Imagen actualizada",
         "removedToast": "Imagen eliminada",
-        "error": "Algo salió mal. Inténtalo de nuevo"
+        "error": "Algo salió mal. Inténtalo de nuevo",
+        "reorderImage": "Arrastra para reordenar"
       },
       "loadError": "No se pudo cargar esta empresa. Inténtalo de nuevo.",
       "retry": "Reintentar",
@@ -1546,7 +1547,23 @@
       "mergeNoResults": "No hay productos coincidentes.",
       "mergeConfirm": "Combinar",
       "merged": "Productos combinados.",
-      "mergeError": "No se pudo combinar."
+      "mergeError": "No se pudo combinar.",
+      "section": {
+        "general": {
+          "title": "General",
+          "description": "El nombre del producto, la marca y cómo se clasifica."
+        },
+        "skus": {
+          "title": "Tamaños y códigos de barras",
+          "description": "Cada tamaño vendible (SKU) con su propio código de barras e imagen."
+        },
+        "gallery": {
+          "title": "Galería",
+          "description": "Fotos del producto — la primera se usa como portada."
+        }
+      },
+      "reorderSku": "Arrastra para reordenar",
+      "reorderImage": "Arrastra para reordenar"
     },
     "brands": {
       "title": "Marcas",

@@ -40,6 +40,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { FormSection } from "@/components/business/form-section";
+import {
+  AddImageTile,
+  RemovableImageTile,
+} from "@/components/media/media-tiles";
+import {
+  DragHandle,
+  overlayClass,
+  placeholderClass,
+} from "@/components/ui/drag-handle";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
@@ -49,10 +59,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { SortableList } from "@/components/ui/sortable-list";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { normalizeImage } from "@/lib/uploads/image";
 import { removeUpload, upload } from "@/lib/uploads/upload";
+import { cn } from "@/lib/utils";
 
 const LIST = "/portal/admin/products";
 
@@ -677,6 +689,51 @@ export function ProductEditor({ productId }: { productId: string | null }) {
     }
   };
 
+  const reorderGalleryImages = async (next: AdminProduct["images"]) => {
+    if (!loaded) {
+      return;
+    }
+    const previous = loaded.images;
+    setLoaded({ ...loaded, images: next }); // optimistic
+    try {
+      const response = await fetch(
+        `/api/admin/products/${loaded.id}/images/reorder`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ids: next.map((image) => image.id) }),
+        },
+      );
+      if (!response.ok) {
+        setLoaded({ ...loaded, images: previous }); // rollback
+        toast.error(t("imageError"));
+        return;
+      }
+      const data = (await response.json()) as { product?: AdminProduct };
+      if (data.product) {
+        setLoaded(data.product);
+      }
+    } catch {
+      setLoaded({ ...loaded, images: previous });
+      toast.error(t("imageError"));
+    }
+  };
+
+  const removeVariantImage = async (variantId: string) => {
+    if (!loaded) {
+      return;
+    }
+    const result = await removeUpload<{ product: AdminProduct }>(
+      "product-variant-image",
+      { product: loaded.id, variant: variantId },
+    );
+    if (result.ok && result.data) {
+      setLoaded(result.data.product);
+    } else {
+      toast.error(t("imageError"));
+    }
+  };
+
   const variantImage = (variantId: string | undefined): string | null =>
     variantId
       ? (loaded?.variants.find((variant) => variant.id === variantId)?.image ??
@@ -723,285 +780,370 @@ export function ProductEditor({ productId }: { productId: string | null }) {
           loading={intakeLoading}
         />
       ) : (
-        <div className="grid gap-8 lg:grid-cols-3 lg:items-start">
-          <div className="space-y-8 lg:col-span-2">
-            <section className="space-y-4">
-              <Field label={t("name")} error={nameError}>
-                <Input
-                  value={name}
-                  onChange={(event) => {
-                    setName(event.target.value);
-                    setNameError(null);
-                  }}
-                />
-              </Field>
-
-              {similarByName.length > 0 ? (
-                <SimilarMatches
-                  matches={similarByName}
-                  onAdd={(candidate) =>
-                    addAsSku(
-                      candidate,
-                      variants[0]?.barcode.trim() ?? "",
-                      variants[0]?.size.trim() ||
-                        variants[0]?.label.trim() ||
-                        "",
-                      variants[0]?.imageUrl ?? null,
-                    )
-                  }
-                  onDismiss={() => setSimilarByName([])}
-                />
-              ) : null}
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                <Field label={t("brand")}>
-                  <Input
-                    value={brand}
-                    onChange={(event) => setBrand(event.target.value)}
-                    list="product-brand-options"
-                  />
-                  <datalist id="product-brand-options">
-                    {brands.map((item) => (
-                      <option key={item.id} value={item.name} />
-                    ))}
-                  </datalist>
-                </Field>
-                <Field label={t("status")}>
-                  <Select
-                    value={moderation}
-                    onValueChange={(value) =>
-                      setModeration(value as ModerationStatus)
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {(
-                        ["approved", "pending", "rejected", "draft"] as const
-                      ).map((value) => (
-                        <SelectItem key={value} value={value}>
-                          {t(`filter.${value}`)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </Field>
-              </div>
-              <Field label={t("family")} hint={t("familyHint")}>
-                <div className="relative">
-                  <Boxes
-                    className="text-muted-foreground pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2"
-                    aria-hidden
-                  />
-                  <Input
-                    value={family}
-                    onChange={(event) => setFamily(event.target.value)}
-                    list="product-family-options"
-                    placeholder={t("familyPlaceholder")}
-                    className="pl-8"
-                  />
-                </div>
-                <datalist id="product-family-options">
-                  {families.map((item) => (
-                    <option key={item.id} value={item.name} />
-                  ))}
-                </datalist>
-              </Field>
-              <Field label={t("description")}>
-                <Textarea
-                  value={description}
-                  onChange={(event) => setDescription(event.target.value)}
-                  rows={3}
-                />
-              </Field>
-              <label className="flex max-w-sm items-center justify-between gap-3 text-sm">
-                {t("isHomemade")}
-                <Switch checked={isHomemade} onCheckedChange={setIsHomemade} />
-              </label>
-            </section>
-
-            <section className="space-y-3">
-              <h2 className="text-sm font-semibold">{t("variants")}</h2>
-              {variants.map((variant, index) => (
-                <div key={variant.key} className="space-y-1.5">
-                  <div className="flex items-center gap-2">
-                    {variant.id ? (
-                      <ImageThumb
-                        // Prefer the SKU's stored image; before it's saved/imported, optimistically
-                        // show the pending lookup image so the thumbnail updates the moment you scan.
-                        url={
-                          variantImage(variant.id) ?? variant.imageUrl ?? null
-                        }
-                        busy={uploading}
-                        label={t("skuImage")}
-                        onFile={(file) =>
-                          uploadImage(
-                            "product-variant-image",
-                            file,
-                            { variant: variant.id ?? "" },
-                            800,
-                          )
-                        }
-                      />
-                    ) : variant.imageUrl ? (
-                      <span
-                        className="bg-muted flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-md border"
-                        title={t("skuImagePending")}
-                      >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={variant.imageUrl}
-                          alt=""
-                          className="size-full object-cover"
-                        />
-                      </span>
-                    ) : null}
-                    <Input
-                      value={variant.label}
-                      onChange={(event) =>
-                        setVariants((current) =>
-                          current.map((row, rowIndex) =>
-                            rowIndex === index
-                              ? { ...row, label: event.target.value }
-                              : row,
-                          ),
-                        )
-                      }
-                      placeholder={t("variantLabel")}
-                    />
-                    <Input
-                      value={variant.barcode}
-                      aria-invalid={
-                        variantErrors[variant.key] ||
-                        barcodeConflicts[variant.key]
-                          ? true
-                          : undefined
-                      }
-                      onChange={(event) => {
-                        const value = event.target.value;
-                        setVariants((current) =>
-                          current.map((row, rowIndex) =>
-                            rowIndex === index
-                              ? { ...row, barcode: value }
-                              : row,
-                          ),
-                        );
-                        clearVariantError(variant.key);
-                      }}
-                      placeholder={t("variantBarcode")}
-                    />
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="shrink-0"
-                      disabled={
-                        variant.barcode.trim() === "" ||
-                        lookingUp === variant.key
-                      }
-                      onClick={() => lookupBarcode(index)}
-                      aria-label={t("lookupBarcode")}
-                      title={t("lookupBarcode")}
-                    >
-                      {lookingUp === variant.key ? (
-                        <Loader2 className="size-4 animate-spin" aria-hidden />
-                      ) : (
-                        <ScanBarcode className="size-4" aria-hidden />
-                      )}
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="text-destructive shrink-0"
-                      onClick={() =>
-                        setVariants((current) =>
-                          current.length > 1
-                            ? current.filter(
-                                (_, rowIndex) => rowIndex !== index,
-                              )
-                            : current,
-                        )
-                      }
-                      aria-label={t("removeVariant")}
-                    >
-                      <Trash2 className="size-4" aria-hidden />
-                    </Button>
-                  </div>
-                  {barcodeConflicts[variant.key] ? (
-                    <p className="text-xs text-amber-600 dark:text-amber-500">
-                      {t("barcodeOwnedBy")}{" "}
-                      <Link
-                        href={`/portal/admin/products/${barcodeConflicts[variant.key]?.id}`}
-                        className="font-medium underline"
-                      >
-                        {barcodeConflicts[variant.key]?.name}
-                      </Link>
-                      {barcodeConflicts[variant.key]?.note ? (
-                        <span className="text-muted-foreground">
-                          {" "}
-                          ({barcodeConflicts[variant.key]?.note})
-                        </span>
-                      ) : null}
-                    </p>
-                  ) : variantErrors[variant.key] ? (
-                    <p className="text-destructive text-xs">
-                      {variantErrors[variant.key]}
-                    </p>
-                  ) : null}
-                </div>
-              ))}
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() =>
-                  setVariants((current) => [...current, blankVariant()])
-                }
-                className="gap-1.5"
-              >
-                <Plus className="size-4" aria-hidden />
-                {t("addVariant")}
-              </Button>
-            </section>
-          </div>
-
-          <div className="lg:col-span-1">
+        <div>
+          <FormSection
+            id="section-gallery"
+            editing
+            title={t("section.gallery.title")}
+            description={t("section.gallery.description")}
+          >
             {loaded ? (
-              <section className="space-y-3">
-                <h2 className="text-sm font-semibold">{t("gallery")}</h2>
-                <div className="flex flex-wrap gap-2">
-                  {loaded.images.map((image) => (
-                    <div key={image.id} className="group relative">
+              <div className="grid grid-cols-[repeat(auto-fill,minmax(6rem,1fr))] gap-3">
+                <SortableList
+                  items={loaded.images}
+                  getId={(image) => image.id}
+                  onReorder={reorderGalleryImages}
+                  strategy="rect"
+                  className="contents"
+                  renderOverlay={(image) => (
+                    <div
+                      className={cn("overflow-hidden rounded-lg", overlayClass)}
+                    >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={image.url ?? ""}
                         alt=""
-                        className="size-20 rounded-md border object-cover"
+                        className="aspect-square w-full object-cover"
                       />
-                      <button
-                        type="button"
-                        onClick={() => removeGalleryImage(image.id)}
-                        aria-label={t("removeImage")}
-                        className="bg-background absolute -top-1.5 -right-1.5 rounded-full border p-0.5 opacity-0 shadow-sm transition-opacity group-hover:opacity-100"
-                      >
-                        <X className="size-3" aria-hidden />
-                      </button>
                     </div>
-                  ))}
-                  <ImageUpload
-                    label={t("addImage")}
-                    busy={uploading}
-                    onFile={(file) =>
-                      uploadImage("product-image", file, {}, 1200)
-                    }
-                  />
-                </div>
-              </section>
+                  )}
+                  renderItem={(image, render) => (
+                    <div
+                      ref={render.setNodeRef}
+                      style={render.style}
+                      className={cn(
+                        "group/tile relative",
+                        render.isDragging && "opacity-40",
+                      )}
+                    >
+                      <RemovableImageTile
+                        src={image.url}
+                        alt={t("gallery")}
+                        onRemove={() => removeGalleryImage(image.id)}
+                        removeLabel={t("removeImage")}
+                        disabled={uploading}
+                      />
+                      {loaded.images.length > 1 ? (
+                        <DragHandle
+                          ref={render.handle.ref}
+                          {...render.handle.attributes}
+                          {...render.handle.listeners}
+                          label={t("reorderImage")}
+                          className="bg-background/90 absolute start-1 top-1 rounded p-0.5 opacity-0 shadow-sm transition-opacity group-hover/tile:opacity-100"
+                        />
+                      ) : null}
+                    </div>
+                  )}
+                />
+                <ImageUpload
+                  label={t("addImage")}
+                  busy={uploading}
+                  onFile={(file) =>
+                    uploadImage("product-image", file, {}, 1200)
+                  }
+                />
+              </div>
             ) : (
               <p className="text-muted-foreground text-sm">
                 {t("saveFirstForImages")}
               </p>
             )}
-          </div>
+          </FormSection>
+
+          <FormSection
+            id="section-general"
+            editing
+            title={t("section.general.title")}
+            description={t("section.general.description")}
+          >
+            <Field label={t("name")} error={nameError}>
+              <Input
+                value={name}
+                onChange={(event) => {
+                  setName(event.target.value);
+                  setNameError(null);
+                }}
+              />
+            </Field>
+
+            {similarByName.length > 0 ? (
+              <SimilarMatches
+                matches={similarByName}
+                onAdd={(candidate) =>
+                  addAsSku(
+                    candidate,
+                    variants[0]?.barcode.trim() ?? "",
+                    variants[0]?.size.trim() || variants[0]?.label.trim() || "",
+                    variants[0]?.imageUrl ?? null,
+                  )
+                }
+                onDismiss={() => setSimilarByName([])}
+              />
+            ) : null}
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label={t("brand")}>
+                <Input
+                  value={brand}
+                  onChange={(event) => setBrand(event.target.value)}
+                  list="product-brand-options"
+                />
+                <datalist id="product-brand-options">
+                  {brands.map((item) => (
+                    <option key={item.id} value={item.name} />
+                  ))}
+                </datalist>
+              </Field>
+              <Field label={t("status")}>
+                <Select
+                  value={moderation}
+                  onValueChange={(value) =>
+                    setModeration(value as ModerationStatus)
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(
+                      ["approved", "pending", "rejected", "draft"] as const
+                    ).map((value) => (
+                      <SelectItem key={value} value={value}>
+                        {t(`filter.${value}`)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </Field>
+            </div>
+            <Field label={t("family")} hint={t("familyHint")}>
+              <div className="relative">
+                <Boxes
+                  className="text-muted-foreground pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2"
+                  aria-hidden
+                />
+                <Input
+                  value={family}
+                  onChange={(event) => setFamily(event.target.value)}
+                  list="product-family-options"
+                  placeholder={t("familyPlaceholder")}
+                  className="pl-8"
+                />
+              </div>
+              <datalist id="product-family-options">
+                {families.map((item) => (
+                  <option key={item.id} value={item.name} />
+                ))}
+              </datalist>
+            </Field>
+            <Field label={t("description")}>
+              <Textarea
+                value={description}
+                onChange={(event) => setDescription(event.target.value)}
+                rows={3}
+              />
+            </Field>
+            <label className="flex max-w-sm items-center justify-between gap-3 text-sm">
+              {t("isHomemade")}
+              <Switch checked={isHomemade} onCheckedChange={setIsHomemade} />
+            </label>
+          </FormSection>
+
+          <FormSection
+            id="section-skus"
+            editing
+            title={t("section.skus.title")}
+            description={t("section.skus.description")}
+          >
+            <SortableList
+              items={variants}
+              getId={(variant) => variant.key}
+              onReorder={setVariants}
+              className="space-y-1.5"
+              renderOverlay={(variant) => (
+                <div
+                  className={cn(
+                    "flex items-center gap-2 px-3 py-2 text-sm font-medium",
+                    overlayClass,
+                  )}
+                >
+                  {variant.label.trim() ||
+                    variant.barcode.trim() ||
+                    t("variantLabel")}
+                </div>
+              )}
+              renderItem={(variant, render) => {
+                const index = variants.findIndex(
+                  (row) => row.key === variant.key,
+                );
+                return (
+                  <div
+                    ref={render.setNodeRef}
+                    style={render.style}
+                    className="space-y-1.5"
+                  >
+                    {render.isDragging ? (
+                      <div className={cn("h-10", placeholderClass)} />
+                    ) : (
+                      <>
+                        <div className="flex items-center gap-2">
+                          <DragHandle
+                            ref={render.handle.ref}
+                            {...render.handle.attributes}
+                            {...render.handle.listeners}
+                            label={t("reorderSku")}
+                          />
+                          {variant.id ? (
+                            <ImageThumb
+                              // Prefer the SKU's stored image; before it's saved/imported, optimistically
+                              // show the pending lookup image so the thumbnail updates the moment you scan.
+                              url={
+                                variantImage(variant.id) ??
+                                variant.imageUrl ??
+                                null
+                              }
+                              // A stored image can be removed; a pending (not-yet-saved) one cannot.
+                              removable={variantImage(variant.id) !== null}
+                              busy={uploading}
+                              uploadLabel={t("skuImage")}
+                              removeLabel={t("removeImage")}
+                              onFile={(file) =>
+                                uploadImage(
+                                  "product-variant-image",
+                                  file,
+                                  { variant: variant.id ?? "" },
+                                  800,
+                                )
+                              }
+                              onRemove={() =>
+                                removeVariantImage(variant.id ?? "")
+                              }
+                            />
+                          ) : variant.imageUrl ? (
+                            <span
+                              className="bg-muted flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-md border"
+                              title={t("skuImagePending")}
+                            >
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={variant.imageUrl}
+                                alt=""
+                                className="size-full object-cover"
+                              />
+                            </span>
+                          ) : null}
+                          <Input
+                            value={variant.label}
+                            onChange={(event) =>
+                              setVariants((current) =>
+                                current.map((row, rowIndex) =>
+                                  rowIndex === index
+                                    ? { ...row, label: event.target.value }
+                                    : row,
+                                ),
+                              )
+                            }
+                            placeholder={t("variantLabel")}
+                          />
+                          <Input
+                            value={variant.barcode}
+                            aria-invalid={
+                              variantErrors[variant.key] ||
+                              barcodeConflicts[variant.key]
+                                ? true
+                                : undefined
+                            }
+                            onChange={(event) => {
+                              const value = event.target.value;
+                              setVariants((current) =>
+                                current.map((row, rowIndex) =>
+                                  rowIndex === index
+                                    ? { ...row, barcode: value }
+                                    : row,
+                                ),
+                              );
+                              clearVariantError(variant.key);
+                            }}
+                            placeholder={t("variantBarcode")}
+                          />
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="shrink-0"
+                            disabled={
+                              variant.barcode.trim() === "" ||
+                              lookingUp === variant.key
+                            }
+                            onClick={() => lookupBarcode(index)}
+                            aria-label={t("lookupBarcode")}
+                            title={t("lookupBarcode")}
+                          >
+                            {lookingUp === variant.key ? (
+                              <Loader2
+                                className="size-4 animate-spin"
+                                aria-hidden
+                              />
+                            ) : (
+                              <ScanBarcode className="size-4" aria-hidden />
+                            )}
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="text-destructive shrink-0"
+                            onClick={() =>
+                              setVariants((current) =>
+                                current.length > 1
+                                  ? current.filter(
+                                      (_, rowIndex) => rowIndex !== index,
+                                    )
+                                  : current,
+                              )
+                            }
+                            aria-label={t("removeVariant")}
+                          >
+                            <Trash2 className="size-4" aria-hidden />
+                          </Button>
+                        </div>
+                        {barcodeConflicts[variant.key] ? (
+                          <p className="text-xs text-amber-600 dark:text-amber-500">
+                            {t("barcodeOwnedBy")}{" "}
+                            <Link
+                              href={`/portal/admin/products/${barcodeConflicts[variant.key]?.id}`}
+                              className="font-medium underline"
+                            >
+                              {barcodeConflicts[variant.key]?.name}
+                            </Link>
+                            {barcodeConflicts[variant.key]?.note ? (
+                              <span className="text-muted-foreground">
+                                {" "}
+                                ({barcodeConflicts[variant.key]?.note})
+                              </span>
+                            ) : null}
+                          </p>
+                        ) : variantErrors[variant.key] ? (
+                          <p className="text-destructive text-xs">
+                            {variantErrors[variant.key]}
+                          </p>
+                        ) : null}
+                      </>
+                    )}
+                  </div>
+                );
+              }}
+            />
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() =>
+                setVariants((current) => [...current, blankVariant()])
+              }
+              className="gap-1.5"
+            >
+              <Plus className="size-4" aria-hidden />
+              {t("addVariant")}
+            </Button>
+          </FormSection>
         </div>
       )}
 
@@ -1415,14 +1557,17 @@ function IntakeChooser({
 }
 
 /** A dashed "add image" tile that opens a file picker. */
+/** The dashed "add gallery image" tile — the shared add affordance plus its own hidden file input. */
 function ImageUpload({
   label,
   onFile,
   busy,
+  className,
 }: {
   label: string;
   onFile: (file: File) => void;
   busy: boolean;
+  className?: string;
 }) {
   const ref = useRef<HTMLInputElement>(null);
   return (
@@ -1440,34 +1585,40 @@ function ImageUpload({
           event.target.value = "";
         }}
       />
-      <button
-        type="button"
-        disabled={busy}
+      <AddImageTile
         onClick={() => ref.current?.click()}
-        className="border-muted-foreground/30 text-muted-foreground hover:bg-muted/60 flex size-20 items-center justify-center rounded-md border border-dashed disabled:opacity-50"
-      >
-        <ImageIcon className="size-5" aria-hidden />
-        <span className="sr-only">{label}</span>
-      </button>
+        label={label}
+        busy={busy}
+        className={className}
+      />
     </>
   );
 }
 
-/** A small per-SKU image button: shows the thumbnail, or a placeholder to upload one. */
+/**
+ * A per-SKU image tile: click to upload/replace, with a hover remove control (matching the business
+ * media tiles) when a stored image is present.
+ */
 function ImageThumb({
   url,
+  removable,
   onFile,
+  onRemove,
   busy,
-  label,
+  uploadLabel,
+  removeLabel,
 }: {
   url: string | null;
+  removable: boolean;
   onFile: (file: File) => void;
+  onRemove: () => void;
   busy: boolean;
-  label: string;
+  uploadLabel: string;
+  removeLabel: string;
 }) {
   const ref = useRef<HTMLInputElement>(null);
   return (
-    <>
+    <div className="group relative shrink-0">
       <input
         ref={ref}
         type="file"
@@ -1485,8 +1636,8 @@ function ImageThumb({
         type="button"
         disabled={busy}
         onClick={() => ref.current?.click()}
-        aria-label={label}
-        className="bg-muted flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-md border disabled:opacity-50"
+        aria-label={uploadLabel}
+        className="bg-muted flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-md border disabled:opacity-50"
       >
         {url ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -1495,6 +1646,19 @@ function ImageThumb({
           <ImageIcon className="text-muted-foreground size-4" aria-hidden />
         )}
       </button>
-    </>
+      {url && removable ? (
+        <Button
+          type="button"
+          variant="secondary"
+          size="icon"
+          aria-label={removeLabel}
+          disabled={busy}
+          onClick={onRemove}
+          className="absolute -end-1.5 -top-1.5 size-6 opacity-0 shadow-sm transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
+        >
+          <X className="size-3.5" />
+        </Button>
+      ) : null}
+    </div>
   );
 }
