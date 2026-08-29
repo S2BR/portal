@@ -1593,6 +1593,14 @@
       "form": {
         "name": "Name",
         "description": "Description"
+      },
+      "open": "Open",
+      "detail": {
+        "back": "Back to brands",
+        "detailsTitle": "Brand details",
+        "detailsDescription": "Rename the brand or update its description.",
+        "productsTitle": "Products",
+        "productsDescription": "Products attributed to this brand. Add a new one or attach an existing product."
       }
     },
     "families": {
@@ -1625,6 +1633,14 @@
         "brand": "Brand",
         "brandPlaceholder": "Search or add a brand",
         "description": "Description"
+      },
+      "open": "Open",
+      "detail": {
+        "back": "Back to families",
+        "detailsTitle": "Family details",
+        "detailsDescription": "Rename the line, set its brand, or update its description.",
+        "productsTitle": "Products",
+        "productsDescription": "Products in this line. Add a new one or attach an existing product."
       }
     },
     "groups": {
@@ -1655,6 +1671,36 @@
           "description": "Media uploaded across the platform."
         }
       }
+    },
+    "catalog": {
+      "search": "Search products",
+      "addExisting": "Add existing",
+      "newProduct": "New product",
+      "loadError": "Couldn't load products.",
+      "detachError": "Couldn't remove the product.",
+      "detached": "Product removed.",
+      "attachError": "Couldn't add the product.",
+      "attached": "Product added.",
+      "noMatches": "No products match your search.",
+      "empty": "No products here yet.",
+      "skuCount": "{count, plural, =0 {No SKUs} one {# SKU} other {# SKUs}}",
+      "private": "Private",
+      "remove": "Remove",
+      "pageOf": "Page {page} of {total}",
+      "previous": "Previous",
+      "next": "Next",
+      "status": {
+        "approved": "Approved",
+        "pending": "Pending",
+        "rejected": "Rejected",
+        "draft": "Draft"
+      },
+      "attachTitle": "Add an existing product",
+      "attachDescription": "Search the catalog and attach a product.",
+      "attachSearch": "Search products by name",
+      "attachHint": "Type to search the catalog.",
+      "attachNoResults": "No products found.",
+      "attachConfirm": "Add"
     }
   },
   "session": {

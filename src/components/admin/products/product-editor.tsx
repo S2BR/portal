@@ -136,6 +136,13 @@ export function ProductEditor({ productId }: { productId: string | null }) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  // Arriving from a brand/family detail page's "New product" prefills that line by public id (new
+  // products only); the display name is resolved from the id once the editor mounts (see below).
+  const prefillBrandId =
+    productId === null ? searchParams.get("brandId") : null;
+  const prefillFamilyId =
+    productId === null ? searchParams.get("familyId") : null;
+
   const [name, setName] = useState("");
   const [brand, setBrand] = useState("");
   const [family, setFamily] = useState("");
@@ -152,9 +159,12 @@ export function ProductEditor({ productId }: { productId: string | null }) {
   const [families, setFamilies] = useState<AdminFamily[]>([]);
   const [brands, setBrands] = useState<AdminBrand[]>([]);
   const [similarByName, setSimilarByName] = useState<CatalogHit[]>([]);
-  // New products open on an intake chooser (barcode vs manual) before the form; editing skips it.
+  // New products open on an intake chooser (barcode vs manual) before the form; editing skips it. A
+  // prefilled brand/family (added to a known line) skips straight to the form.
   const [stage, setStage] = useState<"choose" | "form">(
-    productId === null ? "choose" : "form",
+    productId === null && !prefillBrandId && !prefillFamilyId
+      ? "choose"
+      : "form",
   );
   const [intakeBarcode, setIntakeBarcode] = useState("");
   const [intakeLoading, setIntakeLoading] = useState(false);
@@ -247,6 +257,34 @@ export function ProductEditor({ productId }: { productId: string | null }) {
       }
     })();
   }, []);
+
+  // Resolve a brand/family the editor was opened pre-assigned to (by public id) into its display name.
+  // Fetched by id so it's correct even when the entity isn't on the first page of the lists above.
+  useEffect(() => {
+    if (prefillBrandId === null) {
+      return;
+    }
+    void (async () => {
+      const response = await fetch(`/api/admin/brands/${prefillBrandId}`);
+      if (response.ok) {
+        const data = (await response.json()) as { brand: AdminBrand };
+        setBrand(data.brand.name);
+      }
+    })();
+  }, [prefillBrandId]);
+
+  useEffect(() => {
+    if (prefillFamilyId === null) {
+      return;
+    }
+    void (async () => {
+      const response = await fetch(`/api/admin/families/${prefillFamilyId}`);
+      if (response.ok) {
+        const data = (await response.json()) as { family: AdminFamily };
+        setFamily(data.family.name);
+      }
+    })();
+  }, [prefillFamilyId]);
 
   // When arriving from an "add as SKU" action on another product, the barcode/size/image to append
   // as a new SKU ride in the query string.
