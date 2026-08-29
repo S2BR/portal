@@ -106,7 +106,8 @@ export async function GET(request: Request): Promise<NextResponse> {
       (key.startsWith("filter[") && key.endsWith("]")) ||
       key === "sort" ||
       key === "page" ||
-      key === "visibility";
+      key === "visibility" ||
+      key === "q";
     if (forwarded && value) {
       query.append(key, value);
     }

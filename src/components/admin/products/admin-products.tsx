@@ -5,6 +5,7 @@ import {
   ImageIcon,
   Pencil,
   Plus,
+  Search,
   Trash2,
   Upload,
   X,
@@ -15,7 +16,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import { DataFilters } from "@/components/admin/data-filters";
+import { DataFilters, type ScopeDef } from "@/components/admin/data-filters";
 import type {
   AdminProductBody,
   AdminProductListItem,
@@ -23,13 +24,7 @@ import type {
 } from "@/app/api/admin/products/route";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -67,11 +62,11 @@ export function AdminProducts() {
   const pathname = usePathname();
 
   const query = searchParams.toString();
-  const visibility = searchParams.get("visibility") ?? "shared";
 
   const [items, setItems] = useState<AdminProductListItem[]>([]);
   const [meta, setMeta] = useState({ current_page: 1, last_page: 1, total: 0 });
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState(searchParams.get("q") ?? "");
 
   const fields: FilterFieldDef[] = [
     {
@@ -83,8 +78,20 @@ export function AdminProducts() {
         (key) => ({ value: key, label: t(`filter.${key}`) }),
       ),
     },
-    { name: "name", label: t("filters.name"), type: "text" },
     { name: "created_at", label: t("filters.created"), type: "date" },
+  ];
+
+  // Visibility rides in the filter row as a single-select scope facet (not a `filter[…]` column).
+  const scopes: ScopeDef[] = [
+    {
+      param: "visibility",
+      label: t("filters.visibility"),
+      defaultValue: "shared",
+      options: VISIBILITIES.map((value) => ({
+        value,
+        label: t(`filter.${value}`),
+      })),
+    },
   ];
 
   const load = useCallback(async () => {
@@ -109,10 +116,32 @@ export function AdminProducts() {
   }, [query, t]);
 
   useEffect(() => {
-    // Refetch on mount and whenever the URL (filters / visibility / page) changes.
+    // Refetch on mount and whenever the URL (filters / visibility / search / page) changes.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     void load();
   }, [load]);
+
+  // Debounce the search box into the URL `q` param (a no-op while it already matches the URL).
+  useEffect(() => {
+    const current = searchParams.get("q") ?? "";
+    if (search.trim() === current) {
+      return;
+    }
+    const handle = setTimeout(() => {
+      const params = new URLSearchParams(searchParams.toString());
+      if (search.trim()) {
+        params.set("q", search.trim());
+      } else {
+        params.delete("q");
+      }
+      params.delete("page");
+      router.replace(
+        params.toString() ? `${pathname}?${params.toString()}` : pathname,
+        { scroll: false },
+      );
+    }, 300);
+    return () => clearTimeout(handle);
+  }, [search, searchParams, pathname, router]);
 
   function updateParam(mutate: (params: URLSearchParams) => void) {
     const params = new URLSearchParams(searchParams.toString());
@@ -122,16 +151,6 @@ export function AdminProducts() {
       { scroll: false },
     );
   }
-
-  const setVisibility = (value: string) =>
-    updateParam((params) => {
-      if (value === "shared") {
-        params.delete("visibility");
-      } else {
-        params.set("visibility", value);
-      }
-      params.delete("page");
-    });
 
   const setPage = (page: number) =>
     updateParam((params) => {
@@ -199,31 +218,70 @@ export function AdminProducts() {
         </Button>
       </header>
 
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="text-muted-foreground text-xs font-medium">
-          {t("filters.visibility")}
-        </span>
-        <Select value={visibility} onValueChange={setVisibility}>
-          <SelectTrigger className="w-40">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {VISIBILITIES.map((value) => (
-              <SelectItem key={value} value={value}>
-                {t(`filter.${value}`)}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      <div className="relative max-w-sm">
+        <Search
+          className="text-muted-foreground pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2"
+          aria-hidden
+        />
+        <Input
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          placeholder={t("search")}
+          className="pl-8"
+        />
       </div>
 
-      <DataFilters fields={fields} />
+      <DataFilters fields={fields} scopes={scopes} />
 
       {loading ? (
-        <div className="space-y-3">
-          {[0, 1, 2, 3, 4].map((index) => (
-            <Skeleton key={index} className="h-14 w-full rounded-xl" />
-          ))}
+        <div className="rounded-xl border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>{t("table.product")}</TableHead>
+                <TableHead>{t("table.status")}</TableHead>
+                <TableHead>{t("table.scope")}</TableHead>
+                <TableHead>{t("table.skus")}</TableHead>
+                <TableHead>{t("table.created")}</TableHead>
+                <TableHead className="text-right">
+                  {t("table.actions")}
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {[0, 1, 2, 3, 4].map((index) => (
+                <TableRow key={index}>
+                  <TableCell>
+                    <div className="flex items-center gap-3">
+                      <Skeleton className="size-10 shrink-0 rounded-md" />
+                      <div className="space-y-1.5">
+                        <Skeleton className="h-4 w-40" />
+                        <Skeleton className="h-3 w-24" />
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-5 w-20 rounded-full" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-16" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-6" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-24" />
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center justify-end gap-1">
+                      <Skeleton className="size-8 rounded-md" />
+                      <Skeleton className="size-8 rounded-md" />
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
       ) : items.length === 0 ? (
         <div className="bg-muted/40 text-muted-foreground rounded-2xl border p-10 text-center text-sm">
@@ -246,7 +304,11 @@ export function AdminProducts() {
             </TableHeader>
             <TableBody>
               {items.map((product) => (
-                <TableRow key={product.id}>
+                <TableRow
+                  key={product.id}
+                  className="cursor-pointer"
+                  onClick={() => router.push(editHref(product.id))}
+                >
                   <TableCell>
                     <Link
                       href={editHref(product.id)}
@@ -302,7 +364,8 @@ export function AdminProducts() {
                         })
                       : "—"}
                   </TableCell>
-                  <TableCell>
+                  {/* Stop row navigation so the action buttons act in place. */}
+                  <TableCell onClick={(event) => event.stopPropagation()}>
                     <div className="flex items-center justify-end gap-1">
                       {product.moderation_status === "pending" ? (
                         <>
