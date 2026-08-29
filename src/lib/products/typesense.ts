@@ -111,8 +111,10 @@ export async function searchCatalog(
     : `https://${creds.host}`;
   const params = new URLSearchParams({
     q,
-    query_by: "name,brand,barcodes",
-    query_by_weights: "4,2,3",
+    // Also match the family (line) name, so a product whose name lacks the term but whose family
+    // carries it still surfaces (e.g. "Sazón" finds a "Sazón"-family product named "Tempero…").
+    query_by: "name,brand,family,barcodes",
+    query_by_weights: "4,2,2,3",
     per_page: String(options?.perPage ?? 8),
   });
   try {
