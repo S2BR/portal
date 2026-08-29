@@ -3,6 +3,7 @@
 import {
   ArrowLeft,
   Boxes,
+  GripVertical,
   ImageIcon,
   Keyboard,
   Loader2,
@@ -821,16 +822,22 @@ export function ProductEditor({ productId }: { productId: string | null }) {
                         alt={t("gallery")}
                         onRemove={() => removeGalleryImage(image.id)}
                         removeLabel={t("removeImage")}
+                        removeClassName="end-1.5 top-1.5 size-7 opacity-0 transition-opacity group-hover/tile:opacity-100 focus-visible:opacity-100"
                         disabled={uploading}
                       />
                       {loaded.images.length > 1 ? (
-                        <DragHandle
+                        <Button
                           ref={render.handle.ref}
                           {...render.handle.attributes}
                           {...render.handle.listeners}
-                          label={t("reorderImage")}
-                          className="bg-background/90 absolute start-1 top-1 rounded p-0.5 opacity-0 shadow-sm transition-opacity group-hover/tile:opacity-100"
-                        />
+                          type="button"
+                          variant="secondary"
+                          size="icon"
+                          aria-label={t("reorderImage")}
+                          className="absolute start-1.5 top-1.5 size-7 cursor-grab touch-none opacity-0 shadow-sm transition-opacity group-hover/tile:opacity-100 focus-visible:opacity-100"
+                        >
+                          <GripVertical className="size-4" aria-hidden />
+                        </Button>
                       ) : null}
                     </div>
                   )}

@@ -1,6 +1,6 @@
 "use client";
 
-import { ImagePlus, Move, X } from "lucide-react";
+import { GripVertical, ImagePlus, Move, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import {
   useEffect,
@@ -21,7 +21,7 @@ import {
   type MediaUploadPhase,
 } from "@/components/media/media-tiles";
 import { Button } from "@/components/ui/button";
-import { DragHandle, overlayClass } from "@/components/ui/drag-handle";
+import { overlayClass } from "@/components/ui/drag-handle";
 import { ImageCropDialog } from "@/components/ui/image-crop-dialog";
 import { SortableList } from "@/components/ui/sortable-list";
 import {
@@ -737,17 +737,23 @@ export function BusinessGallery({
                 alt={t("galleryTitle")}
                 onRemove={() => remove(image.id)}
                 removeLabel={t("remove")}
+                removeClassName="end-1.5 top-1.5 size-7 opacity-0 transition-opacity group-hover/tile:opacity-100 focus-visible:opacity-100"
                 removing={removingId === image.id}
                 disabled={busy}
               />
               {gallery.length > 1 ? (
-                <DragHandle
+                <Button
                   ref={render.handle.ref}
                   {...render.handle.attributes}
                   {...render.handle.listeners}
-                  label={t("reorderImage")}
-                  className="bg-background/90 absolute start-1 top-1 rounded p-0.5 opacity-0 shadow-sm transition-opacity group-hover/tile:opacity-100"
-                />
+                  type="button"
+                  variant="secondary"
+                  size="icon"
+                  aria-label={t("reorderImage")}
+                  className="absolute start-1.5 top-1.5 size-7 cursor-grab touch-none opacity-0 shadow-sm transition-opacity group-hover/tile:opacity-100 focus-visible:opacity-100"
+                >
+                  <GripVertical className="size-4" aria-hidden />
+                </Button>
               ) : null}
             </div>
           )}
