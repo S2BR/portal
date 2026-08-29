@@ -1593,6 +1593,14 @@
       "form": {
         "name": "Nom",
         "description": "Description"
+      },
+      "open": "Ouvrir",
+      "detail": {
+        "back": "Retour aux marques",
+        "detailsTitle": "Détails de la marque",
+        "detailsDescription": "Renommez la marque ou modifiez sa description.",
+        "productsTitle": "Produits",
+        "productsDescription": "Produits attribués à cette marque. Ajoutez-en un nouveau ou liez un produit existant."
       }
     },
     "families": {
@@ -1625,6 +1633,14 @@
         "brand": "Marque",
         "brandPlaceholder": "Rechercher ou ajouter une marque",
         "description": "Description"
+      },
+      "open": "Ouvrir",
+      "detail": {
+        "back": "Retour aux familles",
+        "detailsTitle": "Détails de la famille",
+        "detailsDescription": "Renommez la gamme, définissez sa marque ou modifiez sa description.",
+        "productsTitle": "Produits",
+        "productsDescription": "Produits de cette gamme. Ajoutez-en un nouveau ou liez un produit existant."
       }
     },
     "groups": {
@@ -1655,6 +1671,36 @@
           "description": "Médias téléversés sur l'ensemble de la plateforme."
         }
       }
+    },
+    "catalog": {
+      "search": "Rechercher des produits",
+      "addExisting": "Ajouter un existant",
+      "newProduct": "Nouveau produit",
+      "loadError": "Impossible de charger les produits.",
+      "detachError": "Impossible de retirer le produit.",
+      "detached": "Produit retiré.",
+      "attachError": "Impossible d'ajouter le produit.",
+      "attached": "Produit ajouté.",
+      "noMatches": "Aucun produit ne correspond à votre recherche.",
+      "empty": "Aucun produit ici pour l'instant.",
+      "skuCount": "{count, plural, =0 {Aucune UGS} one {# UGS} other {# UGS}}",
+      "private": "Privé",
+      "remove": "Retirer",
+      "pageOf": "Page {page} sur {total}",
+      "previous": "Précédent",
+      "next": "Suivant",
+      "status": {
+        "approved": "Approuvé",
+        "pending": "En attente",
+        "rejected": "Rejeté",
+        "draft": "Brouillon"
+      },
+      "attachTitle": "Ajouter un produit existant",
+      "attachDescription": "Cherchez dans le catalogue et liez un produit.",
+      "attachSearch": "Rechercher des produits par nom",
+      "attachHint": "Tapez pour chercher dans le catalogue.",
+      "attachNoResults": "Aucun produit trouvé.",
+      "attachConfirm": "Ajouter"
     }
   },
   "session": {

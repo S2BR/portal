@@ -1593,6 +1593,14 @@
       "form": {
         "name": "Name",
         "description": "Beschreibung"
+      },
+      "open": "Öffnen",
+      "detail": {
+        "back": "Zurück zu Marken",
+        "detailsTitle": "Markendetails",
+        "detailsDescription": "Benenne die Marke um oder aktualisiere ihre Beschreibung.",
+        "productsTitle": "Produkte",
+        "productsDescription": "Dieser Marke zugeordnete Produkte. Füge ein neues hinzu oder verknüpfe ein vorhandenes Produkt."
       }
     },
     "families": {
@@ -1625,6 +1633,14 @@
         "brand": "Marke",
         "brandPlaceholder": "Marke suchen oder hinzufügen",
         "description": "Beschreibung"
+      },
+      "open": "Öffnen",
+      "detail": {
+        "back": "Zurück zu Familien",
+        "detailsTitle": "Familiendetails",
+        "detailsDescription": "Benenne die Linie um, lege ihre Marke fest oder aktualisiere ihre Beschreibung.",
+        "productsTitle": "Produkte",
+        "productsDescription": "Produkte dieser Linie. Füge ein neues hinzu oder verknüpfe ein vorhandenes Produkt."
       }
     },
     "groups": {
@@ -1655,6 +1671,36 @@
           "description": "Über die Plattform hochgeladene Medien."
         }
       }
+    },
+    "catalog": {
+      "search": "Produkte suchen",
+      "addExisting": "Vorhandenes hinzufügen",
+      "newProduct": "Neues Produkt",
+      "loadError": "Produkte konnten nicht geladen werden.",
+      "detachError": "Produkt konnte nicht entfernt werden.",
+      "detached": "Produkt entfernt.",
+      "attachError": "Produkt konnte nicht hinzugefügt werden.",
+      "attached": "Produkt hinzugefügt.",
+      "noMatches": "Keine Produkte entsprechen deiner Suche.",
+      "empty": "Noch keine Produkte hier.",
+      "skuCount": "{count, plural, =0 {Keine SKUs} one {# SKU} other {# SKUs}}",
+      "private": "Privat",
+      "remove": "Entfernen",
+      "pageOf": "Seite {page} von {total}",
+      "previous": "Zurück",
+      "next": "Weiter",
+      "status": {
+        "approved": "Genehmigt",
+        "pending": "Ausstehend",
+        "rejected": "Abgelehnt",
+        "draft": "Entwurf"
+      },
+      "attachTitle": "Vorhandenes Produkt hinzufügen",
+      "attachDescription": "Durchsuche den Katalog und verknüpfe ein Produkt.",
+      "attachSearch": "Produkte nach Namen suchen",
+      "attachHint": "Tippe, um den Katalog zu durchsuchen.",
+      "attachNoResults": "Keine Produkte gefunden.",
+      "attachConfirm": "Hinzufügen"
     }
   },
   "session": {

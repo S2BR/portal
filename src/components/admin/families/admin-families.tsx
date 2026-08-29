@@ -2,6 +2,7 @@
 
 import { Boxes, Pencil, Plus, Trash2 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
+import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -32,7 +33,12 @@ import {
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 
-type Draft = { id: string | null; name: string; brand: string; description: string };
+type Draft = {
+  id: string | null;
+  name: string;
+  brand: string;
+  description: string;
+};
 
 /**
  * The family manager: a searchable table of families (their brand + product count) with a create/edit
@@ -96,7 +102,9 @@ export function AdminFamilies() {
         description: draft.description.trim() || null,
       };
       const response = await fetch(
-        draft.id === null ? "/api/admin/families" : `/api/admin/families/${draft.id}`,
+        draft.id === null
+          ? "/api/admin/families"
+          : `/api/admin/families/${draft.id}`,
         {
           method: draft.id === null ? "POST" : "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -116,7 +124,9 @@ export function AdminFamilies() {
   };
 
   const remove = async (family: AdminFamily) => {
-    const response = await fetch(`/api/admin/families/${family.id}`, { method: "DELETE" });
+    const response = await fetch(`/api/admin/families/${family.id}`, {
+      method: "DELETE",
+    });
     if (!response.ok) {
       toast.error(t("saveError"));
       return;
@@ -136,7 +146,9 @@ export function AdminFamilies() {
         </div>
         <Button
           className="gap-1.5"
-          onClick={() => setDraft({ id: null, name: "", brand: "", description: "" })}
+          onClick={() =>
+            setDraft({ id: null, name: "", brand: "", description: "" })
+          }
         >
           <Plus className="size-4" aria-hidden />
           {t("new")}
@@ -167,9 +179,13 @@ export function AdminFamilies() {
               <TableRow>
                 <TableHead>{t("table.name")}</TableHead>
                 <TableHead>{t("table.brand")}</TableHead>
-                <TableHead className="text-right">{t("table.products")}</TableHead>
+                <TableHead className="text-right">
+                  {t("table.products")}
+                </TableHead>
                 <TableHead>{t("table.created")}</TableHead>
-                <TableHead className="text-right">{t("table.actions")}</TableHead>
+                <TableHead className="text-right">
+                  {t("table.actions")}
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -181,7 +197,12 @@ export function AdminFamilies() {
                         <Boxes className="size-4" aria-hidden />
                       </span>
                       <div className="min-w-0">
-                        <span className="block truncate font-medium">{family.name}</span>
+                        <Link
+                          href={`/portal/admin/families/${family.id}`}
+                          className="block truncate font-medium hover:underline"
+                        >
+                          {family.name}
+                        </Link>
                         {family.description ? (
                           <span className="text-muted-foreground block max-w-md truncate text-xs">
                             {family.description}
@@ -212,19 +233,14 @@ export function AdminFamilies() {
                   <TableCell>
                     <div className="flex items-center justify-end gap-1">
                       <Button
+                        asChild
                         size="sm"
                         variant="ghost"
-                        onClick={() =>
-                          setDraft({
-                            id: family.id,
-                            name: family.name,
-                            brand: family.brand?.name ?? "",
-                            description: family.description ?? "",
-                          })
-                        }
-                        aria-label={t("edit")}
+                        aria-label={t("open")}
                       >
-                        <Pencil className="size-4" aria-hidden />
+                        <Link href={`/portal/admin/families/${family.id}`}>
+                          <Pencil className="size-4" aria-hidden />
+                        </Link>
                       </Button>
                       <Button
                         size="sm"
@@ -244,24 +260,33 @@ export function AdminFamilies() {
         </div>
       )}
 
-      <Dialog open={draft !== null} onOpenChange={(open) => (open ? null : setDraft(null))}>
+      <Dialog
+        open={draft !== null}
+        onOpenChange={(open) => (open ? null : setDraft(null))}
+      >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{draft?.id === null ? t("createTitle") : t("editTitle")}</DialogTitle>
+            <DialogTitle>
+              {draft?.id === null ? t("createTitle") : t("editTitle")}
+            </DialogTitle>
           </DialogHeader>
           {draft ? (
             <div className="space-y-4">
               <Field label={t("form.name")}>
                 <Input
                   value={draft.name}
-                  onChange={(event) => setDraft({ ...draft, name: event.target.value })}
+                  onChange={(event) =>
+                    setDraft({ ...draft, name: event.target.value })
+                  }
                   autoFocus
                 />
               </Field>
               <Field label={t("form.brand")}>
                 <Input
                   value={draft.brand}
-                  onChange={(event) => setDraft({ ...draft, brand: event.target.value })}
+                  onChange={(event) =>
+                    setDraft({ ...draft, brand: event.target.value })
+                  }
                   list="family-brand-options"
                   placeholder={t("form.brandPlaceholder")}
                 />
@@ -274,7 +299,9 @@ export function AdminFamilies() {
               <Field label={t("form.description")}>
                 <Textarea
                   value={draft.description}
-                  onChange={(event) => setDraft({ ...draft, description: event.target.value })}
+                  onChange={(event) =>
+                    setDraft({ ...draft, description: event.target.value })
+                  }
                   rows={3}
                 />
               </Field>
@@ -284,7 +311,10 @@ export function AdminFamilies() {
             <Button variant="ghost" onClick={() => setDraft(null)}>
               {t("cancel")}
             </Button>
-            <Button onClick={save} disabled={saving || (draft?.name.trim() ?? "") === ""}>
+            <Button
+              onClick={save}
+              disabled={saving || (draft?.name.trim() ?? "") === ""}
+            >
               {t("save")}
             </Button>
           </DialogFooter>

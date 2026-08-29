@@ -1593,6 +1593,14 @@
       "form": {
         "name": "名前",
         "description": "説明"
+      },
+      "open": "開く",
+      "detail": {
+        "back": "ブランドに戻る",
+        "detailsTitle": "ブランドの詳細",
+        "detailsDescription": "ブランド名を変更するか、説明を更新します。",
+        "productsTitle": "製品",
+        "productsDescription": "このブランドに関連付けられた製品。新規追加または既存の製品を関連付けます。"
       }
     },
     "families": {
@@ -1625,6 +1633,14 @@
         "brand": "ブランド",
         "brandPlaceholder": "ブランドを検索または追加",
         "description": "説明"
+      },
+      "open": "開く",
+      "detail": {
+        "back": "ファミリーに戻る",
+        "detailsTitle": "ファミリーの詳細",
+        "detailsDescription": "ラインの名前を変更するか、ブランドを設定するか、説明を更新します。",
+        "productsTitle": "製品",
+        "productsDescription": "このラインの製品。新規追加または既存の製品を関連付けます。"
       }
     },
     "groups": {
@@ -1655,6 +1671,36 @@
           "description": "プラットフォーム全体でアップロードされたメディア。"
         }
       }
+    },
+    "catalog": {
+      "search": "製品を検索",
+      "addExisting": "既存を追加",
+      "newProduct": "新規製品",
+      "loadError": "製品を読み込めませんでした。",
+      "detachError": "製品を削除できませんでした。",
+      "detached": "製品を削除しました。",
+      "attachError": "製品を追加できませんでした。",
+      "attached": "製品を追加しました。",
+      "noMatches": "検索に一致する製品がありません。",
+      "empty": "まだ製品がありません。",
+      "skuCount": "{count, plural, =0 {SKUなし} other {SKU #件}}",
+      "private": "非公開",
+      "remove": "削除",
+      "pageOf": "{total} ページ中 {page} ページ",
+      "previous": "前へ",
+      "next": "次へ",
+      "status": {
+        "approved": "承認済み",
+        "pending": "保留中",
+        "rejected": "却下",
+        "draft": "下書き"
+      },
+      "attachTitle": "既存の製品を追加",
+      "attachDescription": "カタログを検索して製品を関連付けます。",
+      "attachSearch": "名前で製品を検索",
+      "attachHint": "入力してカタログを検索します。",
+      "attachNoResults": "製品が見つかりません。",
+      "attachConfirm": "追加"
     }
   },
   "session": {

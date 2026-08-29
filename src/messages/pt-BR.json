@@ -1593,6 +1593,14 @@
       "form": {
         "name": "Nome",
         "description": "Descrição"
+      },
+      "open": "Abrir",
+      "detail": {
+        "back": "Voltar para marcas",
+        "detailsTitle": "Detalhes da marca",
+        "detailsDescription": "Renomeie a marca ou atualize sua descrição.",
+        "productsTitle": "Produtos",
+        "productsDescription": "Produtos atribuídos a esta marca. Adicione um novo ou vincule um produto existente."
       }
     },
     "families": {
@@ -1625,6 +1633,14 @@
         "brand": "Marca",
         "brandPlaceholder": "Buscar ou adicionar uma marca",
         "description": "Descrição"
+      },
+      "open": "Abrir",
+      "detail": {
+        "back": "Voltar para famílias",
+        "detailsTitle": "Detalhes da família",
+        "detailsDescription": "Renomeie a linha, defina sua marca ou atualize sua descrição.",
+        "productsTitle": "Produtos",
+        "productsDescription": "Produtos desta linha. Adicione um novo ou vincule um produto existente."
       }
     },
     "groups": {
@@ -1655,6 +1671,36 @@
           "description": "Mídia enviada em toda a plataforma."
         }
       }
+    },
+    "catalog": {
+      "search": "Buscar produtos",
+      "addExisting": "Adicionar existente",
+      "newProduct": "Novo produto",
+      "loadError": "Não foi possível carregar os produtos.",
+      "detachError": "Não foi possível remover o produto.",
+      "detached": "Produto removido.",
+      "attachError": "Não foi possível adicionar o produto.",
+      "attached": "Produto adicionado.",
+      "noMatches": "Nenhum produto corresponde à sua busca.",
+      "empty": "Nenhum produto aqui ainda.",
+      "skuCount": "{count, plural, =0 {Sem SKUs} one {# SKU} other {# SKUs}}",
+      "private": "Privado",
+      "remove": "Remover",
+      "pageOf": "Página {page} de {total}",
+      "previous": "Anterior",
+      "next": "Próxima",
+      "status": {
+        "approved": "Aprovado",
+        "pending": "Pendente",
+        "rejected": "Rejeitado",
+        "draft": "Rascunho"
+      },
+      "attachTitle": "Adicionar um produto existente",
+      "attachDescription": "Busque no catálogo e vincule um produto.",
+      "attachSearch": "Buscar produtos por nome",
+      "attachHint": "Digite para buscar no catálogo.",
+      "attachNoResults": "Nenhum produto encontrado.",
+      "attachConfirm": "Adicionar"
     }
   },
   "session": {

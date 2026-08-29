@@ -1593,6 +1593,14 @@
       "form": {
         "name": "Nombre",
         "description": "Descripción"
+      },
+      "open": "Abrir",
+      "detail": {
+        "back": "Volver a marcas",
+        "detailsTitle": "Detalles de la marca",
+        "detailsDescription": "Renombra la marca o actualiza su descripción.",
+        "productsTitle": "Productos",
+        "productsDescription": "Productos atribuidos a esta marca. Agrega uno nuevo o vincula un producto existente."
       }
     },
     "families": {
@@ -1625,6 +1633,14 @@
         "brand": "Marca",
         "brandPlaceholder": "Buscar o añadir una marca",
         "description": "Descripción"
+      },
+      "open": "Abrir",
+      "detail": {
+        "back": "Volver a familias",
+        "detailsTitle": "Detalles de la familia",
+        "detailsDescription": "Renombra la línea, define su marca o actualiza su descripción.",
+        "productsTitle": "Productos",
+        "productsDescription": "Productos de esta línea. Agrega uno nuevo o vincula un producto existente."
       }
     },
     "groups": {
@@ -1655,6 +1671,36 @@
           "description": "Archivos multimedia subidos en toda la plataforma."
         }
       }
+    },
+    "catalog": {
+      "search": "Buscar productos",
+      "addExisting": "Agregar existente",
+      "newProduct": "Nuevo producto",
+      "loadError": "No se pudieron cargar los productos.",
+      "detachError": "No se pudo quitar el producto.",
+      "detached": "Producto quitado.",
+      "attachError": "No se pudo agregar el producto.",
+      "attached": "Producto agregado.",
+      "noMatches": "Ningún producto coincide con tu búsqueda.",
+      "empty": "Aún no hay productos aquí.",
+      "skuCount": "{count, plural, =0 {Sin SKUs} one {# SKU} other {# SKUs}}",
+      "private": "Privado",
+      "remove": "Quitar",
+      "pageOf": "Página {page} de {total}",
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "status": {
+        "approved": "Aprobado",
+        "pending": "Pendiente",
+        "rejected": "Rechazado",
+        "draft": "Borrador"
+      },
+      "attachTitle": "Agregar un producto existente",
+      "attachDescription": "Busca en el catálogo y vincula un producto.",
+      "attachSearch": "Buscar productos por nombre",
+      "attachHint": "Escribe para buscar en el catálogo.",
+      "attachNoResults": "No se encontraron productos.",
+      "attachConfirm": "Agregar"
     }
   },
   "session": {

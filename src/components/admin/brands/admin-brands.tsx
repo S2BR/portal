@@ -2,6 +2,7 @@
 
 import { Pencil, Plus, Tag, Trash2 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
+import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -79,7 +80,9 @@ export function AdminBrands() {
         description: draft.description.trim() || null,
       };
       const response = await fetch(
-        draft.id === null ? "/api/admin/brands" : `/api/admin/brands/${draft.id}`,
+        draft.id === null
+          ? "/api/admin/brands"
+          : `/api/admin/brands/${draft.id}`,
         {
           method: draft.id === null ? "POST" : "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -99,7 +102,9 @@ export function AdminBrands() {
   };
 
   const remove = async (brand: AdminBrand) => {
-    const response = await fetch(`/api/admin/brands/${brand.id}`, { method: "DELETE" });
+    const response = await fetch(`/api/admin/brands/${brand.id}`, {
+      method: "DELETE",
+    });
     if (!response.ok) {
       toast.error(t("saveError"));
       return;
@@ -149,10 +154,16 @@ export function AdminBrands() {
             <TableHeader>
               <TableRow>
                 <TableHead>{t("table.name")}</TableHead>
-                <TableHead className="text-right">{t("table.products")}</TableHead>
-                <TableHead className="text-right">{t("table.families")}</TableHead>
+                <TableHead className="text-right">
+                  {t("table.products")}
+                </TableHead>
+                <TableHead className="text-right">
+                  {t("table.families")}
+                </TableHead>
                 <TableHead>{t("table.created")}</TableHead>
-                <TableHead className="text-right">{t("table.actions")}</TableHead>
+                <TableHead className="text-right">
+                  {t("table.actions")}
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -164,7 +175,12 @@ export function AdminBrands() {
                         <Tag className="size-4" aria-hidden />
                       </span>
                       <div className="min-w-0">
-                        <span className="block truncate font-medium">{brand.name}</span>
+                        <Link
+                          href={`/portal/admin/brands/${brand.id}`}
+                          className="block truncate font-medium hover:underline"
+                        >
+                          {brand.name}
+                        </Link>
                         {brand.description ? (
                           <span className="text-muted-foreground block max-w-md truncate text-xs">
                             {brand.description}
@@ -191,18 +207,14 @@ export function AdminBrands() {
                   <TableCell>
                     <div className="flex items-center justify-end gap-1">
                       <Button
+                        asChild
                         size="sm"
                         variant="ghost"
-                        onClick={() =>
-                          setDraft({
-                            id: brand.id,
-                            name: brand.name,
-                            description: brand.description ?? "",
-                          })
-                        }
-                        aria-label={t("edit")}
+                        aria-label={t("open")}
                       >
-                        <Pencil className="size-4" aria-hidden />
+                        <Link href={`/portal/admin/brands/${brand.id}`}>
+                          <Pencil className="size-4" aria-hidden />
+                        </Link>
                       </Button>
                       <Button
                         size="sm"
@@ -222,24 +234,33 @@ export function AdminBrands() {
         </div>
       )}
 
-      <Dialog open={draft !== null} onOpenChange={(open) => (open ? null : setDraft(null))}>
+      <Dialog
+        open={draft !== null}
+        onOpenChange={(open) => (open ? null : setDraft(null))}
+      >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{draft?.id === null ? t("createTitle") : t("editTitle")}</DialogTitle>
+            <DialogTitle>
+              {draft?.id === null ? t("createTitle") : t("editTitle")}
+            </DialogTitle>
           </DialogHeader>
           {draft ? (
             <div className="space-y-4">
               <Field label={t("form.name")}>
                 <Input
                   value={draft.name}
-                  onChange={(event) => setDraft({ ...draft, name: event.target.value })}
+                  onChange={(event) =>
+                    setDraft({ ...draft, name: event.target.value })
+                  }
                   autoFocus
                 />
               </Field>
               <Field label={t("form.description")}>
                 <Textarea
                   value={draft.description}
-                  onChange={(event) => setDraft({ ...draft, description: event.target.value })}
+                  onChange={(event) =>
+                    setDraft({ ...draft, description: event.target.value })
+                  }
                   rows={3}
                 />
               </Field>
@@ -249,7 +270,10 @@ export function AdminBrands() {
             <Button variant="ghost" onClick={() => setDraft(null)}>
               {t("cancel")}
             </Button>
-            <Button onClick={save} disabled={saving || (draft?.name.trim() ?? "") === ""}>
+            <Button
+              onClick={save}
+              disabled={saving || (draft?.name.trim() ?? "") === ""}
+            >
               {t("save")}
             </Button>
           </DialogFooter>

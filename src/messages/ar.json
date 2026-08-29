@@ -1593,6 +1593,14 @@
       "form": {
         "name": "الاسم",
         "description": "الوصف"
+      },
+      "open": "فتح",
+      "detail": {
+        "back": "العودة إلى العلامات التجارية",
+        "detailsTitle": "تفاصيل العلامة التجارية",
+        "detailsDescription": "أعد تسمية العلامة التجارية أو حدّث وصفها.",
+        "productsTitle": "المنتجات",
+        "productsDescription": "المنتجات المنسوبة إلى هذه العلامة التجارية. أضف منتجًا جديدًا أو اربط منتجًا موجودًا."
       }
     },
     "families": {
@@ -1625,6 +1633,14 @@
         "brand": "العلامة",
         "brandPlaceholder": "ابحث عن علامة أو أضِفها",
         "description": "الوصف"
+      },
+      "open": "فتح",
+      "detail": {
+        "back": "العودة إلى العائلات",
+        "detailsTitle": "تفاصيل العائلة",
+        "detailsDescription": "أعد تسمية الخط، أو حدّد علامته التجارية، أو حدّث وصفه.",
+        "productsTitle": "المنتجات",
+        "productsDescription": "منتجات هذا الخط. أضف منتجًا جديدًا أو اربط منتجًا موجودًا."
       }
     },
     "groups": {
@@ -1655,6 +1671,36 @@
           "description": "الوسائط المرفوعة عبر المنصة."
         }
       }
+    },
+    "catalog": {
+      "search": "البحث عن المنتجات",
+      "addExisting": "إضافة منتج موجود",
+      "newProduct": "منتج جديد",
+      "loadError": "تعذّر تحميل المنتجات.",
+      "detachError": "تعذّرت إزالة المنتج.",
+      "detached": "تمت إزالة المنتج.",
+      "attachError": "تعذّرت إضافة المنتج.",
+      "attached": "تمت إضافة المنتج.",
+      "noMatches": "لا توجد منتجات تطابق بحثك.",
+      "empty": "لا توجد منتجات هنا بعد.",
+      "skuCount": "{count, plural, =0 {لا توجد وحدات SKU} other {# SKU}}",
+      "private": "خاص",
+      "remove": "إزالة",
+      "pageOf": "الصفحة {page} من {total}",
+      "previous": "السابق",
+      "next": "التالي",
+      "status": {
+        "approved": "معتمد",
+        "pending": "قيد الانتظار",
+        "rejected": "مرفوض",
+        "draft": "مسودة"
+      },
+      "attachTitle": "إضافة منتج موجود",
+      "attachDescription": "ابحث في الكتالوج واربط منتجًا.",
+      "attachSearch": "البحث عن المنتجات بالاسم",
+      "attachHint": "اكتب للبحث في الكتالوج.",
+      "attachNoResults": "لم يُعثر على منتجات.",
+      "attachConfirm": "إضافة"
     }
   },
   "session": {

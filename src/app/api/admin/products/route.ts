@@ -58,8 +58,12 @@ export interface AdminProductsPage {
 export interface AdminProductBody {
   name?: string;
   brand?: string | null;
+  /** Attach to a brand by public id (null detaches) — used by the brand detail page. */
+  brand_id?: string | null;
   /** The family (line) this product joins, by name — resolved/created under its brand. */
   family?: string | null;
+  /** Attach to a family by public id (null detaches) — used by the family detail page. */
+  family_id?: string | null;
   is_homemade?: boolean;
   description?: string | null;
   moderation_status?: ModerationStatus;
