@@ -1563,7 +1563,8 @@
         }
       },
       "reorderSku": "Glisser pour réordonner",
-      "reorderImage": "Glisser pour réordonner"
+      "reorderImage": "Glisser pour réordonner",
+      "search": "Rechercher des produits"
     },
     "brands": {
       "title": "Marques",

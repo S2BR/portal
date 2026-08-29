@@ -3,6 +3,7 @@
 import { Boxes, Pencil, Plus, Trash2 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -48,6 +49,7 @@ type Draft = {
 export function AdminFamilies() {
   const t = useTranslations("admin.families");
   const format = useFormatter();
+  const router = useRouter();
 
   const [items, setItems] = useState<AdminFamily[]>([]);
   const [brands, setBrands] = useState<AdminBrand[]>([]);
@@ -190,7 +192,13 @@ export function AdminFamilies() {
             </TableHeader>
             <TableBody>
               {items.map((family) => (
-                <TableRow key={family.id}>
+                <TableRow
+                  key={family.id}
+                  className="cursor-pointer"
+                  onClick={() =>
+                    router.push(`/portal/admin/families/${family.id}`)
+                  }
+                >
                   <TableCell>
                     <div className="flex items-center gap-2.5">
                       <span className="bg-muted text-muted-foreground flex size-8 shrink-0 items-center justify-center rounded-md border">
@@ -230,7 +238,8 @@ export function AdminFamilies() {
                         })
                       : "—"}
                   </TableCell>
-                  <TableCell>
+                  {/* Stop row navigation so the action buttons act in place. */}
+                  <TableCell onClick={(event) => event.stopPropagation()}>
                     <div className="flex items-center justify-end gap-1">
                       <Button
                         asChild

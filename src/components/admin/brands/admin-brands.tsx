@@ -3,6 +3,7 @@
 import { Pencil, Plus, Tag, Trash2 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -38,6 +39,7 @@ type Draft = { id: string | null; name: string; description: string };
 export function AdminBrands() {
   const t = useTranslations("admin.brands");
   const format = useFormatter();
+  const router = useRouter();
 
   const [items, setItems] = useState<AdminBrand[]>([]);
   const [loading, setLoading] = useState(true);
@@ -168,7 +170,13 @@ export function AdminBrands() {
             </TableHeader>
             <TableBody>
               {items.map((brand) => (
-                <TableRow key={brand.id}>
+                <TableRow
+                  key={brand.id}
+                  className="cursor-pointer"
+                  onClick={() =>
+                    router.push(`/portal/admin/brands/${brand.id}`)
+                  }
+                >
                   <TableCell>
                     <div className="flex items-center gap-2.5">
                       <span className="bg-muted text-muted-foreground flex size-8 shrink-0 items-center justify-center rounded-md border">
@@ -204,7 +212,8 @@ export function AdminBrands() {
                         })
                       : "—"}
                   </TableCell>
-                  <TableCell>
+                  {/* Stop row navigation so the action buttons act in place. */}
+                  <TableCell onClick={(event) => event.stopPropagation()}>
                     <div className="flex items-center justify-end gap-1">
                       <Button
                         asChild

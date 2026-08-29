@@ -1563,7 +1563,8 @@
         }
       },
       "reorderSku": "Drag to reorder",
-      "reorderImage": "Drag to reorder"
+      "reorderImage": "Drag to reorder",
+      "search": "Cerca prodotti"
     },
     "brands": {
       "title": "Marche",

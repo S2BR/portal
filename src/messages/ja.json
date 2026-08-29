@@ -1563,7 +1563,8 @@
         }
       },
       "reorderSku": "Drag to reorder",
-      "reorderImage": "Drag to reorder"
+      "reorderImage": "Drag to reorder",
+      "search": "製品を検索"
     },
     "brands": {
       "title": "ブランド",
