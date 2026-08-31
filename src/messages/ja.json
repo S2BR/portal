@@ -992,7 +992,10 @@
       "unavailable": "Unavailable",
       "sizeCount": "{count, plural, other {# サイズ}}",
       "pickSize": "サイズを選択",
-      "defaultSize": "デフォルト"
+      "defaultSize": "デフォルト",
+      "back": "戻る",
+      "quantity": "数量",
+      "quantityAmount": "数量"
     }
   },
   "admin": {
@@ -1564,7 +1567,8 @@
       },
       "reorderSku": "Drag to reorder",
       "reorderImage": "Drag to reorder",
-      "search": "製品を検索"
+      "search": "製品を検索",
+      "variantAmount": "数量"
     },
     "brands": {
       "title": "ブランド",
@@ -1772,5 +1776,32 @@
     "emptyHint": "まだ条件がありません — 追加して一覧を絞り込みます。",
     "advanced": "詳細",
     "simple": "シンプル"
+  },
+  "units": {
+    "search": "単位を検索",
+    "none": "単位なし",
+    "empty": "単位が見つかりません",
+    "placeholder": "単位",
+    "ea": "個",
+    "un": "単位",
+    "pc": "ピース",
+    "pk": "パック",
+    "dz": "ダース",
+    "mg": "ミリグラム",
+    "g": "グラム",
+    "kg": "キログラム",
+    "oz": "オンス",
+    "lb": "ポンド",
+    "ml": "ミリリットル",
+    "cl": "センチリットル",
+    "l": "リットル",
+    "floz": "液量オンス",
+    "pt": "パイント",
+    "qt": "クォート",
+    "gal": "ガロン",
+    "mm": "ミリメートル",
+    "cm": "センチメートル",
+    "m": "メートル",
+    "other": "その他"
   }
 }

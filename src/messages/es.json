@@ -992,7 +992,10 @@
       "unavailable": "No disponible",
       "sizeCount": "{count, plural, one {# tamaño} other {# tamaños}}",
       "pickSize": "Elige un tamaño",
-      "defaultSize": "Estándar"
+      "defaultSize": "Estándar",
+      "back": "Volver",
+      "quantity": "Cantidad",
+      "quantityAmount": "Cant."
     }
   },
   "admin": {
@@ -1564,7 +1567,8 @@
       },
       "reorderSku": "Arrastra para reordenar",
       "reorderImage": "Arrastra para reordenar",
-      "search": "Buscar productos"
+      "search": "Buscar productos",
+      "variantAmount": "Cant."
     },
     "brands": {
       "title": "Marcas",
@@ -1772,5 +1776,32 @@
     "emptyHint": "Aún no hay condiciones — añade una para acotar la lista.",
     "advanced": "Avanzado",
     "simple": "Simple"
+  },
+  "units": {
+    "search": "Buscar unidades",
+    "none": "Sin unidad",
+    "empty": "No se encontraron unidades",
+    "placeholder": "Unidad",
+    "ea": "Cada",
+    "un": "Unidad",
+    "pc": "Pieza",
+    "pk": "Paquete",
+    "dz": "Docena",
+    "mg": "Miligramo",
+    "g": "Gramo",
+    "kg": "Kilogramo",
+    "oz": "Onza",
+    "lb": "Libra",
+    "ml": "Mililitro",
+    "cl": "Centilitro",
+    "l": "Litro",
+    "floz": "Onza líquida",
+    "pt": "Pinta",
+    "qt": "Cuarto",
+    "gal": "Galón",
+    "mm": "Milímetro",
+    "cm": "Centímetro",
+    "m": "Metro",
+    "other": "Otro"
   }
 }

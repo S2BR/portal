@@ -992,7 +992,10 @@
       "unavailable": "Unavailable",
       "sizeCount": "{count, plural, other {# مقاس}}",
       "pickSize": "اختر مقاسًا",
-      "defaultSize": "افتراضي"
+      "defaultSize": "افتراضي",
+      "back": "رجوع",
+      "quantity": "الكمية",
+      "quantityAmount": "العدد"
     }
   },
   "admin": {
@@ -1564,7 +1567,8 @@
       },
       "reorderSku": "Drag to reorder",
       "reorderImage": "Drag to reorder",
-      "search": "البحث عن المنتجات"
+      "search": "البحث عن المنتجات",
+      "variantAmount": "العدد"
     },
     "brands": {
       "title": "العلامات التجارية",
@@ -1772,5 +1776,32 @@
     "emptyHint": "لا توجد شروط بعد — أضف واحدًا لتضييق القائمة.",
     "advanced": "متقدم",
     "simple": "بسيط"
+  },
+  "units": {
+    "search": "بحث عن الوحدات",
+    "none": "بدون وحدة",
+    "empty": "لم يُعثر على وحدات",
+    "placeholder": "الوحدة",
+    "ea": "لكل",
+    "un": "وحدة",
+    "pc": "قطعة",
+    "pk": "عبوة",
+    "dz": "دزينة",
+    "mg": "مليغرام",
+    "g": "غرام",
+    "kg": "كيلوغرام",
+    "oz": "أونصة",
+    "lb": "رطل",
+    "ml": "مليلتر",
+    "cl": "سنتيلتر",
+    "l": "لتر",
+    "floz": "أونصة سائلة",
+    "pt": "باينت",
+    "qt": "ربع غالون",
+    "gal": "غالون",
+    "mm": "مليمتر",
+    "cm": "سنتيمتر",
+    "m": "متر",
+    "other": "أخرى"
   }
 }
