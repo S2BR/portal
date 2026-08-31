@@ -39,7 +39,9 @@ export function UnitSelect({
   const current = unitFor(value);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    // `modal` installs the popover's own scroll lock so the list stays mouse-scrollable even inside a
+    // Dialog (whose scroll lock would otherwise swallow wheel events over the portaled list).
+    <Popover open={open} onOpenChange={setOpen} modal>
       <PopoverTrigger asChild>
         <Button
           type="button"
