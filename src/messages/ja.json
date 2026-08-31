@@ -1009,7 +1009,8 @@
       "products": "製品",
       "brands": "ブランド",
       "families": "ファミリー",
-      "dashboard": "ダッシュボード"
+      "dashboard": "ダッシュボード",
+      "gamification": "ゲーミフィケーション"
     },
     "reports": {
       "title": "報告",
@@ -1653,7 +1654,8 @@
       "moderation": "モデレーション",
       "directory": "ディレクトリ",
       "media": "メディア",
-      "dashboard": "ダッシュボード"
+      "dashboard": "ダッシュボード",
+      "gamification": "ゲーミフィケーション"
     },
     "dashboard": {
       "title": "ダッシュボード",
@@ -1706,6 +1708,79 @@
       "attachHint": "入力してカタログを検索します。",
       "attachNoResults": "製品が見つかりません。",
       "attachConfirm": "追加"
+    },
+    "gamification": {
+      "title": "ゲーミフィケーション",
+      "subtitle": "ポイント経済・ティア・特典をデプロイなしで調整します。",
+      "forbidden": "アクセス権がありません。",
+      "loadError": "読み込めませんでした。",
+      "saved": "保存しました。",
+      "saveError": "保存できませんでした。",
+      "tabs": {
+        "rules": "ルール",
+        "tiers": "ティア",
+        "settings": "設定"
+      },
+      "actions": {
+        "review_written": "レビューを書く",
+        "sighting_added": "製品を追加",
+        "business_created": "ビジネスを作成",
+        "product_approved": "製品が承認された",
+        "claim_approved": "申請が承認された",
+        "report_upheld": "通報が支持された"
+      },
+      "timing": {
+        "immediate": "即時",
+        "on_approval": "承認時"
+      },
+      "rules": {
+        "enabled": "有効",
+        "points": "ポイント",
+        "timing": "タイミング",
+        "perDay": "1日あたり上限",
+        "cooldown": "クールダウン（秒）",
+        "oncePerTarget": "対象ごとに1回",
+        "save": "保存"
+      },
+      "tiers": {
+        "new": "新しいティア",
+        "minPoints": "{points} ポイントから",
+        "minPointsLabel": "最小ポイント",
+        "edit": "編集",
+        "delete": "削除",
+        "deleted": "ティアを削除しました。",
+        "createTitle": "新しいティア",
+        "editTitle": "ティアを編集",
+        "key": "キー",
+        "keyHint": "安定した識別子、小文字（例: colaborador）。後で変更不可。",
+        "name": "名前",
+        "perks": "特典",
+        "perksHint": "このティアが付与する機能（例: content.auto_approve = true）。",
+        "addPerk": "特典を追加",
+        "removePerk": "特典を削除",
+        "cancel": "キャンセル",
+        "saveTier": "保存",
+        "invalid": "項目を確認してください（キーが使用中の可能性）。",
+        "nameFallback": "空欄なら既定を使用"
+      },
+      "settings": {
+        "masterSwitch": "マスタースイッチ",
+        "masterHint": "システム全体を強制的にオン/オフにするか、デフォルトに従います。",
+        "default": "デフォルト",
+        "on": "オン",
+        "off": "オフ",
+        "effective": "現在 {state}",
+        "adjustTitle": "ユーザーのポイントを調整",
+        "adjustHint": "ポイントを付与または回収（マイナスで削除）。即時反映。",
+        "userId": "ユーザーID",
+        "amount": "数量",
+        "reason": "理由",
+        "reasonPlaceholder": "例: 不正なコンテンツ",
+        "adjust": "適用",
+        "adjusted": "完了 — 新しいスコア: {points}。",
+        "adjustError": "調整できませんでした。",
+        "userNotFound": "そのIDのユーザーはいません。"
+      }
     }
   },
   "session": {
@@ -1803,5 +1878,12 @@
     "cm": "センチメートル",
     "m": "メートル",
     "other": "その他"
+  },
+  "points": {
+    "title": "あなたのポイント",
+    "score": "{points} ポイント",
+    "start": "ポイントを貯め始めましょう",
+    "toNext": "{tier} まであと {points}",
+    "topTier": "最高ティアに到達しました"
   }
 }

@@ -1009,7 +1009,8 @@
       "products": "المنتجات",
       "brands": "العلامات التجارية",
       "families": "العائلات",
-      "dashboard": "لوحة التحكم"
+      "dashboard": "لوحة التحكم",
+      "gamification": "التلعيب"
     },
     "reports": {
       "title": "البلاغات",
@@ -1653,7 +1654,8 @@
       "moderation": "الإشراف",
       "directory": "الدليل",
       "media": "الوسائط",
-      "dashboard": "لوحة التحكم"
+      "dashboard": "لوحة التحكم",
+      "gamification": "التلعيب"
     },
     "dashboard": {
       "title": "لوحة التحكم",
@@ -1706,6 +1708,79 @@
       "attachHint": "اكتب للبحث في الكتالوج.",
       "attachNoResults": "لم يُعثر على منتجات.",
       "attachConfirm": "إضافة"
+    },
+    "gamification": {
+      "title": "التلعيب",
+      "subtitle": "اضبط اقتصاد النقاط والمستويات والمزايا — دون أي نشر.",
+      "forbidden": "ليس لديك صلاحية الوصول.",
+      "loadError": "تعذّر التحميل.",
+      "saved": "تم الحفظ.",
+      "saveError": "تعذّر الحفظ.",
+      "tabs": {
+        "rules": "القواعد",
+        "tiers": "المستويات",
+        "settings": "الإعدادات"
+      },
+      "actions": {
+        "review_written": "كتابة مراجعة",
+        "sighting_added": "إضافة منتج",
+        "business_created": "إنشاء نشاط تجاري",
+        "product_approved": "تمت الموافقة على المنتج",
+        "claim_approved": "تمت الموافقة على المطالبة",
+        "report_upheld": "تم قبول البلاغ"
+      },
+      "timing": {
+        "immediate": "فوري",
+        "on_approval": "عند الموافقة"
+      },
+      "rules": {
+        "enabled": "مفعّل",
+        "points": "النقاط",
+        "timing": "متى",
+        "perDay": "الحد اليومي",
+        "cooldown": "مدة الانتظار (ث)",
+        "oncePerTarget": "مرة واحدة لكل هدف",
+        "save": "حفظ"
+      },
+      "tiers": {
+        "new": "مستوى جديد",
+        "minPoints": "من {points} نقطة",
+        "minPointsLabel": "الحد الأدنى للنقاط",
+        "edit": "تعديل",
+        "delete": "حذف",
+        "deleted": "تم حذف المستوى.",
+        "createTitle": "مستوى جديد",
+        "editTitle": "تعديل المستوى",
+        "key": "المفتاح",
+        "keyHint": "معرّف ثابت بأحرف صغيرة (مثل colaborador). لا يمكن تغييره لاحقًا.",
+        "name": "الاسم",
+        "perks": "المزايا",
+        "perksHint": "القدرات التي يمنحها هذا المستوى (مثل content.auto_approve = true).",
+        "addPerk": "إضافة ميزة",
+        "removePerk": "إزالة الميزة",
+        "cancel": "إلغاء",
+        "saveTier": "حفظ",
+        "invalid": "تحقق من الحقول (قد يكون المفتاح مستخدمًا).",
+        "nameFallback": "يُستخدم الافتراضي إذا كان فارغًا"
+      },
+      "settings": {
+        "masterSwitch": "المفتاح الرئيسي",
+        "masterHint": "أجبر النظام بالكامل على التشغيل أو الإيقاف، أو اتبع الافتراضي.",
+        "default": "افتراضي",
+        "on": "تشغيل",
+        "off": "إيقاف",
+        "effective": "حاليًا {state}",
+        "adjustTitle": "تعديل نقاط مستخدم",
+        "adjustHint": "منح النقاط أو سحبها (سالب للإزالة). يُطبّق فورًا.",
+        "userId": "معرّف المستخدم",
+        "amount": "الكمية",
+        "reason": "السبب",
+        "reasonPlaceholder": "مثل محتوى غير مرغوب",
+        "adjust": "تطبيق",
+        "adjusted": "تم — النتيجة الجديدة: {points}.",
+        "adjustError": "تعذّر التعديل.",
+        "userNotFound": "لا يوجد مستخدم بهذا المعرّف."
+      }
     }
   },
   "session": {
@@ -1803,5 +1878,12 @@
     "cm": "سنتيمتر",
     "m": "متر",
     "other": "أخرى"
+  },
+  "points": {
+    "title": "نقاطك",
+    "score": "{points} نقطة",
+    "start": "ابدأ بكسب النقاط",
+    "toNext": "{points} حتى {tier}",
+    "topTier": "وصلت إلى أعلى مستوى"
   }
 }
