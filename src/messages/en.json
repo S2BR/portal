@@ -1009,7 +1009,8 @@
       "products": "Products",
       "brands": "Brands",
       "families": "Families",
-      "dashboard": "Dashboard"
+      "dashboard": "Dashboard",
+      "gamification": "Gamification"
     },
     "reports": {
       "title": "Reports",
@@ -1653,7 +1654,8 @@
       "moderation": "Moderation",
       "directory": "Directory",
       "media": "Media",
-      "dashboard": "Dashboard"
+      "dashboard": "Dashboard",
+      "gamification": "Gamification"
     },
     "dashboard": {
       "title": "Dashboard",
@@ -1706,6 +1708,79 @@
       "attachHint": "Type to search the catalog.",
       "attachNoResults": "No products found.",
       "attachConfirm": "Add"
+    },
+    "gamification": {
+      "title": "Gamification",
+      "subtitle": "Tune the points economy, tiers, and perks — all without a deploy.",
+      "forbidden": "You don't have access to this.",
+      "loadError": "Couldn't load.",
+      "saved": "Saved.",
+      "saveError": "Couldn't save.",
+      "tabs": {
+        "rules": "Rules",
+        "tiers": "Tiers",
+        "settings": "Settings"
+      },
+      "actions": {
+        "review_written": "Write a review",
+        "sighting_added": "Add a product sighting",
+        "business_created": "Create a business",
+        "product_approved": "Product approved",
+        "claim_approved": "Claim approved",
+        "report_upheld": "Report upheld"
+      },
+      "timing": {
+        "immediate": "Immediate",
+        "on_approval": "On approval"
+      },
+      "rules": {
+        "enabled": "Enabled",
+        "points": "Points",
+        "timing": "When",
+        "perDay": "Per-day max",
+        "cooldown": "Cooldown (s)",
+        "oncePerTarget": "Once per target",
+        "save": "Save"
+      },
+      "tiers": {
+        "new": "New tier",
+        "minPoints": "From {points} points",
+        "minPointsLabel": "Minimum points",
+        "edit": "Edit",
+        "delete": "Delete",
+        "deleted": "Tier deleted.",
+        "createTitle": "New tier",
+        "editTitle": "Edit tier",
+        "key": "Key",
+        "keyHint": "A stable identifier, lowercase (e.g. colaborador). Can't change later.",
+        "name": "Name",
+        "perks": "Perks",
+        "perksHint": "Capabilities this tier grants (e.g. content.auto_approve = true).",
+        "addPerk": "Add perk",
+        "removePerk": "Remove perk",
+        "cancel": "Cancel",
+        "saveTier": "Save",
+        "invalid": "Check the fields (the key may be taken).",
+        "nameFallback": "Falls back to the default"
+      },
+      "settings": {
+        "masterSwitch": "Master switch",
+        "masterHint": "Force the whole system on or off, or follow the default.",
+        "default": "Default",
+        "on": "On",
+        "off": "Off",
+        "effective": "Currently {state}",
+        "adjustTitle": "Adjust a user's points",
+        "adjustHint": "Grant or claw back points (negative to remove). Applied immediately.",
+        "userId": "User ID",
+        "amount": "Amount",
+        "reason": "Reason",
+        "reasonPlaceholder": "e.g. garbage content",
+        "adjust": "Apply",
+        "adjusted": "Done — new score: {points}.",
+        "adjustError": "Couldn't adjust.",
+        "userNotFound": "No user with that ID."
+      }
     }
   },
   "session": {
@@ -1803,5 +1878,12 @@
     "cm": "Centimeter",
     "m": "Meter",
     "other": "Other"
+  },
+  "points": {
+    "title": "Your points",
+    "score": "{points} points",
+    "start": "Start earning points",
+    "toNext": "{points} to {tier}",
+    "topTier": "Top tier reached"
   }
 }

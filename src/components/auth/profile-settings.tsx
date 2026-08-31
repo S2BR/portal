@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 
 import type { Timezone } from "@/app/api/auth/timezones/route";
 import { useCurrentUser } from "@/components/auth/current-user";
+import { PointsSummary } from "@/components/gamification/points-summary";
 import type { AuthUser, Gender } from "@/lib/api/types";
 import { Button } from "@/components/ui/button";
 import { Combobox } from "@/components/ui/combobox";
@@ -212,6 +213,7 @@ export function ProfileSettings() {
 
   return (
     <SettingGroup title={t("title")} description={t("subtitle")}>
+      <PointsSummary />
       <div className="grid gap-3 sm:grid-cols-2">
         {/* Name */}
         {editingField === "name" ? (

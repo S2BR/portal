@@ -12,6 +12,7 @@ import {
   ShieldCheck,
   Tag,
   Tags,
+  Trophy,
   type LucideIcon,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -31,11 +32,23 @@ type LeafKey =
   | "brands"
   | "families"
   | "taxonomy"
-  | "uploads";
+  | "uploads"
+  | "gamification";
 
-type GroupKey = "dashboard" | "catalog" | "moderation" | "directory" | "media";
+type GroupKey =
+  | "dashboard"
+  | "catalog"
+  | "moderation"
+  | "directory"
+  | "media"
+  | "gamification";
 
-type LeafDef = { key: LeafKey; href: string; icon: LucideIcon; requiredRoles?: string[] };
+type LeafDef = {
+  key: LeafKey;
+  href: string;
+  icon: LucideIcon;
+  requiredRoles?: string[];
+};
 type GroupDef = { key: GroupKey; icon: LucideIcon; items: LeafDef[] };
 
 // The admin sections, grouped like the portal--6 Filament clusters. `requiredRoles` gates a page to
@@ -45,13 +58,19 @@ const GROUPS: GroupDef[] = [
     key: "dashboard",
     icon: LayoutDashboard,
     items: [
-      { key: "dashboard", href: "/portal/admin/dashboard", icon: LayoutDashboard },
+      {
+        key: "dashboard",
+        href: "/portal/admin/dashboard",
+        icon: LayoutDashboard,
+      },
     ],
   },
   {
     key: "directory",
     icon: Building2,
-    items: [{ key: "businesses", href: "/portal/admin/businesses", icon: Building2 }],
+    items: [
+      { key: "businesses", href: "/portal/admin/businesses", icon: Building2 },
+    ],
   },
   {
     key: "catalog",
@@ -75,6 +94,13 @@ const GROUPS: GroupDef[] = [
     key: "media",
     icon: ImageIcon,
     items: [{ key: "uploads", href: "/portal/admin/uploads", icon: ImageIcon }],
+  },
+  {
+    key: "gamification",
+    icon: Trophy,
+    items: [
+      { key: "gamification", href: "/portal/admin/gamification", icon: Trophy },
+    ],
   },
 ];
 

@@ -1009,7 +1009,8 @@
       "products": "Prodotti",
       "brands": "Marche",
       "families": "Famiglie",
-      "dashboard": "Dashboard"
+      "dashboard": "Dashboard",
+      "gamification": "Gamification"
     },
     "reports": {
       "title": "Segnalazioni",
@@ -1653,7 +1654,8 @@
       "moderation": "Moderazione",
       "directory": "Directory",
       "media": "Media",
-      "dashboard": "Dashboard"
+      "dashboard": "Dashboard",
+      "gamification": "Gamification"
     },
     "dashboard": {
       "title": "Dashboard",
@@ -1706,6 +1708,79 @@
       "attachHint": "Digita per cercare nel catalogo.",
       "attachNoResults": "Nessun prodotto trovato.",
       "attachConfirm": "Aggiungi"
+    },
+    "gamification": {
+      "title": "Gamification",
+      "subtitle": "Regola l'economia dei punti, i livelli e i vantaggi — senza deploy.",
+      "forbidden": "Non hai accesso a questo.",
+      "loadError": "Impossibile caricare.",
+      "saved": "Salvato.",
+      "saveError": "Impossibile salvare.",
+      "tabs": {
+        "rules": "Regole",
+        "tiers": "Livelli",
+        "settings": "Impostazioni"
+      },
+      "actions": {
+        "review_written": "Scrivere una recensione",
+        "sighting_added": "Aggiungere un prodotto",
+        "business_created": "Creare un'attività",
+        "product_approved": "Prodotto approvato",
+        "claim_approved": "Rivendicazione approvata",
+        "report_upheld": "Segnalazione accolta"
+      },
+      "timing": {
+        "immediate": "Immediato",
+        "on_approval": "All'approvazione"
+      },
+      "rules": {
+        "enabled": "Attivo",
+        "points": "Punti",
+        "timing": "Quando",
+        "perDay": "Max al giorno",
+        "cooldown": "Attesa (s)",
+        "oncePerTarget": "Una volta per obiettivo",
+        "save": "Salva"
+      },
+      "tiers": {
+        "new": "Nuovo livello",
+        "minPoints": "Da {points} punti",
+        "minPointsLabel": "Punti minimi",
+        "edit": "Modifica",
+        "delete": "Elimina",
+        "deleted": "Livello eliminato.",
+        "createTitle": "Nuovo livello",
+        "editTitle": "Modifica livello",
+        "key": "Chiave",
+        "keyHint": "Un identificatore stabile, minuscolo (es. colaborador). Non modificabile dopo.",
+        "name": "Nome",
+        "perks": "Vantaggi",
+        "perksHint": "Funzionalità concesse da questo livello (es. content.auto_approve = true).",
+        "addPerk": "Aggiungi vantaggio",
+        "removePerk": "Rimuovi vantaggio",
+        "cancel": "Annulla",
+        "saveTier": "Salva",
+        "invalid": "Controlla i campi (la chiave potrebbe essere in uso).",
+        "nameFallback": "Usa il valore predefinito se vuoto"
+      },
+      "settings": {
+        "masterSwitch": "Interruttore generale",
+        "masterHint": "Forza tutto il sistema acceso o spento, o segui il valore predefinito.",
+        "default": "Predefinito",
+        "on": "Acceso",
+        "off": "Spento",
+        "effective": "Attualmente {state}",
+        "adjustTitle": "Regola i punti di un utente",
+        "adjustHint": "Assegna o togli punti (negativo per rimuovere). Applicato subito.",
+        "userId": "ID utente",
+        "amount": "Quantità",
+        "reason": "Motivo",
+        "reasonPlaceholder": "es. contenuto spazzatura",
+        "adjust": "Applica",
+        "adjusted": "Fatto — nuovo punteggio: {points}.",
+        "adjustError": "Impossibile regolare.",
+        "userNotFound": "Nessun utente con quell'ID."
+      }
     }
   },
   "session": {
@@ -1803,5 +1878,12 @@
     "cm": "Centimetro",
     "m": "Metro",
     "other": "Altro"
+  },
+  "points": {
+    "title": "I tuoi punti",
+    "score": "{points} punti",
+    "start": "Inizia a guadagnare punti",
+    "toNext": "{points} a {tier}",
+    "topTier": "Livello massimo raggiunto"
   }
 }
