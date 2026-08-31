@@ -14,7 +14,10 @@ export interface CatalogSighting {
   variant: {
     id: string;
     label: string | null;
+    /** The numeric amount (e.g. "1"), paired with `unit`. */
     size: string | null;
+    /** The measure code (e.g. "un"); see @/lib/products/units. */
+    unit: string | null;
     barcode: string | null;
     product: {
       id: string;
@@ -35,6 +38,9 @@ export interface AddCatalogBody {
     description?: string | null;
     barcode?: string | null;
     label?: string | null;
+    /** The handmade item's quantity: numeric amount + measure code (see @/lib/products/units). */
+    size?: string | null;
+    unit?: string | null;
   };
   price?: number | null;
   currency?: string | null;

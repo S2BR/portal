@@ -992,7 +992,10 @@
       "unavailable": "Unavailable",
       "sizeCount": "{count, plural, one {# formato} other {# formati}}",
       "pickSize": "Scegli un formato",
-      "defaultSize": "Predefinito"
+      "defaultSize": "Predefinito",
+      "back": "Indietro",
+      "quantity": "Quantità",
+      "quantityAmount": "Qtà"
     }
   },
   "admin": {
@@ -1564,7 +1567,8 @@
       },
       "reorderSku": "Drag to reorder",
       "reorderImage": "Drag to reorder",
-      "search": "Cerca prodotti"
+      "search": "Cerca prodotti",
+      "variantAmount": "Qtà"
     },
     "brands": {
       "title": "Marche",
@@ -1772,5 +1776,32 @@
     "emptyHint": "Ancora nessuna condizione — aggiungine una per restringere l’elenco.",
     "advanced": "Avanzato",
     "simple": "Semplice"
+  },
+  "units": {
+    "search": "Cerca unità",
+    "none": "Nessuna unità",
+    "empty": "Nessuna unità trovata",
+    "placeholder": "Unità",
+    "ea": "Cadauno",
+    "un": "Unità",
+    "pc": "Pezzo",
+    "pk": "Confezione",
+    "dz": "Dozzina",
+    "mg": "Milligrammo",
+    "g": "Grammo",
+    "kg": "Chilogrammo",
+    "oz": "Oncia",
+    "lb": "Libbra",
+    "ml": "Millilitro",
+    "cl": "Centilitro",
+    "l": "Litro",
+    "floz": "Oncia liquida",
+    "pt": "Pinta",
+    "qt": "Quarto",
+    "gal": "Gallone",
+    "mm": "Millimetro",
+    "cm": "Centimetro",
+    "m": "Metro",
+    "other": "Altro"
   }
 }

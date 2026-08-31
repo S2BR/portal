@@ -1,6 +1,16 @@
 "use client";
 
-import { Check, Package, Pencil, Plus, Search, Trash2, X } from "lucide-react";
+import {
+  ArrowLeft,
+  Check,
+  Package,
+  Pencil,
+  Plus,
+  ScanBarcode,
+  Search,
+  Trash2,
+  X,
+} from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -11,7 +21,9 @@ import {
   type CatalogHit,
   type CatalogVariant,
 } from "@/lib/products/typesense";
+import { UnitSelect } from "@/components/products/unit-select";
 import { CURRENCIES } from "@/lib/products/currencies";
+import { unitFor, type UnitCode } from "@/lib/products/units";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -107,10 +119,6 @@ function ProductThumb({
       <Package className="size-5" aria-hidden />
     </span>
   );
-}
-
-function variantLabel(variant: CatalogVariant, fallback: string): string {
-  return variant.label || variant.barcode || fallback;
 }
 
 /**
@@ -217,7 +225,7 @@ export function OwnerProducts({ businessSlug }: { businessSlug: string }) {
           ))}
         </div>
       ) : items.length === 0 ? (
-        <div className="bg-muted/40 text-muted-foreground rounded-2xl border p-10 text-center text-sm">
+        <div className="bg-muted/40 text-muted-foreground rounded-2xl p-10 text-center text-sm">
           {t("empty")}
         </div>
       ) : (
@@ -292,6 +300,12 @@ function ProductRow({
 
   const product = item.variant?.product ?? null;
 
+  // The SKU quantity as "amount symbol" (e.g. "350 ml"); shown when there's no human label.
+  const quantity =
+    [item.variant?.size, unitFor(item.variant?.unit)?.symbol]
+      .filter((part): part is string => Boolean(part))
+      .join(" ") || null;
+
   const priceLabel =
     item.price === null
       ? "—"
@@ -333,7 +347,7 @@ function ProductRow({
   };
 
   return (
-    <li className="bg-card rounded-2xl border p-5">
+    <li className="bg-muted/40 rounded-2xl p-5">
       <div className="flex items-start gap-4">
         <ProductThumb
           image={product?.image ?? null}
@@ -345,6 +359,10 @@ function ProductRow({
             {item.variant?.label ? (
               <span className="text-muted-foreground text-sm font-normal">
                 {item.variant.label}
+              </span>
+            ) : quantity ? (
+              <span className="text-muted-foreground text-sm font-normal">
+                {quantity}
               </span>
             ) : null}
             {product?.is_homemade ? (
@@ -469,6 +487,8 @@ function AddProductDialog({
 
   const [name, setName] = useState("");
   const [suggestions, setSuggestions] = useState<CatalogHit[]>([]);
+  const [amount, setAmount] = useState("");
+  const [unit, setUnit] = useState<UnitCode | null>(null);
   const [price, setPrice] = useState<number | null>(null);
   const [currency, setCurrency] = useState<string>(CURRENCIES[0]);
   const [saving, setSaving] = useState(false);
@@ -483,6 +503,8 @@ function AddProductDialog({
     setVariant(null);
     setName("");
     setSuggestions([]);
+    setAmount("");
+    setUnit(null);
     setPrice(null);
     setCurrency(CURRENCIES[0]);
   };
@@ -554,7 +576,15 @@ function AddProductDialog({
       const body =
         mode === "search"
           ? { variant_id: variant?.id, price, currency }
-          : { product: { name: name.trim() }, price, currency };
+          : {
+              product: {
+                name: name.trim(),
+                size: amount.trim() || null,
+                unit,
+              },
+              price,
+              currency,
+            };
 
       const response = await fetch(base, {
         method: "POST",
@@ -641,13 +671,13 @@ function AddProductDialog({
                 />
               </Field>
               {results.length > 0 ? (
-                <ul className="divide-y rounded-lg border">
+                <ul className="space-y-2">
                   {results.map((match) => (
                     <li key={match.id}>
                       <button
                         type="button"
                         onClick={() => pickProduct(match)}
-                        className="hover:bg-muted/60 flex w-full items-center gap-3 px-3 py-2.5 text-left"
+                        className="bg-muted/40 hover:bg-muted/70 flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors"
                       >
                         <ProductThumb
                           image={match.image}
@@ -682,7 +712,17 @@ function AddProductDialog({
           {/* A picked product with more than one size: choose which SKU to carry. */}
           {mode === "search" && selected !== null && variant === null ? (
             <div className="space-y-3">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="ghost"
+                  className="-ms-1.5 size-8 shrink-0"
+                  onClick={() => setSelected(null)}
+                  aria-label={t("back")}
+                >
+                  <ArrowLeft className="size-4" aria-hidden />
+                </Button>
                 <ProductThumb
                   image={selected.image}
                   name={selected.name}
@@ -695,21 +735,33 @@ function AddProductDialog({
                   </span>
                 </p>
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-col gap-2">
                 {selected.variants.map((option) => (
                   <button
                     key={option.id}
                     type="button"
                     onClick={() => setVariant(option)}
-                    className="hover:border-brand-green/50 hover:bg-muted/40 flex w-24 flex-col items-center gap-1.5 rounded-lg border p-2 text-center transition-colors"
+                    className="bg-muted/40 hover:bg-muted/70 flex items-center gap-3 rounded-xl p-2 text-left transition-colors"
                   >
                     <ProductThumb
                       image={option.image ?? selected.image}
                       name={selected.name}
+                      size="sm"
                     />
-                    <span className="text-xs leading-tight font-medium">
-                      {variantLabel(option, t("defaultSize"))}
-                    </span>
+                    <div className="min-w-0 flex-1">
+                      <span className="block text-sm font-medium">
+                        {option.label || t("defaultSize")}
+                      </span>
+                      {option.barcode ? (
+                        <span className="text-muted-foreground mt-0.5 flex items-center gap-1.5 text-xs tabular-nums">
+                          <ScanBarcode
+                            className="size-3.5 shrink-0"
+                            aria-hidden
+                          />
+                          {option.barcode}
+                        </span>
+                      ) : null}
+                    </div>
                   </button>
                 ))}
               </div>
@@ -717,18 +769,26 @@ function AddProductDialog({
           ) : null}
 
           {mode === "search" && selected !== null && variant !== null ? (
-            <div className="bg-muted/40 flex items-center gap-3 rounded-lg border p-3">
+            <div className="bg-muted/40 flex items-center gap-3 rounded-xl p-3">
               <ProductThumb
                 image={variant.image ?? selected.image}
                 name={selected.name}
                 size="sm"
               />
-              <p className="min-w-0 flex-1 text-sm">
-                <span className="font-medium">{selected.name}</span>{" "}
-                <span className="text-muted-foreground">
-                  · {variantLabel(variant, t("defaultSize"))}
-                </span>
-              </p>
+              <div className="min-w-0 flex-1 text-sm">
+                <p>
+                  <span className="font-medium">{selected.name}</span>{" "}
+                  <span className="text-muted-foreground">
+                    · {variant.label || t("defaultSize")}
+                  </span>
+                </p>
+                {variant.barcode ? (
+                  <span className="text-muted-foreground mt-0.5 flex items-center gap-1.5 text-xs tabular-nums">
+                    <ScanBarcode className="size-3.5 shrink-0" aria-hidden />
+                    {variant.barcode}
+                  </span>
+                ) : null}
+              </div>
               <Button
                 size="sm"
                 variant="ghost"
@@ -751,6 +811,20 @@ function AddProductDialog({
                   onChange={(event) => setName(event.target.value)}
                   placeholder={t("handmadePlaceholder")}
                 />
+              </Field>
+              <Field label={t("quantity")}>
+                <div className="flex items-center gap-2">
+                  <Input
+                    value={amount}
+                    onChange={(event) => setAmount(event.target.value)}
+                    placeholder={t("quantityAmount")}
+                    inputMode="decimal"
+                    className="w-28 shrink-0"
+                  />
+                  <div className="flex-1">
+                    <UnitSelect value={unit} onChange={setUnit} />
+                  </div>
+                </div>
               </Field>
               {/* As the name is typed, surface matching catalog products so the owner carries the
                   existing one instead of creating a duplicate. */}

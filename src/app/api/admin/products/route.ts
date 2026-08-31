@@ -8,7 +8,10 @@ export type ModerationStatus = "draft" | "pending" | "approved" | "rejected";
 export interface AdminProductVariant {
   id: string;
   label: string | null;
+  /** The numeric amount (e.g. "350"), paired with `unit`. */
   size: string | null;
+  /** The measure code (e.g. "ml"); see @/lib/products/units. */
+  unit: string | null;
   barcode: string | null;
   image: string | null;
 }
@@ -72,6 +75,8 @@ export interface AdminProductBody {
     id?: string;
     label?: string | null;
     size?: string | null;
+    /** The measure code (e.g. "ml"); see @/lib/products/units. */
+    unit?: string | null;
     barcode?: string | null;
     /** A remote OpenFoodFacts front-image url to import server-side for this SKU. */
     image_url?: string | null;

@@ -992,7 +992,10 @@
       "unavailable": "Unavailable",
       "sizeCount": "{count, plural, one {# size} other {# sizes}}",
       "pickSize": "Pick a size",
-      "defaultSize": "Default"
+      "defaultSize": "Default",
+      "back": "Back",
+      "quantity": "Quantity",
+      "quantityAmount": "Amount"
     }
   },
   "admin": {
@@ -1564,7 +1567,8 @@
       },
       "reorderSku": "Drag to reorder",
       "reorderImage": "Drag to reorder",
-      "search": "Search products"
+      "search": "Search products",
+      "variantAmount": "Amount"
     },
     "brands": {
       "title": "Brands",
@@ -1772,5 +1776,32 @@
     "emptyHint": "No conditions yet — add one to narrow the list.",
     "advanced": "Advanced",
     "simple": "Simple"
+  },
+  "units": {
+    "search": "Search units",
+    "none": "No unit",
+    "empty": "No units found",
+    "placeholder": "Unit",
+    "ea": "Each",
+    "un": "Unit",
+    "pc": "Piece",
+    "pk": "Pack",
+    "dz": "Dozen",
+    "mg": "Milligram",
+    "g": "Gram",
+    "kg": "Kilogram",
+    "oz": "Ounce",
+    "lb": "Pound",
+    "ml": "Milliliter",
+    "cl": "Centiliter",
+    "l": "Liter",
+    "floz": "Fluid ounce",
+    "pt": "Pint",
+    "qt": "Quart",
+    "gal": "Gallon",
+    "mm": "Millimeter",
+    "cm": "Centimeter",
+    "m": "Meter",
+    "other": "Other"
   }
 }

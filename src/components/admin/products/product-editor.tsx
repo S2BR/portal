@@ -31,6 +31,8 @@ import type {
 } from "@/app/api/admin/products/route";
 import type { BarcodeOwner } from "@/app/api/admin/products/by-barcode/route";
 import { searchCatalog, type CatalogHit } from "@/lib/products/typesense";
+import { UnitSelect } from "@/components/products/unit-select";
+import { type UnitCode } from "@/lib/products/units";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -73,14 +75,23 @@ type VariantDraft = {
   key: string;
   id?: string;
   label: string;
+  /** The numeric amount, paired with `unit` (e.g. "350"). */
   size: string;
+  /** The measure the amount is in (e.g. "ml"). */
+  unit: UnitCode | null;
   barcode: string;
   /** A remote OFF image url pending server-side import (set by a barcode lookup). */
   imageUrl?: string;
 };
 
 function blankVariant(): VariantDraft {
-  return { key: crypto.randomUUID(), label: "", size: "", barcode: "" };
+  return {
+    key: crypto.randomUUID(),
+    label: "",
+    size: "",
+    unit: null,
+    barcode: "",
+  };
 }
 
 /** Lowercased, accent-stripped words of length ≥ 3 — the significant tokens of a product name. */
@@ -319,6 +330,7 @@ export function ProductEditor({ productId }: { productId: string | null }) {
               id: variant.id,
               label: variant.label ?? "",
               size: variant.size ?? "",
+              unit: (variant.unit as UnitCode | null) ?? null,
               barcode: variant.barcode ?? "",
             }))
           : [blankVariant()];
@@ -329,6 +341,7 @@ export function ProductEditor({ productId }: { productId: string | null }) {
           key: crypto.randomUUID(),
           label: addSize ?? "",
           size: addSize ?? "",
+          unit: null,
           barcode: addBarcode,
           imageUrl: addImage ?? undefined,
         });
@@ -366,6 +379,7 @@ export function ProductEditor({ productId }: { productId: string | null }) {
           id: variant.id,
           label: variant.label.trim() || null,
           size: variant.size.trim() || null,
+          unit: variant.unit,
           barcode: variant.barcode.trim() || null,
           image_url: variant.imageUrl || null,
         })),
@@ -663,6 +677,7 @@ export function ProductEditor({ productId }: { productId: string | null }) {
             key: crypto.randomUUID(),
             label: found.size ?? "",
             size: found.size ?? "",
+            unit: null,
             barcode: code,
             imageUrl: found.image_url ?? undefined,
           },
@@ -671,7 +686,13 @@ export function ProductEditor({ productId }: { productId: string | null }) {
         toast.success(t("lookupFound"));
       } else {
         setVariants([
-          { key: crypto.randomUUID(), label: "", size: "", barcode: code },
+          {
+            key: crypto.randomUUID(),
+            label: "",
+            size: "",
+            unit: null,
+            barcode: code,
+          },
         ]);
         toast.info(t("lookupNotFound"));
       }
@@ -1149,6 +1170,36 @@ export function ProductEditor({ productId }: { productId: string | null }) {
                           >
                             <Trash2 className="size-4" aria-hidden />
                           </Button>
+                        </div>
+                        {/* The SKU's quantity: a numeric amount + its unit of measure. */}
+                        <div className="flex items-center gap-2 ps-8">
+                          <Input
+                            value={variant.size}
+                            onChange={(event) =>
+                              setVariants((current) =>
+                                current.map((row, rowIndex) =>
+                                  rowIndex === index
+                                    ? { ...row, size: event.target.value }
+                                    : row,
+                                ),
+                              )
+                            }
+                            placeholder={t("variantAmount")}
+                            inputMode="decimal"
+                            className="w-28 shrink-0"
+                          />
+                          <div className="w-48">
+                            <UnitSelect
+                              value={variant.unit}
+                              onChange={(unit) =>
+                                setVariants((current) =>
+                                  current.map((row, rowIndex) =>
+                                    rowIndex === index ? { ...row, unit } : row,
+                                  ),
+                                )
+                              }
+                            />
+                          </div>
                         </div>
                         {barcodeConflicts[variant.key] ? (
                           <p className="text-xs text-amber-600 dark:text-amber-500">
