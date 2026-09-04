@@ -1911,5 +1911,21 @@
     "out_of_stock": "En rupture",
     "coming_soon": "Bientôt",
     "discontinued": "Abandonné"
+  },
+  "filterBuilder": {
+    "addFilter": "Ajouter un filtre",
+    "clearAll": "Tout effacer",
+    "search": "Rechercher…",
+    "noResults": "Aucun résultat",
+    "op": {
+      "contains": "contient",
+      "notContains": "ne contient pas",
+      "startsWith": "commence par",
+      "endsWith": "se termine par",
+      "is": "est",
+      "anyOf": "est l'un de",
+      "noneOf": "n'est aucun de",
+      "between": "entre"
+    }
   }
 }

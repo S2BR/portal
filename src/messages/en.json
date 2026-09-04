@@ -1911,5 +1911,21 @@
     "out_of_stock": "Out of stock",
     "coming_soon": "Coming soon",
     "discontinued": "Discontinued"
+  },
+  "filterBuilder": {
+    "addFilter": "Add filter",
+    "clearAll": "Clear all",
+    "search": "Search…",
+    "noResults": "No results",
+    "op": {
+      "contains": "contains",
+      "notContains": "does not contain",
+      "startsWith": "starts with",
+      "endsWith": "ends with",
+      "is": "is",
+      "anyOf": "is any of",
+      "noneOf": "is none of",
+      "between": "between"
+    }
   }
 }
