@@ -470,7 +470,7 @@ export function OwnerProducts({ businessSlug }: { businessSlug: string }) {
                     <TableCell>
                       <div className="flex min-w-0 items-center gap-3">
                         <ProductThumb
-                          image={product?.image ?? null}
+                          image={item.cover_image ?? product?.image ?? null}
                           name={product?.name ?? ""}
                           size="sm"
                         />

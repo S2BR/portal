@@ -615,7 +615,8 @@
       "statusClosed": "閉店",
       "closesAt": "{time}に閉店",
       "opensAt": "{time}に開店",
-      "opensAtDay": "{day} {time}に開店"
+      "opensAtDay": "{day} {time}に開店",
+      "products": "商品"
     },
     "publish": {
       "checklistTitle": "まだ公開されていません",
@@ -1008,13 +1009,32 @@
         "offerTitle": "提供内容",
         "offerDescription": "顧客に表示されるこの製品の価格とステータス。",
         "statusLabel": "提供ステータス",
-        "statusHint": "一時停止・在庫切れ・提供終了にすると顧客への提供を止められます。"
+        "statusHint": "一時停止・在庫切れ・提供終了にすると顧客への提供を止められます。",
+        "detailsTitle": "商品の詳細",
+        "detailsDescription": "お客様に表示される名前、ブランド、数量、説明。",
+        "sharedNote": "これは共有カタログの商品です。詳細は一元管理されています。変更するには削除して、自分のバージョンを追加してください。",
+        "photosTitle": "写真",
+        "photosDescription": "この商品のあなた自身の写真。最初の写真がカバーになり、プロフィールに表示されます。"
       },
       "searchProducts": "製品を検索",
       "allStatuses": "すべてのステータス",
       "filterPrice": "価格",
       "min": "最小",
-      "max": "最大"
+      "max": "最大",
+      "brandLabel": "ブランド",
+      "descriptionLabel": "説明",
+      "photos": {
+        "add": "写真を追加",
+        "hint": "ビジネスプロフィールに表示されます。",
+        "max": "最大 {max}",
+        "invalidType": "このファイル形式はサポートされていません。",
+        "tooLarge": "この画像は大きすぎます。",
+        "uploading": "アップロード中… {percent}%",
+        "finalizing": "完了処理中…",
+        "saved": "写真を追加しました。",
+        "error": "写真を保存できませんでした。",
+        "alt": "商品の写真"
+      }
     }
   },
   "admin": {

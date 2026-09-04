@@ -4,7 +4,10 @@ import { getLocale } from "next-intl/server";
 import { cache } from "react";
 
 import { BusinessProfile } from "@/components/business/public/business-profile";
-import { getPublicBusiness } from "@/lib/public-business";
+import {
+  getPublicBusiness,
+  getPublicBusinessProducts,
+} from "@/lib/public-business";
 import { businessPagesRobots } from "@/lib/seo";
 
 // Memoize per request so generateMetadata and the page share one API call.
@@ -66,7 +69,12 @@ export default async function PublicBusinessPage({
     redirect(`/businesses/${business.slug}`);
   }
 
-  const locale = await getLocale();
+  const [locale, products] = await Promise.all([
+    getLocale(),
+    getPublicBusinessProducts(business.slug),
+  ]);
 
-  return <BusinessProfile business={business} locale={locale} />;
+  return (
+    <BusinessProfile business={business} products={products} locale={locale} />
+  );
 }

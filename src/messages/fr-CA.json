@@ -615,7 +615,8 @@
       "statusClosed": "Fermé",
       "closesAt": "Ferme à {time}",
       "opensAt": "Ouvre à {time}",
-      "opensAtDay": "Ouvre {day} à {time}"
+      "opensAtDay": "Ouvre {day} à {time}",
+      "products": "Produits"
     },
     "publish": {
       "checklistTitle": "Pas encore en ligne",
@@ -1008,13 +1009,32 @@
         "offerTitle": "Offre",
         "offerDescription": "Le prix et le statut que les clients voient pour ce produit.",
         "statusLabel": "Statut de l'offre",
-        "statusHint": "Mettez en pause, marquez en rupture ou abandonnez pour cesser de l'offrir."
+        "statusHint": "Mettez en pause, marquez en rupture ou abandonnez pour cesser de l'offrir.",
+        "detailsTitle": "Détails du produit",
+        "detailsDescription": "Le nom, la marque, la quantité et la description que voient les clients.",
+        "sharedNote": "Ce produit provient du catalogue partagé — ses détails sont gérés de façon centralisée. Retirez-le et ajoutez votre propre version pour les modifier.",
+        "photosTitle": "Photos",
+        "photosDescription": "Vos propres photos de ce produit. La première sert de couverture; elles apparaissent sur votre profil."
       },
       "searchProducts": "Rechercher des produits",
       "allStatuses": "Tous les statuts",
       "filterPrice": "Prix",
       "min": "Min",
-      "max": "Max"
+      "max": "Max",
+      "brandLabel": "Marque",
+      "descriptionLabel": "Description",
+      "photos": {
+        "add": "Ajouter des photos",
+        "hint": "Affichées sur le profil de votre entreprise.",
+        "max": "jusqu'à {max}",
+        "invalidType": "Ce type de fichier n'est pas pris en charge.",
+        "tooLarge": "Cette image est trop volumineuse.",
+        "uploading": "Téléversement… {percent} %",
+        "finalizing": "Finalisation…",
+        "saved": "Photo ajoutée.",
+        "error": "Impossible d'enregistrer cette photo.",
+        "alt": "Photo du produit"
+      }
     }
   },
   "admin": {
