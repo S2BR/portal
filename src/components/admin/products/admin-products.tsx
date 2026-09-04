@@ -1,12 +1,15 @@
 "use client";
 
 import {
+  Calendar,
   Check,
+  CircleDot,
+  Eye,
   ImageIcon,
   Pencil,
   Plus,
-  Search,
   Trash2,
+  Type,
   Upload,
   X,
 } from "lucide-react";
@@ -16,15 +19,19 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import { DataFilters, type ScopeDef } from "@/components/admin/data-filters";
 import type {
   AdminProductBody,
   AdminProductListItem,
   ModerationStatus,
 } from "@/app/api/admin/products/route";
+import {
+  Filters,
+  type FilterField,
+  type FilterValue,
+  type FiltersLabels,
+} from "@/components/ui/filters";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -34,7 +41,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { FilterFieldDef } from "@/lib/filters/tree";
+import {
+  paramsToPills,
+  pillsToParams,
+  type ScopeSpec,
+} from "@/lib/filters/pill";
+
+const STATUSES = ["approved", "pending", "rejected", "draft"] as const;
+
+/** `q` (fuzzy name) and `visibility` ride top-level params; the other pills are `filter[…]` columns. */
+const SCOPES: ScopeSpec[] = [
+  { field: "q", param: "q" },
+  { field: "visibility", param: "visibility", default: "shared" },
+];
 
 const VISIBILITIES = ["shared", "private", "all"] as const;
 
@@ -50,54 +69,110 @@ const STATUS_VARIANT: Record<
 
 /**
  * The admin product catalog as a table (like the business directory) + moderation queue. Defaults to
- * the SHARED base catalog (a visibility scope select reveals private products). Server-side filtered
- * via the shared operator {@see DataFilters} builder. Rows link to the full-page editor; approve/reject,
- * promote (private→shared), and delete act inline. Loading shows skeletons; paginated.
+ * the SHARED base catalog (a `visibility` scope pill reveals private products). Server-side filtered
+ * via the shared pill {@see Filters} bar → the same `filter[…]` contract the API expects. Rows link to
+ * the full-page editor; approve/reject, promote (private→shared), and delete act inline. Loading shows
+ * skeletons; paginated.
  */
 export function AdminProducts() {
   const t = useTranslations("admin.products");
+  const tf = useTranslations("filters");
   const format = useFormatter();
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
 
-  const query = searchParams.toString();
-
   const [items, setItems] = useState<AdminProductListItem[]>([]);
   const [meta, setMeta] = useState({ current_page: 1, last_page: 1, total: 0 });
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState(searchParams.get("q") ?? "");
+  const [page, setPage] = useState(() => {
+    const raw = Number(searchParams.get("page"));
+    return Number.isInteger(raw) && raw > 1 ? raw : 1;
+  });
 
-  const fields: FilterFieldDef[] = [
+  // The pill filter bar: a fuzzy name search (`q`), the moderation status, the created date, and the
+  // visibility scope — the first and last ride top-level params, the middle two as `filter[…]` columns.
+  const filterFields: FilterField[] = [
     {
-      name: "moderation_status",
-      label: t("filters.status"),
-      type: "select",
-      quick: true,
-      options: (["approved", "pending", "rejected", "draft"] as const).map(
-        (key) => ({ value: key, label: t(`filter.${key}`) }),
-      ),
+      id: "q",
+      label: t("filters.name"),
+      icon: Type,
+      type: "text",
+      operators: [{ id: "contains" }],
+      placeholder: t("search"),
     },
-    { name: "created_at", label: t("filters.created"), type: "date" },
-  ];
-
-  // Visibility rides in the filter row as a single-select scope facet (not a `filter[…]` column).
-  const scopes: ScopeDef[] = [
     {
-      param: "visibility",
+      id: "moderation_status",
+      label: t("filters.status"),
+      icon: CircleDot,
+      type: "multiselect",
+      options: STATUSES.map((key) => ({
+        value: key,
+        label: t(`filter.${key}`),
+      })),
+      operators: [{ id: "is_any_of" }, { id: "is_none_of" }],
+    },
+    {
+      id: "created_at",
+      label: t("filters.created"),
+      icon: Calendar,
+      type: "date",
+      operators: [
+        { id: "eq" },
+        { id: "lt" },
+        { id: "gt" },
+        { id: "between", shape: "range" },
+      ],
+    },
+    {
+      id: "visibility",
       label: t("filters.visibility"),
-      defaultValue: "shared",
+      icon: Eye,
+      type: "select",
       options: VISIBILITIES.map((value) => ({
         value,
         label: t(`filter.${value}`),
       })),
+      operators: [{ id: "is" }],
     },
   ];
+
+  const filterLabels: FiltersLabels = {
+    addFilter: tf("addFilter"),
+    clearAll: tf("clearAll"),
+    search: tf("search"),
+    noResults: tf("noResults"),
+    min: tf("from"),
+    max: tf("to"),
+    operators: tf.raw("operators") as Record<string, string>,
+  };
+
+  const [filterValues, setFilterValues] = useState<FilterValue[]>(() =>
+    paramsToPills(
+      new URLSearchParams(searchParams.toString()),
+      filterFields,
+      SCOPES,
+    ),
+  );
+
+  // The URL the current filters + page describe. The refetch keys off this string, and it's mirrored
+  // into the address bar via history.replaceState (below) so links stay shareable WITHOUT a router
+  // navigation — a soft navigation re-runs the route and steals focus from the search field mid-type.
+  const params = pillsToParams(filterValues, filterFields, SCOPES);
+  if (page > 1) {
+    params.set("page", String(page));
+  }
+  const queryString = params.toString();
+
+  const applyFilters = (values: FilterValue[]) => {
+    setFilterValues(values);
+    setPage(1);
+  };
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/admin/products?${query}`);
+      const response = await fetch(`/api/admin/products?${queryString}`);
       if (response.status === 403) {
         toast.error(t("forbidden"));
         return;
@@ -113,53 +188,21 @@ export function AdminProducts() {
     } finally {
       setLoading(false);
     }
-  }, [query, t]);
+  }, [queryString, t]);
 
   useEffect(() => {
-    // Refetch on mount and whenever the URL (filters / visibility / search / page) changes.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    void load();
+    // Debounced so typing the name search fires one request, not one per keystroke; runs on any change.
+    const handle = setTimeout(() => {
+      void load();
+    }, 250);
+    return () => clearTimeout(handle);
   }, [load]);
 
-  // Debounce the search box into the URL `q` param (a no-op while it already matches the URL).
   useEffect(() => {
-    const current = searchParams.get("q") ?? "";
-    if (search.trim() === current) {
-      return;
-    }
-    const handle = setTimeout(() => {
-      const params = new URLSearchParams(searchParams.toString());
-      if (search.trim()) {
-        params.set("q", search.trim());
-      } else {
-        params.delete("q");
-      }
-      params.delete("page");
-      router.replace(
-        params.toString() ? `${pathname}?${params.toString()}` : pathname,
-        { scroll: false },
-      );
-    }, 300);
-    return () => clearTimeout(handle);
-  }, [search, searchParams, pathname, router]);
-
-  function updateParam(mutate: (params: URLSearchParams) => void) {
-    const params = new URLSearchParams(searchParams.toString());
-    mutate(params);
-    router.replace(
-      params.toString() ? `${pathname}?${params.toString()}` : pathname,
-      { scroll: false },
-    );
-  }
-
-  const setPage = (page: number) =>
-    updateParam((params) => {
-      if (page > 1) {
-        params.set("page", String(page));
-      } else {
-        params.delete("page");
-      }
-    });
+    // Mirror the query into the address bar (shareable) without a navigation, so focus is never stolen.
+    const url = queryString ? `${pathname}?${queryString}` : pathname;
+    window.history.replaceState(null, "", url);
+  }, [queryString, pathname]);
 
   const patch = async (id: string, body: AdminProductBody, ok: string) => {
     const response = await fetch(`/api/admin/products/${id}`, {
@@ -218,20 +261,12 @@ export function AdminProducts() {
         </Button>
       </header>
 
-      <div className="relative max-w-sm">
-        <Search
-          className="text-muted-foreground pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2"
-          aria-hidden
-        />
-        <Input
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          placeholder={t("search")}
-          className="pl-8"
-        />
-      </div>
-
-      <DataFilters fields={fields} scopes={scopes} />
+      <Filters
+        fields={filterFields}
+        value={filterValues}
+        onValueChange={applyFilters}
+        labels={filterLabels}
+      />
 
       {loading ? (
         <div className="rounded-xl border">

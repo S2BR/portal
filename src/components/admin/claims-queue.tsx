@@ -1,24 +1,20 @@
 "use client";
 
-import { ExternalLink } from "lucide-react";
+import { CircleDot, ExternalLink } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import type {
-  AdminClaim,
-  AdminClaimsPage,
-} from "@/app/api/admin/claims/route";
+import type { AdminClaim, AdminClaimsPage } from "@/app/api/admin/claims/route";
+import {
+  Filters,
+  type FilterField,
+  type FilterValue,
+  type FiltersLabels,
+} from "@/components/ui/filters";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Sheet,
   SheetContent,
@@ -35,14 +31,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
+import { pillsToParams, type ScopeSpec } from "@/lib/filters/pill";
 
-const STATUSES = [
-  "pending",
-  "approved",
-  "rejected",
-  "auto_approved",
-] as const;
-const ALL = "all";
+const STATUSES = ["pending", "approved", "rejected", "auto_approved"] as const;
+
+/** The status filter rides the top-level `status` param; absence of a pill means "all". */
+const SCOPES: ScopeSpec[] = [{ field: "status", param: "status" }];
 
 type BadgeVariant = "neutral" | "green" | "gold" | "red" | "outline";
 const STATUS_VARIANT: Record<string, BadgeVariant> = {
@@ -60,22 +54,55 @@ const STATUS_VARIANT: Record<string, BadgeVariant> = {
  */
 export function ClaimsQueue() {
   const t = useTranslations("admin.claims");
+  const tf = useTranslations("filters");
   const format = useFormatter();
 
   const [claims, setClaims] = useState<AdminClaim[]>([]);
   const [meta, setMeta] = useState({ current_page: 1, last_page: 1, total: 0 });
   const [loading, setLoading] = useState(true);
-  const [status, setStatus] = useState<string>(ALL);
+  const [filterValues, setFilterValues] = useState<FilterValue[]>([]);
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState<AdminClaim | null>(null);
 
+  const filterFields: FilterField[] = [
+    {
+      id: "status",
+      label: t("filters.status"),
+      icon: CircleDot,
+      type: "select",
+      options: STATUSES.map((key) => ({
+        value: key,
+        label: t(`status.${key}`),
+      })),
+      operators: [{ id: "is" }],
+    },
+  ];
+
+  const filterLabels: FiltersLabels = {
+    addFilter: tf("addFilter"),
+    clearAll: tf("clearAll"),
+    search: tf("search"),
+    noResults: tf("noResults"),
+    min: tf("from"),
+    max: tf("to"),
+    operators: tf.raw("operators") as Record<string, string>,
+  };
+
+  const params = pillsToParams(filterValues, filterFields, SCOPES);
+  if (page > 1) {
+    params.set("page", String(page));
+  }
+  const queryString = params.toString();
+
+  const applyFilters = (values: FilterValue[]) => {
+    setFilterValues(values);
+    setPage(1);
+  };
+
   const load = useCallback(async () => {
     setLoading(true);
-    const query = new URLSearchParams();
-    if (status !== ALL) query.set("status", status);
-    if (page > 1) query.set("page", String(page));
     try {
-      const response = await fetch(`/api/admin/claims?${query.toString()}`);
+      const response = await fetch(`/api/admin/claims?${queryString}`);
       if (response.status === 403) {
         toast.error(t("forbidden"));
         return;
@@ -88,18 +115,13 @@ export function ClaimsQueue() {
     } finally {
       setLoading(false);
     }
-  }, [status, page, t]);
+  }, [queryString, t]);
 
   useEffect(() => {
     // Refetch on mount and whenever a filter/page changes; setState runs after the async response.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     void load();
   }, [load]);
-
-  function onFilter(setter: (value: string) => void, value: string) {
-    setter(value);
-    setPage(1);
-  }
 
   const formatDate = (value: string | null) =>
     value
@@ -121,18 +143,12 @@ export function ClaimsQueue() {
         <p className="text-muted-foreground mt-1 text-sm">{t("subtitle")}</p>
       </header>
 
-      <div className="flex flex-wrap gap-3">
-        <FilterSelect
-          label={t("filters.status")}
-          value={status}
-          onChange={(value) => onFilter(setStatus, value)}
-          allLabel={t("filters.allStatuses")}
-          options={STATUSES.map((key) => ({
-            value: key,
-            label: t(`status.${key}`),
-          }))}
-        />
-      </div>
+      <Filters
+        fields={filterFields}
+        value={filterValues}
+        onValueChange={applyFilters}
+        labels={filterLabels}
+      />
 
       {loading ? (
         <div className="space-y-3">
@@ -444,40 +460,5 @@ function Section({
       </h3>
       {children}
     </section>
-  );
-}
-
-function FilterSelect({
-  label,
-  value,
-  onChange,
-  allLabel,
-  options,
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  allLabel: string;
-  options: { value: string; label: string }[];
-}) {
-  return (
-    <div className="space-y-1.5">
-      <label className="text-muted-foreground text-xs font-medium">
-        {label}
-      </label>
-      <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className="w-48">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value={ALL}>{allLabel}</SelectItem>
-          {options.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
   );
 }

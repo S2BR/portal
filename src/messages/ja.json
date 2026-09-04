@@ -1869,7 +1869,9 @@
     "where": "条件",
     "emptyHint": "まだ条件がありません — 追加して一覧を絞り込みます。",
     "advanced": "詳細",
-    "simple": "シンプル"
+    "simple": "シンプル",
+    "name": "名前",
+    "status": "ステータス"
   },
   "units": {
     "search": "単位を検索",
