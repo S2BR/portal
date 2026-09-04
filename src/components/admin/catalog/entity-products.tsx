@@ -1,6 +1,6 @@
 "use client";
 
-import { ImageIcon, Link2, Loader2, Plus, Search, X } from "lucide-react";
+import { ImageIcon, Link2, Loader2, Plus, Type, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
@@ -12,6 +12,12 @@ import type {
   AdminProductsPage,
   ModerationStatus,
 } from "@/app/api/admin/products/route";
+import {
+  Filters,
+  type FilterField,
+  type FilterValue,
+  type FiltersLabels,
+} from "@/components/ui/filters";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,6 +29,10 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { pillsToParams, type ScopeSpec } from "@/lib/filters/pill";
+
+/** The name search rides the top-level `q` param. */
+const SCOPES: ScopeSpec[] = [{ field: "q", param: "q" }];
 
 const STATUS_VARIANT: Record<
   ModerationStatus,
@@ -49,28 +59,55 @@ export function EntityProducts({
   entityId: string;
 }) {
   const t = useTranslations("admin.catalog");
+  const tf = useTranslations("filters");
   const attachKey = kind === "brand" ? "brand_id" : "family_id";
   // The collection segment in the BFF path.
   const collection = kind === "brand" ? "brands" : "families";
 
   const [items, setItems] = useState<AdminProductListItem[]>([]);
   const [meta, setMeta] = useState({ current_page: 1, last_page: 1, total: 0 });
-  const [search, setSearch] = useState("");
+  const [filterValues, setFilterValues] = useState<FilterValue[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [detaching, setDetaching] = useState<string | null>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
 
+  const filterFields: FilterField[] = [
+    {
+      id: "q",
+      label: tf("name"),
+      icon: Type,
+      type: "text",
+      operators: [{ id: "contains" }],
+      placeholder: t("search"),
+    },
+  ];
+
+  const filterLabels: FiltersLabels = {
+    addFilter: tf("addFilter"),
+    clearAll: tf("clearAll"),
+    search: tf("search"),
+    noResults: tf("noResults"),
+    min: tf("from"),
+    max: tf("to"),
+    operators: tf.raw("operators") as Record<string, string>,
+  };
+
+  const params = pillsToParams(filterValues, filterFields, SCOPES);
+  params.set("page", String(page));
+  const queryString = params.toString();
+  const hasSearch = params.has("q");
+
+  const applyFilters = (values: FilterValue[]) => {
+    setFilterValues(values);
+    setPage(1);
+  };
+
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const params = new URLSearchParams();
-      if (search.trim()) {
-        params.set("q", search.trim());
-      }
-      params.set("page", String(page));
       const response = await fetch(
-        `/api/admin/${collection}/${entityId}/products?${params.toString()}`,
+        `/api/admin/${collection}/${entityId}/products?${queryString}`,
       );
       if (!response.ok) {
         toast.error(t("loadError"));
@@ -84,7 +121,7 @@ export function EntityProducts({
     } finally {
       setLoading(false);
     }
-  }, [collection, entityId, search, page, t]);
+  }, [collection, entityId, queryString, t]);
 
   useEffect(() => {
     const handle = setTimeout(() => {
@@ -122,21 +159,12 @@ export function EntityProducts({
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="relative max-w-xs flex-1">
-          <Search
-            className="text-muted-foreground pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2"
-            aria-hidden
-          />
-          <Input
-            value={search}
-            onChange={(event) => {
-              setPage(1);
-              setSearch(event.target.value);
-            }}
-            placeholder={t("search")}
-            className="pl-8"
-          />
-        </div>
+        <Filters
+          fields={filterFields}
+          value={filterValues}
+          onValueChange={applyFilters}
+          labels={filterLabels}
+        />
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
@@ -163,7 +191,7 @@ export function EntityProducts({
         </div>
       ) : items.length === 0 ? (
         <div className="bg-muted/40 text-muted-foreground rounded-2xl border p-10 text-center text-sm">
-          {search.trim() ? t("noMatches") : t("empty")}
+          {hasSearch ? t("noMatches") : t("empty")}
         </div>
       ) : (
         <ul className="divide-border/60 divide-y rounded-xl border">

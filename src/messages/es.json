@@ -1869,7 +1869,9 @@
     "where": "Donde",
     "emptyHint": "Aún no hay condiciones — añade una para acotar la lista.",
     "advanced": "Avanzado",
-    "simple": "Simple"
+    "simple": "Simple",
+    "name": "Nombre",
+    "status": "Estado"
   },
   "units": {
     "search": "Buscar unidades",

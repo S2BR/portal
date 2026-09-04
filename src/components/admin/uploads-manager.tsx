@@ -1,8 +1,17 @@
 "use client";
 
-import { Download, ImageIcon, Trash2 } from "lucide-react";
+import {
+  Calendar,
+  CircleDot,
+  Download,
+  FileType,
+  HardDrive,
+  ImageIcon,
+  Tag,
+  Trash2,
+} from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -10,7 +19,13 @@ import type {
   AdminUpload,
   AdminUploadsPage,
 } from "@/app/api/admin/uploads/route";
-import { DataFilters } from "@/components/admin/data-filters";
+import {
+  Filters,
+  type FilterField,
+  type FilterValue,
+  type FiltersLabels,
+} from "@/components/ui/filters";
+import { paramsToPills, pillsToParams } from "@/lib/filters/pill";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,7 +46,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { FilterFieldDef } from "@/lib/filters/tree";
 
 const TYPES = [
   "avatar",
@@ -70,16 +84,16 @@ function formatBytes(bytes: number | null): string {
 
 /**
  * The operator upload manager. Every direct-to-S3 upload in the ledger, filtered SERVER-SIDE via the
- * shared operator {@see DataFilters} builder (field → operator → value, AND/OR/groups). The whole
- * query lives in the URL, so the view is shareable + refresh-safe; this component reads the same URL
- * params for its fetch. Rows show a preview, bound resource, size/mime, uploader, and status; each can
+ * shared pill {@see Filters} bar → the same `filter[…]` contract the API expects. The query is mirrored
+ * into the URL (history.replaceState), so the view is shareable + refresh-safe. Rows show a preview,
+ * bound resource, size/mime, uploader, and status; each can
  * be downloaded or deleted (which purges the S3 object[s] + row). The API enforces the super_admin role.
  */
 export function UploadsManager() {
   const t = useTranslations("admin.uploads");
+  const tf = useTranslations("filters");
   const format = useFormatter();
   const searchParams = useSearchParams();
-  const router = useRouter();
   const pathname = usePathname();
 
   const [uploads, setUploads] = useState<AdminUpload[]>([]);
@@ -88,33 +102,96 @@ export function UploadsManager() {
   const [loading, setLoading] = useState(true);
   const [pendingDelete, setPendingDelete] = useState<AdminUpload | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [page, setPage] = useState(() => {
+    const raw = Number(searchParams.get("page"));
+    return Number.isInteger(raw) && raw > 1 ? raw : 1;
+  });
 
-  const query = searchParams.toString();
-
-  const fields: FilterFieldDef[] = [
+  // The pill filter bar — every field is a `filter[…]` column (no top-level scopes here).
+  const filterFields: FilterField[] = [
     {
-      name: "type",
+      id: "type",
       label: t("filters.type"),
-      type: "select",
-      quick: true,
+      icon: Tag,
+      type: "multiselect",
       options: TYPES.map((key) => ({ value: key, label: t(`type.${key}`) })),
+      operators: [{ id: "is_any_of" }, { id: "is_none_of" }],
     },
     {
-      name: "status",
+      id: "status",
       label: t("filters.status"),
-      type: "select",
-      quick: true,
-      options: STATUSES.map((key) => ({ value: key, label: t(`status.${key}`) })),
+      icon: CircleDot,
+      type: "multiselect",
+      options: STATUSES.map((key) => ({
+        value: key,
+        label: t(`status.${key}`),
+      })),
+      operators: [{ id: "is_any_of" }, { id: "is_none_of" }],
     },
-    { name: "size", label: t("filters.size"), type: "number" },
-    { name: "mime", label: t("filters.mime"), type: "text" },
-    { name: "created_at", label: t("filters.uploaded"), type: "date" },
+    {
+      id: "size",
+      label: t("filters.size"),
+      icon: HardDrive,
+      type: "number",
+      operators: [
+        { id: "gt" },
+        { id: "lt" },
+        { id: "eq" },
+        { id: "between", shape: "range" },
+      ],
+    },
+    {
+      id: "mime",
+      label: t("filters.mime"),
+      icon: FileType,
+      type: "text",
+      operators: [{ id: "contains" }, { id: "is" }, { id: "starts_with" }],
+    },
+    {
+      id: "created_at",
+      label: t("filters.uploaded"),
+      icon: Calendar,
+      type: "date",
+      operators: [
+        { id: "eq" },
+        { id: "lt" },
+        { id: "gt" },
+        { id: "between", shape: "range" },
+      ],
+    },
   ];
+
+  const filterLabels: FiltersLabels = {
+    addFilter: tf("addFilter"),
+    clearAll: tf("clearAll"),
+    search: tf("search"),
+    noResults: tf("noResults"),
+    min: tf("from"),
+    max: tf("to"),
+    operators: tf.raw("operators") as Record<string, string>,
+  };
+
+  const [filterValues, setFilterValues] = useState<FilterValue[]>(() =>
+    paramsToPills(new URLSearchParams(searchParams.toString()), filterFields),
+  );
+
+  // The query the filters + page describe: the refetch keys off it, and it's mirrored into the address
+  // bar via history.replaceState (no navigation, so the filter fields never lose focus mid-type).
+  const params = pillsToParams(filterValues, filterFields);
+  if (page > 1) {
+    params.set("page", String(page));
+  }
+  const queryString = params.toString();
+
+  const applyFilters = (values: FilterValue[]) => {
+    setFilterValues(values);
+    setPage(1);
+  };
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/admin/uploads?${query}`);
+      const response = await fetch(`/api/admin/uploads?${queryString}`);
       if (response.status === 403) {
         toast.error(t("forbidden"));
         return;
@@ -128,25 +205,21 @@ export function UploadsManager() {
     } finally {
       setLoading(false);
     }
-  }, [query, t]);
+  }, [queryString, t]);
 
   useEffect(() => {
-    // Refetch on mount and whenever the URL (filters/page) changes.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    void load();
+    // Debounced so typing a text filter fires one request, not one per keystroke; runs on any change.
+    const handle = setTimeout(() => {
+      void load();
+    }, 250);
+    return () => clearTimeout(handle);
   }, [load]);
 
-  function setPage(page: number) {
-    const params = new URLSearchParams(searchParams.toString());
-    if (page > 1) {
-      params.set("page", String(page));
-    } else {
-      params.delete("page");
-    }
-    router.replace(params.toString() ? `${pathname}?${params.toString()}` : pathname, {
-      scroll: false,
-    });
-  }
+  useEffect(() => {
+    // Mirror the query into the address bar (shareable) without a navigation.
+    const url = queryString ? `${pathname}?${queryString}` : pathname;
+    window.history.replaceState(null, "", url);
+  }, [queryString, pathname]);
 
   const formatDate = (value: string | null) =>
     value
@@ -203,7 +276,12 @@ export function UploadsManager() {
         />
       </div>
 
-      <DataFilters fields={fields} />
+      <Filters
+        fields={filterFields}
+        value={filterValues}
+        onValueChange={applyFilters}
+        labels={filterLabels}
+      />
 
       {loading ? (
         <div className="space-y-3">
@@ -252,7 +330,7 @@ export function UploadsManager() {
                       "—"
                     )}
                   </TableCell>
-                  <TableCell className="text-muted-foreground tabular-nums whitespace-nowrap">
+                  <TableCell className="text-muted-foreground whitespace-nowrap tabular-nums">
                     {formatBytes(upload.size)}
                     {upload.mime ? (
                       <span className="text-muted-foreground/70 block text-xs">

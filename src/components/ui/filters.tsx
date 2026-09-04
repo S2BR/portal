@@ -29,12 +29,13 @@ import { cn } from "@/lib/utils";
 /**
  * A Linear/Notion-style filter bar: a row of segmented pills, each `[field · operator ▾ · value · ✕]`,
  * plus an "Add filter" field picker and "Clear all". Applies live (no Apply button); pills combine with
- * AND. Field types: select · multiselect · text · number (with a `between` range). Controlled via
+ * AND. Field types: select · multiselect · text · number · date (with a `between` range). Controlled via
  * `FilterValue[]` or uncontrolled via `defaultValue`. All copy (including operator labels) is injectable
  * through `labels` so the whole thing localizes.
  */
 
-export type FilterFieldType = "select" | "multiselect" | "text" | "number";
+export type FilterFieldType =
+  "select" | "multiselect" | "text" | "number" | "date";
 
 export interface FilterOption {
   value: string;
@@ -111,6 +112,12 @@ const DEFAULT_OPERATORS: Record<FilterFieldType, FilterOperator[]> = {
     { id: "neq" },
     { id: "gt" },
     { id: "lt" },
+    { id: "between", shape: "range" },
+  ],
+  date: [
+    { id: "eq" },
+    { id: "lt" },
+    { id: "gt" },
     { id: "between", shape: "range" },
   ],
 };
@@ -291,7 +298,13 @@ function AddFilterButton({
           {labels.addFilter}
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="start" className="w-56 p-0">
+      <PopoverContent
+        align="start"
+        className="w-56 p-0"
+        // Don't return focus to this trigger on close — the new pill's value control (an input, or an
+        // auto-opening option picker) claims focus itself, and Radix's default would yank it back here.
+        onCloseAutoFocus={(event) => event.preventDefault()}
+      >
         <Command>
           <CommandInput placeholder={labels.search} />
           <CommandList>
@@ -462,6 +475,42 @@ function ValueControl({
     );
   }
 
+  if (field.type === "date" && shape === "range") {
+    const range = (value as {
+      min: string | null;
+      max: string | null;
+    } | null) ?? {
+      min: null,
+      max: null,
+    };
+    return (
+      <div className="flex h-full items-center">
+        <DateInput
+          value={range.min}
+          autoFocus={autoOpen}
+          onFocused={onAutoOpened}
+          onChange={(min) => onChange({ ...range, min })}
+        />
+        <span className="text-muted-foreground px-0.5">–</span>
+        <DateInput
+          value={range.max}
+          onChange={(max) => onChange({ ...range, max })}
+        />
+      </div>
+    );
+  }
+
+  if (field.type === "date") {
+    return (
+      <DateInput
+        value={(value as string) ?? ""}
+        autoFocus={autoOpen}
+        onFocused={onAutoOpened}
+        onChange={onChange}
+      />
+    );
+  }
+
   if (field.type === "text") {
     return (
       <TextInput
@@ -567,6 +616,36 @@ function NumberInput({
         onChange(event.target.value === "" ? null : Number(event.target.value))
       }
       className="placeholder:text-muted-foreground h-full w-20 bg-transparent px-2 tabular-nums outline-none"
+    />
+  );
+}
+
+function DateInput({
+  value,
+  autoFocus,
+  onFocused,
+  onChange,
+}: {
+  value: string | null;
+  autoFocus?: boolean;
+  onFocused?: () => void;
+  onChange: (value: string) => void;
+}) {
+  const ref = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (autoFocus) {
+      ref.current?.focus();
+      onFocused?.();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoFocus]);
+  return (
+    <input
+      ref={ref}
+      type="date"
+      value={value ?? ""}
+      onChange={(event) => onChange(event.target.value)}
+      className="placeholder:text-muted-foreground h-full bg-transparent px-2 tabular-nums outline-none"
     />
   );
 }

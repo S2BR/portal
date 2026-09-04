@@ -1,6 +1,6 @@
 "use client";
 
-import { Pencil, Plus, Tag, Trash2 } from "lucide-react";
+import { Pencil, Plus, Tag, Trash2, Type } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -17,6 +17,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Field } from "@/components/ui/field";
+import {
+  Filters,
+  type FilterField,
+  type FilterValue,
+  type FiltersLabels,
+} from "@/components/ui/filters";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -28,8 +34,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
+import { pillsToParams, type ScopeSpec } from "@/lib/filters/pill";
 
 type Draft = { id: string | null; name: string; description: string };
+
+/** The name search rides the top-level `q` param. */
+const SCOPES: ScopeSpec[] = [{ field: "q", param: "q" }];
 
 /**
  * The brand manager: a searchable table of brands with product/family counts, and a dialog to create
@@ -38,20 +48,48 @@ type Draft = { id: string | null; name: string; description: string };
  */
 export function AdminBrands() {
   const t = useTranslations("admin.brands");
+  const tf = useTranslations("filters");
   const format = useFormatter();
   const router = useRouter();
 
   const [items, setItems] = useState<AdminBrand[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
+  const [filterValues, setFilterValues] = useState<FilterValue[]>([]);
   const [draft, setDraft] = useState<Draft | null>(null);
   const [saving, setSaving] = useState(false);
+
+  const filterFields: FilterField[] = [
+    {
+      id: "q",
+      label: tf("name"),
+      icon: Type,
+      type: "text",
+      operators: [{ id: "contains" }],
+      placeholder: t("search"),
+    },
+  ];
+
+  const filterLabels: FiltersLabels = {
+    addFilter: tf("addFilter"),
+    clearAll: tf("clearAll"),
+    search: tf("search"),
+    noResults: tf("noResults"),
+    min: tf("from"),
+    max: tf("to"),
+    operators: tf.raw("operators") as Record<string, string>,
+  };
+
+  const queryString = pillsToParams(
+    filterValues,
+    filterFields,
+    SCOPES,
+  ).toString();
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `/api/admin/brands${search.trim() ? `?q=${encodeURIComponent(search.trim())}` : ""}`,
+        `/api/admin/brands${queryString ? `?${queryString}` : ""}`,
       );
       if (response.status === 403) {
         toast.error(t("forbidden"));
@@ -64,11 +102,14 @@ export function AdminBrands() {
     } finally {
       setLoading(false);
     }
-  }, [search, t]);
+  }, [queryString, t]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    void load();
+    // Debounced so typing the name search fires one request, not one per keystroke.
+    const handle = setTimeout(() => {
+      void load();
+    }, 250);
+    return () => clearTimeout(handle);
   }, [load]);
 
   const save = async () => {
@@ -133,11 +174,11 @@ export function AdminBrands() {
         </Button>
       </header>
 
-      <Input
-        value={search}
-        onChange={(event) => setSearch(event.target.value)}
-        placeholder={t("search")}
-        className="max-w-sm"
+      <Filters
+        fields={filterFields}
+        value={filterValues}
+        onValueChange={setFilterValues}
+        labels={filterLabels}
       />
 
       {loading ? (

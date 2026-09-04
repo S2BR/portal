@@ -1869,7 +1869,9 @@
     "where": "Dove",
     "emptyHint": "Ancora nessuna condizione — aggiungine una per restringere l’elenco.",
     "advanced": "Avanzato",
-    "simple": "Semplice"
+    "simple": "Semplice",
+    "name": "Nome",
+    "status": "Stato"
   },
   "units": {
     "search": "Cerca unità",

@@ -1,15 +1,20 @@
 "use client";
 
-import { Check, FolderPlus, X } from "lucide-react";
+import { Check, CircleDot, FolderPlus, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { NodeDialog } from "@/components/admin/taxonomy/node-dialog";
+import {
+  Filters,
+  type FilterField,
+  type FilterValue,
+  type FiltersLabels,
+} from "@/components/ui/filters";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import type { AdminCategorySuggestion } from "@/app/api/admin/category-suggestions/route";
 
@@ -24,14 +29,45 @@ const STATUSES: Status[] = ["pending", "actioned", "dismissed"];
  */
 export function CategorySuggestionsQueue() {
   const t = useTranslations("admin.taxonomy.suggestions");
+  const tf = useTranslations("filters");
   const locale = useLocale();
 
-  const [status, setStatus] = useState<Status>("pending");
+  const [filterValues, setFilterValues] = useState<FilterValue[]>([
+    { id: "status", field: "status", operator: "is", value: "pending" },
+  ]);
   const [items, setItems] = useState<AdminCategorySuggestion[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState<AdminCategorySuggestion | null>(
     null,
   );
+
+  // A single-select status pill; with none, the queue falls back to its default (pending).
+  const statusPill = filterValues.find((value) => value.field === "status");
+  const status = (statusPill?.value as Status | undefined) ?? "pending";
+
+  const filterFields: FilterField[] = [
+    {
+      id: "status",
+      label: tf("status"),
+      icon: CircleDot,
+      type: "select",
+      options: STATUSES.map((value) => ({
+        value,
+        label: t(`filter.${value}`),
+      })),
+      operators: [{ id: "is" }],
+    },
+  ];
+
+  const filterLabels: FiltersLabels = {
+    addFilter: tf("addFilter"),
+    clearAll: tf("clearAll"),
+    search: tf("search"),
+    noResults: tf("noResults"),
+    min: tf("from"),
+    max: tf("to"),
+    operators: tf.raw("operators") as Record<string, string>,
+  };
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -81,19 +117,13 @@ export function CategorySuggestionsQueue() {
 
   return (
     <div className="space-y-5">
-      {/* Status filter — on the shared Tabs primitive. */}
-      <Tabs
-        value={status}
-        onValueChange={(value) => setStatus(value as Status)}
-      >
-        <TabsList className="w-fit">
-          {STATUSES.map((value) => (
-            <TabsTrigger key={value} value={value}>
-              {t(`filter.${value}`)}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-      </Tabs>
+      {/* Status filter — on the shared pill Filters bar. */}
+      <Filters
+        fields={filterFields}
+        value={filterValues}
+        onValueChange={setFilterValues}
+        labels={filterLabels}
+      />
 
       {loading ? (
         <div className="space-y-3">

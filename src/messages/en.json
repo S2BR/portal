@@ -1869,7 +1869,9 @@
     "where": "Where",
     "emptyHint": "No conditions yet — add one to narrow the list.",
     "advanced": "Advanced",
-    "simple": "Simple"
+    "simple": "Simple",
+    "name": "Name",
+    "status": "Status"
   },
   "units": {
     "search": "Search units",

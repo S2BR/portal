@@ -1,6 +1,6 @@
 "use client";
 
-import { Lock, Plus, Trash2 } from "lucide-react";
+import { Building2, CircleDot, Lock, Plus, Trash2, Type } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
@@ -11,16 +11,14 @@ import type {
   AdminBusinessesPage,
 } from "@/app/api/admin/businesses/route";
 import { BusinessLogo } from "@/components/business/business-logo";
+import {
+  Filters,
+  type FilterField,
+  type FilterValue,
+  type FiltersLabels,
+} from "@/components/ui/filters";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -30,6 +28,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { pillsToParams, type ScopeSpec } from "@/lib/filters/pill";
 
 const STATUSES = [
   "published",
@@ -39,7 +38,13 @@ const STATUSES = [
   "deleted",
 ] as const;
 const TYPES = ["company", "self_employed"] as const;
-const ALL = "all";
+
+/** Name, status, and type each ride their own top-level param; absence of a pill means "all". */
+const SCOPES: ScopeSpec[] = [
+  { field: "q", param: "q" },
+  { field: "status", param: "status" },
+  { field: "type", param: "type" },
+];
 
 /**
  * The admin business directory: search all businesses and filter by lifecycle status/type. Each row
@@ -47,27 +52,74 @@ const ALL = "all";
  */
 export function AdminBusinessesList() {
   const t = useTranslations("admin.businesses");
+  const tf = useTranslations("filters");
   const format = useFormatter();
 
   const [rows, setRows] = useState<AdminBusinessRow[]>([]);
   const [meta, setMeta] = useState({ current_page: 1, last_page: 1, total: 0 });
   const [loading, setLoading] = useState(true);
-  const [query, setQuery] = useState("");
-  const [status, setStatus] = useState<string>(ALL);
-  const [type, setType] = useState<string>(ALL);
+  const [filterValues, setFilterValues] = useState<FilterValue[]>([]);
   const [page, setPage] = useState(1);
+
+  // The pill filter bar: a name search plus lifecycle status + business type — each a top-level param.
+  const filterFields: FilterField[] = [
+    {
+      id: "q",
+      label: tf("name"),
+      icon: Type,
+      type: "text",
+      operators: [{ id: "contains" }],
+      placeholder: t("searchPlaceholder"),
+    },
+    {
+      id: "status",
+      label: t("filters.status"),
+      icon: CircleDot,
+      type: "select",
+      options: STATUSES.map((key) => ({
+        value: key,
+        label: t(`status.${key}`),
+      })),
+      operators: [{ id: "is" }],
+    },
+    {
+      id: "type",
+      label: t("filters.type"),
+      icon: Building2,
+      type: "select",
+      options: TYPES.map((key) => ({
+        value: key,
+        label: t(`types.${key}`),
+      })),
+      operators: [{ id: "is" }],
+    },
+  ];
+
+  const filterLabels: FiltersLabels = {
+    addFilter: tf("addFilter"),
+    clearAll: tf("clearAll"),
+    search: tf("search"),
+    noResults: tf("noResults"),
+    min: tf("from"),
+    max: tf("to"),
+    operators: tf.raw("operators") as Record<string, string>,
+  };
+
+  const params = pillsToParams(filterValues, filterFields, SCOPES);
+  if (page > 1) {
+    params.set("page", String(page));
+  }
+  const queryString = params.toString();
+
+  const applyFilters = (values: FilterValue[]) => {
+    setFilterValues(values);
+    setPage(1);
+  };
 
   const load = useCallback(async () => {
     setLoading(true);
-    const params = new URLSearchParams();
-    if (query.trim()) params.set("q", query.trim());
-    if (status !== ALL) params.set("status", status);
-    if (type !== ALL) params.set("type", type);
-    if (page > 1) params.set("page", String(page));
     try {
-      const response = await fetch(
-        `/api/admin/businesses?${params.toString()}`,
-      );
+      const response = await fetch(`/api/admin/businesses?${queryString}`);
       if (response.status === 403) {
         toast.error(t("forbidden"));
         return;
@@ -80,7 +132,7 @@ export function AdminBusinessesList() {
     } finally {
       setLoading(false);
     }
-  }, [query, status, type, page, t]);
+  }, [queryString, t]);
 
   // Debounce the search + filter changes into one fetch.
   useEffect(() => {
@@ -89,11 +141,6 @@ export function AdminBusinessesList() {
     }, 250);
     return () => clearTimeout(timer);
   }, [load]);
-
-  function resetPageThen(setter: (value: string) => void, value: string) {
-    setter(value);
-    setPage(1);
-  }
 
   return (
     <div className="space-y-8">
@@ -112,41 +159,12 @@ export function AdminBusinessesList() {
         </Button>
       </header>
 
-      <div className="flex flex-wrap items-end gap-3">
-        <div className="min-w-56 flex-1 space-y-1.5">
-          <label className="text-muted-foreground text-xs font-medium">
-            {t("search")}
-          </label>
-          <Input
-            value={query}
-            onChange={(event) => {
-              setQuery(event.target.value);
-              setPage(1);
-            }}
-            placeholder={t("searchPlaceholder")}
-          />
-        </div>
-        <FilterSelect
-          label={t("filters.status")}
-          value={status}
-          onChange={(value) => resetPageThen(setStatus, value)}
-          allLabel={t("filters.allStatuses")}
-          options={STATUSES.map((key) => ({
-            value: key,
-            label: t(`status.${key}`),
-          }))}
-        />
-        <FilterSelect
-          label={t("filters.type")}
-          value={type}
-          onChange={(value) => resetPageThen(setType, value)}
-          allLabel={t("filters.allTypes")}
-          options={TYPES.map((key) => ({
-            value: key,
-            label: t(`types.${key}`),
-          }))}
-        />
-      </div>
+      <Filters
+        fields={filterFields}
+        value={filterValues}
+        onValueChange={applyFilters}
+        labels={filterLabels}
+      />
 
       {loading ? (
         <div className="space-y-3">
@@ -283,40 +301,5 @@ function StatusBadges({
         <Badge variant="outline">{t("status.unclaimed")}</Badge>
       ) : null}
     </span>
-  );
-}
-
-function FilterSelect({
-  label,
-  value,
-  onChange,
-  allLabel,
-  options,
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  allLabel: string;
-  options: { value: string; label: string }[];
-}) {
-  return (
-    <div className="space-y-1.5">
-      <label className="text-muted-foreground text-xs font-medium">
-        {label}
-      </label>
-      <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className="w-44">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value={ALL}>{allLabel}</SelectItem>
-          {options.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
   );
 }
