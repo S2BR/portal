@@ -995,7 +995,26 @@
       "defaultSize": "افتراضي",
       "back": "رجوع",
       "quantity": "الكمية",
-      "quantityAmount": "العدد"
+      "quantityAmount": "العدد",
+      "table": {
+        "product": "المنتج",
+        "quantity": "الكمية",
+        "price": "السعر",
+        "status": "الحالة",
+        "actions": "الإجراءات"
+      },
+      "detail": {
+        "back": "العودة إلى المنتجات",
+        "offerTitle": "العرض",
+        "offerDescription": "السعر والحالة اللذان يراهما العملاء لهذا المنتج.",
+        "statusLabel": "حالة العرض",
+        "statusHint": "أوقف مؤقتًا أو ضع علامة نفد المخزون أو أوقف العرض لإيقاف تقديمه للعملاء."
+      },
+      "searchProducts": "البحث عن المنتجات",
+      "allStatuses": "كل الحالات",
+      "filterPrice": "السعر",
+      "min": "الأدنى",
+      "max": "الأقصى"
     }
   },
   "admin": {
@@ -1885,5 +1904,12 @@
     "start": "ابدأ بكسب النقاط",
     "toNext": "{points} حتى {tier}",
     "topTier": "وصلت إلى أعلى مستوى"
+  },
+  "offeringStatus": {
+    "available": "متوفر",
+    "paused": "متوقف مؤقتًا",
+    "out_of_stock": "نفد المخزون",
+    "coming_soon": "قريبًا",
+    "discontinued": "موقوف"
   }
 }

@@ -103,9 +103,11 @@ export function EntityCombobox({
           type="button"
           variant="outline"
           size="sm"
-          className="h-9 w-56 justify-between font-normal"
+          className="w-56 justify-between font-normal"
         >
-          <span className="truncate">{value ? label || value : placeholder}</span>
+          <span className="truncate">
+            {value ? label || value : placeholder}
+          </span>
           <ChevronsUpDown className="size-4 shrink-0 opacity-50" aria-hidden />
         </Button>
       </PopoverTrigger>

@@ -236,7 +236,9 @@ function RuleRow({
   function pickField(name: string) {
     const next = findField(fields, name);
     if (next) {
-      onChange(updateNode(root, ruleId, () => ({ ...ruleForField(next), id: ruleId })));
+      onChange(
+        updateNode(root, ruleId, () => ({ ...ruleForField(next), id: ruleId })),
+      );
     }
   }
 
@@ -259,9 +261,9 @@ function RuleRow({
   }
 
   return (
-    <div className="group/row bg-muted/40 hover:bg-muted flex flex-wrap items-center gap-1.5 rounded-lg py-1.5 pe-1.5 ps-2 transition-colors">
+    <div className="group/row bg-muted/40 hover:bg-muted flex flex-wrap items-center gap-1.5 rounded-lg py-1.5 ps-2 pe-1.5 transition-colors">
       <Select value={rule.path.join(".")} onValueChange={pickField}>
-        <SelectTrigger className="h-9 w-36 bg-transparent font-medium">
+        <SelectTrigger className="w-36 bg-transparent font-medium">
           <SelectValue placeholder={t("field")} />
         </SelectTrigger>
         <SelectContent>
@@ -274,7 +276,7 @@ function RuleRow({
       </Select>
 
       <Select value={rule.operator} onValueChange={pickOperator}>
-        <SelectTrigger className="text-muted-foreground h-9 w-36 bg-transparent">
+        <SelectTrigger className="text-muted-foreground w-36 bg-transparent">
           <SelectValue placeholder={t("operator")} />
         </SelectTrigger>
         <SelectContent>
@@ -342,7 +344,11 @@ function RuleValue({
   }
 
   const inputType =
-    field.type === "number" ? "number" : field.type === "date" ? "date" : "text";
+    field.type === "number"
+      ? "number"
+      : field.type === "date"
+        ? "date"
+        : "text";
 
   if (arity === "many") {
     const options: FilterOption[] = field.options ?? [];
@@ -368,7 +374,7 @@ function RuleValue({
           value={from ?? ""}
           onChange={(event) => onChange([event.target.value, to ?? ""])}
           placeholder={t("from")}
-          className="h-9 w-28"
+          className="w-28"
         />
         <span className="text-muted-foreground text-xs">{t("and")}</span>
         <Input
@@ -376,7 +382,7 @@ function RuleValue({
           value={to ?? ""}
           onChange={(event) => onChange([from ?? "", event.target.value])}
           placeholder={t("to")}
-          className="h-9 w-28"
+          className="w-28"
         />
       </div>
     );
@@ -388,7 +394,7 @@ function RuleValue({
         value={typeof value === "string" ? value : ""}
         onValueChange={onChange}
       >
-        <SelectTrigger className="h-9 w-40">
+        <SelectTrigger className="w-40">
           <SelectValue placeholder={t("value")} />
         </SelectTrigger>
         <SelectContent>
@@ -408,7 +414,7 @@ function RuleValue({
       value={typeof value === "string" ? value : ""}
       onChange={(event) => onChange(event.target.value)}
       placeholder={t("value")}
-      className="h-9 w-44"
+      className="w-44"
     />
   );
 }
