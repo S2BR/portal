@@ -615,7 +615,8 @@
       "statusClosed": "Geschlossen",
       "closesAt": "Schließt um {time}",
       "opensAt": "Öffnet um {time}",
-      "opensAtDay": "Öffnet {day} um {time}"
+      "opensAtDay": "Öffnet {day} um {time}",
+      "products": "Produkte"
     },
     "publish": {
       "checklistTitle": "Noch nicht live",
@@ -1008,13 +1009,32 @@
         "offerTitle": "Angebot",
         "offerDescription": "Der Preis und Status, den Kunden für dieses Produkt sehen.",
         "statusLabel": "Angebotsstatus",
-        "statusHint": "Pausieren, als nicht vorrätig markieren oder einstellen, um es nicht mehr anzubieten."
+        "statusHint": "Pausieren, als nicht vorrätig markieren oder einstellen, um es nicht mehr anzubieten.",
+        "detailsTitle": "Produktdetails",
+        "detailsDescription": "Name, Marke, Menge und Beschreibung, die Kunden sehen.",
+        "sharedNote": "Dies ist ein Produkt aus dem gemeinsamen Katalog – seine Details werden zentral verwaltet. Entferne es und füge deine eigene Version hinzu, um sie zu ändern.",
+        "photosTitle": "Fotos",
+        "photosDescription": "Deine eigenen Fotos dieses Produkts. Das erste ist das Titelbild; sie erscheinen in deinem Profil."
       },
       "searchProducts": "Produkte suchen",
       "allStatuses": "Alle Status",
       "filterPrice": "Preis",
       "min": "Min.",
-      "max": "Max."
+      "max": "Max.",
+      "brandLabel": "Marke",
+      "descriptionLabel": "Beschreibung",
+      "photos": {
+        "add": "Fotos hinzufügen",
+        "hint": "Werden in deinem Unternehmensprofil angezeigt.",
+        "max": "bis zu {max}",
+        "invalidType": "Dieser Dateityp wird nicht unterstützt.",
+        "tooLarge": "Dieses Bild ist zu groß.",
+        "uploading": "Wird hochgeladen… {percent} %",
+        "finalizing": "Wird abgeschlossen…",
+        "saved": "Foto hinzugefügt.",
+        "error": "Dieses Foto konnte nicht gespeichert werden.",
+        "alt": "Produktfoto"
+      }
     }
   },
   "admin": {

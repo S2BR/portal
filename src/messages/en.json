@@ -615,7 +615,8 @@
       "statusClosed": "Closed",
       "closesAt": "Closes {time}",
       "opensAt": "Opens {time}",
-      "opensAtDay": "Opens {time} {day}"
+      "opensAtDay": "Opens {time} {day}",
+      "products": "Products"
     },
     "publish": {
       "checklistTitle": "Not live yet",
@@ -1008,13 +1009,32 @@
         "offerTitle": "Offer",
         "offerDescription": "The price and status customers see for this product.",
         "statusLabel": "Offering status",
-        "statusHint": "Pause, mark out of stock, or discontinue to stop offering it to customers."
+        "statusHint": "Pause, mark out of stock, or discontinue to stop offering it to customers.",
+        "detailsTitle": "Product details",
+        "detailsDescription": "The name, brand, quantity, and description customers see.",
+        "sharedNote": "This is a shared catalog product — its details are managed centrally. Remove it and add your own version to change them.",
+        "photosTitle": "Photos",
+        "photosDescription": "Your own photos of this product. The first is the cover; they show on your profile."
       },
       "searchProducts": "Search products",
       "allStatuses": "All statuses",
       "filterPrice": "Price",
       "min": "Min",
-      "max": "Max"
+      "max": "Max",
+      "brandLabel": "Brand",
+      "descriptionLabel": "Description",
+      "photos": {
+        "add": "Add photos",
+        "hint": "Shown on your business profile.",
+        "max": "up to {max}",
+        "invalidType": "That file type isn't supported.",
+        "tooLarge": "That image is too large.",
+        "uploading": "Uploading… {percent}%",
+        "finalizing": "Finishing…",
+        "saved": "Photo added.",
+        "error": "Couldn't save that photo.",
+        "alt": "Product photo"
+      }
     }
   },
   "admin": {

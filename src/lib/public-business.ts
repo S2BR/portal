@@ -150,6 +150,45 @@ export async function getPublicBusiness(
   return response.ok ? (response.data.business ?? null) : null;
 }
 
+/** One product in a business's PUBLIC catalog (a sighting), for the profile page. */
+export interface PublicCatalogItem {
+  id: string;
+  price: number | null;
+  currency: string | null;
+  location_label: string | null;
+  /** The business's own photo if it uploaded one, else the catalog product's admin cover. */
+  cover_image: string | null;
+  variant: {
+    id: string;
+    label: string | null;
+    size: string | null;
+    unit: string | null;
+    barcode: string | null;
+    product: {
+      id: string;
+      slug: string;
+      name: string;
+      brand: string | null;
+      is_homemade: boolean;
+    } | null;
+  } | null;
+}
+
+/**
+ * Fetch a business's public catalog (its available products) — unauthenticated, server-side. Degrades
+ * to an empty list if the API is unreachable, so the profile still renders.
+ */
+export async function getPublicBusinessProducts(
+  slug: string,
+): Promise<PublicCatalogItem[]> {
+  const response = await portalFetch<{ products?: PublicCatalogItem[] }>({
+    method: "GET",
+    path: `/public/businesses/${encodeURIComponent(slug)}/products`,
+  });
+
+  return response.ok ? (response.data.products ?? []) : [];
+}
+
 /** A business as a card in the directory list — the lightweight shape the list endpoint returns. */
 export interface PublicBusinessCard {
   id: string;

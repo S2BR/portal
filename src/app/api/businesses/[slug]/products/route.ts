@@ -14,6 +14,10 @@ export interface CatalogSighting {
   offering_status: string;
   /** The moderation status (owner items are "approved"). */
   status: string;
+  /** The image to show for this listing: the business's own photo if any, else the product cover. */
+  cover_image: string | null;
+  /** The business's own uploaded photos of this product (cover first). */
+  images: { id: string; url: string | null }[];
   variant: {
     id: string;
     label: string | null;
@@ -26,6 +30,7 @@ export interface CatalogSighting {
       id: string;
       name: string;
       brand: string | null;
+      description: string | null;
       is_homemade: boolean;
       image: string | null;
     } | null;

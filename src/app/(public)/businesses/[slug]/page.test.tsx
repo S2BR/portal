@@ -1,6 +1,9 @@
 import { afterEach, expect, it, vi } from "vitest";
 
-vi.mock("@/lib/public-business", () => ({ getPublicBusiness: vi.fn() }));
+vi.mock("@/lib/public-business", () => ({
+  getPublicBusiness: vi.fn(),
+  getPublicBusinessProducts: vi.fn(() => Promise.resolve([])),
+}));
 vi.mock("next/navigation", () => ({
   notFound: () => {
     throw new Error("NEXT_NOT_FOUND");
@@ -38,9 +41,9 @@ it("redirects a stale-name slug to the canonical", async () => {
     name: "Padaria",
   } as never);
 
-  await expect(PublicBusinessPage(params("nome-antigo-fjmi7z"))).rejects.toThrow(
-    "NEXT_REDIRECT:/businesses/padaria-central-fjmi7z",
-  );
+  await expect(
+    PublicBusinessPage(params("nome-antigo-fjmi7z")),
+  ).rejects.toThrow("NEXT_REDIRECT:/businesses/padaria-central-fjmi7z");
 });
 
 it("renders the profile when the slug is already canonical", async () => {

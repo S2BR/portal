@@ -615,7 +615,8 @@
       "statusClosed": "Chiuso",
       "closesAt": "Chiude alle {time}",
       "opensAt": "Apre alle {time}",
-      "opensAtDay": "Apre {day} alle {time}"
+      "opensAtDay": "Apre {day} alle {time}",
+      "products": "Prodotti"
     },
     "publish": {
       "checklistTitle": "Non ancora online",
@@ -1008,13 +1009,32 @@
         "offerTitle": "Offerta",
         "offerDescription": "Il prezzo e lo stato che i clienti vedono per questo prodotto.",
         "statusLabel": "Stato dell'offerta",
-        "statusHint": "Metti in pausa, segna come esaurito o dismetti per smettere di offrirlo."
+        "statusHint": "Metti in pausa, segna come esaurito o dismetti per smettere di offrirlo.",
+        "detailsTitle": "Dettagli del prodotto",
+        "detailsDescription": "Il nome, la marca, la quantità e la descrizione che vedono i clienti.",
+        "sharedNote": "Questo è un prodotto del catalogo condiviso: i suoi dettagli sono gestiti a livello centrale. Rimuovilo e aggiungi la tua versione per modificarli.",
+        "photosTitle": "Foto",
+        "photosDescription": "Le tue foto di questo prodotto. La prima è la copertina; vengono mostrate sul tuo profilo."
       },
       "searchProducts": "Cerca prodotti",
       "allStatuses": "Tutti gli stati",
       "filterPrice": "Prezzo",
       "min": "Min",
-      "max": "Max"
+      "max": "Max",
+      "brandLabel": "Marca",
+      "descriptionLabel": "Descrizione",
+      "photos": {
+        "add": "Aggiungi foto",
+        "hint": "Mostrate sul profilo della tua attività.",
+        "max": "fino a {max}",
+        "invalidType": "Questo tipo di file non è supportato.",
+        "tooLarge": "Questa immagine è troppo grande.",
+        "uploading": "Caricamento… {percent}%",
+        "finalizing": "Completamento…",
+        "saved": "Foto aggiunta.",
+        "error": "Impossibile salvare la foto.",
+        "alt": "Foto del prodotto"
+      }
     }
   },
   "admin": {

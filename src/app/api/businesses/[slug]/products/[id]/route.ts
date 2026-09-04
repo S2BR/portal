@@ -5,12 +5,24 @@ import { rateLimitedResponse } from "@/lib/api/rate-limit";
 
 import type { CatalogSighting } from "../route";
 
-/** Editing a catalog entry — the price/offering status the owner controls (the product itself is fixed). */
+/**
+ * Editing a catalog entry — the price/offering status the owner controls, plus (for a handmade product
+ * they own) the product's own fields via `product`. Editing `product` on a shared catalog SKU is
+ * rejected by the API (422).
+ */
 interface UpdateBody {
   price?: number | null;
   currency?: string | null;
   location_label?: string | null;
   offering_status?: string;
+  product?: {
+    name?: string;
+    brand?: string | null;
+    description?: string | null;
+    label?: string | null;
+    size?: string | null;
+    unit?: string | null;
+  };
 }
 
 /**
