@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { NodeDialog } from "@/components/admin/taxonomy/node-dialog";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import type { AdminCategorySuggestion } from "@/app/api/admin/category-suggestions/route";
 
@@ -81,24 +81,19 @@ export function CategorySuggestionsQueue() {
 
   return (
     <div className="space-y-5">
-      {/* Status filter — same pill shape as the rest of the admin. */}
-      <div className="bg-muted/60 inline-flex rounded-lg p-1">
-        {STATUSES.map((value) => (
-          <button
-            key={value}
-            type="button"
-            onClick={() => setStatus(value)}
-            className={cn(
-              "rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
-              status === value
-                ? "bg-background text-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground",
-            )}
-          >
-            {t(`filter.${value}`)}
-          </button>
-        ))}
-      </div>
+      {/* Status filter — on the shared Tabs primitive. */}
+      <Tabs
+        value={status}
+        onValueChange={(value) => setStatus(value as Status)}
+      >
+        <TabsList className="w-fit">
+          {STATUSES.map((value) => (
+            <TabsTrigger key={value} value={value}>
+              {t(`filter.${value}`)}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
 
       {loading ? (
         <div className="space-y-3">

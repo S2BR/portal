@@ -20,6 +20,7 @@ import type {
   AwardTiming,
 } from "@/app/api/admin/point-rules/route";
 import type { AdminTier } from "@/app/api/admin/tiers/route";
+import { LocaleFlag } from "@/components/locale-flag";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -471,7 +472,7 @@ function TiersTab() {
         open={draft !== null}
         onOpenChange={(open) => (open ? null : setDraft(null))}
       >
-        <DialogContent>
+        <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-2xl">
           <DialogHeader>
             <DialogTitle>
               {draft?.id === null
@@ -493,34 +494,31 @@ function TiersTab() {
                 </Field>
               ) : null}
               <Field label={t("tiers.name")}>
-                {/* Per-locale name: a locale strip + the active locale's input. Dots mark filled ones. */}
-                <div className="mb-2 flex flex-wrap gap-1">
-                  {locales.map((locale) => {
-                    const apiLocale = toApiLocale(locale);
-                    const filled = (draft.name[apiLocale] ?? "").trim() !== "";
-                    return (
-                      <Button
-                        key={locale}
-                        type="button"
-                        size="sm"
-                        variant={nameLocale === locale ? "default" : "outline"}
-                        className="gap-1.5"
-                        onClick={() => setNameLocale(locale)}
-                      >
-                        {localeNames[locale]}
-                        <span
-                          className={cn(
-                            "size-1.5 rounded-full",
-                            filled
-                              ? "bg-brand-green"
-                              : "bg-muted-foreground/40",
-                          )}
-                          aria-hidden
-                        />
-                      </Button>
-                    );
-                  })}
-                </div>
+                {/* Per-locale name — the same flag tabs as the taxonomy dialog; a greyed flag marks an
+                    empty locale. */}
+                <Tabs
+                  value={nameLocale}
+                  onValueChange={(value) => setNameLocale(value as Locale)}
+                >
+                  <TabsList className="mb-2 h-auto flex-wrap justify-start gap-1">
+                    {locales.map((locale) => {
+                      const filled =
+                        (draft.name[toApiLocale(locale)] ?? "").trim() !== "";
+                      return (
+                        <TabsTrigger key={locale} value={locale}>
+                          <LocaleFlag
+                            locale={locale}
+                            className={cn(
+                              "size-4",
+                              !filled && "opacity-40 grayscale",
+                            )}
+                          />
+                          {localeNames[locale].replace(/\s*\(.+\)$/, "")}
+                        </TabsTrigger>
+                      );
+                    })}
+                  </TabsList>
+                </Tabs>
                 <Input
                   value={draft.name[toApiLocale(nameLocale)] ?? ""}
                   placeholder={

@@ -995,7 +995,26 @@
       "defaultSize": "Standard",
       "back": "Zurück",
       "quantity": "Menge",
-      "quantityAmount": "Menge"
+      "quantityAmount": "Menge",
+      "table": {
+        "product": "Produkt",
+        "quantity": "Menge",
+        "price": "Preis",
+        "status": "Status",
+        "actions": "Aktionen"
+      },
+      "detail": {
+        "back": "Zurück zu Produkten",
+        "offerTitle": "Angebot",
+        "offerDescription": "Der Preis und Status, den Kunden für dieses Produkt sehen.",
+        "statusLabel": "Angebotsstatus",
+        "statusHint": "Pausieren, als nicht vorrätig markieren oder einstellen, um es nicht mehr anzubieten."
+      },
+      "searchProducts": "Produkte suchen",
+      "allStatuses": "Alle Status",
+      "filterPrice": "Preis",
+      "min": "Min.",
+      "max": "Max."
     }
   },
   "admin": {
@@ -1885,5 +1904,12 @@
     "start": "Sammle deine ersten Punkte",
     "toNext": "{points} bis {tier}",
     "topTier": "Höchste Stufe erreicht"
+  },
+  "offeringStatus": {
+    "available": "Verfügbar",
+    "paused": "Pausiert",
+    "out_of_stock": "Nicht vorrätig",
+    "coming_soon": "Demnächst",
+    "discontinued": "Eingestellt"
   }
 }

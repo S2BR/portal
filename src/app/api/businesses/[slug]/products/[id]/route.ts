@@ -5,12 +5,41 @@ import { rateLimitedResponse } from "@/lib/api/rate-limit";
 
 import type { CatalogSighting } from "../route";
 
-/** Editing a catalog entry — the price/availability the owner controls (the product itself is fixed). */
+/** Editing a catalog entry — the price/offering status the owner controls (the product itself is fixed). */
 interface UpdateBody {
   price?: number | null;
   currency?: string | null;
   location_label?: string | null;
-  unavailable?: boolean;
+  offering_status?: string;
+}
+
+/**
+ * BFF: read one product in a business's catalog (a sighting) — backs the owner product detail page.
+ * Scoped by the owner API to a business the caller owns (a foreign one 404s).
+ */
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ slug: string; id: string }> },
+): Promise<NextResponse> {
+  const { slug, id } = await params;
+
+  const response = await callWithAuth<
+    { product: CatalogSighting } & { retry_after?: number | null }
+  >({
+    method: "GET",
+    path: `/businesses/${encodeURIComponent(slug)}/products/${encodeURIComponent(id)}`,
+  });
+
+  if (response.ok) {
+    return NextResponse.json({ product: response.data.product });
+  }
+  if (response.status === 429) {
+    return rateLimitedResponse(response);
+  }
+  if (response.status === 404) {
+    return NextResponse.json({ status: "not_found" }, { status: 404 });
+  }
+  return NextResponse.json({ status: "error" }, { status: 502 });
 }
 
 /**

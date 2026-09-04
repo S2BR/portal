@@ -995,7 +995,26 @@
       "defaultSize": "Default",
       "back": "Back",
       "quantity": "Quantity",
-      "quantityAmount": "Amount"
+      "quantityAmount": "Amount",
+      "table": {
+        "product": "Product",
+        "quantity": "Quantity",
+        "price": "Price",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "detail": {
+        "back": "Back to products",
+        "offerTitle": "Offer",
+        "offerDescription": "The price and status customers see for this product.",
+        "statusLabel": "Offering status",
+        "statusHint": "Pause, mark out of stock, or discontinue to stop offering it to customers."
+      },
+      "searchProducts": "Search products",
+      "allStatuses": "All statuses",
+      "filterPrice": "Price",
+      "min": "Min",
+      "max": "Max"
     }
   },
   "admin": {
@@ -1885,5 +1904,12 @@
     "start": "Start earning points",
     "toNext": "{points} to {tier}",
     "topTier": "Top tier reached"
+  },
+  "offeringStatus": {
+    "available": "Available",
+    "paused": "Paused",
+    "out_of_stock": "Out of stock",
+    "coming_soon": "Coming soon",
+    "discontinued": "Discontinued"
   }
 }

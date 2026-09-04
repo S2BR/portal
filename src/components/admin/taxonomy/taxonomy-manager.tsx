@@ -79,16 +79,16 @@ export function TaxonomyManager() {
       ) : (
         <Tabs defaultValue="categories">
           {/* Centered pill tabs — the same pattern as the business-detail section tabs. */}
-          <TabsList className="mx-auto h-auto w-fit max-w-full p-1.5">
-            <TabsTrigger value="categories" className="px-4 py-2">
+          <TabsList className="mx-auto w-fit max-w-full">
+            <TabsTrigger value="categories">
               <FolderTree className="size-4" aria-hidden />
               {t("tabs.categories")}
             </TabsTrigger>
-            <TabsTrigger value="amenities" className="px-4 py-2">
+            <TabsTrigger value="amenities">
               <Sparkles className="size-4" aria-hidden />
               {t("tabs.amenities")}
             </TabsTrigger>
-            <TabsTrigger value="suggestions" className="px-4 py-2">
+            <TabsTrigger value="suggestions">
               <Lightbulb className="size-4" aria-hidden />
               {t("tabs.suggestions")}
             </TabsTrigger>

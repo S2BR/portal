@@ -10,6 +10,9 @@ export interface CatalogSighting {
   currency: string | null;
   location_label: string | null;
   is_available: boolean;
+  /** The owner-controlled offering state (see @/lib/products/offering-status). */
+  offering_status: string;
+  /** The moderation status (owner items are "approved"). */
   status: string;
   variant: {
     id: string;
@@ -45,7 +48,7 @@ export interface AddCatalogBody {
   price?: number | null;
   currency?: string | null;
   location_label?: string | null;
-  unavailable?: boolean;
+  offering_status?: string;
 }
 
 /**

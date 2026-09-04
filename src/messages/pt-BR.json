@@ -995,7 +995,26 @@
       "defaultSize": "Padrão",
       "back": "Voltar",
       "quantity": "Quantidade",
-      "quantityAmount": "Qtd."
+      "quantityAmount": "Qtd.",
+      "table": {
+        "product": "Produto",
+        "quantity": "Quantidade",
+        "price": "Preço",
+        "status": "Status",
+        "actions": "Ações"
+      },
+      "detail": {
+        "back": "Voltar para produtos",
+        "offerTitle": "Oferta",
+        "offerDescription": "O preço e o status que os clientes veem para este produto.",
+        "statusLabel": "Status da oferta",
+        "statusHint": "Pause, marque como esgotado ou descontinue para parar de oferecer aos clientes."
+      },
+      "searchProducts": "Buscar produtos",
+      "allStatuses": "Todos os status",
+      "filterPrice": "Preço",
+      "min": "Mín.",
+      "max": "Máx."
     }
   },
   "admin": {
@@ -1885,5 +1904,12 @@
     "start": "Comece a ganhar pontos",
     "toNext": "{points} para {tier}",
     "topTier": "Nível máximo alcançado"
+  },
+  "offeringStatus": {
+    "available": "Disponível",
+    "paused": "Pausado",
+    "out_of_stock": "Esgotado",
+    "coming_soon": "Em breve",
+    "discontinued": "Descontinuado"
   }
 }

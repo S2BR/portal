@@ -995,7 +995,26 @@
       "defaultSize": "デフォルト",
       "back": "戻る",
       "quantity": "数量",
-      "quantityAmount": "数量"
+      "quantityAmount": "数量",
+      "table": {
+        "product": "製品",
+        "quantity": "数量",
+        "price": "価格",
+        "status": "ステータス",
+        "actions": "操作"
+      },
+      "detail": {
+        "back": "製品に戻る",
+        "offerTitle": "提供内容",
+        "offerDescription": "顧客に表示されるこの製品の価格とステータス。",
+        "statusLabel": "提供ステータス",
+        "statusHint": "一時停止・在庫切れ・提供終了にすると顧客への提供を止められます。"
+      },
+      "searchProducts": "製品を検索",
+      "allStatuses": "すべてのステータス",
+      "filterPrice": "価格",
+      "min": "最小",
+      "max": "最大"
     }
   },
   "admin": {
@@ -1885,5 +1904,12 @@
     "start": "ポイントを貯め始めましょう",
     "toNext": "{tier} まであと {points}",
     "topTier": "最高ティアに到達しました"
+  },
+  "offeringStatus": {
+    "available": "提供中",
+    "paused": "一時停止",
+    "out_of_stock": "在庫切れ",
+    "coming_soon": "近日提供",
+    "discontinued": "提供終了"
   }
 }

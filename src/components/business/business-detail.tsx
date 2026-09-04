@@ -1109,13 +1109,9 @@ export function BusinessDetail({
           hiding behind it. */}
       <form onSubmit={save} className={editing ? "pb-28" : undefined}>
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="mx-auto h-auto w-fit max-w-full p-1.5">
+          <TabsList className="mx-auto w-fit max-w-full">
             {tabItems.map((tab) => (
-              <TabsTrigger
-                key={tab.value}
-                value={tab.value}
-                className="px-4 py-2"
-              >
+              <TabsTrigger key={tab.value} value={tab.value}>
                 <tab.icon className="size-4" aria-hidden />
                 {tab.label}
                 {dirtyTabs.has(tab.value) ? (

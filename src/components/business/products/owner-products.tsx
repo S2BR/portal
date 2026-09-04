@@ -2,16 +2,17 @@
 
 import {
   ArrowLeft,
-  Check,
+  ChevronDown,
   Package,
   Pencil,
   Plus,
   ScanBarcode,
   Search,
   Trash2,
-  X,
 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -45,8 +46,27 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Switch } from "@/components/ui/switch";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { FilterMultiSelect } from "@/components/admin/filter-multi-select";
+import {
+  OFFERING_STATUSES,
+  OFFERING_STATUS_VARIANT,
+  type OfferingStatus,
+} from "@/lib/products/offering-status";
 
 /** Integer cents → the field's display, decimal auto-placed (1250 → "12.50"), grouped. Empty for null. */
 function centsToInput(cents: number | null): string {
@@ -70,7 +90,7 @@ function inputToCents(value: string): number | null {
  * placed automatically (type "350" → "3.50"), so there's no separator key to hit. Holds and emits
  * integer cents (the unit the API stores).
  */
-function MoneyInput({
+export function MoneyInput({
   value,
   onChange,
 }: {
@@ -89,7 +109,7 @@ function MoneyInput({
 }
 
 /** A product's cover thumbnail, falling back to a neutral icon tile (matching the brands/families rows). */
-function ProductThumb({
+export function ProductThumb({
   image,
   name,
   size = "md",
@@ -121,6 +141,56 @@ function ProductThumb({
   );
 }
 
+/** A price-range filter facet — the same chip look as the status filter, opening min/max money inputs. */
+function PriceFacet({
+  label,
+  minLabel,
+  maxLabel,
+  min,
+  max,
+  onMin,
+  onMax,
+}: {
+  label: string;
+  minLabel: string;
+  maxLabel: string;
+  min: number | null;
+  max: number | null;
+  onMin: (cents: number | null) => void;
+  onMax: (cents: number | null) => void;
+}) {
+  const active = min !== null || max !== null;
+  const badge = active
+    ? [min, max]
+        .map((value) => (value === null ? "" : (value / 100).toFixed(2)))
+        .join("–")
+    : null;
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button variant="outline" size="sm" className="gap-2">
+          {label}
+          {badge ? (
+            <Badge variant="neutral" className="tabular-nums">
+              {badge}
+            </Badge>
+          ) : null}
+          <ChevronDown className="size-4 opacity-50" aria-hidden />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent align="start" className="w-64 space-y-3 p-3">
+        <Field label={minLabel}>
+          <MoneyInput value={min} onChange={onMin} />
+        </Field>
+        <Field label={maxLabel}>
+          <MoneyInput value={max} onChange={onMax} />
+        </Field>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
 /**
  * The owner "Products" tab: a business's catalog as sightings. Add an existing catalog product (search
  * by name/barcode) or a handmade item via a dialog, each with a price; edit the price/availability or
@@ -129,16 +199,43 @@ function ProductThumb({
  */
 export function OwnerProducts({ businessSlug }: { businessSlug: string }) {
   const t = useTranslations("businesses.products");
+  const tStatus = useTranslations("offeringStatus");
+  const tFilters = useTranslations("filters");
+  const format = useFormatter();
+  const router = useRouter();
 
   const base = `/api/businesses/${encodeURIComponent(businessSlug)}/products`;
+  const detailHref = (id: string) =>
+    `/portal/businesses/${encodeURIComponent(businessSlug)}/products/${id}`;
 
   const [items, setItems] = useState<CatalogSighting[]>([]);
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
+  const [search, setSearch] = useState("");
+  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
+  const [priceMin, setPriceMin] = useState<number | null>(null);
+  const [priceMax, setPriceMax] = useState<number | null>(null);
   const [pendingDelete, setPendingDelete] = useState<CatalogSighting | null>(
     null,
   );
   const [deleting, setDeleting] = useState(false);
+
+  // Catalogs are small and fully loaded, so filter client-side (no API round-trip).
+  const filtered = items.filter((item) => {
+    const name = item.variant?.product?.name ?? "";
+    const matchesSearch =
+      search.trim() === "" ||
+      name.toLowerCase().includes(search.trim().toLowerCase());
+    const matchesStatus =
+      selectedStatuses.length === 0 ||
+      selectedStatuses.includes(item.offering_status);
+    const matchesPrice =
+      (priceMin === null && priceMax === null) ||
+      (item.price !== null &&
+        (priceMin === null || item.price >= priceMin) &&
+        (priceMax === null || item.price <= priceMax));
+    return matchesSearch && matchesStatus && matchesPrice;
+  });
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -170,11 +267,6 @@ export function OwnerProducts({ businessSlug }: { businessSlug: string }) {
         : [saved, ...current],
     );
   };
-
-  const patch = (next: CatalogSighting) =>
-    setItems((current) =>
-      current.map((item) => (item.id === next.id ? next : item)),
-    );
 
   const confirmDelete = async () => {
     const target = pendingDelete;
@@ -218,28 +310,153 @@ export function OwnerProducts({ businessSlug }: { businessSlug: string }) {
         </Button>
       </header>
 
+      {!loading && items.length > 0 ? (
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="relative max-w-sm flex-1">
+            <Search
+              className="text-muted-foreground pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2"
+              aria-hidden
+            />
+            <Input
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder={t("searchProducts")}
+              className="pl-8"
+            />
+          </div>
+          <FilterMultiSelect
+            label={t("table.status")}
+            options={OFFERING_STATUSES.map((value) => ({
+              value,
+              label: tStatus(value),
+            }))}
+            selected={selectedStatuses}
+            onChange={setSelectedStatuses}
+            searchPlaceholder={tFilters("search")}
+            emptyLabel={tFilters("noResults")}
+          />
+          <PriceFacet
+            label={t("filterPrice")}
+            minLabel={t("min")}
+            maxLabel={t("max")}
+            min={priceMin}
+            max={priceMax}
+            onMin={setPriceMin}
+            onMax={setPriceMax}
+          />
+        </div>
+      ) : null}
+
       {loading ? (
-        <div className="space-y-4">
-          {[0, 1, 2].map((index) => (
-            <Skeleton key={index} className="h-24 w-full rounded-2xl" />
+        <div className="space-y-3">
+          {[0, 1, 2, 3].map((index) => (
+            <Skeleton key={index} className="h-14 w-full rounded-xl" />
           ))}
         </div>
       ) : items.length === 0 ? (
         <div className="bg-muted/40 text-muted-foreground rounded-2xl p-10 text-center text-sm">
           {t("empty")}
         </div>
+      ) : filtered.length === 0 ? (
+        <div className="bg-muted/40 text-muted-foreground rounded-2xl p-10 text-center text-sm">
+          {t("noMatches")}
+        </div>
       ) : (
-        <ul className="space-y-4">
-          {items.map((item) => (
-            <ProductRow
-              key={item.id}
-              base={base}
-              item={item}
-              onChanged={patch}
-              onDelete={() => setPendingDelete(item)}
-            />
-          ))}
-        </ul>
+        <div className="rounded-xl border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>{t("table.product")}</TableHead>
+                <TableHead>{t("table.quantity")}</TableHead>
+                <TableHead>{t("table.price")}</TableHead>
+                <TableHead>{t("table.status")}</TableHead>
+                <TableHead className="text-right">
+                  {t("table.actions")}
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filtered.map((item) => {
+                const product = item.variant?.product ?? null;
+                const quantity =
+                  [item.variant?.size, unitFor(item.variant?.unit)?.symbol]
+                    .filter((part): part is string => Boolean(part))
+                    .join(" ") ||
+                  (item.variant?.label ?? "—");
+                const price =
+                  item.price !== null
+                    ? format.number(item.price / 100, {
+                        style: "currency",
+                        currency: item.currency ?? "BRL",
+                      })
+                    : "—";
+                const status = item.offering_status as OfferingStatus;
+                return (
+                  <TableRow
+                    key={item.id}
+                    className="cursor-pointer"
+                    onClick={() => router.push(detailHref(item.id))}
+                  >
+                    <TableCell>
+                      <div className="flex min-w-0 items-center gap-3">
+                        <ProductThumb
+                          image={product?.image ?? null}
+                          name={product?.name ?? ""}
+                          size="sm"
+                        />
+                        <div className="min-w-0">
+                          <span className="block truncate font-medium">
+                            {product?.name ?? "—"}
+                          </span>
+                          {product?.brand ? (
+                            <span className="text-muted-foreground block truncate text-xs">
+                              {product.brand}
+                            </span>
+                          ) : null}
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-muted-foreground whitespace-nowrap tabular-nums">
+                      {quantity}
+                    </TableCell>
+                    <TableCell className="whitespace-nowrap tabular-nums">
+                      {price}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={OFFERING_STATUS_VARIANT[status]}>
+                        {tStatus(status)}
+                      </Badge>
+                    </TableCell>
+                    {/* Stop row navigation so the actions act in place. */}
+                    <TableCell onClick={(event) => event.stopPropagation()}>
+                      <div className="flex items-center justify-end gap-1">
+                        <Button
+                          asChild
+                          size="sm"
+                          variant="ghost"
+                          aria-label={t("edit")}
+                        >
+                          <Link href={detailHref(item.id)}>
+                            <Pencil className="size-4" aria-hidden />
+                          </Link>
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="text-destructive hover:text-destructive"
+                          onClick={() => setPendingDelete(item)}
+                          aria-label={t("remove")}
+                        >
+                          <Trash2 className="size-4" aria-hidden />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </div>
       )}
 
       <AddProductDialog
@@ -275,188 +492,6 @@ export function OwnerProducts({ businessSlug }: { businessSlug: string }) {
         </DialogContent>
       </Dialog>
     </div>
-  );
-}
-
-/** One catalog row — a workspace card with an optimistic inline price/availability editor. */
-function ProductRow({
-  base,
-  item,
-  onChanged,
-  onDelete,
-}: {
-  base: string;
-  item: CatalogSighting;
-  onChanged: (next: CatalogSighting) => void;
-  onDelete: () => void;
-}) {
-  const t = useTranslations("businesses.products");
-  const format = useFormatter();
-  const [editing, setEditing] = useState(false);
-  const [price, setPrice] = useState<number | null>(item.price);
-  const [currency, setCurrency] = useState(item.currency ?? CURRENCIES[0]);
-  const [available, setAvailable] = useState(item.is_available);
-  const [saving, setSaving] = useState(false);
-
-  const product = item.variant?.product ?? null;
-
-  // The SKU quantity as "amount symbol" (e.g. "350 ml"); shown when there's no human label.
-  const quantity =
-    [item.variant?.size, unitFor(item.variant?.unit)?.symbol]
-      .filter((part): part is string => Boolean(part))
-      .join(" ") || null;
-
-  const priceLabel =
-    item.price === null
-      ? "—"
-      : format.number(item.price / 100, {
-          style: "currency",
-          currency: item.currency ?? CURRENCIES[0],
-        });
-
-  const save = async () => {
-    setSaving(true);
-    const optimistic: CatalogSighting = {
-      ...item,
-      price,
-      currency,
-      is_available: available,
-    };
-    onChanged(optimistic); // reflect immediately, reconcile with the server below
-    try {
-      const response = await fetch(`${base}/${item.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ price, currency, unavailable: !available }),
-      });
-      if (!response.ok) {
-        onChanged(item); // rollback
-        toast.error(t("actionError"));
-        return;
-      }
-      const data = (await response.json()) as { product: CatalogSighting };
-      onChanged(data.product);
-      setEditing(false);
-      toast.success(t("updated"));
-    } catch {
-      onChanged(item);
-      toast.error(t("actionError"));
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  return (
-    <li className="bg-muted/40 rounded-2xl p-5">
-      <div className="flex items-start gap-4">
-        <ProductThumb
-          image={product?.image ?? null}
-          name={product?.name ?? ""}
-        />
-        <div className="min-w-0 flex-1">
-          <p className="flex flex-wrap items-center gap-2 font-medium">
-            <span className="truncate">{product?.name ?? "—"}</span>
-            {item.variant?.label ? (
-              <span className="text-muted-foreground text-sm font-normal">
-                {item.variant.label}
-              </span>
-            ) : quantity ? (
-              <span className="text-muted-foreground text-sm font-normal">
-                {quantity}
-              </span>
-            ) : null}
-            {product?.is_homemade ? (
-              <Badge variant="neutral">{t("homemade")}</Badge>
-            ) : null}
-          </p>
-          <p className="text-muted-foreground mt-0.5 text-sm">
-            {product?.brand ? `${product.brand} · ` : ""}
-            <span className="text-foreground font-medium">{priceLabel}</span>
-          </p>
-          <p className="mt-1.5 flex items-center gap-1.5 text-xs">
-            <span
-              className={cn(
-                "size-1.5 rounded-full",
-                item.is_available ? "bg-brand-green" : "bg-muted-foreground/50",
-              )}
-              aria-hidden
-            />
-            <span className="text-muted-foreground">
-              {item.is_available ? t("available") : t("unavailable")}
-            </span>
-          </p>
-        </div>
-        {!editing ? (
-          <div className="flex shrink-0 gap-1">
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => setEditing(true)}
-              aria-label={t("edit")}
-            >
-              <Pencil className="size-4" aria-hidden />
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              className="text-destructive hover:text-destructive"
-              onClick={onDelete}
-              aria-label={t("remove")}
-            >
-              <Trash2 className="size-4" aria-hidden />
-            </Button>
-          </div>
-        ) : null}
-      </div>
-
-      {editing ? (
-        <div className="mt-4 grid gap-4 border-t pt-4 sm:grid-cols-[1fr_auto_auto]">
-          <Field label={t("price")}>
-            <MoneyInput value={price} onChange={setPrice} />
-          </Field>
-          <Field label={t("currency")}>
-            <Select value={currency} onValueChange={setCurrency}>
-              <SelectTrigger className="w-28">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {CURRENCIES.map((code) => (
-                  <SelectItem key={code} value={code}>
-                    {code}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </Field>
-          <Field label={t("available")}>
-            <div className="flex h-9 items-center">
-              <Switch checked={available} onCheckedChange={setAvailable} />
-            </div>
-          </Field>
-          <div className="flex gap-2 sm:col-span-3">
-            <Button
-              size="sm"
-              onClick={() => void save()}
-              disabled={saving}
-              className="gap-1.5"
-            >
-              <Check className="size-4" aria-hidden />
-              {t("save")}
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => setEditing(false)}
-              disabled={saving}
-              className="gap-1.5"
-            >
-              <X className="size-4" aria-hidden />
-              {t("cancel")}
-            </Button>
-          </div>
-        </div>
-      ) : null}
-    </li>
   );
 }
 
@@ -626,39 +661,29 @@ function AddProductDialog({
         </DialogHeader>
 
         <div className="space-y-5">
-          {/* Catalog vs handmade — a segmented switch. */}
-          <div className="bg-muted grid grid-cols-2 gap-1 rounded-lg p-1">
-            <button
-              type="button"
-              onClick={() => setMode("search")}
-              className={cn(
-                "flex items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
-                mode === "search"
-                  ? "bg-background text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground",
-              )}
-            >
-              <Search className="size-4" aria-hidden />
-              {t("addExisting")}
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setMode("new");
+          {/* Catalog vs handmade — a segmented switch, on the shared Tabs primitive. */}
+          <Tabs
+            value={mode}
+            onValueChange={(value) => {
+              const next = value as "search" | "new";
+              setMode(next);
+              if (next === "new") {
                 setSelected(null);
                 setVariant(null);
-              }}
-              className={cn(
-                "flex items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
-                mode === "new"
-                  ? "bg-background text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground",
-              )}
-            >
-              <Plus className="size-4" aria-hidden />
-              {t("addHandmade")}
-            </button>
-          </div>
+              }
+            }}
+          >
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="search">
+                <Search className="size-4" aria-hidden />
+                {t("addExisting")}
+              </TabsTrigger>
+              <TabsTrigger value="new">
+                <Plus className="size-4" aria-hidden />
+                {t("addHandmade")}
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
 
           {mode === "search" && selected === null ? (
             <div className="space-y-3">
