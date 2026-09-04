@@ -1911,5 +1911,21 @@
     "out_of_stock": "在庫切れ",
     "coming_soon": "近日提供",
     "discontinued": "提供終了"
+  },
+  "filterBuilder": {
+    "addFilter": "フィルターを追加",
+    "clearAll": "すべてクリア",
+    "search": "検索…",
+    "noResults": "結果なし",
+    "op": {
+      "contains": "を含む",
+      "notContains": "を含まない",
+      "startsWith": "で始まる",
+      "endsWith": "で終わる",
+      "is": "と一致",
+      "anyOf": "のいずれか",
+      "noneOf": "のいずれでもない",
+      "between": "の間"
+    }
   }
 }

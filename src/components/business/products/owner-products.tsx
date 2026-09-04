@@ -2,13 +2,15 @@
 
 import {
   ArrowLeft,
-  ChevronDown,
+  CircleDot,
+  DollarSign,
   Package,
   Pencil,
   Plus,
   ScanBarcode,
   Search,
   Trash2,
+  Type,
 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import Link from "next/link";
@@ -46,11 +48,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -61,12 +58,98 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FilterMultiSelect } from "@/components/admin/filter-multi-select";
+import {
+  Filters,
+  type FilterField,
+  type FilterValue,
+  type FiltersLabels,
+  type NumberRange,
+} from "@/components/ui/filters";
 import {
   OFFERING_STATUSES,
   OFFERING_STATUS_VARIANT,
   type OfferingStatus,
 } from "@/lib/products/offering-status";
+
+/** Whether one text value satisfies a text-filter operator. An empty needle is no constraint. */
+function matchText(
+  haystack: string,
+  operator: string,
+  needle: string,
+): boolean {
+  if (needle.trim() === "") {
+    return true;
+  }
+  const a = haystack.toLowerCase();
+  const b = needle.trim().toLowerCase();
+  switch (operator) {
+    case "contains":
+      return a.includes(b);
+    case "not_contains":
+      return !a.includes(b);
+    case "starts_with":
+      return a.startsWith(b);
+    case "ends_with":
+      return a.endsWith(b);
+    case "is":
+      return a === b;
+    default:
+      return true;
+  }
+}
+
+/** Whether a status satisfies a status-filter operator. An empty selection is no constraint. */
+function matchStatus(
+  status: string,
+  operator: string,
+  values: string[],
+): boolean {
+  if (values.length === 0) {
+    return true;
+  }
+  return operator === "none_of"
+    ? !values.includes(status)
+    : values.includes(status);
+}
+
+/** Whether a number satisfies a number-filter operator. A missing bound is no constraint. */
+function matchNumber(
+  value: number | null,
+  operator: string,
+  target: unknown,
+): boolean {
+  if (operator === "between") {
+    const range = (target as NumberRange | null) ?? { min: null, max: null };
+    if (range.min === null && range.max === null) {
+      return true;
+    }
+    if (value === null) {
+      return false;
+    }
+    return (
+      (range.min === null || value >= range.min) &&
+      (range.max === null || value <= range.max)
+    );
+  }
+  if (typeof target !== "number") {
+    return true;
+  }
+  if (value === null) {
+    return false;
+  }
+  switch (operator) {
+    case "eq":
+      return value === target;
+    case "neq":
+      return value !== target;
+    case "gt":
+      return value > target;
+    case "lt":
+      return value < target;
+    default:
+      return true;
+  }
+}
 
 /** Integer cents → the field's display, decimal auto-placed (1250 → "12.50"), grouped. Empty for null. */
 function centsToInput(cents: number | null): string {
@@ -141,56 +224,6 @@ export function ProductThumb({
   );
 }
 
-/** A price-range filter facet — the same chip look as the status filter, opening min/max money inputs. */
-function PriceFacet({
-  label,
-  minLabel,
-  maxLabel,
-  min,
-  max,
-  onMin,
-  onMax,
-}: {
-  label: string;
-  minLabel: string;
-  maxLabel: string;
-  min: number | null;
-  max: number | null;
-  onMin: (cents: number | null) => void;
-  onMax: (cents: number | null) => void;
-}) {
-  const active = min !== null || max !== null;
-  const badge = active
-    ? [min, max]
-        .map((value) => (value === null ? "" : (value / 100).toFixed(2)))
-        .join("–")
-    : null;
-
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-2">
-          {label}
-          {badge ? (
-            <Badge variant="neutral" className="tabular-nums">
-              {badge}
-            </Badge>
-          ) : null}
-          <ChevronDown className="size-4 opacity-50" aria-hidden />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent align="start" className="w-64 space-y-3 p-3">
-        <Field label={minLabel}>
-          <MoneyInput value={min} onChange={onMin} />
-        </Field>
-        <Field label={maxLabel}>
-          <MoneyInput value={max} onChange={onMax} />
-        </Field>
-      </PopoverContent>
-    </Popover>
-  );
-}
-
 /**
  * The owner "Products" tab: a business's catalog as sightings. Add an existing catalog product (search
  * by name/barcode) or a handmade item via a dialog, each with a price; edit the price/availability or
@@ -200,7 +233,7 @@ function PriceFacet({
 export function OwnerProducts({ businessSlug }: { businessSlug: string }) {
   const t = useTranslations("businesses.products");
   const tStatus = useTranslations("offeringStatus");
-  const tFilters = useTranslations("filters");
+  const tFilter = useTranslations("filterBuilder");
   const format = useFormatter();
   const router = useRouter();
 
@@ -211,31 +244,96 @@ export function OwnerProducts({ businessSlug }: { businessSlug: string }) {
   const [items, setItems] = useState<CatalogSighting[]>([]);
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
-  const [search, setSearch] = useState("");
-  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
-  const [priceMin, setPriceMin] = useState<number | null>(null);
-  const [priceMax, setPriceMax] = useState<number | null>(null);
+  const [filterValues, setFilterValues] = useState<FilterValue[]>([]);
   const [pendingDelete, setPendingDelete] = useState<CatalogSighting | null>(
     null,
   );
   const [deleting, setDeleting] = useState(false);
 
+  // The pill filter fields (search/status/price), then the AND-combined client-side predicate.
+  const filterFields: FilterField[] = [
+    {
+      id: "name",
+      label: t("table.product"),
+      icon: Type,
+      type: "text",
+      placeholder: t("searchProducts"),
+    },
+    {
+      id: "status",
+      label: t("table.status"),
+      icon: CircleDot,
+      type: "multiselect",
+      operators: [{ id: "any_of" }, { id: "none_of" }],
+      options: OFFERING_STATUSES.map((value) => ({
+        value,
+        label: tStatus(value),
+      })),
+    },
+    {
+      id: "price",
+      label: t("filterPrice"),
+      icon: DollarSign,
+      type: "number",
+      operators: [
+        { id: "between", shape: "range" },
+        { id: "eq" },
+        { id: "gt" },
+        { id: "lt" },
+      ],
+    },
+  ];
+
+  const filterLabels: FiltersLabels = {
+    addFilter: tFilter("addFilter"),
+    clearAll: tFilter("clearAll"),
+    search: tFilter("search"),
+    noResults: tFilter("noResults"),
+    min: t("min"),
+    max: t("max"),
+    operators: {
+      contains: tFilter("op.contains"),
+      not_contains: tFilter("op.notContains"),
+      starts_with: tFilter("op.startsWith"),
+      ends_with: tFilter("op.endsWith"),
+      is: tFilter("op.is"),
+      any_of: tFilter("op.anyOf"),
+      none_of: tFilter("op.noneOf"),
+      between: tFilter("op.between"),
+      eq: "=",
+      neq: "≠",
+      gt: ">",
+      lt: "<",
+    },
+  };
+
   // Catalogs are small and fully loaded, so filter client-side (no API round-trip).
-  const filtered = items.filter((item) => {
-    const name = item.variant?.product?.name ?? "";
-    const matchesSearch =
-      search.trim() === "" ||
-      name.toLowerCase().includes(search.trim().toLowerCase());
-    const matchesStatus =
-      selectedStatuses.length === 0 ||
-      selectedStatuses.includes(item.offering_status);
-    const matchesPrice =
-      (priceMin === null && priceMax === null) ||
-      (item.price !== null &&
-        (priceMin === null || item.price >= priceMin) &&
-        (priceMax === null || item.price <= priceMax));
-    return matchesSearch && matchesStatus && matchesPrice;
-  });
+  const filtered = items.filter((item) =>
+    filterValues.every((filter) => {
+      if (filter.field === "name") {
+        return matchText(
+          item.variant?.product?.name ?? "",
+          filter.operator,
+          (filter.value as string) ?? "",
+        );
+      }
+      if (filter.field === "status") {
+        return matchStatus(
+          item.offering_status,
+          filter.operator,
+          (filter.value as string[]) ?? [],
+        );
+      }
+      if (filter.field === "price") {
+        return matchNumber(
+          item.price === null ? null : item.price / 100,
+          filter.operator,
+          filter.value,
+        );
+      }
+      return true;
+    }),
+  );
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -311,40 +409,12 @@ export function OwnerProducts({ businessSlug }: { businessSlug: string }) {
       </header>
 
       {!loading && items.length > 0 ? (
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="relative max-w-sm flex-1">
-            <Search
-              className="text-muted-foreground pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2"
-              aria-hidden
-            />
-            <Input
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              placeholder={t("searchProducts")}
-              className="pl-8"
-            />
-          </div>
-          <FilterMultiSelect
-            label={t("table.status")}
-            options={OFFERING_STATUSES.map((value) => ({
-              value,
-              label: tStatus(value),
-            }))}
-            selected={selectedStatuses}
-            onChange={setSelectedStatuses}
-            searchPlaceholder={tFilters("search")}
-            emptyLabel={tFilters("noResults")}
-          />
-          <PriceFacet
-            label={t("filterPrice")}
-            minLabel={t("min")}
-            maxLabel={t("max")}
-            min={priceMin}
-            max={priceMax}
-            onMin={setPriceMin}
-            onMax={setPriceMax}
-          />
-        </div>
+        <Filters
+          fields={filterFields}
+          value={filterValues}
+          onValueChange={setFilterValues}
+          labels={filterLabels}
+        />
       ) : null}
 
       {loading ? (

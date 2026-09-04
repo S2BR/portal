@@ -1911,5 +1911,21 @@
     "out_of_stock": "نفد المخزون",
     "coming_soon": "قريبًا",
     "discontinued": "موقوف"
+  },
+  "filterBuilder": {
+    "addFilter": "إضافة عامل تصفية",
+    "clearAll": "مسح الكل",
+    "search": "بحث…",
+    "noResults": "لا نتائج",
+    "op": {
+      "contains": "يحتوي",
+      "notContains": "لا يحتوي",
+      "startsWith": "يبدأ بـ",
+      "endsWith": "ينتهي بـ",
+      "is": "يساوي",
+      "anyOf": "أيٌّ من",
+      "noneOf": "ليس أيًّا من",
+      "between": "بين"
+    }
   }
 }
