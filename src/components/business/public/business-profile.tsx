@@ -1,4 +1,4 @@
-import { Globe, Mail, Navigation, Package, Phone } from "lucide-react";
+import { Globe, Mail, Navigation, Phone } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 
@@ -21,9 +21,9 @@ import { flagEmoji, formatPhone } from "@/components/business/phone-format";
 import { ClaimBusinessButton } from "@/components/business/public/claim-business-button";
 import { ShareButton } from "@/components/business/public/share-button";
 import { Badge } from "@/components/ui/badge";
+import { PublicProductCard } from "@/components/business/public/business-catalog";
 import { formatBusinessAddress } from "@/lib/format-address";
 import { formatTime } from "@/lib/format-time";
-import { unitFor } from "@/lib/products/units";
 import { externalHref } from "@/lib/url";
 import { cn } from "@/lib/utils";
 
@@ -66,6 +66,8 @@ export async function BusinessProfile({
   const directions = directionsHref(business);
   const firstPhone = phones[0];
   const firstWebsite = websites[0];
+  // The profile shows only highlighted products; the full catalog lives on the products page.
+  const featured = products.filter((product) => product.is_featured);
 
   return (
     <>
@@ -230,64 +232,30 @@ export async function BusinessProfile({
 
             {products.length > 0 ? (
               <section>
-                <h2 className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
-                  {t("products")}
-                </h2>
+                <div className="flex items-center justify-between gap-3">
+                  <h2 className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
+                    {t("products")}
+                  </h2>
+                  <Link
+                    href={`/businesses/${business.slug}/products`}
+                    className="text-primary text-xs font-medium hover:underline"
+                  >
+                    {t("seeAllProducts")}
+                  </Link>
+                </div>
+                {featured.length === 0 ? (
+                  <p className="text-muted-foreground mt-2 text-sm">
+                    {t("browseProducts")}
+                  </p>
+                ) : null}
                 <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
-                  {products.map((product) => {
-                    const info = product.variant?.product;
-                    const quantity =
-                      [
-                        product.variant?.size,
-                        unitFor(product.variant?.unit)?.symbol,
-                      ]
-                        .filter((part): part is string => Boolean(part))
-                        .join(" ") ||
-                      product.variant?.label ||
-                      null;
-                    const price =
-                      product.price !== null
-                        ? new Intl.NumberFormat(locale, {
-                            style: "currency",
-                            currency: product.currency ?? "BRL",
-                          }).format(product.price / 100)
-                        : null;
-                    return (
-                      <div
-                        key={product.id}
-                        className="overflow-hidden rounded-xl border"
-                      >
-                        <div className="bg-muted text-muted-foreground flex aspect-square w-full items-center justify-center">
-                          {product.cover_image ? (
-                            // eslint-disable-next-line @next/next/no-img-element -- presigned S3 url, not a bundled asset
-                            <img
-                              src={product.cover_image}
-                              alt={info?.name ?? ""}
-                              className="size-full object-cover"
-                              loading="lazy"
-                            />
-                          ) : (
-                            <Package className="size-6" aria-hidden />
-                          )}
-                        </div>
-                        <div className="space-y-0.5 p-3">
-                          <p className="truncate text-sm font-medium">
-                            {info?.name ?? "—"}
-                          </p>
-                          {info?.brand || quantity ? (
-                            <p className="text-muted-foreground truncate text-xs">
-                              {[info?.brand, quantity]
-                                .filter(Boolean)
-                                .join(" · ")}
-                            </p>
-                          ) : null}
-                          {price ? (
-                            <p className="text-sm tabular-nums">{price}</p>
-                          ) : null}
-                        </div>
-                      </div>
-                    );
-                  })}
+                  {featured.map((product) => (
+                    <PublicProductCard
+                      key={product.id}
+                      product={product}
+                      locale={locale}
+                    />
+                  ))}
                 </div>
               </section>
             ) : null}

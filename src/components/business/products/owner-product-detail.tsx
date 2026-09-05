@@ -1,13 +1,16 @@
 "use client";
 
-import { ArrowLeft, Loader2, Trash2 } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { ArrowLeft, Loader2, Star, Trash2 } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type ChangeEvent, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import type { CatalogSighting } from "@/app/api/businesses/[slug]/products/route";
+import type { ProductSection } from "@/app/api/businesses/[slug]/product-sections/route";
+import { displayName, type LocaleText } from "@/lib/taxonomy/admin";
+import { cn } from "@/lib/utils";
 import {
   MoneyInput,
   ProductThumb,
@@ -39,7 +42,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { PreviewRail } from "@/components/ui/preview-rail";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { CURRENCIES } from "@/lib/products/currencies";
 import {
@@ -71,6 +76,7 @@ export function OwnerProductDetail({
 }) {
   const t = useTranslations("businesses.products");
   const tStatus = useTranslations("offeringStatus");
+  const locale = useLocale();
   const router = useRouter();
 
   const base = `/api/businesses/${encodeURIComponent(businessSlug)}/products`;
@@ -87,6 +93,9 @@ export function OwnerProductDetail({
   const [amount, setAmount] = useState("");
   const [unit, setUnit] = useState<UnitCode | null>(null);
   const [description, setDescription] = useState("");
+  const [featured, setFeatured] = useState(false);
+  const [sectionIds, setSectionIds] = useState<string[]>([]);
+  const [sections, setSections] = useState<ProductSection[]>([]);
   const [saving, setSaving] = useState(false);
   const [pendingDelete, setPendingDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -98,7 +107,28 @@ export function OwnerProductDetail({
     setAmount(sighting.variant?.size ?? "");
     setUnit((sighting.variant?.unit as UnitCode | null) ?? null);
     setDescription(sighting.variant?.product?.description ?? "");
+    setFeatured(sighting.is_featured);
+    setSectionIds(sighting.section_ids);
   };
+
+  // The business's sections — options for the multi-select below.
+  useEffect(() => {
+    void fetch(
+      `/api/businesses/${encodeURIComponent(businessSlug)}/product-sections`,
+    )
+      .then((response) => (response.ok ? response.json() : { sections: [] }))
+      .then((data: { sections?: ProductSection[] }) =>
+        setSections(data.sections ?? []),
+      )
+      .catch(() => setSections([]));
+  }, [businessSlug]);
+
+  const toggleSection = (sectionId: string) =>
+    setSectionIds((current) =>
+      current.includes(sectionId)
+        ? current.filter((value) => value !== sectionId)
+        : [...current, sectionId],
+    );
 
   useEffect(() => {
     let active = true;
@@ -139,6 +169,8 @@ export function OwnerProductDetail({
         price,
         currency,
         offering_status: status,
+        featured,
+        section_ids: sectionIds,
       };
       // Only a handmade product's own fields are editable; a shared SKU is global (API also guards it).
       if (isHomemade) {
@@ -188,6 +220,30 @@ export function OwnerProductDetail({
       .filter((part): part is string => Boolean(part))
       .join(" ") ||
     (item?.variant?.label ?? null);
+
+  // Right-edge scroll-spy rail mirroring this page's sections (like the business editor).
+  const railItems = [
+    {
+      id: "section-photos",
+      label: t("detail.photosTitle"),
+      description: t("detail.photosDescription"),
+    },
+    {
+      id: "section-details",
+      label: t("detail.detailsTitle"),
+      description: t("detail.detailsDescription"),
+    },
+    {
+      id: "section-placement",
+      label: t("placement.title"),
+      description: t("placement.description"),
+    },
+    {
+      id: "section-offer",
+      label: t("detail.offerTitle"),
+      description: t("detail.offerDescription"),
+    },
+  ];
 
   return (
     <div className="space-y-8">
@@ -310,6 +366,69 @@ export function OwnerProductDetail({
           </FormSection>
 
           <FormSection
+            id="section-placement"
+            editing
+            title={t("placement.title")}
+            description={t("placement.description")}
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex items-center gap-2">
+                <Star
+                  className={cn(
+                    "size-4",
+                    featured
+                      ? "fill-amber-400 text-amber-400"
+                      : "text-muted-foreground",
+                  )}
+                  aria-hidden
+                />
+                <div>
+                  <p className="text-sm font-medium">
+                    {t("placement.featured")}
+                  </p>
+                  <p className="text-muted-foreground text-xs">
+                    {t("placement.featuredHint")}
+                  </p>
+                </div>
+              </div>
+              <Switch checked={featured} onCheckedChange={setFeatured} />
+            </div>
+
+            <Field
+              label={t("placement.sections")}
+              hint={t("placement.sectionsHint")}
+            >
+              {sections.length === 0 ? (
+                <p className="text-muted-foreground text-sm">
+                  {t("placement.noSections")}
+                </p>
+              ) : (
+                <div className="flex flex-wrap gap-2">
+                  {sections.map((section) => {
+                    const active = sectionIds.includes(section.id);
+                    return (
+                      <button
+                        key={section.id}
+                        type="button"
+                        onClick={() => toggleSection(section.id)}
+                        aria-pressed={active}
+                        className={cn(
+                          "rounded-full border px-3 py-1 text-sm transition-colors",
+                          active
+                            ? "border-primary bg-primary text-primary-foreground"
+                            : "border-input hover:bg-muted/60",
+                        )}
+                      >
+                        {displayName(section.name as LocaleText, locale)}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </Field>
+          </FormSection>
+
+          <FormSection
             id="section-offer"
             editing
             title={t("detail.offerTitle")}
@@ -373,6 +492,8 @@ export function OwnerProductDetail({
           </FormSection>
         </div>
       ) : null}
+
+      {item ? <PreviewRail items={railItems} /> : null}
 
       <Dialog
         open={pendingDelete}

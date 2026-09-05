@@ -15,6 +15,8 @@ interface UpdateBody {
   currency?: string | null;
   location_label?: string | null;
   offering_status?: string;
+  featured?: boolean;
+  section_ids?: string[];
   product?: {
     name?: string;
     brand?: string | null;

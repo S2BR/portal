@@ -9,6 +9,7 @@ import {
   Plus,
   ScanBarcode,
   Search,
+  Star,
   Trash2,
   Type,
 } from "lucide-react";
@@ -19,6 +20,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import type { CatalogSighting } from "@/app/api/businesses/[slug]/products/route";
+import type { ProductSection } from "@/app/api/businesses/[slug]/product-sections/route";
+import { SectionManager } from "@/components/business/products/section-manager";
 import {
   searchCatalog,
   type CatalogHit,
@@ -57,7 +60,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Filters,
   type FilterField,
@@ -70,6 +73,9 @@ import {
   OFFERING_STATUS_VARIANT,
   type OfferingStatus,
 } from "@/lib/products/offering-status";
+
+/** Products per page in the owner catalog table (client-side paged); from env, see .env.example. */
+const PAGE_SIZE = Number(process.env.NEXT_PUBLIC_PRODUCTS_PAGE_SIZE) || 20;
 
 /** Whether one text value satisfies a text-filter operator. An empty needle is no constraint. */
 function matchText(
@@ -242,8 +248,11 @@ export function OwnerProducts({ businessSlug }: { businessSlug: string }) {
     `/portal/businesses/${encodeURIComponent(businessSlug)}/products/${id}`;
 
   const [items, setItems] = useState<CatalogSighting[]>([]);
+  const [sections, setSections] = useState<ProductSection[]>([]);
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
+  const [tab, setTab] = useState("products");
+  const [page, setPage] = useState(1);
   const [filterValues, setFilterValues] = useState<FilterValue[]>([]);
   const [pendingDelete, setPendingDelete] = useState<CatalogSighting | null>(
     null,
@@ -335,6 +344,14 @@ export function OwnerProducts({ businessSlug }: { businessSlug: string }) {
     }),
   );
 
+  // Page the filtered list so a large catalog stays scannable (client-side; the data is already loaded).
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const currentPage = Math.min(page, pageCount);
+  const paged = filtered.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE,
+  );
+
   const load = useCallback(async () => {
     setLoading(true);
     try {
@@ -343,8 +360,12 @@ export function OwnerProducts({ businessSlug }: { businessSlug: string }) {
         toast.error(t("loadError"));
         return;
       }
-      const data = (await response.json()) as { products: CatalogSighting[] };
+      const data = (await response.json()) as {
+        products: CatalogSighting[];
+        sections?: ProductSection[];
+      };
       setItems(data.products ?? []);
+      setSections(data.sections ?? []);
     } catch {
       toast.error(t("loadError"));
     } finally {
@@ -408,15 +429,6 @@ export function OwnerProducts({ businessSlug }: { businessSlug: string }) {
         </Button>
       </header>
 
-      {!loading && items.length > 0 ? (
-        <Filters
-          fields={filterFields}
-          value={filterValues}
-          onValueChange={setFilterValues}
-          labels={filterLabels}
-        />
-      ) : null}
-
       {loading ? (
         <div className="space-y-3">
           {[0, 1, 2, 3].map((index) => (
@@ -427,106 +439,182 @@ export function OwnerProducts({ businessSlug }: { businessSlug: string }) {
         <div className="bg-muted/40 text-muted-foreground rounded-2xl p-10 text-center text-sm">
           {t("empty")}
         </div>
-      ) : filtered.length === 0 ? (
-        <div className="bg-muted/40 text-muted-foreground rounded-2xl p-10 text-center text-sm">
-          {t("noMatches")}
-        </div>
       ) : (
-        <div className="rounded-xl border">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>{t("table.product")}</TableHead>
-                <TableHead>{t("table.quantity")}</TableHead>
-                <TableHead>{t("table.price")}</TableHead>
-                <TableHead>{t("table.status")}</TableHead>
-                <TableHead className="text-right">
-                  {t("table.actions")}
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filtered.map((item) => {
-                const product = item.variant?.product ?? null;
-                const quantity =
-                  [item.variant?.size, unitFor(item.variant?.unit)?.symbol]
-                    .filter((part): part is string => Boolean(part))
-                    .join(" ") ||
-                  (item.variant?.label ?? "—");
-                const price =
-                  item.price !== null
-                    ? format.number(item.price / 100, {
-                        style: "currency",
-                        currency: item.currency ?? "BRL",
-                      })
-                    : "—";
-                const status = item.offering_status as OfferingStatus;
-                return (
-                  <TableRow
-                    key={item.id}
-                    className="cursor-pointer"
-                    onClick={() => router.push(detailHref(item.id))}
-                  >
-                    <TableCell>
-                      <div className="flex min-w-0 items-center gap-3">
-                        <ProductThumb
-                          image={item.cover_image ?? product?.image ?? null}
-                          name={product?.name ?? ""}
-                          size="sm"
-                        />
-                        <div className="min-w-0">
-                          <span className="block truncate font-medium">
-                            {product?.name ?? "—"}
-                          </span>
-                          {product?.brand ? (
-                            <span className="text-muted-foreground block truncate text-xs">
-                              {product.brand}
-                            </span>
-                          ) : null}
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-muted-foreground whitespace-nowrap tabular-nums">
-                      {quantity}
-                    </TableCell>
-                    <TableCell className="whitespace-nowrap tabular-nums">
-                      {price}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={OFFERING_STATUS_VARIANT[status]}>
-                        {tStatus(status)}
-                      </Badge>
-                    </TableCell>
-                    {/* Stop row navigation so the actions act in place. */}
-                    <TableCell onClick={(event) => event.stopPropagation()}>
-                      <div className="flex items-center justify-end gap-1">
-                        <Button
-                          asChild
-                          size="sm"
-                          variant="ghost"
-                          aria-label={t("edit")}
-                        >
-                          <Link href={detailHref(item.id)}>
-                            <Pencil className="size-4" aria-hidden />
-                          </Link>
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="text-destructive hover:text-destructive"
-                          onClick={() => setPendingDelete(item)}
-                          aria-label={t("remove")}
-                        >
-                          <Trash2 className="size-4" aria-hidden />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </div>
+        <Tabs value={tab} onValueChange={setTab} className="gap-6">
+          <TabsList className="w-fit">
+            <TabsTrigger value="products">{t("title")}</TabsTrigger>
+            <TabsTrigger value="sections">{t("sections.title")}</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="products" className="space-y-6">
+            <Filters
+              fields={filterFields}
+              value={filterValues}
+              onValueChange={(next) => {
+                setFilterValues(next);
+                setPage(1);
+              }}
+              labels={filterLabels}
+            />
+            {filtered.length === 0 ? (
+              <div className="bg-muted/40 text-muted-foreground rounded-2xl p-10 text-center text-sm">
+                {t("noMatches")}
+              </div>
+            ) : (
+              <div className="space-y-6">
+                <div className="rounded-xl border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>{t("table.product")}</TableHead>
+                        <TableHead>{t("table.quantity")}</TableHead>
+                        <TableHead>{t("table.price")}</TableHead>
+                        <TableHead>{t("table.status")}</TableHead>
+                        <TableHead className="text-right">
+                          {t("table.actions")}
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {paged.map((item) => {
+                        const product = item.variant?.product ?? null;
+                        const quantity =
+                          [
+                            item.variant?.size,
+                            unitFor(item.variant?.unit)?.symbol,
+                          ]
+                            .filter((part): part is string => Boolean(part))
+                            .join(" ") ||
+                          (item.variant?.label ?? "—");
+                        const price =
+                          item.price !== null
+                            ? format.number(item.price / 100, {
+                                style: "currency",
+                                currency: item.currency ?? "BRL",
+                              })
+                            : "—";
+                        const status = item.offering_status as OfferingStatus;
+                        return (
+                          <TableRow
+                            key={item.id}
+                            className="cursor-pointer"
+                            onClick={() => router.push(detailHref(item.id))}
+                          >
+                            <TableCell>
+                              <div className="flex min-w-0 items-center gap-3">
+                                <ProductThumb
+                                  image={
+                                    item.cover_image ?? product?.image ?? null
+                                  }
+                                  name={product?.name ?? ""}
+                                  size="sm"
+                                />
+                                <div className="min-w-0">
+                                  <span className="flex items-center gap-1.5 font-medium">
+                                    {item.is_featured ? (
+                                      <Star
+                                        className="size-3.5 shrink-0 fill-amber-400 text-amber-400"
+                                        aria-label={t("placement.featured")}
+                                      />
+                                    ) : null}
+                                    <span className="truncate">
+                                      {product?.name ?? "—"}
+                                    </span>
+                                  </span>
+                                  {product?.brand ? (
+                                    <span className="text-muted-foreground block truncate text-xs">
+                                      {product.brand}
+                                    </span>
+                                  ) : null}
+                                </div>
+                              </div>
+                            </TableCell>
+                            <TableCell className="text-muted-foreground whitespace-nowrap tabular-nums">
+                              {quantity}
+                            </TableCell>
+                            <TableCell className="whitespace-nowrap tabular-nums">
+                              {price}
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant={OFFERING_STATUS_VARIANT[status]}>
+                                {tStatus(status)}
+                              </Badge>
+                            </TableCell>
+                            {/* Stop row navigation so the actions act in place. */}
+                            <TableCell
+                              onClick={(event) => event.stopPropagation()}
+                            >
+                              <div className="flex items-center justify-end gap-1">
+                                <Button
+                                  asChild
+                                  size="sm"
+                                  variant="ghost"
+                                  aria-label={t("edit")}
+                                >
+                                  <Link href={detailHref(item.id)}>
+                                    <Pencil className="size-4" aria-hidden />
+                                  </Link>
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  className="text-destructive hover:text-destructive"
+                                  onClick={() => setPendingDelete(item)}
+                                  aria-label={t("remove")}
+                                >
+                                  <Trash2 className="size-4" aria-hidden />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </div>
+                {pageCount > 1 ? (
+                  <div className="flex items-center justify-between">
+                    <p className="text-muted-foreground text-sm">
+                      {t("pagination.page", {
+                        page: currentPage,
+                        total: pageCount,
+                      })}
+                    </p>
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        disabled={currentPage <= 1}
+                        onClick={() => setPage(currentPage - 1)}
+                      >
+                        {t("pagination.previous")}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        disabled={currentPage >= pageCount}
+                        onClick={() => setPage(currentPage + 1)}
+                      >
+                        {t("pagination.next")}
+                      </Button>
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="sections">
+            <SectionManager
+              slug={businessSlug}
+              products={items}
+              sections={sections}
+              onChanged={load}
+            />
+          </TabsContent>
+        </Tabs>
       )}
 
       <AddProductDialog

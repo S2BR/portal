@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import { callWithAuth } from "@/lib/api/authed";
 import { rateLimitedResponse } from "@/lib/api/rate-limit";
 
+import type { ProductSection } from "../product-sections/route";
+
 /** A product in a business's catalog — a sighting (price + availability) plus the SKU variant it points at. */
 export interface CatalogSighting {
   id: string;
@@ -18,6 +20,10 @@ export interface CatalogSighting {
   cover_image: string | null;
   /** The business's own uploaded photos of this product (cover first). */
   images: { id: string; url: string | null }[];
+  /** Whether the owner has highlighted this product (shown on the public profile). */
+  is_featured: boolean;
+  /** The owner sections (their ids) this product belongs to. */
+  section_ids: string[];
   variant: {
     id: string;
     label: string | null;
@@ -68,6 +74,7 @@ export async function GET(
 
   const response = await callWithAuth<{
     products: CatalogSighting[];
+    sections: ProductSection[];
     retry_after?: number | null;
   }>({
     method: "GET",
@@ -75,7 +82,10 @@ export async function GET(
   });
 
   if (response.ok) {
-    return NextResponse.json({ products: response.data.products });
+    return NextResponse.json({
+      products: response.data.products,
+      sections: response.data.sections ?? [],
+    });
   }
   if (response.status === 429) {
     return rateLimitedResponse(response);
@@ -83,7 +93,7 @@ export async function GET(
   if (response.status === 404) {
     return NextResponse.json({ status: "not_found" }, { status: 404 });
   }
-  return NextResponse.json({ products: [] }, { status: 502 });
+  return NextResponse.json({ products: [], sections: [] }, { status: 502 });
 }
 
 export async function POST(

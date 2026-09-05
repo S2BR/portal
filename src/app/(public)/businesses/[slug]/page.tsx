@@ -69,12 +69,16 @@ export default async function PublicBusinessPage({
     redirect(`/businesses/${business.slug}`);
   }
 
-  const [locale, products] = await Promise.all([
+  const [locale, catalog] = await Promise.all([
     getLocale(),
     getPublicBusinessProducts(business.slug),
   ]);
 
   return (
-    <BusinessProfile business={business} products={products} locale={locale} />
+    <BusinessProfile
+      business={business}
+      products={catalog.products}
+      locale={locale}
+    />
   );
 }
