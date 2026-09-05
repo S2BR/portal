@@ -616,7 +616,11 @@
       "closesAt": "Cierra a las {time}",
       "opensAt": "Abre a las {time}",
       "opensAtDay": "Abre {day} a las {time}",
-      "products": "Productos"
+      "products": "Productos",
+      "seeAllProducts": "Ver todos los productos",
+      "browseProducts": "Explora los productos de esta empresa.",
+      "otherProducts": "Otros",
+      "noProducts": "Aún no hay productos."
     },
     "publish": {
       "checklistTitle": "Aún no está publicado",
@@ -1034,6 +1038,37 @@
         "saved": "Foto agregada.",
         "error": "No se pudo guardar esa foto.",
         "alt": "Foto del producto"
+      },
+      "sections": {
+        "title": "Secciones",
+        "subtitle": "Agrupa tus productos en secciones que se muestran en tu página.",
+        "add": "Agregar sección",
+        "rename": "Renombrar sección",
+        "empty": "Aún no hay secciones.",
+        "reorder": "Reordenar sección",
+        "count": "{count, plural, one {# producto} other {# productos}}",
+        "products": "Productos",
+        "deleted": "Sección eliminada.",
+        "saved": "Sección guardada.",
+        "deleteTitle": "¿Eliminar esta sección?",
+        "nameLabel": "Nombre",
+        "namePlaceholder": "p. ej. Bebidas",
+        "addTranslations": "Agregar traducciones",
+        "hideTranslations": "Ocultar traducciones"
+      },
+      "placement": {
+        "title": "Secciones y destacado",
+        "description": "Dónde aparece este producto en tu página.",
+        "featured": "Destacar en el perfil",
+        "featuredHint": "Los productos destacados aparecen en el perfil de tu empresa.",
+        "sections": "Secciones",
+        "sectionsHint": "Agrega este producto a una o más secciones.",
+        "noSections": "Primero crea secciones en la página de productos."
+      },
+      "pagination": {
+        "page": "Página {page} de {total}",
+        "previous": "Anterior",
+        "next": "Siguiente"
       }
     }
   },

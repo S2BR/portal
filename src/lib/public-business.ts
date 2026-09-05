@@ -150,7 +150,14 @@ export async function getPublicBusiness(
   return response.ok ? (response.data.business ?? null) : null;
 }
 
-/** One product in a business's PUBLIC catalog (a sighting), for the profile page. */
+/** A business's public display section — a localized name, in order. */
+export interface PublicSection {
+  id: string;
+  name: string;
+  order: number;
+}
+
+/** One product in a business's PUBLIC catalog (a sighting), for the profile / catalog page. */
 export interface PublicCatalogItem {
   id: string;
   price: number | null;
@@ -158,6 +165,10 @@ export interface PublicCatalogItem {
   location_label: string | null;
   /** The business's own photo if it uploaded one, else the catalog product's admin cover. */
   cover_image: string | null;
+  /** Whether the owner highlighted this product (shown on the profile). */
+  is_featured: boolean;
+  /** The sections this product is in (their ids). */
+  section_ids: string[];
   variant: {
     id: string;
     label: string | null;
@@ -174,19 +185,38 @@ export interface PublicCatalogItem {
   } | null;
 }
 
+/** A business's public catalog — its available products plus its display sections. */
+export interface PublicCatalog {
+  products: PublicCatalogItem[];
+  sections: PublicSection[];
+}
+
+const EMPTY_CATALOG: PublicCatalog = { products: [], sections: [] };
+
 /**
- * Fetch a business's public catalog (its available products) — unauthenticated, server-side. Degrades
- * to an empty list if the API is unreachable, so the profile still renders.
+ * Fetch a business's public catalog (its available products + sections) — unauthenticated,
+ * server-side. `featured` narrows to the highlighted products (for the profile). Degrades to an empty
+ * catalog if the API is unreachable, so the page still renders.
  */
 export async function getPublicBusinessProducts(
   slug: string,
-): Promise<PublicCatalogItem[]> {
-  const response = await portalFetch<{ products?: PublicCatalogItem[] }>({
+  options: { featured?: boolean } = {},
+): Promise<PublicCatalog> {
+  const suffix = options.featured ? "?featured=1" : "";
+  const response = await portalFetch<{
+    products?: PublicCatalogItem[];
+    sections?: PublicSection[];
+  }>({
     method: "GET",
-    path: `/public/businesses/${encodeURIComponent(slug)}/products`,
+    path: `/public/businesses/${encodeURIComponent(slug)}/products${suffix}`,
   });
 
-  return response.ok ? (response.data.products ?? []) : [];
+  return response.ok
+    ? {
+        products: response.data.products ?? [],
+        sections: response.data.sections ?? [],
+      }
+    : EMPTY_CATALOG;
 }
 
 /** A business as a card in the directory list — the lightweight shape the list endpoint returns. */

@@ -616,7 +616,11 @@
       "closesAt": "Schließt um {time}",
       "opensAt": "Öffnet um {time}",
       "opensAtDay": "Öffnet {day} um {time}",
-      "products": "Produkte"
+      "products": "Produkte",
+      "seeAllProducts": "Alle Produkte ansehen",
+      "browseProducts": "Produkte dieses Unternehmens durchsuchen.",
+      "otherProducts": "Sonstige",
+      "noProducts": "Noch keine Produkte."
     },
     "publish": {
       "checklistTitle": "Noch nicht live",
@@ -1034,6 +1038,37 @@
         "saved": "Foto hinzugefügt.",
         "error": "Dieses Foto konnte nicht gespeichert werden.",
         "alt": "Produktfoto"
+      },
+      "sections": {
+        "title": "Abschnitte",
+        "subtitle": "Gruppiere deine Produkte in Abschnitte, die auf deiner Seite erscheinen.",
+        "add": "Abschnitt hinzufügen",
+        "rename": "Abschnitt umbenennen",
+        "empty": "Noch keine Abschnitte.",
+        "reorder": "Abschnitt neu anordnen",
+        "count": "{count, plural, one {# Produkt} other {# Produkte}}",
+        "products": "Produkte",
+        "deleted": "Abschnitt gelöscht.",
+        "saved": "Abschnitt gespeichert.",
+        "deleteTitle": "Diesen Abschnitt löschen?",
+        "nameLabel": "Name",
+        "namePlaceholder": "z. B. Getränke",
+        "addTranslations": "Übersetzungen hinzufügen",
+        "hideTranslations": "Übersetzungen ausblenden"
+      },
+      "placement": {
+        "title": "Abschnitte & Hervorhebung",
+        "description": "Wo dieses Produkt auf deiner Seite erscheint.",
+        "featured": "Im Profil hervorheben",
+        "featuredHint": "Hervorgehobene Produkte erscheinen im Profil deines Unternehmens.",
+        "sections": "Abschnitte",
+        "sectionsHint": "Füge dieses Produkt zu einem oder mehreren Abschnitten hinzu.",
+        "noSections": "Erstelle zuerst Abschnitte auf der Produktseite."
+      },
+      "pagination": {
+        "page": "Seite {page} von {total}",
+        "previous": "Zurück",
+        "next": "Weiter"
       }
     }
   },

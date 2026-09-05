@@ -616,7 +616,11 @@
       "closesAt": "يغلق في {time}",
       "opensAt": "يفتح في {time}",
       "opensAtDay": "يفتح {day} في {time}",
-      "products": "المنتجات"
+      "products": "المنتجات",
+      "seeAllProducts": "عرض كل المنتجات",
+      "browseProducts": "تصفح منتجات هذا النشاط التجاري.",
+      "otherProducts": "أخرى",
+      "noProducts": "لا توجد منتجات بعد."
     },
     "publish": {
       "checklistTitle": "غير منشور بعد",
@@ -1034,6 +1038,37 @@
         "saved": "تمت إضافة الصورة.",
         "error": "تعذّر حفظ هذه الصورة.",
         "alt": "صورة المنتج"
+      },
+      "sections": {
+        "title": "الأقسام",
+        "subtitle": "جمّع منتجاتك في أقسام تظهر على صفحتك.",
+        "add": "إضافة قسم",
+        "rename": "إعادة تسمية القسم",
+        "empty": "لا توجد أقسام بعد.",
+        "reorder": "إعادة ترتيب القسم",
+        "count": "{count, plural, zero {# منتج} one {# منتج} two {# منتجان} few {# منتجات} many {# منتجًا} other {# منتج}}",
+        "products": "المنتجات",
+        "deleted": "تم حذف القسم.",
+        "saved": "تم حفظ القسم.",
+        "deleteTitle": "حذف هذا القسم؟",
+        "nameLabel": "الاسم",
+        "namePlaceholder": "مثال: المشروبات",
+        "addTranslations": "إضافة ترجمات",
+        "hideTranslations": "إخفاء الترجمات"
+      },
+      "placement": {
+        "title": "الأقسام والإبراز",
+        "description": "أين يظهر هذا المنتج على صفحتك.",
+        "featured": "إبراز في الملف",
+        "featuredHint": "المنتجات المميزة تظهر في ملف نشاطك التجاري.",
+        "sections": "الأقسام",
+        "sectionsHint": "أضف هذا المنتج إلى قسم واحد أو أكثر.",
+        "noSections": "أنشئ الأقسام في صفحة المنتجات أولاً."
+      },
+      "pagination": {
+        "page": "صفحة {page} من {total}",
+        "previous": "السابق",
+        "next": "التالي"
       }
     }
   },

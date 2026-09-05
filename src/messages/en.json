@@ -616,7 +616,11 @@
       "closesAt": "Closes {time}",
       "opensAt": "Opens {time}",
       "opensAtDay": "Opens {time} {day}",
-      "products": "Products"
+      "products": "Products",
+      "seeAllProducts": "See all products",
+      "browseProducts": "Browse this business's products.",
+      "otherProducts": "Other",
+      "noProducts": "No products yet."
     },
     "publish": {
       "checklistTitle": "Not live yet",
@@ -1034,6 +1038,37 @@
         "saved": "Photo added.",
         "error": "Couldn't save that photo.",
         "alt": "Product photo"
+      },
+      "sections": {
+        "title": "Sections",
+        "subtitle": "Group your products into sections shown on your page.",
+        "add": "Add section",
+        "rename": "Rename section",
+        "empty": "No sections yet.",
+        "reorder": "Reorder section",
+        "count": "{count, plural, one {# product} other {# products}}",
+        "products": "Products",
+        "deleted": "Section deleted.",
+        "saved": "Section saved.",
+        "deleteTitle": "Delete this section?",
+        "nameLabel": "Name",
+        "namePlaceholder": "e.g. Drinks",
+        "addTranslations": "Add translations",
+        "hideTranslations": "Hide translations"
+      },
+      "placement": {
+        "title": "Sections & highlight",
+        "description": "Where this product shows on your page.",
+        "featured": "Highlight on profile",
+        "featuredHint": "Featured products show on your business profile.",
+        "sections": "Sections",
+        "sectionsHint": "Add this product to one or more sections.",
+        "noSections": "Create sections on the products page first."
+      },
+      "pagination": {
+        "page": "Page {page} of {total}",
+        "previous": "Previous",
+        "next": "Next"
       }
     }
   },

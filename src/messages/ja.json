@@ -616,7 +616,11 @@
       "closesAt": "{time}に閉店",
       "opensAt": "{time}に開店",
       "opensAtDay": "{day} {time}に開店",
-      "products": "商品"
+      "products": "商品",
+      "seeAllProducts": "すべての商品を見る",
+      "browseProducts": "このビジネスの商品を見る。",
+      "otherProducts": "その他",
+      "noProducts": "商品はまだありません。"
     },
     "publish": {
       "checklistTitle": "まだ公開されていません",
@@ -1034,6 +1038,37 @@
         "saved": "写真を追加しました。",
         "error": "写真を保存できませんでした。",
         "alt": "商品の写真"
+      },
+      "sections": {
+        "title": "セクション",
+        "subtitle": "商品をセクションにまとめて、ページに表示します。",
+        "add": "セクションを追加",
+        "rename": "セクション名を変更",
+        "empty": "セクションはまだありません。",
+        "reorder": "セクションを並べ替え",
+        "count": "{count, plural, other {# 件の商品}}",
+        "products": "商品",
+        "deleted": "セクションを削除しました。",
+        "saved": "セクションを保存しました。",
+        "deleteTitle": "このセクションを削除しますか？",
+        "nameLabel": "名前",
+        "namePlaceholder": "例: ドリンク",
+        "addTranslations": "翻訳を追加",
+        "hideTranslations": "翻訳を隠す"
+      },
+      "placement": {
+        "title": "セクションとハイライト",
+        "description": "この商品がページのどこに表示されるか。",
+        "featured": "プロフィールで強調",
+        "featuredHint": "強調した商品はビジネスプロフィールに表示されます。",
+        "sections": "セクション",
+        "sectionsHint": "この商品を1つ以上のセクションに追加します。",
+        "noSections": "先に商品ページでセクションを作成してください。"
+      },
+      "pagination": {
+        "page": "{total} ページ中 {page} ページ",
+        "previous": "前へ",
+        "next": "次へ"
       }
     }
   },

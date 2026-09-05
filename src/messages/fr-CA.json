@@ -616,7 +616,11 @@
       "closesAt": "Ferme à {time}",
       "opensAt": "Ouvre à {time}",
       "opensAtDay": "Ouvre {day} à {time}",
-      "products": "Produits"
+      "products": "Produits",
+      "seeAllProducts": "Voir tous les produits",
+      "browseProducts": "Parcourez les produits de cette entreprise.",
+      "otherProducts": "Autres",
+      "noProducts": "Aucun produit pour l'instant."
     },
     "publish": {
       "checklistTitle": "Pas encore en ligne",
@@ -1034,6 +1038,37 @@
         "saved": "Photo ajoutée.",
         "error": "Impossible d'enregistrer cette photo.",
         "alt": "Photo du produit"
+      },
+      "sections": {
+        "title": "Sections",
+        "subtitle": "Regroupez vos produits en sections affichées sur votre page.",
+        "add": "Ajouter une section",
+        "rename": "Renommer la section",
+        "empty": "Aucune section pour l'instant.",
+        "reorder": "Réordonner la section",
+        "count": "{count, plural, one {# produit} other {# produits}}",
+        "products": "Produits",
+        "deleted": "Section supprimée.",
+        "saved": "Section enregistrée.",
+        "deleteTitle": "Supprimer cette section?",
+        "nameLabel": "Nom",
+        "namePlaceholder": "p. ex. Boissons",
+        "addTranslations": "Ajouter des traductions",
+        "hideTranslations": "Masquer les traductions"
+      },
+      "placement": {
+        "title": "Sections et mise en avant",
+        "description": "Où ce produit apparaît sur votre page.",
+        "featured": "Mettre en avant sur le profil",
+        "featuredHint": "Les produits mis en avant apparaissent sur le profil de votre entreprise.",
+        "sections": "Sections",
+        "sectionsHint": "Ajoutez ce produit à une ou plusieurs sections.",
+        "noSections": "Créez d'abord des sections sur la page des produits."
+      },
+      "pagination": {
+        "page": "Page {page} sur {total}",
+        "previous": "Précédent",
+        "next": "Suivant"
       }
     }
   },
