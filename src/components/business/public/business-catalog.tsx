@@ -111,7 +111,7 @@ export async function BusinessCatalog({
           <section
             key={section.id}
             id={`catalog-${section.id}`}
-            className="scroll-mt-28"
+            className="scroll-mt-44"
           >
             <h2 className="font-heading text-lg font-semibold tracking-tight">
               {section.name}
@@ -129,7 +129,7 @@ export async function BusinessCatalog({
         ))}
 
         {other.length > 0 ? (
-          <section id="catalog-other" className="scroll-mt-28">
+          <section id="catalog-other" className="scroll-mt-44">
             <h2 className="font-heading text-lg font-semibold tracking-tight">
               {t("otherProducts")}
             </h2>
