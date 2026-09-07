@@ -3,12 +3,14 @@
 import { GripVertical, Loader2, Pencil, Plus, Trash2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import type { Dispatch, SetStateAction } from "react";
 import { toast } from "sonner";
 
 import type { ProductSection } from "@/app/api/businesses/[slug]/product-sections/route";
 import type { CatalogSighting } from "@/app/api/businesses/[slug]/products/route";
 import { LocaleFlag } from "@/components/locale-flag";
 import { localeNames, locales } from "@/i18n/config";
+import { useSectionPersist } from "@/lib/products/use-section-persist";
 import { displayName, type LocaleText } from "@/lib/taxonomy/admin";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -54,81 +56,76 @@ function productLabel(sighting: CatalogSighting): string {
 /**
  * The owner's "Sections" manager on the products page — create / rename / delete sections, drag to
  * reorder them, and set which products sit in each (a picker). Section names are translatable: the
- * owner types one language and may add others. Every change persists immediately and asks the parent
- * to refetch.
+ * owner types one language and may add others. Product membership applies instantly and persists in
+ * the background (no reload), so the picker stays open for fast multi-add.
  */
 export function SectionManager({
   slug,
   products,
   sections,
-  onChanged,
+  onSectionsChange,
+  onReload,
 }: {
   slug: string;
   products: CatalogSighting[];
   sections: ProductSection[];
-  onChanged: () => void;
+  onSectionsChange: Dispatch<SetStateAction<ProductSection[]>>;
+  onReload: () => void;
 }) {
   const t = useTranslations("businesses.products");
   const locale = useLocale();
   const base = `/api/businesses/${encodeURIComponent(slug)}/product-sections`;
 
   const [editing, setEditing] = useState<ProductSection | "new" | null>(null);
-  const [order, setOrder] = useState<ProductSection[] | null>(null);
   const [pendingDelete, setPendingDelete] = useState<ProductSection | null>(
     null,
   );
   const [busy, setBusy] = useState(false);
 
-  const rows = order ?? sections;
+  const { setProducts } = useSectionPersist(slug, onSectionsChange, () =>
+    toast.error(t("actionError")),
+  );
+
+  const rows = sections;
 
   const reorder = async (next: ProductSection[]) => {
-    setOrder(next); // optimistic
+    const previous = sections;
+    onSectionsChange(next); // optimistic
     const response = await fetch(`${base}/reorder`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids: next.map((section) => section.id) }),
     });
     if (!response.ok) {
-      setOrder(null);
+      onSectionsChange(previous); // rollback
       toast.error(t("actionError"));
-      return;
     }
-    setOrder(null);
-    onChanged();
   };
 
   const remove = async () => {
-    if (!pendingDelete) {
+    const target = pendingDelete;
+    if (!target) {
       return;
     }
     setBusy(true);
+    const previous = sections;
+    onSectionsChange((current) =>
+      current.filter((section) => section.id !== target.id),
+    ); // optimistic
     try {
-      const response = await fetch(`${base}/${pendingDelete.id}`, {
+      const response = await fetch(`${base}/${target.id}`, {
         method: "DELETE",
       });
       if (!response.ok) {
+        onSectionsChange(previous); // rollback
         toast.error(t("actionError"));
         return;
       }
       toast.success(t("sections.deleted"));
-      onChanged();
     } finally {
       setBusy(false);
       setPendingDelete(null);
     }
-  };
-
-  const setProducts = async (section: ProductSection, ids: string[]) => {
-    const response = await fetch(`${base}/${section.id}/products`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ids }),
-    });
-    if (!response.ok) {
-      toast.error(t("actionError"));
-      return;
-    }
-    onChanged();
   };
 
   return (
@@ -202,7 +199,7 @@ export function SectionManager({
                   label={t("sections.products")}
                   products={products}
                   selected={section.product_ids ?? []}
-                  onChange={(ids) => setProducts(section, ids)}
+                  onChange={(ids) => setProducts(section.id, ids)}
                   searchLabel={t("searchProducts")}
                   emptyLabel={t("noMatches")}
                 />
@@ -239,7 +236,7 @@ export function SectionManager({
           onClose={() => setEditing(null)}
           onSaved={() => {
             setEditing(null);
-            onChanged();
+            onReload();
           }}
         />
       ) : null}

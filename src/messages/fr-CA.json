@@ -1065,6 +1065,14 @@
         "addTranslations": "Ajouter des traductions",
         "hideTranslations": "Masquer les traductions"
       },
+      "kanban": {
+        "title": "Tableau",
+        "hint": "Glissez un produit vers une section pour l’y ajouter. Un produit peut appartenir à plusieurs sections.",
+        "unassigned": "Non assignés",
+        "empty": "Ajoutez d’abord des produits pour les organiser en sections.",
+        "allAssigned": "Tous les produits sont dans une section.",
+        "dropHere": "Déposez des produits ici."
+      },
       "placement": {
         "title": "Sections et mise en avant",
         "description": "Où ce produit apparaît sur votre page.",

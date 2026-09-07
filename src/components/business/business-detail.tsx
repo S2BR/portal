@@ -121,7 +121,8 @@ import {
   SelectTrigger,
 } from "@/components/ui/select";
 import { BusinessFormSkeleton } from "@/components/business/business-skeletons";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { TabsContent } from "@/components/ui/tabs";
+import { WorkspaceTabs } from "@/components/ui/workspace-tabs";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Combobox } from "@/components/ui/combobox";
@@ -1108,22 +1109,17 @@ export function BusinessDetail({
           so its last content (e.g. the "add social" button) can scroll clear of the bar instead of
           hiding behind it. */}
       <form onSubmit={save} className={editing ? "pb-28" : undefined}>
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="mx-auto w-fit max-w-full">
-            {tabItems.map((tab) => (
-              <TabsTrigger key={tab.value} value={tab.value}>
-                <tab.icon className="size-4" aria-hidden />
-                {tab.label}
-                {dirtyTabs.has(tab.value) ? (
-                  <span
-                    className="bg-brand-gold size-1.5 shrink-0 rounded-full"
-                    aria-label={t("unsavedChanges")}
-                  />
-                ) : null}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-
+        <WorkspaceTabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          items={tabItems.map((tab) => ({
+            value: tab.value,
+            label: tab.label,
+            icon: tab.icon,
+            indicator: dirtyTabs.has(tab.value),
+            indicatorLabel: t("unsavedChanges"),
+          }))}
+        >
           {/* General */}
           <TabsContent value="general">
             <div>
@@ -1765,7 +1761,7 @@ export function BusinessDetail({
               </FormSection>
             </div>
           </TabsContent>
-        </Tabs>
+        </WorkspaceTabs>
 
         {editing && error ? (
           <p className="text-destructive mt-6 text-sm">{error}</p>

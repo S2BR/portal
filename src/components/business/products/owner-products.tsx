@@ -3,7 +3,9 @@
 import {
   ArrowLeft,
   CircleDot,
+  Columns3,
   DollarSign,
+  FolderTree,
   Package,
   Pencil,
   Plus,
@@ -22,6 +24,7 @@ import { toast } from "sonner";
 import type { CatalogSighting } from "@/app/api/businesses/[slug]/products/route";
 import type { ProductSection } from "@/app/api/businesses/[slug]/product-sections/route";
 import { SectionManager } from "@/components/business/products/section-manager";
+import { SectionKanban } from "@/components/business/products/section-kanban";
 import {
   searchCatalog,
   type CatalogHit,
@@ -61,6 +64,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { WorkspaceTabs } from "@/components/ui/workspace-tabs";
 import {
   Filters,
   type FilterField,
@@ -352,26 +356,34 @@ export function OwnerProducts({ businessSlug }: { businessSlug: string }) {
     currentPage * PAGE_SIZE,
   );
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(base);
-      if (!response.ok) {
-        toast.error(t("loadError"));
-        return;
+  // `silent` refetches without the skeleton flash — used to reconcile after in-place section edits.
+  const load = useCallback(
+    async (silent = false) => {
+      if (!silent) {
+        setLoading(true);
       }
-      const data = (await response.json()) as {
-        products: CatalogSighting[];
-        sections?: ProductSection[];
-      };
-      setItems(data.products ?? []);
-      setSections(data.sections ?? []);
-    } catch {
-      toast.error(t("loadError"));
-    } finally {
-      setLoading(false);
-    }
-  }, [base, t]);
+      try {
+        const response = await fetch(base);
+        if (!response.ok) {
+          toast.error(t("loadError"));
+          return;
+        }
+        const data = (await response.json()) as {
+          products: CatalogSighting[];
+          sections?: ProductSection[];
+        };
+        setItems(data.products ?? []);
+        setSections(data.sections ?? []);
+      } catch {
+        toast.error(t("loadError"));
+      } finally {
+        if (!silent) {
+          setLoading(false);
+        }
+      }
+    },
+    [base, t],
+  );
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -440,12 +452,16 @@ export function OwnerProducts({ businessSlug }: { businessSlug: string }) {
           {t("empty")}
         </div>
       ) : (
-        <Tabs value={tab} onValueChange={setTab} className="gap-6">
-          <TabsList className="w-fit">
-            <TabsTrigger value="products">{t("title")}</TabsTrigger>
-            <TabsTrigger value="sections">{t("sections.title")}</TabsTrigger>
-          </TabsList>
-
+        <WorkspaceTabs
+          value={tab}
+          onValueChange={setTab}
+          className="gap-6"
+          items={[
+            { value: "products", label: t("title"), icon: Package },
+            { value: "sections", label: t("sections.title"), icon: FolderTree },
+            { value: "board", label: t("kanban.title"), icon: Columns3 },
+          ]}
+        >
           <TabsContent value="products" className="space-y-6">
             <Filters
               fields={filterFields}
@@ -611,10 +627,20 @@ export function OwnerProducts({ businessSlug }: { businessSlug: string }) {
               slug={businessSlug}
               products={items}
               sections={sections}
-              onChanged={load}
+              onSectionsChange={setSections}
+              onReload={() => load(true)}
             />
           </TabsContent>
-        </Tabs>
+
+          <TabsContent value="board">
+            <SectionKanban
+              slug={businessSlug}
+              products={items}
+              sections={sections}
+              onSectionsChange={setSections}
+            />
+          </TabsContent>
+        </WorkspaceTabs>
       )}
 
       <AddProductDialog

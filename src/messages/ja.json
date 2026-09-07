@@ -1065,6 +1065,14 @@
         "addTranslations": "翻訳を追加",
         "hideTranslations": "翻訳を隠す"
       },
+      "kanban": {
+        "title": "ボード",
+        "hint": "商品をセクションにドラッグして追加します。1つの商品は複数のセクションに属せます。",
+        "unassigned": "未分類",
+        "empty": "先に商品を追加してセクションに整理しましょう。",
+        "allAssigned": "すべての商品がセクションに入っています。",
+        "dropHere": "ここに商品をドロップ。"
+      },
       "placement": {
         "title": "セクションとハイライト",
         "description": "この商品がページのどこに表示されるか。",
