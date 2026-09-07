@@ -593,7 +593,8 @@
         "saved": "Review posted",
         "removed": "Review removed",
         "error": "Something went wrong.",
-        "stars": "{count, plural, one {# star} other {# stars}}"
+        "stars": "{count, plural, one {# star} other {# stars}}",
+        "seeAll": "See all reviews"
       },
       "about": "About",
       "amenities": "Amenities",
@@ -620,7 +621,11 @@
       "seeAllProducts": "See all products",
       "browseProducts": "Browse this business's products.",
       "otherProducts": "Other",
-      "noProducts": "No products yet."
+      "noProducts": "No products yet.",
+      "whatsapp": "WhatsApp",
+      "prevPhoto": "Previous photo",
+      "nextPhoto": "Next photo",
+      "close": "Close"
     },
     "publish": {
       "checklistTitle": "Not live yet",

@@ -593,7 +593,8 @@
         "saved": "Bewertung veröffentlicht",
         "removed": "Bewertung entfernt",
         "error": "Etwas ist schiefgelaufen.",
-        "stars": "{count, plural, one {# Stern} other {# Sterne}}"
+        "stars": "{count, plural, one {# Stern} other {# Sterne}}",
+        "seeAll": "Alle Bewertungen ansehen"
       },
       "about": "Über uns",
       "amenities": "Ausstattung",
@@ -620,7 +621,11 @@
       "seeAllProducts": "Alle Produkte ansehen",
       "browseProducts": "Produkte dieses Unternehmens durchsuchen.",
       "otherProducts": "Sonstige",
-      "noProducts": "Noch keine Produkte."
+      "noProducts": "Noch keine Produkte.",
+      "whatsapp": "WhatsApp",
+      "prevPhoto": "Vorheriges Foto",
+      "nextPhoto": "Nächstes Foto",
+      "close": "Schließen"
     },
     "publish": {
       "checklistTitle": "Noch nicht live",

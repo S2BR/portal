@@ -7,6 +7,7 @@ import { BusinessProfile } from "@/components/business/public/business-profile";
 import {
   getPublicBusiness,
   getPublicBusinessProducts,
+  getPublicReviews,
 } from "@/lib/public-business";
 import { businessPagesRobots } from "@/lib/seo";
 
@@ -69,15 +70,17 @@ export default async function PublicBusinessPage({
     redirect(`/businesses/${business.slug}`);
   }
 
-  const [locale, catalog] = await Promise.all([
+  const [locale, catalog, reviews] = await Promise.all([
     getLocale(),
     getPublicBusinessProducts(business.slug),
+    getPublicReviews(business.slug),
   ]);
 
   return (
     <BusinessProfile
       business={business}
       products={catalog.products}
+      reviews={reviews}
       locale={locale}
     />
   );

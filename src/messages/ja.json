@@ -593,7 +593,8 @@
         "saved": "レビューを投稿しました",
         "removed": "レビューを削除しました",
         "error": "問題が発生しました。",
-        "stars": "{count, plural, one {# つ星} other {# つ星}}"
+        "stars": "{count, plural, one {# つ星} other {# つ星}}",
+        "seeAll": "すべてのレビューを見る"
       },
       "about": "紹介",
       "amenities": "設備・サービス",
@@ -620,7 +621,11 @@
       "seeAllProducts": "すべての商品を見る",
       "browseProducts": "このビジネスの商品を見る。",
       "otherProducts": "その他",
-      "noProducts": "商品はまだありません。"
+      "noProducts": "商品はまだありません。",
+      "whatsapp": "WhatsApp",
+      "prevPhoto": "前の写真",
+      "nextPhoto": "次の写真",
+      "close": "閉じる"
     },
     "publish": {
       "checklistTitle": "まだ公開されていません",
