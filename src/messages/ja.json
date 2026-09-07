@@ -625,7 +625,10 @@
       "whatsapp": "WhatsApp",
       "prevPhoto": "前の写真",
       "nextPhoto": "次の写真",
-      "close": "閉じる"
+      "close": "閉じる",
+      "tabs": {
+        "overview": "概要"
+      }
     },
     "publish": {
       "checklistTitle": "まだ公開されていません",

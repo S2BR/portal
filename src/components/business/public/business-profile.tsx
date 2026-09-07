@@ -1,29 +1,22 @@
-import { Globe, Mail, Navigation, Phone } from "lucide-react";
+import { Globe, Mail, Phone } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 
 import { AddressLines } from "@/components/address/address-lines";
-import { BusinessLogo } from "@/components/business/business-logo";
-import { BusinessBannerPlaceholder } from "@/components/business/public/business-banner-placeholder";
-import { focalObjectPosition } from "@/lib/banner-focal";
 import {
   DAYS,
   socialDisplay,
   socialLabel,
 } from "@/components/business/business-constants";
-import { ProfileMap } from "@/components/business/public/profile-map";
-import { StarRating } from "@/components/business/public/star-rating";
-import { ReportDialog } from "@/components/moderation/report-dialog";
-import { SocialIcon } from "@/components/business/social-icon";
-import { OpenStatusBadge } from "@/components/business/public/open-status-badge";
 import { flagEmoji, formatPhone } from "@/components/business/phone-format";
-import { ClaimBusinessButton } from "@/components/business/public/claim-business-button";
-import { ShareButton } from "@/components/business/public/share-button";
-import { Badge } from "@/components/ui/badge";
-import { PreviewRail } from "@/components/ui/preview-rail";
 import { PublicProductCard } from "@/components/business/public/business-catalog";
+import { OpenStatusBadge } from "@/components/business/public/open-status-badge";
 import { PhotoGallery } from "@/components/business/public/photo-gallery";
+import { ProfileMap } from "@/components/business/public/profile-map";
 import { ProfileReviews } from "@/components/business/public/profile-reviews";
+import { SocialIcon } from "@/components/business/social-icon";
+import { ReportDialog } from "@/components/moderation/report-dialog";
+import { PreviewRail } from "@/components/ui/preview-rail";
 import { formatBusinessAddress } from "@/lib/format-address";
 import { formatTime } from "@/lib/format-time";
 import { externalHref } from "@/lib/url";
@@ -35,21 +28,12 @@ import type {
   PublicReviewsPage,
 } from "@/lib/public-business";
 
-/** The maps deep-link for the "Directions" action — by coordinates when present, else by address. */
-function directionsHref(business: PublicBusiness): string | null {
-  const main =
-    business.addresses.find((address) => address.is_main) ??
-    business.addresses[0];
-  if (!main) {
-    return null;
-  }
-  const query =
-    main.latitude !== null && main.longitude !== null
-      ? `${main.latitude},${main.longitude}`
-      : [main.address_1, main.city, main.country].filter(Boolean).join(", ");
-  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
-}
-
+/**
+ * The Overview body of a business's public profile — everything BELOW the shared header (banner, logo,
+ * identity, actions), which the business layout renders and persists across the tabs. This is the
+ * "Overview" tab: about, amenities, a highlighted-products strip, the reviews block, the photo gallery,
+ * and the info sidebar (hours / location / contact).
+ */
 export async function BusinessProfile({
   business,
   products,
@@ -71,65 +55,8 @@ export async function BusinessProfile({
   const phones = business.contacts.filter((c) => c.type === "phone");
   const emails = business.contacts.filter((c) => c.type === "email");
   const websites = business.contacts.filter((c) => c.type === "website");
-  const directions = directionsHref(business);
-  const firstPhone = phones[0];
-  const firstWebsite = websites[0];
   // The profile shows only highlighted products; the full catalog lives on the products page.
   const featured = products.filter((product) => product.is_featured);
-
-  // WhatsApp is the dominant contact channel for our businesses — surface it in the mobile action bar.
-  const whatsapp = business.socials.find(
-    (social) => social.platform === "whatsapp",
-  );
-  const whatsappHref = whatsapp
-    ? socialDisplay("whatsapp", whatsapp.handle)
-    : null;
-
-  // schema.org LocalBusiness structured data → rich results (rating, address, phone) once the public
-  // pages are indexable. Absolute urls off the metadata base.
-  const baseUrl = process.env.APP_URL ?? "https://s2br.com";
-  const jsonLd: Record<string, unknown> = {
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    name: business.name,
-    url: `${baseUrl}/businesses/${business.slug}`,
-  };
-  const heroImage = business.banner ?? business.logo;
-  if (business.headline ?? business.description) {
-    jsonLd.description = business.headline ?? business.description;
-  }
-  if (heroImage) {
-    jsonLd.image = heroImage;
-  }
-  if (firstPhone) {
-    jsonLd.telephone = firstPhone.value;
-  }
-  if (main) {
-    jsonLd.address = {
-      "@type": "PostalAddress",
-      streetAddress: [main.address_1, main.address_2]
-        .filter(Boolean)
-        .join(", "),
-      addressLocality: main.city,
-      ...(main.state_province ? { addressRegion: main.state_province } : {}),
-      ...(main.postal_code ? { postalCode: main.postal_code } : {}),
-      addressCountry: main.country,
-    };
-    if (main.latitude !== null && main.longitude !== null) {
-      jsonLd.geo = {
-        "@type": "GeoCoordinates",
-        latitude: main.latitude,
-        longitude: main.longitude,
-      };
-    }
-  }
-  if (reviews.rating && reviews.rating.count > 0) {
-    jsonLd.aggregateRating = {
-      "@type": "AggregateRating",
-      ratingValue: reviews.rating.avg,
-      reviewCount: reviews.rating.count,
-    };
-  }
 
   // Right-edge scroll-spy rail over the main sections (in DOM order); desktop-only.
   const railItems = [
@@ -143,401 +70,217 @@ export async function BusinessProfile({
 
   return (
     <>
-      {/* Static, server-built structured data (no user HTML) — rich results for local search. */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      {/* Full-span banner — a real full-width element (its own block, not a max-w breakout), so it
-          needs no viewport-width tricks or overflow clipping and renders edge-to-edge everywhere,
-          Safari included. No rounded corners. */}
-      <div className="bg-muted relative h-48 w-full overflow-hidden sm:h-72 lg:h-80">
-        {business.banner ? (
-          // eslint-disable-next-line @next/next/no-img-element -- presigned S3 url, not a bundled asset
-          <img
-            src={business.banner}
-            alt=""
-            className="size-full object-cover"
-            style={{
-              objectPosition: focalObjectPosition(business.banner_focal),
-            }}
-          />
-        ) : (
-          <BusinessBannerPlaceholder />
-        )}
-      </div>
+      <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
+        {/* Main column */}
+        <div className="space-y-8">
+          {business.description ? (
+            <section id="about" className="scroll-mt-24">
+              <h2 className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
+                {t("about")}
+              </h2>
+              <p className="mt-3 max-w-prose leading-relaxed whitespace-pre-wrap">
+                {business.description}
+              </p>
+            </section>
+          ) : null}
 
-      <article className="mx-auto w-full max-w-[90rem] px-4 pb-16 sm:px-6">
-        {/* Header — the logo pulled up over the banner, with the identity (name, headline, rating)
-            beside it in the white area on desktop; on mobile it stacks below the logo. */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:gap-6">
-          {/* Logo — frosted-glass plate. No `z-10`: it would isolate the plate into its own stacking
-            context, and Safari only blurs the backdrop within the same one, so the frost would
-            vanish. DOM order already paints the logo over the banner. The negative margin lives on
-            a div (Safari won't pull up the flex <span> the Avatar renders). */}
-          <div className="relative -mt-10 w-fit shrink-0 sm:-mt-10">
-            <div className="overflow-hidden rounded-[32px] border border-white/40 bg-white/20 p-1.5 shadow-lg backdrop-blur-md sm:rounded-[40px] sm:p-2 dark:border-white/15 dark:bg-white/10">
-              <BusinessLogo
-                name={business.name}
-                src={business.logo}
-                className="bg-background size-28 rounded-[26px] sm:size-36 sm:rounded-[32px]"
-                fallbackClassName="text-4xl"
-              />
-            </div>
+          {business.amenities.length > 0 ? (
+            <section>
+              <h2 className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
+                {t("amenities")}
+              </h2>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {business.amenities.map((amenity) => (
+                  <span
+                    key={amenity.id}
+                    className="bg-muted rounded-lg border px-3 py-1.5 text-sm"
+                  >
+                    {amenity.name}
+                  </span>
+                ))}
+              </div>
+            </section>
+          ) : null}
+
+          {products.length > 0 ? (
+            <section id="products" className="scroll-mt-24">
+              <div className="flex items-center justify-between gap-3">
+                <h2 className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
+                  {t("products")}
+                </h2>
+                <Link
+                  href={`/businesses/${business.slug}/products`}
+                  className="text-primary text-xs font-medium hover:underline"
+                >
+                  {t("seeAllProducts")}
+                </Link>
+              </div>
+              {featured.length === 0 ? (
+                <p className="text-muted-foreground mt-2 text-sm">
+                  {t("browseProducts")}
+                </p>
+              ) : null}
+              <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {featured.map((product) => (
+                  <PublicProductCard
+                    key={product.id}
+                    product={product}
+                    locale={locale}
+                  />
+                ))}
+              </div>
+            </section>
+          ) : null}
+
+          <div id="reviews" className="scroll-mt-24">
+            <ProfileReviews
+              slug={business.slug}
+              reviews={reviews}
+              locale={locale}
+            />
           </div>
 
-          {/* Identity — name, headline, rating as one tight group, bottom-aligned beside the logo so
-            it sits in the white area, within the logo's height. */}
-          <div className="min-w-0 flex-1 space-y-1 sm:pb-1">
-            <h1 className="font-heading text-2xl font-bold tracking-tight text-balance sm:text-4xl">
-              {business.name}
-            </h1>
-            {business.headline ? (
-              <p className="text-muted-foreground max-w-prose text-base text-pretty sm:text-lg">
-                {business.headline}
-              </p>
-            ) : null}
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
-              {business.rating_count > 0 ? (
-                <Link
-                  href={`/businesses/${business.slug}/reviews`}
-                  className="group inline-flex w-fit items-center gap-2"
-                >
-                  <StarRating value={business.rating_avg} size={18} />
-                  <span className="text-sm font-semibold tabular-nums">
-                    {business.rating_avg.toFixed(1)}
-                  </span>
-                  <span className="text-muted-foreground group-hover:text-foreground text-sm underline-offset-2 group-hover:underline">
-                    {t("reviews.count", { count: business.rating_count })}
-                  </span>
-                </Link>
-              ) : (
-                <Link
-                  href={`/businesses/${business.slug}/reviews`}
-                  className="text-muted-foreground hover:text-foreground inline-block text-sm underline-offset-2 hover:underline"
-                >
-                  {t("reviews.beFirst")}
-                </Link>
-              )}
-              {business.open_slots.length > 0 ? (
+          {business.images.length > 0 ? (
+            <section id="photos" className="scroll-mt-24">
+              <h2 className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
+                {t("photos")}
+              </h2>
+              <PhotoGallery images={business.images} name={business.name} />
+            </section>
+          ) : null}
+        </div>
+
+        {/* Sidebar */}
+        <div className="space-y-4">
+          {business.opening_hours.length > 0 ? (
+            <div className="bg-muted/40 rounded-2xl p-5">
+              <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1">
+                <h2 className="text-sm font-semibold">{t("hours")}</h2>
                 <OpenStatusBadge
                   slots={business.open_slots}
                   timezone={business.timezone}
                 />
-              ) : null}
-            </div>
-          </div>
-        </div>
-
-        {/* Categories + actions — kept below the header so the identity stays within the logo's
-          height. */}
-        <div className="mt-5 flex flex-col gap-4 px-1 sm:flex-row sm:items-center sm:justify-between">
-          {business.categories.length > 0 ? (
-            <div className="flex flex-wrap items-center gap-2">
-              {business.categories.map((category) => (
-                <Badge key={category.id} variant="neutral">
-                  {category.name}
-                </Badge>
-              ))}
+              </div>
+              <ul className="space-y-1.5 text-sm tabular-nums">
+                {DAYS.map((day) => {
+                  const entry = business.opening_hours.find(
+                    (hour) => hour.day_of_week === day,
+                  );
+                  const open =
+                    entry &&
+                    !entry.closed_all_day &&
+                    entry.open_time &&
+                    entry.close_time
+                      ? `${formatTime(entry.open_time, locale)} – ${formatTime(entry.close_time, locale)}`
+                      : t("closed");
+                  return (
+                    <li
+                      key={day}
+                      className="text-muted-foreground flex justify-between gap-4"
+                    >
+                      <span>{days(day)}</span>
+                      <span
+                        className={cn(open === t("closed") && "opacity-60")}
+                      >
+                        {open}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
             </div>
           ) : null}
 
-          {/* Actions */}
-          <div className="flex flex-wrap items-center gap-2 sm:ms-auto sm:shrink-0 sm:justify-end">
-            {directions ? (
-              <a
-                href={directions}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-ring inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-semibold transition-colors focus-visible:ring-2 focus-visible:outline-none"
-              >
-                <Navigation className="size-4" />
-                {t("directions")}
-              </a>
-            ) : null}
-            {firstPhone ? (
-              <a
-                href={`tel:${firstPhone.value}`}
-                className="border-input hover:bg-accent focus-visible:ring-ring inline-flex items-center gap-2 rounded-xl border px-3.5 py-2 text-sm font-semibold transition-colors focus-visible:ring-2 focus-visible:outline-none"
-              >
-                <Phone className="size-4" />
-                {t("call")}
-              </a>
-            ) : null}
-            {firstWebsite ? (
-              <a
-                href={externalHref(firstWebsite.value)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="border-input hover:bg-accent focus-visible:ring-ring inline-flex items-center gap-2 rounded-xl border px-3.5 py-2 text-sm font-semibold transition-colors focus-visible:ring-2 focus-visible:outline-none"
-              >
-                <Globe className="size-4" />
-                {t("website")}
-              </a>
-            ) : null}
-            <ShareButton title={business.name} />
-            <ClaimBusinessButton
-              businessId={business.id}
-              isClaimed={business.is_claimed}
-            />
-          </div>
-        </div>
-
-        <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_320px]">
-          {/* Main column */}
-          <div className="space-y-8">
-            {business.description ? (
-              <section id="about" className="scroll-mt-24">
-                <h2 className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
-                  {t("about")}
-                </h2>
-                <p className="mt-3 max-w-prose leading-relaxed whitespace-pre-wrap">
-                  {business.description}
-                </p>
-              </section>
-            ) : null}
-
-            {business.amenities.length > 0 ? (
-              <section>
-                <h2 className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
-                  {t("amenities")}
-                </h2>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {business.amenities.map((amenity) => (
-                    <span
-                      key={amenity.id}
-                      className="bg-muted rounded-lg border px-3 py-1.5 text-sm"
-                    >
-                      {amenity.name}
-                    </span>
-                  ))}
-                </div>
-              </section>
-            ) : null}
-
-            {products.length > 0 ? (
-              <section id="products" className="scroll-mt-24">
-                <div className="flex items-center justify-between gap-3">
-                  <h2 className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
-                    {t("products")}
-                  </h2>
-                  <Link
-                    href={`/businesses/${business.slug}/products`}
-                    className="text-primary text-xs font-medium hover:underline"
-                  >
-                    {t("seeAllProducts")}
-                  </Link>
-                </div>
-                {featured.length === 0 ? (
-                  <p className="text-muted-foreground mt-2 text-sm">
-                    {t("browseProducts")}
-                  </p>
-                ) : null}
-                <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
-                  {featured.map((product) => (
-                    <PublicProductCard
-                      key={product.id}
-                      product={product}
-                      locale={locale}
-                    />
-                  ))}
-                </div>
-              </section>
-            ) : null}
-
-            <div id="reviews" className="scroll-mt-24">
-              <ProfileReviews
-                slug={business.slug}
-                reviews={reviews}
-                locale={locale}
-              />
-            </div>
-
-            {business.images.length > 0 ? (
-              <section id="photos" className="scroll-mt-24">
-                <h2 className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
-                  {t("photos")}
-                </h2>
-                <PhotoGallery images={business.images} name={business.name} />
-              </section>
-            ) : null}
-          </div>
-
-          {/* Sidebar */}
-          <div className="space-y-4">
-            {business.opening_hours.length > 0 ? (
-              <div className="bg-muted/40 rounded-2xl p-5">
-                <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1">
-                  <h2 className="text-sm font-semibold">{t("hours")}</h2>
-                  <OpenStatusBadge
-                    slots={business.open_slots}
-                    timezone={business.timezone}
+          {main ? (
+            <div className="bg-muted/40 rounded-2xl p-5">
+              <h2 className="mb-3 text-sm font-semibold">{t("location")}</h2>
+              {main.latitude !== null && main.longitude !== null ? (
+                <div className="mb-3">
+                  <ProfileMap
+                    latitude={main.latitude}
+                    longitude={main.longitude}
+                    label={business.name}
                   />
                 </div>
-                <ul className="space-y-1.5 text-sm tabular-nums">
-                  {DAYS.map((day) => {
-                    const entry = business.opening_hours.find(
-                      (hour) => hour.day_of_week === day,
-                    );
-                    const open =
-                      entry &&
-                      !entry.closed_all_day &&
-                      entry.open_time &&
-                      entry.close_time
-                        ? `${formatTime(entry.open_time, locale)} – ${formatTime(entry.close_time, locale)}`
-                        : t("closed");
-                    return (
-                      <li
-                        key={day}
-                        className="text-muted-foreground flex justify-between gap-4"
-                      >
-                        <span>{days(day)}</span>
-                        <span
-                          className={cn(open === t("closed") && "opacity-60")}
-                        >
-                          {open}
-                        </span>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            ) : null}
+              ) : null}
+              <AddressLines lines={formatBusinessAddress(main, locale)} />
+            </div>
+          ) : null}
 
-            {main ? (
-              <div className="bg-muted/40 rounded-2xl p-5">
-                <h2 className="mb-3 text-sm font-semibold">{t("location")}</h2>
-                {main.latitude !== null && main.longitude !== null ? (
-                  <div className="mb-3">
-                    <ProfileMap
-                      latitude={main.latitude}
-                      longitude={main.longitude}
-                      label={business.name}
+          {phones.length +
+            emails.length +
+            websites.length +
+            business.socials.length >
+          0 ? (
+            <div className="bg-muted/40 rounded-2xl p-5">
+              <h2 className="mb-3 text-sm font-semibold">{t("contact")}</h2>
+              <ul className="space-y-2.5 text-sm">
+                {phones.map((phone) => (
+                  <li key={phone.id} className="flex items-center gap-3">
+                    <Phone className="text-muted-foreground size-4 shrink-0" />
+                    <a href={`tel:${phone.value}`} className="hover:underline">
+                      {phone.meta?.country
+                        ? `${flagEmoji(phone.meta.country)} `
+                        : ""}
+                      {formatPhone(phone.value, phone.meta?.country)}
+                    </a>
+                  </li>
+                ))}
+                {emails.map((email) => (
+                  <li key={email.id} className="flex items-center gap-3">
+                    <Mail className="text-muted-foreground size-4 shrink-0" />
+                    <a
+                      href={`mailto:${email.value}`}
+                      className="break-all hover:underline"
+                    >
+                      {email.value}
+                    </a>
+                  </li>
+                ))}
+                {websites.map((website) => (
+                  <li key={website.id} className="flex items-center gap-3">
+                    <Globe className="text-muted-foreground size-4 shrink-0" />
+                    <a
+                      href={externalHref(website.value)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="break-all hover:underline"
+                    >
+                      {website.value.replace(/^https?:\/\//, "")}
+                    </a>
+                  </li>
+                ))}
+                {business.socials.map((social) => (
+                  <li key={social.id} className="flex items-center gap-3">
+                    <SocialIcon
+                      platform={social.platform}
+                      className="text-muted-foreground size-4"
                     />
-                  </div>
-                ) : null}
-                <AddressLines lines={formatBusinessAddress(main, locale)} />
-              </div>
-            ) : null}
-
-            {phones.length +
-              emails.length +
-              websites.length +
-              business.socials.length >
-            0 ? (
-              <div className="bg-muted/40 rounded-2xl p-5">
-                <h2 className="mb-3 text-sm font-semibold">{t("contact")}</h2>
-                <ul className="space-y-2.5 text-sm">
-                  {phones.map((phone) => (
-                    <li key={phone.id} className="flex items-center gap-3">
-                      <Phone className="text-muted-foreground size-4 shrink-0" />
-                      <a
-                        href={`tel:${phone.value}`}
-                        className="hover:underline"
-                      >
-                        {phone.meta?.country
-                          ? `${flagEmoji(phone.meta.country)} `
-                          : ""}
-                        {formatPhone(phone.value, phone.meta?.country)}
-                      </a>
-                    </li>
-                  ))}
-                  {emails.map((email) => (
-                    <li key={email.id} className="flex items-center gap-3">
-                      <Mail className="text-muted-foreground size-4 shrink-0" />
-                      <a
-                        href={`mailto:${email.value}`}
-                        className="break-all hover:underline"
-                      >
-                        {email.value}
-                      </a>
-                    </li>
-                  ))}
-                  {websites.map((website) => (
-                    <li key={website.id} className="flex items-center gap-3">
-                      <Globe className="text-muted-foreground size-4 shrink-0" />
-                      <a
-                        href={externalHref(website.value)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="break-all hover:underline"
-                      >
-                        {website.value.replace(/^https?:\/\//, "")}
-                      </a>
-                    </li>
-                  ))}
-                  {business.socials.map((social) => (
-                    <li key={social.id} className="flex items-center gap-3">
-                      <SocialIcon
-                        platform={social.platform}
-                        className="text-muted-foreground size-4"
-                      />
-                      <a
-                        href={socialDisplay(social.platform, social.handle)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="hover:underline"
-                      >
-                        {socialLabel(social.platform)}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
-          </div>
+                    <a
+                      href={socialDisplay(social.platform, social.handle)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:underline"
+                    >
+                      {socialLabel(social.platform)}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
         </div>
+      </div>
 
-        <div className="mt-8 flex justify-end">
-          <ReportDialog
-            type="business"
-            id={business.id}
-            label={reportT("reportBusiness")}
-          />
-        </div>
-      </article>
+      <div className="mt-8 flex justify-end">
+        <ReportDialog
+          type="business"
+          id={business.id}
+          label={reportT("reportBusiness")}
+        />
+      </div>
 
       {railItems.length > 1 ? <PreviewRail items={railItems} /> : null}
-
-      {/* Mobile-only sticky action bar — the key contact actions always in reach on a phone. */}
-      {firstPhone || whatsappHref || directions ? (
-        <>
-          <div className="h-20 sm:hidden" aria-hidden />
-          <div className="bg-background/95 fixed inset-x-0 bottom-0 z-30 flex border-t backdrop-blur sm:hidden">
-            {firstPhone ? (
-              <a
-                href={`tel:${firstPhone.value}`}
-                className="hover:bg-muted/60 flex flex-1 flex-col items-center gap-1 py-2.5 text-xs font-medium transition-colors"
-              >
-                <Phone className="size-5" aria-hidden />
-                {t("call")}
-              </a>
-            ) : null}
-            {whatsappHref ? (
-              <a
-                href={whatsappHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:bg-muted/60 flex flex-1 flex-col items-center gap-1 py-2.5 text-xs font-medium transition-colors"
-              >
-                <SocialIcon platform="whatsapp" className="size-5" />
-                {t("whatsapp")}
-              </a>
-            ) : null}
-            {directions ? (
-              <a
-                href={directions}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:bg-muted/60 flex flex-1 flex-col items-center gap-1 py-2.5 text-xs font-medium transition-colors"
-              >
-                <Navigation className="size-5" aria-hidden />
-                {t("directions")}
-              </a>
-            ) : null}
-          </div>
-        </>
-      ) : null}
     </>
   );
 }
