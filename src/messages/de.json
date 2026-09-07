@@ -1065,6 +1065,14 @@
         "addTranslations": "Übersetzungen hinzufügen",
         "hideTranslations": "Übersetzungen ausblenden"
       },
+      "kanban": {
+        "title": "Board",
+        "hint": "Ziehe ein Produkt auf eine Sektion, um es hinzuzufügen. Ein Produkt kann in mehreren Sektionen sein.",
+        "unassigned": "Nicht zugeordnet",
+        "empty": "Füge zuerst Produkte hinzu, um sie in Sektionen zu ordnen.",
+        "allAssigned": "Alle Produkte sind in einer Sektion.",
+        "dropHere": "Produkte hier ablegen."
+      },
       "placement": {
         "title": "Abschnitte & Hervorhebung",
         "description": "Wo dieses Produkt auf deiner Seite erscheint.",

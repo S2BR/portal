@@ -1065,6 +1065,14 @@
         "addTranslations": "Aggiungi traduzioni",
         "hideTranslations": "Nascondi traduzioni"
       },
+      "kanban": {
+        "title": "Bacheca",
+        "hint": "Trascina un prodotto in una sezione per aggiungerlo. Un prodotto può stare in più sezioni.",
+        "unassigned": "Non assegnati",
+        "empty": "Aggiungi prima dei prodotti per organizzarli in sezioni.",
+        "allAssigned": "Tutti i prodotti sono in una sezione.",
+        "dropHere": "Trascina qui i prodotti."
+      },
       "placement": {
         "title": "Sezioni ed evidenza",
         "description": "Dove appare questo prodotto sulla tua pagina.",

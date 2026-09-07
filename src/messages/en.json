@@ -1065,6 +1065,14 @@
         "addTranslations": "Add translations",
         "hideTranslations": "Hide translations"
       },
+      "kanban": {
+        "title": "Board",
+        "hint": "Drag a product onto a section to add it there. A product can belong to several sections.",
+        "unassigned": "Unassigned",
+        "empty": "Add products first to organize them into sections.",
+        "allAssigned": "All products are in a section.",
+        "dropHere": "Drop products here."
+      },
       "placement": {
         "title": "Sections & highlight",
         "description": "Where this product shows on your page.",
