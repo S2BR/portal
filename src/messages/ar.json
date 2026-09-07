@@ -574,7 +574,7 @@
           "highest": "الأعلى تقييمًا",
           "lowest": "الأدنى تقييمًا"
         },
-        "title": "المراجعات",
+        "title": "التقييمات",
         "count": "{count, plural, one {# مراجعة} other {# مراجعة}}",
         "writeTitle": "اكتب مراجعة",
         "yourReview": "مراجعتك",
@@ -593,7 +593,8 @@
         "saved": "تم نشر المراجعة",
         "removed": "تمت إزالة المراجعة",
         "error": "حدث خطأ ما.",
-        "stars": "{count, plural, one {# نجمة} other {# نجمة}}"
+        "stars": "{count, plural, one {# نجمة} other {# نجمة}}",
+        "seeAll": "عرض كل التقييمات"
       },
       "about": "نبذة",
       "amenities": "المرافق",
@@ -620,7 +621,11 @@
       "seeAllProducts": "عرض كل المنتجات",
       "browseProducts": "تصفح منتجات هذا النشاط التجاري.",
       "otherProducts": "أخرى",
-      "noProducts": "لا توجد منتجات بعد."
+      "noProducts": "لا توجد منتجات بعد.",
+      "whatsapp": "WhatsApp",
+      "prevPhoto": "الصورة السابقة",
+      "nextPhoto": "الصورة التالية",
+      "close": "إغلاق"
     },
     "publish": {
       "checklistTitle": "غير منشور بعد",

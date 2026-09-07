@@ -593,7 +593,8 @@
         "saved": "Avaliação publicada",
         "removed": "Avaliação removida",
         "error": "Algo deu errado.",
-        "stars": "{count, plural, one {# estrela} other {# estrelas}}"
+        "stars": "{count, plural, one {# estrela} other {# estrelas}}",
+        "seeAll": "Ver todas as avaliações"
       },
       "about": "Sobre",
       "amenities": "Comodidades",
@@ -620,7 +621,11 @@
       "seeAllProducts": "Ver todos os produtos",
       "browseProducts": "Veja os produtos desta empresa.",
       "otherProducts": "Outros",
-      "noProducts": "Nenhum produto ainda."
+      "noProducts": "Nenhum produto ainda.",
+      "whatsapp": "WhatsApp",
+      "prevPhoto": "Foto anterior",
+      "nextPhoto": "Próxima foto",
+      "close": "Fechar"
     },
     "publish": {
       "checklistTitle": "Ainda não está no ar",

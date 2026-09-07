@@ -14,20 +14,26 @@ import {
 import { ProfileMap } from "@/components/business/public/profile-map";
 import { StarRating } from "@/components/business/public/star-rating";
 import { ReportDialog } from "@/components/moderation/report-dialog";
-import { ClosuresReadout } from "@/components/business/closures-editor";
 import { SocialIcon } from "@/components/business/social-icon";
 import { OpenStatusBadge } from "@/components/business/public/open-status-badge";
 import { flagEmoji, formatPhone } from "@/components/business/phone-format";
 import { ClaimBusinessButton } from "@/components/business/public/claim-business-button";
 import { ShareButton } from "@/components/business/public/share-button";
 import { Badge } from "@/components/ui/badge";
+import { PreviewRail } from "@/components/ui/preview-rail";
 import { PublicProductCard } from "@/components/business/public/business-catalog";
+import { PhotoGallery } from "@/components/business/public/photo-gallery";
+import { ProfileReviews } from "@/components/business/public/profile-reviews";
 import { formatBusinessAddress } from "@/lib/format-address";
 import { formatTime } from "@/lib/format-time";
 import { externalHref } from "@/lib/url";
 import { cn } from "@/lib/utils";
 
-import type { PublicBusiness, PublicCatalogItem } from "@/lib/public-business";
+import type {
+  PublicBusiness,
+  PublicCatalogItem,
+  PublicReviewsPage,
+} from "@/lib/public-business";
 
 /** The maps deep-link for the "Directions" action — by coordinates when present, else by address. */
 function directionsHref(business: PublicBusiness): string | null {
@@ -47,10 +53,12 @@ function directionsHref(business: PublicBusiness): string | null {
 export async function BusinessProfile({
   business,
   products,
+  reviews,
   locale,
 }: {
   business: PublicBusiness;
   products: PublicCatalogItem[];
+  reviews: PublicReviewsPage;
   locale: string;
 }) {
   const t = await getTranslations("businesses.public");
@@ -69,8 +77,77 @@ export async function BusinessProfile({
   // The profile shows only highlighted products; the full catalog lives on the products page.
   const featured = products.filter((product) => product.is_featured);
 
+  // WhatsApp is the dominant contact channel for our businesses — surface it in the mobile action bar.
+  const whatsapp = business.socials.find(
+    (social) => social.platform === "whatsapp",
+  );
+  const whatsappHref = whatsapp
+    ? socialDisplay("whatsapp", whatsapp.handle)
+    : null;
+
+  // schema.org LocalBusiness structured data → rich results (rating, address, phone) once the public
+  // pages are indexable. Absolute urls off the metadata base.
+  const baseUrl = process.env.APP_URL ?? "https://s2br.com";
+  const jsonLd: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    name: business.name,
+    url: `${baseUrl}/businesses/${business.slug}`,
+  };
+  const heroImage = business.banner ?? business.logo;
+  if (business.headline ?? business.description) {
+    jsonLd.description = business.headline ?? business.description;
+  }
+  if (heroImage) {
+    jsonLd.image = heroImage;
+  }
+  if (firstPhone) {
+    jsonLd.telephone = firstPhone.value;
+  }
+  if (main) {
+    jsonLd.address = {
+      "@type": "PostalAddress",
+      streetAddress: [main.address_1, main.address_2]
+        .filter(Boolean)
+        .join(", "),
+      addressLocality: main.city,
+      ...(main.state_province ? { addressRegion: main.state_province } : {}),
+      ...(main.postal_code ? { postalCode: main.postal_code } : {}),
+      addressCountry: main.country,
+    };
+    if (main.latitude !== null && main.longitude !== null) {
+      jsonLd.geo = {
+        "@type": "GeoCoordinates",
+        latitude: main.latitude,
+        longitude: main.longitude,
+      };
+    }
+  }
+  if (reviews.rating && reviews.rating.count > 0) {
+    jsonLd.aggregateRating = {
+      "@type": "AggregateRating",
+      ratingValue: reviews.rating.avg,
+      reviewCount: reviews.rating.count,
+    };
+  }
+
+  // Right-edge scroll-spy rail over the main sections (in DOM order); desktop-only.
+  const railItems = [
+    ...(business.description ? [{ id: "about", label: t("about") }] : []),
+    ...(products.length > 0 ? [{ id: "products", label: t("products") }] : []),
+    { id: "reviews", label: t("reviews.title") },
+    ...(business.images.length > 0
+      ? [{ id: "photos", label: t("photos") }]
+      : []),
+  ];
+
   return (
     <>
+      {/* Static, server-built structured data (no user HTML) — rich results for local search. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Full-span banner — a real full-width element (its own block, not a max-w breakout), so it
           needs no viewport-width tricks or overflow clipping and renders edge-to-edge everywhere,
           Safari included. No rounded corners. */}
@@ -120,27 +197,35 @@ export async function BusinessProfile({
                 {business.headline}
               </p>
             ) : null}
-            {business.rating_count > 0 ? (
-              <Link
-                href={`/businesses/${business.slug}/reviews`}
-                className="group inline-flex w-fit items-center gap-2"
-              >
-                <StarRating value={business.rating_avg} size={18} />
-                <span className="text-sm font-semibold tabular-nums">
-                  {business.rating_avg.toFixed(1)}
-                </span>
-                <span className="text-muted-foreground group-hover:text-foreground text-sm underline-offset-2 group-hover:underline">
-                  {t("reviews.count", { count: business.rating_count })}
-                </span>
-              </Link>
-            ) : (
-              <Link
-                href={`/businesses/${business.slug}/reviews`}
-                className="text-muted-foreground hover:text-foreground inline-block text-sm underline-offset-2 hover:underline"
-              >
-                {t("reviews.beFirst")}
-              </Link>
-            )}
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+              {business.rating_count > 0 ? (
+                <Link
+                  href={`/businesses/${business.slug}/reviews`}
+                  className="group inline-flex w-fit items-center gap-2"
+                >
+                  <StarRating value={business.rating_avg} size={18} />
+                  <span className="text-sm font-semibold tabular-nums">
+                    {business.rating_avg.toFixed(1)}
+                  </span>
+                  <span className="text-muted-foreground group-hover:text-foreground text-sm underline-offset-2 group-hover:underline">
+                    {t("reviews.count", { count: business.rating_count })}
+                  </span>
+                </Link>
+              ) : (
+                <Link
+                  href={`/businesses/${business.slug}/reviews`}
+                  className="text-muted-foreground hover:text-foreground inline-block text-sm underline-offset-2 hover:underline"
+                >
+                  {t("reviews.beFirst")}
+                </Link>
+              )}
+              {business.open_slots.length > 0 ? (
+                <OpenStatusBadge
+                  slots={business.open_slots}
+                  timezone={business.timezone}
+                />
+              ) : null}
+            </div>
           </div>
         </div>
 
@@ -202,7 +287,7 @@ export async function BusinessProfile({
           {/* Main column */}
           <div className="space-y-8">
             {business.description ? (
-              <section>
+              <section id="about" className="scroll-mt-24">
                 <h2 className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
                   {t("about")}
                 </h2>
@@ -231,7 +316,7 @@ export async function BusinessProfile({
             ) : null}
 
             {products.length > 0 ? (
-              <section>
+              <section id="products" className="scroll-mt-24">
                 <div className="flex items-center justify-between gap-3">
                   <h2 className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
                     {t("products")}
@@ -260,37 +345,20 @@ export async function BusinessProfile({
               </section>
             ) : null}
 
+            <div id="reviews" className="scroll-mt-24">
+              <ProfileReviews
+                slug={business.slug}
+                reviews={reviews}
+                locale={locale}
+              />
+            </div>
+
             {business.images.length > 0 ? (
-              <section>
+              <section id="photos" className="scroll-mt-24">
                 <h2 className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
                   {t("photos")}
                 </h2>
-                <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
-                  {business.images.map((image, index) => (
-                    // eslint-disable-next-line @next/next/no-img-element -- presigned S3 url, not a bundled asset
-                    <img
-                      key={image.id}
-                      src={image.url}
-                      alt={t("photoAlt", {
-                        name: business.name,
-                        number: index + 1,
-                      })}
-                      className="aspect-square w-full rounded-xl border object-cover"
-                      loading="lazy"
-                    />
-                  ))}
-                </div>
-              </section>
-            ) : null}
-
-            {business.closures.length > 0 ? (
-              <section>
-                <h2 className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
-                  {t("closures")}
-                </h2>
-                <div className="mt-3">
-                  <ClosuresReadout closures={business.closures} />
-                </div>
+                <PhotoGallery images={business.images} name={business.name} />
               </section>
             ) : null}
           </div>
@@ -428,6 +496,48 @@ export async function BusinessProfile({
           />
         </div>
       </article>
+
+      {railItems.length > 1 ? <PreviewRail items={railItems} /> : null}
+
+      {/* Mobile-only sticky action bar — the key contact actions always in reach on a phone. */}
+      {firstPhone || whatsappHref || directions ? (
+        <>
+          <div className="h-20 sm:hidden" aria-hidden />
+          <div className="bg-background/95 fixed inset-x-0 bottom-0 z-30 flex border-t backdrop-blur sm:hidden">
+            {firstPhone ? (
+              <a
+                href={`tel:${firstPhone.value}`}
+                className="hover:bg-muted/60 flex flex-1 flex-col items-center gap-1 py-2.5 text-xs font-medium transition-colors"
+              >
+                <Phone className="size-5" aria-hidden />
+                {t("call")}
+              </a>
+            ) : null}
+            {whatsappHref ? (
+              <a
+                href={whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:bg-muted/60 flex flex-1 flex-col items-center gap-1 py-2.5 text-xs font-medium transition-colors"
+              >
+                <SocialIcon platform="whatsapp" className="size-5" />
+                {t("whatsapp")}
+              </a>
+            ) : null}
+            {directions ? (
+              <a
+                href={directions}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:bg-muted/60 flex flex-1 flex-col items-center gap-1 py-2.5 text-xs font-medium transition-colors"
+              >
+                <Navigation className="size-5" aria-hidden />
+                {t("directions")}
+              </a>
+            ) : null}
+          </div>
+        </>
+      ) : null}
     </>
   );
 }
