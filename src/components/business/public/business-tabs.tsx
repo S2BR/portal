@@ -24,7 +24,7 @@ export function BusinessTabs({ slug }: { slug: string }) {
   ];
 
   return (
-    <nav className="bg-background/85 supports-[backdrop-filter]:bg-background/70 border-border/60 sticky top-0 z-20 -mx-4 mt-4 flex gap-1 border-b px-4 backdrop-blur sm:-mx-6 sm:px-6">
+    <nav className="bg-background/85 supports-[backdrop-filter]:bg-background/70 border-border/60 sticky top-16 z-20 -mx-4 mt-4 flex gap-1 border-b px-4 backdrop-blur sm:-mx-6 sm:px-6">
       {tabs.map((tab) => {
         const active = tab.exact
           ? pathname === tab.href

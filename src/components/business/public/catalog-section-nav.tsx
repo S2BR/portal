@@ -27,32 +27,51 @@ export function CatalogSectionNav({
   const navRef = useRef<HTMLElement>(null);
   const chipRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
 
-  // Scroll-spy: the section whose heading sits nearest the top (just under the two sticky bars) wins.
+  // Scroll-spy: the active section is the LAST one whose heading has scrolled up past the line just
+  // below the sticky bars (site header + tabs + this nav ≈ 176px). Computing from every heading's
+  // position — rather than reacting to whichever heading an observer reports as "entering" — makes it
+  // symmetric: it steps back up section-by-section on the way up, not straight to the first.
   useEffect(() => {
-    const targets = items
-      .map((item) => document.getElementById(`catalog-${item.id}`))
-      .filter((element): element is HTMLElement => element !== null);
-    if (targets.length === 0) {
-      return;
-    }
+    const OFFSET = 176;
+    let frame = 0;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        const id = visible[0]?.target.id;
-        if (id) {
-          setActiveId(id.replace(/^catalog-/, ""));
+    const update = () => {
+      frame = 0;
+      let current = items[0]?.id ?? "";
+      for (const item of items) {
+        const element = document.getElementById(`catalog-${item.id}`);
+        if (element && element.getBoundingClientRect().top - OFFSET <= 0) {
+          current = item.id;
         }
-      },
-      // Bias the "active" line down past the sticky tabs + this nav (~144px). rootMargin only takes
-      // px or % — never rem/other units, or the IntersectionObserver constructor throws.
-      { rootMargin: "-144px 0px -60% 0px", threshold: 0 },
-    );
+      }
+      // The last section can sit too low on the page to ever cross the offset line — at the page
+      // bottom it's the one being read, so pin it active there (also what a click on it expects).
+      const atBottom =
+        window.innerHeight + Math.ceil(window.scrollY) >=
+        document.documentElement.scrollHeight - 2;
+      const last = items[items.length - 1];
+      if (atBottom && last) {
+        current = last.id;
+      }
+      setActiveId(current);
+    };
 
-    targets.forEach((target) => observer.observe(target));
-    return () => observer.disconnect();
+    const onScroll = () => {
+      if (!frame) {
+        frame = requestAnimationFrame(update);
+      }
+    };
+
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      if (frame) {
+        cancelAnimationFrame(frame);
+      }
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, [items]);
 
   // Keep the active chip visible as the spy moves through the sections. Scroll only the nav's OWN
@@ -84,7 +103,7 @@ export function CatalogSectionNav({
     <nav
       ref={navRef}
       aria-label={label}
-      className="bg-background/85 supports-[backdrop-filter]:bg-background/70 sticky top-12 z-10 -mx-4 mb-6 flex [scrollbar-width:none] gap-2 overflow-x-auto border-b px-4 py-2.5 backdrop-blur sm:-mx-6 sm:px-6 [&::-webkit-scrollbar]:hidden"
+      className="bg-background/85 supports-[backdrop-filter]:bg-background/70 sticky top-28 z-10 -mx-4 mb-6 flex [scrollbar-width:none] gap-2 overflow-x-auto border-b px-4 py-2.5 backdrop-blur sm:-mx-6 sm:px-6 [&::-webkit-scrollbar]:hidden"
     >
       {items.map((item) => {
         const active = item.id === activeId;
