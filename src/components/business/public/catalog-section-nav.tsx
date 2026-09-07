@@ -24,7 +24,7 @@ export function CatalogSectionNav({
   label: string;
 }) {
   const [activeId, setActiveId] = useState<string>(items[0]?.id ?? "");
-  const navRef = useRef<HTMLElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const chipRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
 
   // Scroll-spy: the active section is the LAST one whose heading has scrolled up past the line just
@@ -78,13 +78,14 @@ export function CatalogSectionNav({
   // horizontal track (never `scrollIntoView`, which would also scroll the window and cancel an
   // in-flight jump — Chrome runs one smooth scroll at a time).
   useEffect(() => {
-    const nav = navRef.current;
+    const track = trackRef.current;
     const chip = chipRefs.current[activeId];
-    if (!nav || !chip) {
+    if (!track || !chip) {
       return;
     }
-    const target = chip.offsetLeft - nav.clientWidth / 2 + chip.clientWidth / 2;
-    nav.scrollTo({ left: Math.max(0, target), behavior: "smooth" });
+    const target =
+      chip.offsetLeft - track.clientWidth / 2 + chip.clientWidth / 2;
+    track.scrollTo({ left: Math.max(0, target), behavior: "smooth" });
   }, [activeId]);
 
   if (items.length < 2) {
@@ -101,32 +102,43 @@ export function CatalogSectionNav({
 
   return (
     <nav
-      ref={navRef}
       aria-label={label}
-      className="bg-background/85 supports-[backdrop-filter]:bg-background/70 sticky top-28 z-10 -mx-4 mb-6 flex [scrollbar-width:none] gap-2 overflow-x-auto border-b px-4 py-2.5 backdrop-blur sm:-mx-6 sm:px-6 [&::-webkit-scrollbar]:hidden"
+      className="bg-background/85 supports-[backdrop-filter]:bg-background/60 sticky top-28 z-[7] mb-6 border-b"
+      // Full-bleed: break out of the content container to the viewport edges (the layout's
+      // `overflow-x-clip` absorbs the scrollbar-width spill). The inner track re-aligns to the container.
+      style={{
+        marginInline: "calc(50% - 50vw)",
+        backdropFilter: "blur(16px)",
+        WebkitBackdropFilter: "blur(16px)",
+      }}
     >
-      {items.map((item) => {
-        const active = item.id === activeId;
-        return (
-          <a
-            key={item.id}
-            ref={(node) => {
-              chipRefs.current[item.id] = node;
-            }}
-            href={`#catalog-${item.id}`}
-            onClick={jumpTo(item.id)}
-            aria-current={active ? "true" : undefined}
-            className={cn(
-              "shrink-0 rounded-full border px-3.5 py-1.5 text-sm font-medium whitespace-nowrap transition-colors",
-              active
-                ? "bg-primary text-primary-foreground border-transparent"
-                : "border-border text-muted-foreground hover:bg-muted hover:text-foreground",
-            )}
-          >
-            {item.name}
-          </a>
-        );
-      })}
+      <div
+        ref={trackRef}
+        className="relative mx-auto flex w-full max-w-[90rem] [scrollbar-width:none] gap-2 overflow-x-auto px-4 py-2.5 sm:px-6 [&::-webkit-scrollbar]:hidden"
+      >
+        {items.map((item) => {
+          const active = item.id === activeId;
+          return (
+            <a
+              key={item.id}
+              ref={(node) => {
+                chipRefs.current[item.id] = node;
+              }}
+              href={`#catalog-${item.id}`}
+              onClick={jumpTo(item.id)}
+              aria-current={active ? "true" : undefined}
+              className={cn(
+                "shrink-0 rounded-full border px-3.5 py-1.5 text-sm font-medium whitespace-nowrap transition-colors",
+                active
+                  ? "bg-primary text-primary-foreground border-transparent"
+                  : "border-border text-muted-foreground hover:bg-muted hover:text-foreground",
+              )}
+            >
+              {item.name}
+            </a>
+          );
+        })}
+      </div>
     </nav>
   );
 }

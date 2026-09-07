@@ -29,13 +29,20 @@ export default async function BusinessLayout({
   }
 
   return (
-    <>
+    // `overflow-x-clip` (not `hidden`, which would break the sticky bars) contains the edge-to-edge
+    // bars' full-bleed width so it never spills into a horizontal scrollbar.
+    <div className="overflow-x-clip">
       <BusinessHeader business={business} />
-      <div className="mx-auto w-full max-w-[90rem] px-4 sm:px-6">
-        <BusinessTabs slug={business.slug} />
-        {/* Extra bottom space on mobile clears the header's fixed action bar. */}
-        <div className="pt-8 pb-24 sm:pb-16">{children}</div>
+      {/* Full-width, edge-to-edge sticky bar; its inner content aligns to the content container. */}
+      <BusinessTabs
+        slug={business.slug}
+        name={business.name}
+        logo={business.logo}
+      />
+      {/* Extra bottom space on mobile clears the header's fixed action bar. */}
+      <div className="mx-auto w-full max-w-[90rem] px-4 pt-8 pb-24 sm:px-6 sm:pb-16">
+        {children}
       </div>
-    </>
+    </div>
   );
 }
