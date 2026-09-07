@@ -1,16 +1,13 @@
-import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
-import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { cache } from "react";
 
-import { BusinessLogo } from "@/components/business/business-logo";
 import { BusinessReviews } from "@/components/business/public/business-reviews";
-import { getPublicBusiness, getPublicReviews } from "@/lib/public-business";
+import {
+  getCachedPublicBusiness as loadBusiness,
+  getPublicReviews,
+} from "@/lib/public-business";
 import { businessPagesRobots } from "@/lib/seo";
-
-const loadBusiness = cache(getPublicBusiness);
 
 export async function generateMetadata({
   params,
@@ -58,34 +55,8 @@ export default async function BusinessReviewsPage({
   const reviews = await getPublicReviews(business.slug);
 
   return (
-    <div className="mx-auto w-full max-w-[90rem] px-4 py-8 sm:px-6">
-      <Link
-        href={`/businesses/${business.slug}`}
-        className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-sm"
-      >
-        <ArrowLeft className="size-4" aria-hidden />
-        {t("backToProfile")}
-      </Link>
-
-      <header className="mt-4 mb-8 flex items-center gap-4 sm:gap-6">
-        {/* Same frosted-glass plate + logo size as the main profile. */}
-        <div className="w-fit shrink-0 overflow-hidden rounded-[32px] border border-white/40 bg-white/20 p-1.5 shadow-lg backdrop-blur-md sm:rounded-[40px] sm:p-2 dark:border-white/15 dark:bg-white/10">
-          <BusinessLogo
-            name={business.name}
-            src={business.logo}
-            className="bg-background size-28 rounded-[26px] sm:size-36 sm:rounded-[32px]"
-            fallbackClassName="text-4xl"
-          />
-        </div>
-        <div className="min-w-0">
-          <h1 className="font-heading truncate text-2xl font-semibold tracking-tight sm:text-3xl">
-            {business.name}
-          </h1>
-          <p className="text-muted-foreground text-sm">{t("title")}</p>
-        </div>
-      </header>
-
+    <section aria-label={t("title")}>
       <BusinessReviews slug={business.slug} initial={reviews} />
-    </div>
+    </section>
   );
 }

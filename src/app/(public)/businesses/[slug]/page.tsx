@@ -1,18 +1,14 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { getLocale } from "next-intl/server";
-import { cache } from "react";
 
 import { BusinessProfile } from "@/components/business/public/business-profile";
 import {
-  getPublicBusiness,
+  getCachedPublicBusiness as loadBusiness,
   getPublicBusinessProducts,
   getPublicReviews,
 } from "@/lib/public-business";
 import { businessPagesRobots } from "@/lib/seo";
-
-// Memoize per request so generateMetadata and the page share one API call.
-const loadBusiness = cache(getPublicBusiness);
 
 export async function generateMetadata({
   params,

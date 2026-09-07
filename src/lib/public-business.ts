@@ -1,5 +1,7 @@
 import "server-only";
 
+import { cache } from "react";
+
 import { portalFetch } from "@/lib/api/client";
 
 import type { Amenity } from "@/app/api/amenities/route";
@@ -149,6 +151,13 @@ export async function getPublicBusiness(
 
   return response.ok ? (response.data.business ?? null) : null;
 }
+
+/**
+ * Per-request-memoized `getPublicBusiness`. Shared by the business layout, its three pages, and their
+ * `generateMetadata` so a single slug resolves to ONE API call per request (React `cache` dedupes by
+ * this exact wrapper identity — hence one exported instance instead of a `cache()` per file).
+ */
+export const getCachedPublicBusiness = cache(getPublicBusiness);
 
 /** A business's public display section — a localized name, in order. */
 export interface PublicSection {

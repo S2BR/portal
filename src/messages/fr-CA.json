@@ -625,7 +625,10 @@
       "whatsapp": "WhatsApp",
       "prevPhoto": "Photo précédente",
       "nextPhoto": "Photo suivante",
-      "close": "Fermer"
+      "close": "Fermer",
+      "tabs": {
+        "overview": "Aperçu"
+      }
     },
     "publish": {
       "checklistTitle": "Pas encore en ligne",
