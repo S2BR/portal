@@ -1,6 +1,7 @@
 import { Package } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
+import { CatalogSectionNav } from "@/components/business/public/catalog-section-nav";
 import type { PublicCatalogItem, PublicSection } from "@/lib/public-business";
 import { unitFor } from "@/lib/products/units";
 
@@ -95,41 +96,55 @@ export async function BusinessCatalog({
     .filter((group) => group.items.length > 0);
   const other = products.filter((product) => product.section_ids.length === 0);
 
-  return (
-    <div className="space-y-10">
-      {grouped.map(({ section, items }) => (
-        <section key={section.id}>
-          <h2 className="font-heading text-lg font-semibold tracking-tight">
-            {section.name}
-          </h2>
-          <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            {items.map((product) => (
-              <PublicProductCard
-                key={`${section.id}-${product.id}`}
-                product={product}
-                locale={locale}
-              />
-            ))}
-          </div>
-        </section>
-      ))}
+  // Jump targets for the sticky section bar — each visible group, plus "Other" when it has products.
+  const navItems = [
+    ...grouped.map(({ section }) => ({ id: section.id, name: section.name })),
+    ...(other.length > 0 ? [{ id: "other", name: t("otherProducts") }] : []),
+  ];
 
-      {other.length > 0 ? (
-        <section>
-          <h2 className="font-heading text-lg font-semibold tracking-tight">
-            {t("otherProducts")}
-          </h2>
-          <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            {other.map((product) => (
-              <PublicProductCard
-                key={product.id}
-                product={product}
-                locale={locale}
-              />
-            ))}
-          </div>
-        </section>
-      ) : null}
+  return (
+    <div>
+      <CatalogSectionNav items={navItems} label={t("jumpToSection")} />
+
+      <div className="space-y-10">
+        {grouped.map(({ section, items }) => (
+          <section
+            key={section.id}
+            id={`catalog-${section.id}`}
+            className="scroll-mt-28"
+          >
+            <h2 className="font-heading text-lg font-semibold tracking-tight">
+              {section.name}
+            </h2>
+            <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+              {items.map((product) => (
+                <PublicProductCard
+                  key={`${section.id}-${product.id}`}
+                  product={product}
+                  locale={locale}
+                />
+              ))}
+            </div>
+          </section>
+        ))}
+
+        {other.length > 0 ? (
+          <section id="catalog-other" className="scroll-mt-28">
+            <h2 className="font-heading text-lg font-semibold tracking-tight">
+              {t("otherProducts")}
+            </h2>
+            <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+              {other.map((product) => (
+                <PublicProductCard
+                  key={product.id}
+                  product={product}
+                  locale={locale}
+                />
+              ))}
+            </div>
+          </section>
+        ) : null}
+      </div>
     </div>
   );
 }
