@@ -429,7 +429,7 @@
       "ctaSecondary": "Entrar",
       "caption": "Brasileiros pelo mundo, conectados pelo S2BR",
       "launchPrefix": "Lançamento em",
-      "launchDate": "7 de setembro de 2026"
+      "launchDate": "25 de dezembro de 2026"
     },
     "notify": {
       "open": "Avise-me no lançamento",
@@ -1067,11 +1067,12 @@
       },
       "kanban": {
         "title": "Quadro",
-        "hint": "Arraste um produto para uma seção para adicioná-lo ali. Um produto pode estar em várias seções.",
+        "hint": "Arraste um produto para movê-lo entre seções. Segure Alt (⌥) ao soltar para adicioná-lo a outra seção sem removê-lo.",
         "unassigned": "Sem seção",
         "empty": "Adicione produtos primeiro para organizá-los em seções.",
         "allAssigned": "Todos os produtos estão em uma seção.",
-        "dropHere": "Solte produtos aqui."
+        "dropHere": "Solte produtos aqui.",
+        "copy": "Copiar"
       },
       "placement": {
         "title": "Seções e destaque",

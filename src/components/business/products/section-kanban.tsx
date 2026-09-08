@@ -14,9 +14,9 @@ import {
   type DragStartEvent,
 } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
-import { Package } from "lucide-react";
+import { Copy, Package, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import { toast } from "sonner";
 
@@ -82,28 +82,49 @@ function CardBody({ sighting }: { sighting: CatalogSighting }) {
   );
 }
 
-/** A draggable product card within a column. */
+/** A draggable product card within a column, with a hover ✕ to remove it from that section. */
 function KanbanCard({
   columnId,
   sighting,
+  onRemove,
+  removeLabel,
 }: {
   columnId: string;
   sighting: CatalogSighting;
+  onRemove?: () => void;
+  removeLabel: string;
 }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({ id: cardDndId(columnId, sighting.id) });
   return (
     <div
       ref={setNodeRef}
-      {...attributes}
-      {...listeners}
       style={{ transform: CSS.Translate.toString(transform) }}
       className={cn(
-        "cursor-grab touch-none active:cursor-grabbing",
+        "group/card relative touch-none",
         isDragging && "opacity-40",
       )}
     >
-      <CardBody sighting={sighting} />
+      {/* The drag handle is the card body; the ✕ sits above it and isn't draggable. */}
+      <div
+        {...attributes}
+        {...listeners}
+        className="cursor-grab active:cursor-grabbing"
+      >
+        <CardBody sighting={sighting} />
+      </div>
+      {onRemove ? (
+        <button
+          type="button"
+          aria-label={removeLabel}
+          // Keep the pointer-down off the drag sensor, then remove on click.
+          onPointerDown={(event) => event.stopPropagation()}
+          onClick={onRemove}
+          className="bg-background text-muted-foreground hover:text-foreground absolute -top-1.5 -right-1.5 flex size-5 items-center justify-center rounded-full border opacity-0 shadow-sm transition-opacity group-hover/card:opacity-100 focus-visible:opacity-100 focus-visible:outline-none"
+        >
+          <X className="size-3" aria-hidden />
+        </button>
+      ) : null}
     </div>
   );
 }
@@ -114,11 +135,15 @@ function KanbanColumn({
   label,
   sightings,
   emptyHint,
+  onRemove,
+  removeLabel,
 }: {
   id: string;
   label: string;
   sightings: CatalogSighting[];
   emptyHint: string;
+  onRemove?: (productId: string) => void;
+  removeLabel: string;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: columnDndId(id) });
   return (
@@ -142,7 +167,13 @@ function KanbanColumn({
           </p>
         ) : (
           sightings.map((sighting) => (
-            <KanbanCard key={sighting.id} columnId={id} sighting={sighting} />
+            <KanbanCard
+              key={sighting.id}
+              columnId={id}
+              sighting={sighting}
+              onRemove={onRemove ? () => onRemove(sighting.id) : undefined}
+              removeLabel={removeLabel}
+            />
           ))
         )}
       </div>
@@ -170,6 +201,32 @@ export function SectionKanban({
   const t = useTranslations("businesses.products");
   const locale = useLocale();
   const [activeId, setActiveId] = useState<string | null>(null);
+  // Held-Alt-to-copy: a plain drag moves a membership; holding Alt/Option adds to the target without
+  // removing from the source, so a product can be placed in several sections. `copyRef` is read at
+  // drop; `copyMode` drives the visual cue. Listeners attach only during a drag to bound re-renders.
+  const copyRef = useRef(false);
+  const [copyMode, setCopyMode] = useState(false);
+
+  useEffect(() => {
+    if (activeId === null) {
+      return;
+    }
+    const sync = (event: KeyboardEvent) => {
+      copyRef.current = event.altKey;
+      setCopyMode(event.altKey);
+    };
+    window.addEventListener("keydown", sync);
+    window.addEventListener("keyup", sync);
+    return () => {
+      window.removeEventListener("keydown", sync);
+      window.removeEventListener("keyup", sync);
+    };
+  }, [activeId]);
+
+  const endCopyTracking = () => {
+    copyRef.current = false;
+    setCopyMode(false);
+  };
 
   const { setProducts } = useSectionPersist(slug, onSectionsChange, () =>
     toast.error(t("actionError")),
@@ -204,7 +261,9 @@ export function SectionKanban({
     : null;
 
   const onDragEnd = (event: DragEndEvent) => {
+    const copy = copyRef.current;
     setActiveId(null);
+    endCopyTracking();
     const { active, over } = event;
     if (!over) {
       return;
@@ -220,8 +279,9 @@ export function SectionKanban({
       return;
     }
 
-    // Remove the membership being dragged from its source section (if any)...
-    if (from.columnId !== UNASSIGNED) {
+    // Remove from the source section — unless Alt is held (copy), which keeps it there so the product
+    // ends up in both sections.
+    if (!copy && from.columnId !== UNASSIGNED) {
       const source = sections.find((section) => section.id === from.columnId);
       if (source) {
         setProducts(
@@ -239,6 +299,17 @@ export function SectionKanban({
     }
   };
 
+  // The card ✕ — drop the product from just that section.
+  const removeMembership = (sectionId: string, productId: string) => {
+    const section = sections.find((entry) => entry.id === sectionId);
+    if (section) {
+      setProducts(
+        sectionId,
+        (section.product_ids ?? []).filter((id) => id !== productId),
+      );
+    }
+  };
+
   if (products.length === 0) {
     return (
       <p className="text-muted-foreground text-sm italic">
@@ -253,11 +324,20 @@ export function SectionKanban({
       <DndContext
         sensors={sensors}
         collisionDetection={closestCorners}
-        onDragStart={(event: DragStartEvent) =>
-          setActiveId(String(event.active.id))
-        }
+        onDragStart={(event: DragStartEvent) => {
+          setActiveId(String(event.active.id));
+          // Seed copy mode from Alt held at the moment the drag starts (before any key event fires).
+          const alt = Boolean(
+            (event.activatorEvent as { altKey?: boolean }).altKey,
+          );
+          copyRef.current = alt;
+          setCopyMode(alt);
+        }}
         onDragEnd={onDragEnd}
-        onDragCancel={() => setActiveId(null)}
+        onDragCancel={() => {
+          setActiveId(null);
+          endCopyTracking();
+        }}
       >
         <div className="flex gap-4 overflow-x-auto pb-2">
           {columns.map((column) => (
@@ -271,13 +351,30 @@ export function SectionKanban({
                   ? t("kanban.allAssigned")
                   : t("kanban.dropHere")
               }
+              onRemove={
+                column.id === UNASSIGNED
+                  ? undefined
+                  : (productId) => removeMembership(column.id, productId)
+              }
+              removeLabel={t("remove")}
             />
           ))}
         </div>
         <DragOverlay>
           {activeSighting ? (
-            <div className="w-60 rotate-1 cursor-grabbing">
+            <div
+              className={cn(
+                "relative w-60 rotate-1",
+                copyMode ? "cursor-copy" : "cursor-grabbing",
+              )}
+            >
               <CardBody sighting={activeSighting} />
+              {copyMode ? (
+                <span className="bg-primary text-primary-foreground absolute -top-2 -right-2 flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold shadow">
+                  <Copy className="size-3" aria-hidden />
+                  {t("kanban.copy")}
+                </span>
+              ) : null}
             </div>
           ) : null}
         </DragOverlay>
