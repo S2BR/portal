@@ -429,7 +429,7 @@
       "ctaSecondary": "Anmelden",
       "caption": "Brasilianerinnen und Brasilianer weltweit, verbunden durch S2BR",
       "launchPrefix": "Start am",
-      "launchDate": "7. September 2026"
+      "launchDate": "25. Dezember 2026"
     },
     "notify": {
       "open": "Beim Start benachrichtigen",
@@ -1067,11 +1067,12 @@
       },
       "kanban": {
         "title": "Board",
-        "hint": "Ziehe ein Produkt auf eine Sektion, um es hinzuzufügen. Ein Produkt kann in mehreren Sektionen sein.",
+        "hint": "Ziehe ein Produkt, um es zwischen Sektionen zu verschieben. Halte beim Ablegen Alt (⌥) gedrückt, um es einer weiteren Sektion hinzuzufügen, ohne es zu entfernen.",
         "unassigned": "Nicht zugeordnet",
         "empty": "Füge zuerst Produkte hinzu, um sie in Sektionen zu ordnen.",
         "allAssigned": "Alle Produkte sind in einer Sektion.",
-        "dropHere": "Produkte hier ablegen."
+        "dropHere": "Produkte hier ablegen.",
+        "copy": "Kopieren"
       },
       "placement": {
         "title": "Abschnitte & Hervorhebung",

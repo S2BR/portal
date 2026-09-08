@@ -78,7 +78,7 @@ export default function OpengraphImage() {
             color: "transparent",
           }}
         >
-          Launching September 7, 2026
+          Launching December 25, 2026
         </div>
       </div>
       <img

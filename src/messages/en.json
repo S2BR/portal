@@ -429,7 +429,7 @@
       "ctaSecondary": "Log in",
       "caption": "Brazilians around the world, connecting through S2BR",
       "launchPrefix": "Launching on",
-      "launchDate": "September 7, 2026"
+      "launchDate": "December 25, 2026"
     },
     "notify": {
       "open": "Notify me at launch",
@@ -1067,11 +1067,12 @@
       },
       "kanban": {
         "title": "Board",
-        "hint": "Drag a product onto a section to add it there. A product can belong to several sections.",
+        "hint": "Drag a product to move it between sections. Hold Alt (⌥) while dropping to add it to another section without removing it.",
         "unassigned": "Unassigned",
         "empty": "Add products first to organize them into sections.",
         "allAssigned": "All products are in a section.",
-        "dropHere": "Drop products here."
+        "dropHere": "Drop products here.",
+        "copy": "Copy"
       },
       "placement": {
         "title": "Sections & highlight",

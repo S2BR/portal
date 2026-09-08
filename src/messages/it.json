@@ -429,7 +429,7 @@
       "ctaSecondary": "Accedi",
       "caption": "Brasiliani in tutto il mondo, connessi tramite S2BR",
       "launchPrefix": "Lancio il",
-      "launchDate": "7 settembre 2026"
+      "launchDate": "25 dicembre 2026"
     },
     "notify": {
       "open": "Avvisami al lancio",
@@ -1067,11 +1067,12 @@
       },
       "kanban": {
         "title": "Bacheca",
-        "hint": "Trascina un prodotto in una sezione per aggiungerlo. Un prodotto può stare in più sezioni.",
+        "hint": "Trascina un prodotto per spostarlo tra le sezioni. Tieni premuto Alt (⌥) mentre lo rilasci per aggiungerlo a un’altra sezione senza rimuoverlo.",
         "unassigned": "Non assegnati",
         "empty": "Aggiungi prima dei prodotti per organizzarli in sezioni.",
         "allAssigned": "Tutti i prodotti sono in una sezione.",
-        "dropHere": "Trascina qui i prodotti."
+        "dropHere": "Trascina qui i prodotti.",
+        "copy": "Copia"
       },
       "placement": {
         "title": "Sezioni ed evidenza",
