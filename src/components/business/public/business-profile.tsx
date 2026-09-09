@@ -4,13 +4,11 @@ import Link from "next/link";
 
 import { AddressLines } from "@/components/address/address-lines";
 import {
-  DAYS,
   socialDisplay,
   socialLabel,
 } from "@/components/business/business-constants";
 import { flagEmoji, formatPhone } from "@/components/business/phone-format";
 import { PublicProductCard } from "@/components/business/public/business-catalog";
-import { OpenStatusBadge } from "@/components/business/public/open-status-badge";
 import { PhotoGallery } from "@/components/business/public/photo-gallery";
 import { ProfileMap } from "@/components/business/public/profile-map";
 import { ProfileReviews } from "@/components/business/public/profile-reviews";
@@ -18,9 +16,7 @@ import { SocialIcon } from "@/components/business/social-icon";
 import { ReportDialog } from "@/components/moderation/report-dialog";
 import { PreviewRail } from "@/components/ui/preview-rail";
 import { formatBusinessAddress } from "@/lib/format-address";
-import { formatTime } from "@/lib/format-time";
 import { externalHref } from "@/lib/url";
-import { cn } from "@/lib/utils";
 
 import type {
   PublicBusiness,
@@ -46,7 +42,6 @@ export async function BusinessProfile({
   locale: string;
 }) {
   const t = await getTranslations("businesses.public");
-  const days = await getTranslations("businesses.detail.days");
   const reportT = await getTranslations("moderation.report");
 
   const main =
@@ -152,45 +147,6 @@ export async function BusinessProfile({
 
         {/* Sidebar */}
         <div className="space-y-4">
-          {business.opening_hours.length > 0 ? (
-            <div className="bg-muted/40 rounded-2xl p-5">
-              <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1">
-                <h2 className="text-sm font-semibold">{t("hours")}</h2>
-                <OpenStatusBadge
-                  slots={business.open_slots}
-                  timezone={business.timezone}
-                />
-              </div>
-              <ul className="space-y-1.5 text-sm tabular-nums">
-                {DAYS.map((day) => {
-                  const entry = business.opening_hours.find(
-                    (hour) => hour.day_of_week === day,
-                  );
-                  const open =
-                    entry &&
-                    !entry.closed_all_day &&
-                    entry.open_time &&
-                    entry.close_time
-                      ? `${formatTime(entry.open_time, locale)} – ${formatTime(entry.close_time, locale)}`
-                      : t("closed");
-                  return (
-                    <li
-                      key={day}
-                      className="text-muted-foreground flex justify-between gap-4"
-                    >
-                      <span>{days(day)}</span>
-                      <span
-                        className={cn(open === t("closed") && "opacity-60")}
-                      >
-                        {open}
-                      </span>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          ) : null}
-
           {main ? (
             <div className="bg-muted/40 rounded-2xl p-5">
               <h2 className="mb-3 text-sm font-semibold">{t("location")}</h2>

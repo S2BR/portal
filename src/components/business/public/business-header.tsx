@@ -6,7 +6,7 @@ import { BusinessLogo } from "@/components/business/business-logo";
 import { socialDisplay } from "@/components/business/business-constants";
 import { BusinessBannerPlaceholder } from "@/components/business/public/business-banner-placeholder";
 import { ClaimBusinessButton } from "@/components/business/public/claim-business-button";
-import { OpenStatusBadge } from "@/components/business/public/open-status-badge";
+import { HoursDisclosure } from "@/components/business/public/hours-disclosure";
 import { ShareButton } from "@/components/business/public/share-button";
 import { StarRating } from "@/components/business/public/star-rating";
 import { SocialIcon } from "@/components/business/social-icon";
@@ -172,10 +172,12 @@ export async function BusinessHeader({
                   {t("reviews.beFirst")}
                 </Link>
               )}
+              {/* Live open status; tap it for the full weekly hours (opens a dialog). */}
               {business.open_slots.length > 0 ? (
-                <OpenStatusBadge
-                  slots={business.open_slots}
+                <HoursDisclosure
+                  openSlots={business.open_slots}
                   timezone={business.timezone}
+                  openingHours={business.opening_hours}
                 />
               ) : null}
             </div>
