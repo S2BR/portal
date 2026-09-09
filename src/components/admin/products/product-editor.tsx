@@ -1009,10 +1009,25 @@ export function ProductEditor({ productId }: { productId: string | null }) {
                 rows={3}
               />
             </Field>
-            <label className="flex max-w-sm items-center justify-between gap-3 text-sm">
-              {t("isHomemade")}
-              <Switch checked={isHomemade} onCheckedChange={setIsHomemade} />
-            </label>
+            <div className="flex max-w-md items-start justify-between gap-4 rounded-lg border p-3">
+              <div className="space-y-0.5">
+                <label
+                  htmlFor="product-homemade"
+                  className="text-sm font-medium"
+                >
+                  {t("isHomemade")}
+                </label>
+                <p className="text-muted-foreground text-xs">
+                  {t("isHomemadeHint")}
+                </p>
+              </div>
+              <Switch
+                id="product-homemade"
+                checked={isHomemade}
+                onCheckedChange={setIsHomemade}
+                className="mt-0.5"
+              />
+            </div>
           </FormSection>
 
           <FormSection

@@ -10,7 +10,6 @@ import {
   Pencil,
   Plus,
   ScanBarcode,
-  Search,
   Star,
   Trash2,
   Type,
@@ -63,7 +62,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { TabsContent } from "@/components/ui/tabs";
 import { WorkspaceTabs } from "@/components/ui/workspace-tabs";
 import {
   Filters,
@@ -680,10 +679,10 @@ export function OwnerProducts({ businessSlug }: { businessSlug: string }) {
 }
 
 /**
- * The add-product dialog: choose the catalog (search Typesense directly, pick a SKU) or a handmade
- * item, set a price, and add it. In the handmade path, matching catalog products surface as you type
- * the name so the owner carries the existing product instead of a duplicate. Closes and hands the
- * created sighting back on success.
+ * The add-product dialog, search-first: the owner searches the catalog (Typesense direct) and picks a
+ * SKU. If it isn't there, an "add as your own product" button creates a non-catalog item — no upfront
+ * catalog-vs-handmade choice. While creating, matching catalog products still surface so the owner
+ * carries the existing one instead of a duplicate. Sets a price, then hands the created sighting back.
  */
 function AddProductDialog({
   base,
@@ -697,7 +696,9 @@ function AddProductDialog({
   onAdded: (saved: CatalogSighting) => void;
 }) {
   const t = useTranslations("businesses.products");
-  const [mode, setMode] = useState<"search" | "new">("search");
+  // Search-first: the owner always searches the catalog; `creating` switches to the "your own
+  // product" form (reached only when the catalog doesn't have it), so there's no upfront choice.
+  const [creating, setCreating] = useState(false);
 
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<CatalogHit[]>([]);
@@ -715,7 +716,7 @@ function AddProductDialog({
   const suggestTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const reset = () => {
-    setMode("search");
+    setCreating(false);
     setQuery("");
     setResults([]);
     setSelected(null);
@@ -736,22 +737,24 @@ function AddProductDialog({
     );
   };
 
-  /** A typed handmade name matched an existing catalog product: carry that instead of a duplicate. */
+  /** Leave search and start creating your own product, carrying over what was typed. */
+  const startCreating = () => {
+    setCreating(true);
+    setName(query.trim());
+    setResults([]);
+  };
+
+  /** A typed own-product name matched an existing catalog product: carry that instead of a duplicate. */
   const pickSuggestion = (match: CatalogHit) => {
-    setMode("search");
+    setCreating(false);
     setSuggestions([]);
     setName("");
     pickProduct(match);
   };
 
-  // Catalog search (search mode) — direct Typesense, no API/DB in the path.
+  // Catalog search (while searching, before picking or creating) — direct Typesense, no API/DB.
   useEffect(() => {
-    if (
-      !open ||
-      mode !== "search" ||
-      selected !== null ||
-      query.trim() === ""
-    ) {
+    if (!open || creating || selected !== null || query.trim() === "") {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setResults([]);
       return;
@@ -767,11 +770,11 @@ function AddProductDialog({
         clearTimeout(searchTimer.current);
       }
     };
-  }, [open, mode, query, selected]);
+  }, [open, creating, query, selected]);
 
-  // Dedup suggestions while typing a handmade name — nudge toward the existing catalog product.
+  // Dedup while typing an own-product name — nudge toward the existing catalog product.
   useEffect(() => {
-    if (!open || mode !== "new" || name.trim() === "") {
+    if (!open || !creating || name.trim() === "") {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setSuggestions([]);
       return;
@@ -787,23 +790,22 @@ function AddProductDialog({
         clearTimeout(suggestTimer.current);
       }
     };
-  }, [open, mode, name]);
+  }, [open, creating, name]);
 
   const submit = async () => {
     setSaving(true);
     try {
-      const body =
-        mode === "search"
-          ? { variant_id: variant?.id, price, currency }
-          : {
-              product: {
-                name: name.trim(),
-                size: amount.trim() || null,
-                unit,
-              },
-              price,
-              currency,
-            };
+      const body = creating
+        ? {
+            product: {
+              name: name.trim(),
+              size: amount.trim() || null,
+              unit,
+            },
+            price,
+            currency,
+          }
+        : { variant_id: variant?.id, price, currency };
 
       const response = await fetch(base, {
         method: "POST",
@@ -824,9 +826,9 @@ function AddProductDialog({
     }
   };
 
-  const readyForPrice = mode === "new" || variant !== null;
+  const readyForPrice = creating || variant !== null;
   const canSubmit =
-    (mode === "search" ? variant !== null : name.trim() !== "") && !saving;
+    (creating ? name.trim() !== "" : variant !== null) && !saving;
 
   return (
     <Dialog
@@ -845,31 +847,7 @@ function AddProductDialog({
         </DialogHeader>
 
         <div className="space-y-5">
-          {/* Catalog vs handmade — a segmented switch, on the shared Tabs primitive. */}
-          <Tabs
-            value={mode}
-            onValueChange={(value) => {
-              const next = value as "search" | "new";
-              setMode(next);
-              if (next === "new") {
-                setSelected(null);
-                setVariant(null);
-              }
-            }}
-          >
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="search">
-                <Search className="size-4" aria-hidden />
-                {t("addExisting")}
-              </TabsTrigger>
-              <TabsTrigger value="new">
-                <Plus className="size-4" aria-hidden />
-                {t("addHandmade")}
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-
-          {mode === "search" && selected === null ? (
+          {!creating && selected === null ? (
             <div className="space-y-3">
               <Field label={t("searchLabel")}>
                 <Input
@@ -910,16 +888,32 @@ function AddProductDialog({
                     </li>
                   ))}
                 </ul>
-              ) : query.trim() !== "" ? (
-                <p className="text-muted-foreground text-sm">
-                  {t("noMatches")}
-                </p>
+              ) : null}
+              {/* Search-first fallback: always offer to add what was typed as your own product —
+                  the only way to create a non-catalog item, so there's no confusing upfront choice. */}
+              {query.trim() !== "" ? (
+                <div className="space-y-2">
+                  {results.length === 0 ? (
+                    <p className="text-muted-foreground text-sm">
+                      {t("noCatalogMatch")}
+                    </p>
+                  ) : null}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full justify-start gap-2"
+                    onClick={startCreating}
+                  >
+                    <Plus className="size-4" aria-hidden />
+                    {t("addAsOwn", { name: query.trim() })}
+                  </Button>
+                </div>
               ) : null}
             </div>
           ) : null}
 
           {/* A picked product with more than one size: choose which SKU to carry. */}
-          {mode === "search" && selected !== null && variant === null ? (
+          {selected !== null && variant === null ? (
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <Button
@@ -977,7 +971,7 @@ function AddProductDialog({
             </div>
           ) : null}
 
-          {mode === "search" && selected !== null && variant !== null ? (
+          {selected !== null && variant !== null ? (
             <div className="bg-muted/40 flex items-center gap-3 rounded-xl p-3">
               <ProductThumb
                 image={variant.image ?? selected.image}
@@ -1011,8 +1005,24 @@ function AddProductDialog({
             </div>
           ) : null}
 
-          {mode === "new" ? (
+          {creating ? (
             <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="ghost"
+                  className="-ms-1.5 size-8 shrink-0"
+                  onClick={() => {
+                    setCreating(false);
+                    setName("");
+                  }}
+                  aria-label={t("back")}
+                >
+                  <ArrowLeft className="size-4" aria-hidden />
+                </Button>
+                <p className="text-sm font-medium">{t("ownProductHeading")}</p>
+              </div>
               <Field label={t("handmadeName")}>
                 <Input
                   autoFocus
