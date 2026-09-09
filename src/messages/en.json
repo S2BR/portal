@@ -1090,7 +1090,10 @@
         "page": "Page {page} of {total}",
         "previous": "Previous",
         "next": "Next"
-      }
+      },
+      "ownBarcodeLabel": "Barcode",
+      "ownBarcodeHint": "If it has a barcode, enter it — it links to the shared catalog. Leave empty for a product you make yourself.",
+      "ownBarcodePlaceholder": "e.g. 7891234567890"
     }
   },
   "admin": {
@@ -1566,7 +1569,7 @@
       "status": "Status",
       "description": "Description",
       "isHomemade": "Handmade item",
-      "isHomemadeHint": "Turn on for items made in-house without a barcode — like baked goods or crafts. Off for branded, packaged products.",
+      "isHomemadeHint": "On for items made in-house without a barcode — like baked goods or crafts. Off for branded, barcoded products.",
       "variants": "Sizes / SKUs",
       "variantLabel": "Size (e.g. 350 ml)",
       "variantBarcode": "Barcode",

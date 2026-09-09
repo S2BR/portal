@@ -1090,7 +1090,10 @@
         "page": "Seite {page} von {total}",
         "previous": "Zurück",
         "next": "Weiter"
-      }
+      },
+      "ownBarcodeLabel": "Barcode",
+      "ownBarcodeHint": "Falls vorhanden, den Barcode eingeben — er verknüpft mit dem gemeinsamen Katalog. Leer lassen für ein Produkt, das du selbst herstellst.",
+      "ownBarcodePlaceholder": "z. B. 7891234567890"
     }
   },
   "admin": {
@@ -1566,7 +1569,7 @@
       "status": "Status",
       "description": "Description",
       "isHomemade": "Handmade item",
-      "isHomemadeHint": "Für handgemachte Artikel ohne Barcode aktivieren – etwa Gebäck oder Handwerk. Für Markenware in Verpackung deaktivieren.",
+      "isHomemadeHint": "Für handgemachte Artikel ohne Barcode aktivieren – etwa Gebäck oder Handwerk. Für Markenware mit Barcode deaktivieren.",
       "variants": "Sizes / SKUs",
       "variantLabel": "Size (e.g. 350 ml)",
       "variantBarcode": "Barcode",

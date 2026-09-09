@@ -1090,7 +1090,10 @@
         "page": "Page {page} sur {total}",
         "previous": "Précédent",
         "next": "Suivant"
-      }
+      },
+      "ownBarcodeLabel": "Code-barres",
+      "ownBarcodeHint": "S’il a un code-barres, saisissez-le — il se rattache au catalogue partagé. Laissez vide pour un produit que vous fabriquez vous-même.",
+      "ownBarcodePlaceholder": "p. ex. 7891234567890"
     }
   },
   "admin": {
@@ -1566,7 +1569,7 @@
       "status": "Statut",
       "description": "Description",
       "isHomemade": "Article artisanal",
-      "isHomemadeHint": "Activez pour les articles faits maison, sans code-barres — comme la nourriture maison ou l’artisanat. Désactivez pour les produits de marque et emballés.",
+      "isHomemadeHint": "Activez pour les articles faits maison, sans code-barres — comme la nourriture maison ou l’artisanat. Désactivez pour les produits de marque avec code-barres.",
       "variants": "Formats / UGS",
       "variantLabel": "Format (p. ex. 350 ml)",
       "variantBarcode": "Code-barres",

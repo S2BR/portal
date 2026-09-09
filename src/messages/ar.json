@@ -1090,7 +1090,10 @@
         "page": "صفحة {page} من {total}",
         "previous": "السابق",
         "next": "التالي"
-      }
+      },
+      "ownBarcodeLabel": "الباركود",
+      "ownBarcodeHint": "إذا كان له باركود، أدخله — فهو يرتبط بالكتالوج المشترك. اتركه فارغًا لمنتج تصنعه بنفسك.",
+      "ownBarcodePlaceholder": "مثال: 7891234567890"
     }
   },
   "admin": {
@@ -1566,7 +1569,7 @@
       "status": "Status",
       "description": "Description",
       "isHomemade": "Handmade item",
-      "isHomemadeHint": "فعّله للأصناف المصنوعة يدويًا بدون باركود — مثل المخبوزات أو الحرف اليدوية. أوقفه للمنتجات المُعبأة ذات العلامات التجارية.",
+      "isHomemadeHint": "فعّله للأصناف المصنوعة يدويًا بدون باركود — مثل المخبوزات أو الحرف. أوقفه للمنتجات ذات العلامات التجارية التي لها باركود.",
       "variants": "Sizes / SKUs",
       "variantLabel": "Size (e.g. 350 ml)",
       "variantBarcode": "Barcode",

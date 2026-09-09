@@ -1090,7 +1090,10 @@
         "page": "Página {page} de {total}",
         "previous": "Anterior",
         "next": "Próxima"
-      }
+      },
+      "ownBarcodeLabel": "Código de barras",
+      "ownBarcodeHint": "Se tiver código de barras, insira — ele conecta ao catálogo compartilhado. Deixe vazio para um produto que você mesmo faz.",
+      "ownBarcodePlaceholder": "ex.: 7891234567890"
     }
   },
   "admin": {
@@ -1566,7 +1569,7 @@
       "status": "Status",
       "description": "Descrição",
       "isHomemade": "Item artesanal",
-      "isHomemadeHint": "Ative para itens feitos em casa, sem código de barras — como comidas caseiras ou artesanato. Desative para produtos de marca, embalados.",
+      "isHomemadeHint": "Ative para itens feitos em casa, sem código de barras — como comidas caseiras ou artesanato. Desative para produtos de marca com código de barras.",
       "variants": "Tamanhos / SKUs",
       "variantLabel": "Tamanho (ex.: 350 ml)",
       "variantBarcode": "Código de barras",

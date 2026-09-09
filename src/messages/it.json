@@ -1090,7 +1090,10 @@
         "page": "Pagina {page} di {total}",
         "previous": "Precedente",
         "next": "Successivo"
-      }
+      },
+      "ownBarcodeLabel": "Codice a barre",
+      "ownBarcodeHint": "Se ha un codice a barre, inseriscilo — si collega al catalogo condiviso. Lascia vuoto per un prodotto che fai tu.",
+      "ownBarcodePlaceholder": "es. 7891234567890"
     }
   },
   "admin": {
@@ -1566,7 +1569,7 @@
       "status": "Status",
       "description": "Description",
       "isHomemade": "Handmade item",
-      "isHomemadeHint": "Attiva per articoli fatti in casa, senza codice a barre — come cibi fatti in casa o artigianato. Disattiva per prodotti di marca e confezionati.",
+      "isHomemadeHint": "Attiva per articoli fatti in casa, senza codice a barre — come cibi fatti in casa o artigianato. Disattiva per prodotti di marca con codice a barre.",
       "variants": "Sizes / SKUs",
       "variantLabel": "Size (e.g. 350 ml)",
       "variantBarcode": "Barcode",

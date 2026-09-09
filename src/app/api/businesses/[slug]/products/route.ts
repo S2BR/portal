@@ -48,6 +48,8 @@ export interface AddCatalogBody {
   variant_id?: string;
   product?: {
     name: string;
+    /** Whether the owner makes this item themselves (no barcode); defaults to true when omitted. */
+    is_homemade?: boolean;
     brand?: string | null;
     description?: string | null;
     barcode?: string | null;

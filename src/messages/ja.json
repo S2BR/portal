@@ -1090,7 +1090,10 @@
         "page": "{total} ページ中 {page} ページ",
         "previous": "前へ",
         "next": "次へ"
-      }
+      },
+      "ownBarcodeLabel": "バーコード",
+      "ownBarcodeHint": "バーコードがある場合は入力してください。共有カタログにリンクされます。自分で作る商品の場合は空欄のまま。",
+      "ownBarcodePlaceholder": "例：7891234567890"
     }
   },
   "admin": {
@@ -1566,7 +1569,7 @@
       "status": "Status",
       "description": "Description",
       "isHomemade": "Handmade item",
-      "isHomemadeHint": "バーコードのない手作り品（自家製の食品や工芸品など）の場合はオン。ブランドの包装品の場合はオフ。",
+      "isHomemadeHint": "バーコードのない手作り品（自家製の食品や工芸品など）の場合はオン。バーコード付きのブランド品の場合はオフ。",
       "variants": "Sizes / SKUs",
       "variantLabel": "Size (e.g. 350 ml)",
       "variantBarcode": "Barcode",
