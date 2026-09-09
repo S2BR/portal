@@ -1098,61 +1098,98 @@ export function ProductEditor({ productId }: { productId: string | null }) {
                               />
                             </span>
                           ) : null}
-                          <Input
-                            value={variant.label}
-                            onChange={(event) =>
-                              setVariants((current) =>
-                                current.map((row, rowIndex) =>
-                                  rowIndex === index
-                                    ? { ...row, label: event.target.value }
-                                    : row,
-                                ),
-                              )
-                            }
-                            placeholder={t("variantLabel")}
-                          />
-                          <Input
-                            value={variant.barcode}
-                            aria-invalid={
-                              variantErrors[variant.key] ||
-                              barcodeConflicts[variant.key]
-                                ? true
-                                : undefined
-                            }
-                            onChange={(event) => {
-                              const value = event.target.value;
-                              setVariants((current) =>
-                                current.map((row, rowIndex) =>
-                                  rowIndex === index
-                                    ? { ...row, barcode: value }
-                                    : row,
-                                ),
-                              );
-                              clearVariantError(variant.key);
-                            }}
-                            placeholder={t("variantBarcode")}
-                          />
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="shrink-0"
-                            disabled={
-                              variant.barcode.trim() === "" ||
-                              lookingUp === variant.key
-                            }
-                            onClick={() => lookupBarcode(index)}
-                            aria-label={t("lookupBarcode")}
-                            title={t("lookupBarcode")}
-                          >
-                            {lookingUp === variant.key ? (
-                              <Loader2
-                                className="size-4 animate-spin"
-                                aria-hidden
+                          {/* All the SKU fields on one wrapping row — Size and Barcode grow to fill,
+                              Amount and Unit take a fixed width, so nothing is cramped or stranded. */}
+                          <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
+                            <Input
+                              value={variant.label}
+                              onChange={(event) =>
+                                setVariants((current) =>
+                                  current.map((row, rowIndex) =>
+                                    rowIndex === index
+                                      ? { ...row, label: event.target.value }
+                                      : row,
+                                  ),
+                                )
+                              }
+                              placeholder={t("variantLabel")}
+                              className="min-w-[7rem] flex-1"
+                            />
+                            <Input
+                              value={variant.size}
+                              onChange={(event) =>
+                                setVariants((current) =>
+                                  current.map((row, rowIndex) =>
+                                    rowIndex === index
+                                      ? { ...row, size: event.target.value }
+                                      : row,
+                                  ),
+                                )
+                              }
+                              placeholder={t("variantAmount")}
+                              inputMode="decimal"
+                              className="w-24 shrink-0"
+                            />
+                            <div className="w-32 shrink-0">
+                              <UnitSelect
+                                value={variant.unit}
+                                onChange={(unit) =>
+                                  setVariants((current) =>
+                                    current.map((row, rowIndex) =>
+                                      rowIndex === index
+                                        ? { ...row, unit }
+                                        : row,
+                                    ),
+                                  )
+                                }
                               />
-                            ) : (
-                              <ScanBarcode className="size-4" aria-hidden />
-                            )}
-                          </Button>
+                            </div>
+                            <div className="flex min-w-[13rem] flex-[1.5] items-center gap-2">
+                              <Input
+                                value={variant.barcode}
+                                aria-invalid={
+                                  variantErrors[variant.key] ||
+                                  barcodeConflicts[variant.key]
+                                    ? true
+                                    : undefined
+                                }
+                                onChange={(event) => {
+                                  const value = event.target.value;
+                                  setVariants((current) =>
+                                    current.map((row, rowIndex) =>
+                                      rowIndex === index
+                                        ? { ...row, barcode: value }
+                                        : row,
+                                    ),
+                                  );
+                                  clearVariantError(variant.key);
+                                }}
+                                placeholder={t("variantBarcode")}
+                                className="min-w-0 flex-1"
+                              />
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="shrink-0"
+                                disabled={
+                                  variant.barcode.trim() === "" ||
+                                  lookingUp === variant.key
+                                }
+                                onClick={() => lookupBarcode(index)}
+                                aria-label={t("lookupBarcode")}
+                                title={t("lookupBarcode")}
+                              >
+                                {lookingUp === variant.key ? (
+                                  <Loader2
+                                    className="size-4 animate-spin"
+                                    aria-hidden
+                                  />
+                                ) : (
+                                  <ScanBarcode className="size-4" aria-hidden />
+                                )}
+                              </Button>
+                            </div>
+                          </div>
                           <Button
                             size="sm"
                             variant="ghost"
@@ -1170,36 +1207,6 @@ export function ProductEditor({ productId }: { productId: string | null }) {
                           >
                             <Trash2 className="size-4" aria-hidden />
                           </Button>
-                        </div>
-                        {/* The SKU's quantity: a numeric amount + its unit of measure. */}
-                        <div className="flex items-center gap-2 ps-8">
-                          <Input
-                            value={variant.size}
-                            onChange={(event) =>
-                              setVariants((current) =>
-                                current.map((row, rowIndex) =>
-                                  rowIndex === index
-                                    ? { ...row, size: event.target.value }
-                                    : row,
-                                ),
-                              )
-                            }
-                            placeholder={t("variantAmount")}
-                            inputMode="decimal"
-                            className="w-28 shrink-0"
-                          />
-                          <div className="w-48">
-                            <UnitSelect
-                              value={variant.unit}
-                              onChange={(unit) =>
-                                setVariants((current) =>
-                                  current.map((row, rowIndex) =>
-                                    rowIndex === index ? { ...row, unit } : row,
-                                  ),
-                                )
-                              }
-                            />
-                          </div>
                         </div>
                         {barcodeConflicts[variant.key] ? (
                           <p className="text-xs text-amber-600 dark:text-amber-500">
