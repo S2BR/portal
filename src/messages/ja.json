@@ -601,6 +601,7 @@
       "photos": "写真",
       "closures": "祝日・特別営業時間",
       "hours": "営業時間",
+      "openingHours": "営業時間",
       "location": "所在地",
       "contact": "連絡先",
       "directions": "経路",
