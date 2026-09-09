@@ -195,7 +195,10 @@ function displayTimezone(business: Business): string | null {
   );
 }
 
-function toEditState(business: Business): EditState {
+// `baseline` builds the diff reference: the timezone then mirrors the server's RAW value (possibly
+// empty) instead of the address/device default, so a pre-filled timezone counts as a change and
+// actually gets saved.
+function toEditState(business: Business, baseline = false): EditState {
   const hours = Object.fromEntries(
     DAYS.map((day) => {
       const slots = (business.opening_hours ?? [])
@@ -209,11 +212,14 @@ function toEditState(business: Business): EditState {
   ) as WeekSchedule;
 
   // The governing zone: the owner's explicit choice, else the main address's resolved zone, else the
-  // editor's device zone — so the picker always opens on a sensible value.
+  // editor's device zone — so the picker always opens on a sensible value. The baseline uses the raw
+  // stored value so that pre-filled default is a savable change, not silently "unchanged".
   const mainAddress =
     (business.addresses ?? []).find((address) => address.is_main) ??
     (business.addresses ?? [])[0];
-  const zone = business.timezone ?? mainAddress?.timezone ?? deviceTimezone();
+  const zone = baseline
+    ? (business.timezone ?? "")
+    : (business.timezone ?? mainAddress?.timezone ?? deviceTimezone());
 
   return {
     name: business.name,
@@ -546,7 +552,7 @@ export function BusinessDetail({
     if (!business) {
       return null;
     }
-    const baseline = buildPayload(toEditState(business));
+    const baseline = buildPayload(toEditState(business, true));
     const map: Record<string, string[]> = {};
     for (const [tab, keys] of Object.entries(TAB_PAYLOAD_KEYS)) {
       map[tab] = keys.map((key) => JSON.stringify(baseline[key]));
@@ -747,7 +753,7 @@ export function BusinessDetail({
     // one-field edit doesn't rewrite the whole business. Nothing changed ⇒ no request at all.
     const payload = pickChanged(
       buildPayload(edit),
-      buildPayload(toEditState(business)),
+      buildPayload(toEditState(business, true)),
     );
 
     // Validate closures ONLY when the section is actually being sent — a pre-existing special date
