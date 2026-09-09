@@ -99,6 +99,65 @@ export async function cropImage(
   }
 }
 
+/**
+ * Fit the WHOLE image inside a square and pad the leftover with `background` (any CSS color, or the
+ * literal `"transparent"` to leave it clear — WebP keeps the alpha). Use this for a non-square logo
+ * so nothing gets cropped off. Same downscale / EXIF-strip / re-encode path as the others; falls back
+ * to the original file when the browser can't decode it here.
+ */
+export async function fitImage(
+  file: File,
+  background: string,
+  options: NormalizeOptions = {},
+): Promise<File> {
+  const { maxSize, type, quality } = { ...DEFAULTS, ...options };
+
+  const bitmap = await loadBitmap(file);
+  if (!bitmap) {
+    return file;
+  }
+
+  try {
+    // A square as big as the largest side (capped), so the image is only ever downscaled to fit.
+    const out = Math.max(
+      1,
+      Math.min(maxSize, Math.max(bitmap.width, bitmap.height)),
+    );
+    const scale = Math.min(out / bitmap.width, out / bitmap.height);
+    const width = Math.max(1, Math.round(bitmap.width * scale));
+    const height = Math.max(1, Math.round(bitmap.height * scale));
+    const dx = Math.round((out - width) / 2);
+    const dy = Math.round((out - height) / 2);
+
+    const blob = await encode(
+      out,
+      out,
+      (context) => {
+        if (background !== "transparent") {
+          context.fillStyle = background;
+          context.fillRect(0, 0, out, out);
+        }
+        context.drawImage(
+          bitmap,
+          0,
+          0,
+          bitmap.width,
+          bitmap.height,
+          dx,
+          dy,
+          width,
+          height,
+        );
+      },
+      type,
+      quality,
+    );
+    return blob ? new File([blob], renameFor(file.name, type), { type }) : file;
+  } finally {
+    bitmap.close();
+  }
+}
+
 /** Decode a file to a bitmap with EXIF orientation baked in; null if unsupported here. */
 async function loadBitmap(file: File): Promise<ImageBitmap | null> {
   if (typeof createImageBitmap !== "function") {

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { normalizeImage } from "./image";
+import { fitImage, normalizeImage } from "./image";
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -29,6 +29,17 @@ describe("normalizeImage", () => {
 
     const file = imageFile();
     const result = await normalizeImage(file);
+
+    expect(result).toBe(file);
+  });
+});
+
+describe("fitImage", () => {
+  it("returns the original file when the browser can't decode images here", async () => {
+    vi.stubGlobal("createImageBitmap", undefined);
+
+    const file = imageFile();
+    const result = await fitImage(file, "#ffffff");
 
     expect(result).toBe(file);
   });
