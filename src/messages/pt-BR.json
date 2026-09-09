@@ -533,7 +533,7 @@
       "expand": "Expandir",
       "collapse": "Recolher",
       "facetCategory": "Categoria",
-      "facetAmenities": "Comodidades",
+      "facetAmenities": "Conveniências",
       "facetType": "Tipo",
       "facetCity": "Cidade",
       "facetRating": "Avaliação",
@@ -597,7 +597,7 @@
         "seeAll": "Ver todas as avaliações"
       },
       "about": "Sobre",
-      "amenities": "Comodidades",
+      "amenities": "Conveniências",
       "photos": "Fotos",
       "closures": "Feriados e horários especiais",
       "hours": "Horário",
@@ -707,8 +707,8 @@
           "description": "Adicione um ou mais endereços de e-mail para sua empresa. Os clientes podem usar esses e-mails para entrar em contato diretamente com você. Você pode especificar um rótulo para cada e-mail (ex: \"Consultas Gerais\", \"Suporte\") para indicar sua finalidade."
         },
         "amenities": {
-          "title": "Comodidades",
-          "description": "Selecione as comodidades e os recursos que sua empresa oferece."
+          "title": "Conveniências",
+          "description": "Selecione as conveniências e os recursos que sua empresa oferece."
         },
         "address": {
           "title": "Endereço da empresa",
@@ -772,7 +772,7 @@
         "socials": "Ainda sem redes sociais.",
         "branding": "Ainda sem cor de marca.",
         "categories": "Ainda sem categorias escolhidas.",
-        "amenities": "Ainda sem comodidades selecionadas.",
+        "amenities": "Ainda sem conveniências selecionadas.",
         "closures": "Nenhuma data fechada ainda."
       },
       "tabs": {
@@ -782,7 +782,7 @@
         "hours": "Horário",
         "socials": "Redes sociais",
         "branding": "Marca",
-        "amenities": "Comodidades"
+        "amenities": "Conveniências"
       },
       "days": {
         "monday": "Segunda",
@@ -860,8 +860,8 @@
       "categoriesEmpty": "Ainda não há categorias disponíveis.",
       "clearSelection": "Limpar tudo",
       "categoriesSelectedCount": "{count, plural, one {# selecionada} other {# selecionadas}}",
-      "searchAmenities": "Buscar comodidades…",
-      "amenitiesEmpty": "Nenhuma comodidade encontrada — escolha uma categoria para ver mais.",
+      "searchAmenities": "Buscar conveniências…",
+      "amenitiesEmpty": "Nenhuma conveniência encontrada — escolha uma categoria para ver mais.",
       "media": {
         "logoTitle": "Logotipo",
         "cropTitle": "Recorte seu logo",
@@ -1446,11 +1446,11 @@
       }
     },
     "taxonomy": {
-      "title": "Categorias e comodidades",
-      "subtitle": "Gerencie a árvore de categorias e os grupos de comodidades que estruturam os perfis de negócios.",
+      "title": "Categorias e conveniências",
+      "subtitle": "Gerencie a árvore de categorias e os grupos de conveniências que estruturam os perfis de negócios.",
       "tabs": {
         "categories": "Categorias",
-        "amenities": "Comodidades",
+        "amenities": "Conveniências",
         "suggestions": "Sugestões"
       },
       "forbidden": "Você não tem acesso a isto.",
@@ -1468,19 +1468,19 @@
           "categoryRoot": "Adicionar categoria",
           "categoryChild": "Adicionar subcategoria",
           "amenityRoot": "Adicionar grupo",
-          "amenityChild": "Adicionar comodidade"
+          "amenityChild": "Adicionar conveniência"
         }
       },
       "dialog": {
         "title": {
           "createCategoryRoot": "Adicionar categoria",
           "createCategoryChild": "Adicionar subcategoria",
-          "createAmenityRoot": "Adicionar grupo de comodidades",
-          "createAmenityChild": "Adicionar comodidade",
+          "createAmenityRoot": "Adicionar grupo de conveniências",
+          "createAmenityChild": "Adicionar conveniência",
           "editCategoryRoot": "Editar categoria",
           "editCategoryChild": "Editar subcategoria",
-          "editAmenityRoot": "Editar grupo de comodidades",
-          "editAmenityChild": "Editar comodidade"
+          "editAmenityRoot": "Editar grupo de conveniências",
+          "editAmenityChild": "Editar conveniência"
         },
         "help": "Os nomes aparecem no seletor. O inglês é obrigatório; os outros idiomas são opcionais.",
         "name": "Nome",
