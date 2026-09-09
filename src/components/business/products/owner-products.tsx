@@ -711,6 +711,9 @@ function AddProductDialog({
   const [unit, setUnit] = useState<UnitCode | null>(null);
   const [price, setPrice] = useState<number | null>(null);
   const [currency, setCurrency] = useState<string>(CURRENCIES[0]);
+  // The barcode is the global/non-global signal: with one it's a real catalog item, without one it's
+  // specific to this business (the API derives is_homemade from its presence).
+  const [barcode, setBarcode] = useState("");
   const [saving, setSaving] = useState(false);
   const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const suggestTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -727,6 +730,7 @@ function AddProductDialog({
     setUnit(null);
     setPrice(null);
     setCurrency(CURRENCIES[0]);
+    setBarcode("");
   };
 
   /** Pick a product; auto-select its size when there's only one. */
@@ -737,10 +741,14 @@ function AddProductDialog({
     );
   };
 
-  /** Leave search and start creating your own product, carrying over what was typed. */
+  /** Leave search and start creating a product, carrying over what was typed. */
   const startCreating = () => {
+    const typed = query.trim();
+    // A number typed in search is a barcode — carry it into the barcode field, not the name.
+    const looksLikeBarcode = /^\d{8,}$/.test(typed);
     setCreating(true);
-    setName(query.trim());
+    setName(looksLikeBarcode ? "" : typed);
+    setBarcode(looksLikeBarcode ? typed : "");
     setResults([]);
   };
 
@@ -801,6 +809,7 @@ function AddProductDialog({
               name: name.trim(),
               size: amount.trim() || null,
               unit,
+              barcode: barcode.trim() || null,
             },
             price,
             currency,
@@ -1029,6 +1038,14 @@ function AddProductDialog({
                   value={name}
                   onChange={(event) => setName(event.target.value)}
                   placeholder={t("handmadePlaceholder")}
+                />
+              </Field>
+              <Field label={t("ownBarcodeLabel")} hint={t("ownBarcodeHint")}>
+                <Input
+                  value={barcode}
+                  onChange={(event) => setBarcode(event.target.value)}
+                  placeholder={t("ownBarcodePlaceholder")}
+                  inputMode="numeric"
                 />
               </Field>
               <Field label={t("quantity")}>
