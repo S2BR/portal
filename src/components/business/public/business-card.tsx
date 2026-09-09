@@ -1,8 +1,9 @@
-import { Clock, MapPin, Navigation, Star } from "lucide-react";
+import { MapPin, Navigation, Star } from "lucide-react";
 import Link from "next/link";
 
 import { BusinessBannerPlaceholder } from "@/components/business/public/business-banner-placeholder";
 import { BusinessLogo } from "@/components/business/business-logo";
+import { OpenDot } from "@/components/business/public/open-dot";
 import { Badge } from "@/components/ui/badge";
 
 import type { PublicBusinessCard } from "@/lib/public-business";
@@ -89,8 +90,8 @@ export function BusinessCard({
             </span>
           ) : null}
           {closesLabel ? (
-            <span className="text-brand-green-deep dark:text-brand-green inline-flex items-center gap-1 text-xs font-medium">
-              <Clock className="size-3" aria-hidden />
+            <span className="text-brand-green-deep dark:text-brand-green inline-flex items-center gap-1.5 text-xs font-medium">
+              <OpenDot />
               {closesLabel}
             </span>
           ) : null}

@@ -3,6 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
+import { OpenDot } from "@/components/business/public/open-dot";
 import {
   computeOpenState,
   formatBoundaryDay,
@@ -89,10 +90,14 @@ export function OpenStatusBadge({
 
   return (
     <span className="inline-flex items-center gap-2 text-sm font-medium">
-      <span
-        className={cn("size-2 shrink-0 rounded-full", tone.dot)}
-        aria-hidden
-      />
+      {status === "open" ? (
+        <OpenDot />
+      ) : (
+        <span
+          className={cn("size-2 shrink-0 rounded-full", tone.dot)}
+          aria-hidden
+        />
+      )}
       <span className={tone.text}>{label[status]}</span>
       {detail ? (
         <span className="text-muted-foreground font-normal">{detail}</span>
