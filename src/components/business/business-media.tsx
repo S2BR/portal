@@ -564,6 +564,7 @@ export function BusinessImageField({
       {/* Square crop with a rounded-square mask preview (never opens for the banner). */}
       <ImageCropDialog
         mask="rounded"
+        allowFit
         src={cropSrc}
         file={cropFile}
         onCancel={closeCrop}
@@ -573,6 +574,9 @@ export function BusinessImageField({
           hint: t("cropHint"),
           cancel: t("cropCancel"),
           confirm: t("cropConfirm"),
+          fit: t("cropFit"),
+          background: t("cropBackground"),
+          transparent: t("cropTransparent"),
         }}
       />
     </div>

@@ -10,6 +10,7 @@ import ReactCrop, {
 import "react-image-crop/dist/ReactCrop.css";
 
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -18,7 +19,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { cropImage, type PixelCrop } from "@/lib/uploads/image";
+import { cropImage, fitImage, type PixelCrop } from "@/lib/uploads/image";
 import { cn } from "@/lib/utils";
 
 export interface CropLabels {
@@ -26,6 +27,10 @@ export interface CropLabels {
   hint: string;
   cancel: string;
   confirm: string;
+  /** "The image doesn't fit — keep it whole" toggle (only shown when `allowFit`). */
+  fit?: string;
+  background?: string;
+  transparent?: string;
 }
 
 /**
@@ -40,6 +45,8 @@ interface ImageCropDialogProps {
   /** The picked file — the crop is applied to it and returned re-encoded. */
   file: File | null;
   mask?: CropMask;
+  /** Offer a "keep the whole image + pad a background" alternative to cropping (for non-square logos). */
+  allowFit?: boolean;
   labels: CropLabels;
   onCancel: () => void;
   onCropped: (file: File) => void;
@@ -63,6 +70,7 @@ export function ImageCropDialog({
   src,
   file,
   mask = "square",
+  allowFit = false,
   labels,
   onCancel,
   onCropped,
@@ -73,8 +81,13 @@ export function ImageCropDialog({
   // what the gray mask is drawn from, so the output can't drift from what the mask showed.
   const [completed, setCompleted] = useState<PercentCrop>();
   const [working, setWorking] = useState(false);
+  // "Keep the whole image" — fit it into the square and pad the rest with a background.
+  const [fit, setFit] = useState(false);
+  const [transparent, setTransparent] = useState(false);
+  const [background, setBackground] = useState("#ffffff");
 
   const open = src !== null && file !== null;
+  const effectiveBackground = transparent ? "transparent" : background;
 
   function onImageLoad(event: React.SyntheticEvent<HTMLImageElement>) {
     const { width, height } = event.currentTarget;
@@ -85,8 +98,21 @@ export function ImageCropDialog({
   }
 
   async function confirm() {
+    if (!file) {
+      return;
+    }
+
+    // Fit mode: keep the whole image, padded into the square with the chosen background.
+    if (fit) {
+      setWorking(true);
+      const fitted = await fitImage(file, effectiveBackground);
+      setWorking(false);
+      onCropped(fitted);
+      return;
+    }
+
     const image = imageRef.current;
-    if (!image || !completed || !file) {
+    if (!image || !completed) {
       return;
     }
     // The selection is a percentage of the image, so it maps to natural pixels directly — no dependency
@@ -113,31 +139,98 @@ export function ImageCropDialog({
         </DialogHeader>
 
         {src ? (
-          <div className="flex justify-center">
-            <ReactCrop
-              crop={crop}
-              onChange={(_, percentCrop) => setCrop(percentCrop)}
-              onComplete={(_, percentCrop) => setCompleted(percentCrop)}
-              aspect={1}
-              circularCrop={mask === "circle"}
-              keepSelection
-              // `ReactCrop--no-animate` drops the straight-edge marching-ants (they can't follow a
-              // rounded/circular mask); globals.css restyles the outline into a shape-following dashed
-              // border. `crop-rounded` previews a squircle for logos by rounding the SVG mask hole.
-              className={cn(
-                "ReactCrop--no-animate max-h-[60vh]",
-                mask === "rounded" && "crop-rounded",
-              )}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element -- local object URL, not a remote asset */}
-              <img
-                ref={imageRef}
-                src={src}
-                alt=""
-                onLoad={onImageLoad}
-                className="max-h-[60vh] w-auto"
+          fit ? (
+            // Fit preview: the whole image contained in the square, padded with the chosen background.
+            <div className="flex justify-center">
+              <div
+                className={cn(
+                  "relative aspect-square w-64 max-w-full overflow-hidden border",
+                  mask === "circle"
+                    ? "rounded-full"
+                    : mask === "rounded"
+                      ? "rounded-3xl"
+                      : "rounded-md",
+                )}
+                style={
+                  transparent
+                    ? {
+                        backgroundColor: "#fff",
+                        backgroundImage:
+                          "conic-gradient(#d1d5db 0 25%, transparent 0 50%, #d1d5db 0 75%, transparent 0)",
+                        backgroundSize: "16px 16px",
+                      }
+                    : { background }
+                }
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element -- local object URL, not a remote asset */}
+                <img
+                  src={src}
+                  alt=""
+                  className="absolute inset-0 size-full object-contain"
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="flex justify-center">
+              <ReactCrop
+                crop={crop}
+                onChange={(_, percentCrop) => setCrop(percentCrop)}
+                onComplete={(_, percentCrop) => setCompleted(percentCrop)}
+                aspect={1}
+                circularCrop={mask === "circle"}
+                keepSelection
+                // `ReactCrop--no-animate` drops the straight-edge marching-ants (they can't follow a
+                // rounded/circular mask); globals.css restyles the outline into a shape-following dashed
+                // border. `crop-rounded` previews a squircle for logos by rounding the SVG mask hole.
+                className={cn(
+                  "ReactCrop--no-animate max-h-[60vh]",
+                  mask === "rounded" && "crop-rounded",
+                )}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element -- local object URL, not a remote asset */}
+                <img
+                  ref={imageRef}
+                  src={src}
+                  alt=""
+                  onLoad={onImageLoad}
+                  className="max-h-[60vh] w-auto"
+                />
+              </ReactCrop>
+            </div>
+          )
+        ) : null}
+
+        {allowFit ? (
+          <div className="space-y-3">
+            <label className="flex items-center gap-2.5 text-sm font-medium">
+              <Checkbox
+                checked={fit}
+                onCheckedChange={(value) => setFit(value === true)}
               />
-            </ReactCrop>
+              {labels.fit}
+            </label>
+            {fit ? (
+              <div className="flex flex-wrap items-center gap-3 ps-6">
+                <span className="text-muted-foreground text-sm">
+                  {labels.background}
+                </span>
+                <input
+                  type="color"
+                  value={background}
+                  onChange={(event) => setBackground(event.target.value)}
+                  disabled={transparent}
+                  aria-label={labels.background}
+                  className="h-8 w-10 cursor-pointer rounded border bg-transparent disabled:opacity-40"
+                />
+                <label className="flex items-center gap-2 text-sm">
+                  <Checkbox
+                    checked={transparent}
+                    onCheckedChange={(value) => setTransparent(value === true)}
+                  />
+                  {labels.transparent}
+                </label>
+              </div>
+            ) : null}
           </div>
         ) : null}
 
@@ -145,7 +238,7 @@ export function ImageCropDialog({
           <Button variant="ghost" onClick={onCancel} disabled={working}>
             {labels.cancel}
           </Button>
-          <Button onClick={confirm} disabled={working || !completed}>
+          <Button onClick={confirm} disabled={working || (!fit && !completed)}>
             {labels.confirm}
           </Button>
         </DialogFooter>
