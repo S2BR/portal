@@ -31,6 +31,8 @@ export interface CropLabels {
   fit?: string;
   background?: string;
   transparent?: string;
+  /** Label for the padding slider shown in fit mode. */
+  padding?: string;
 }
 
 /**
@@ -51,6 +53,17 @@ interface ImageCropDialogProps {
   onCancel: () => void;
   onCropped: (file: File) => void;
 }
+
+/**
+ * The classic "transparency" checkerboard, shown BEHIND the image so any transparent areas of a PNG
+ * read as clear (not as an opaque fill). Opaque images simply cover it.
+ */
+const CHECKERBOARD: React.CSSProperties = {
+  backgroundColor: "#fff",
+  backgroundImage:
+    "conic-gradient(#d1d5db 0 25%, transparent 0 50%, #d1d5db 0 75%, transparent 0)",
+  backgroundSize: "16px 16px",
+};
 
 /** Center a square crop covering ~90% of the image. */
 function centeredSquare(width: number, height: number): PercentCrop {
@@ -83,8 +96,10 @@ export function ImageCropDialog({
   const [working, setWorking] = useState(false);
   // "Keep the whole image" — fit it into the square and pad the rest with a background.
   const [fit, setFit] = useState(false);
-  const [transparent, setTransparent] = useState(false);
+  const [transparent, setTransparent] = useState(true);
   const [background, setBackground] = useState("#ffffff");
+  // Inset on each side, as a fraction of the square, so the logo doesn't touch the edges.
+  const [padding, setPadding] = useState(0.05);
 
   const open = src !== null && file !== null;
   const effectiveBackground = transparent ? "transparent" : background;
@@ -105,7 +120,7 @@ export function ImageCropDialog({
     // Fit mode: keep the whole image, padded into the square with the chosen background.
     if (fit) {
       setWorking(true);
-      const fitted = await fitImage(file, effectiveBackground);
+      const fitted = await fitImage(file, effectiveBackground, padding);
       setWorking(false);
       onCropped(fitted);
       return;
@@ -151,22 +166,17 @@ export function ImageCropDialog({
                       ? "rounded-3xl"
                       : "rounded-md",
                 )}
-                style={
-                  transparent
-                    ? {
-                        backgroundColor: "#fff",
-                        backgroundImage:
-                          "conic-gradient(#d1d5db 0 25%, transparent 0 50%, #d1d5db 0 75%, transparent 0)",
-                        backgroundSize: "16px 16px",
-                      }
-                    : { background }
-                }
+                style={transparent ? CHECKERBOARD : { background }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element -- local object URL, not a remote asset */}
                 <img
                   src={src}
                   alt=""
                   className="absolute inset-0 size-full object-contain"
+                  style={{
+                    padding: `${padding * 100}%`,
+                    boxSizing: "border-box",
+                  }}
                 />
               </div>
             </div>
@@ -193,6 +203,9 @@ export function ImageCropDialog({
                   src={src}
                   alt=""
                   onLoad={onImageLoad}
+                  // Checkerboard behind the image so a transparent PNG reads as clear while cropping;
+                  // an opaque image covers it entirely.
+                  style={CHECKERBOARD}
                   className="max-h-[60vh] w-auto"
                 />
               </ReactCrop>
@@ -210,25 +223,55 @@ export function ImageCropDialog({
               {labels.fit}
             </label>
             {fit ? (
-              <div className="flex flex-wrap items-center gap-3 ps-6">
-                <span className="text-muted-foreground text-sm">
-                  {labels.background}
-                </span>
-                <input
-                  type="color"
-                  value={background}
-                  onChange={(event) => setBackground(event.target.value)}
-                  disabled={transparent}
-                  aria-label={labels.background}
-                  className="h-8 w-10 cursor-pointer rounded border bg-transparent disabled:opacity-40"
-                />
-                <label className="flex items-center gap-2 text-sm">
-                  <Checkbox
-                    checked={transparent}
-                    onCheckedChange={(value) => setTransparent(value === true)}
-                  />
-                  {labels.transparent}
-                </label>
+              <div className="space-y-3 ps-6">
+                <div className="flex flex-wrap items-center gap-3">
+                  <label className="flex items-center gap-2 text-sm">
+                    <Checkbox
+                      checked={transparent}
+                      onCheckedChange={(value) =>
+                        setTransparent(value === true)
+                      }
+                    />
+                    {labels.transparent}
+                  </label>
+                  {/* The background color only matters when it isn't transparent. */}
+                  {!transparent ? (
+                    <>
+                      <span className="text-muted-foreground text-sm">
+                        {labels.background}
+                      </span>
+                      <input
+                        type="color"
+                        value={background}
+                        onChange={(event) => setBackground(event.target.value)}
+                        aria-label={labels.background}
+                        className="h-8 w-10 cursor-pointer rounded border bg-transparent"
+                      />
+                    </>
+                  ) : null}
+                </div>
+                {labels.padding ? (
+                  <label className="flex items-center gap-3 text-sm">
+                    <span className="text-muted-foreground">
+                      {labels.padding}
+                    </span>
+                    <input
+                      type="range"
+                      min={0}
+                      max={35}
+                      step={1}
+                      value={Math.round(padding * 100)}
+                      onChange={(event) =>
+                        setPadding(Number(event.target.value) / 100)
+                      }
+                      aria-label={labels.padding}
+                      className="accent-primary h-1.5 flex-1 cursor-pointer"
+                    />
+                    <span className="text-muted-foreground w-9 text-right tabular-nums">
+                      {Math.round(padding * 100)}%
+                    </span>
+                  </label>
+                ) : null}
               </div>
             ) : null}
           </div>

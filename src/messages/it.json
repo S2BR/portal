@@ -897,7 +897,8 @@
         "savedToast": "Immagine aggiornata",
         "removedToast": "Immagine rimossa",
         "error": "Qualcosa è andato storto. Riprova",
-        "reorderImage": "Drag to reorder"
+        "reorderImage": "Drag to reorder",
+        "cropPadding": "Spaziatura"
       },
       "loadError": "Non è stato possibile caricare questa attività. Riprova.",
       "retry": "Riprova",

@@ -897,7 +897,8 @@
         "savedToast": "Bild aktualisiert",
         "removedToast": "Bild entfernt",
         "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut",
-        "reorderImage": "Drag to reorder"
+        "reorderImage": "Drag to reorder",
+        "cropPadding": "Abstand"
       },
       "loadError": "Dieses Unternehmen konnte nicht geladen werden. Bitte versuchen Sie es erneut.",
       "retry": "Erneut versuchen",

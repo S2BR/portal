@@ -897,7 +897,8 @@
         "savedToast": "Image updated",
         "removedToast": "Image removed",
         "error": "Something went wrong. Please try again",
-        "reorderImage": "Drag to reorder"
+        "reorderImage": "Drag to reorder",
+        "cropPadding": "Padding"
       },
       "loadError": "Couldn't load this business. Please try again.",
       "retry": "Try again",
