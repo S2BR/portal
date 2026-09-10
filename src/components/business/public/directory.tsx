@@ -129,6 +129,7 @@ type DirectoryHit = {
   // has none (the API only indexes the keys when set).
   logo?: string;
   banner?: string;
+  color?: string;
   rating_avg?: number;
   rating_count?: number;
   // Absolute UTC 15-minute "open" slots + IANA zone — drive the "Closes at" label when the "open now"
@@ -160,6 +161,7 @@ function hitToCard(
     headline: hit.headline ?? null,
     logo: hit.logo ?? null,
     banner: hit.banner ?? null,
+    color: hit.color ?? null,
     city: hit.city ?? null,
     latitude: hit._geoloc?.lat ?? null,
     longitude: hit._geoloc?.lng ?? null,
