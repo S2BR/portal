@@ -36,7 +36,7 @@ export function BusinessCard({
             className="absolute inset-0 size-full object-cover"
           />
         ) : (
-          <BusinessBannerPlaceholder />
+          <BusinessBannerPlaceholder color={business.color} />
         )}
         {distanceLabel ? (
           // Pinned to the banner's top-right over a translucent scrim so it stays legible on any
@@ -54,6 +54,7 @@ export function BusinessCard({
           <BusinessLogo
             name={business.name}
             src={business.logo}
+            color={business.color}
             className="bg-background size-20 rounded-xl"
           />
         </div>

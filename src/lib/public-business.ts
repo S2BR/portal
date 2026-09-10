@@ -237,6 +237,8 @@ export interface PublicBusinessCard {
   headline: string | null;
   logo: string | null;
   banner: string | null;
+  /** The business's brand color (hex), to tint the card's logo/banner placeholders; null when unset. */
+  color: string | null;
   city: string | null;
   /** Main-address coordinates for the directory map; null when the business has no geocoded address. */
   latitude: number | null;

@@ -124,7 +124,7 @@ export async function BusinessHeader({
             }}
           />
         ) : (
-          <BusinessBannerPlaceholder />
+          <BusinessBannerPlaceholder color={business.colors?.primary} />
         )}
       </div>
 
@@ -135,8 +135,8 @@ export async function BusinessHeader({
               <BusinessLogo
                 name={business.name}
                 src={business.logo}
+                color={business.colors?.primary}
                 className="bg-background size-28 rounded-[26px] sm:size-36 sm:rounded-[32px]"
-                fallbackClassName="text-4xl"
               />
             </div>
           </div>
