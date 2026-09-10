@@ -15,7 +15,12 @@ import { focalObjectPosition } from "@/lib/banner-focal";
 import type { PublicBusiness } from "@/lib/public-business";
 import { externalHref } from "@/lib/url";
 
-/** The maps deep-link for the "Directions" action — by coordinates when present, else by address. */
+/**
+ * The maps deep-link for the "Directions" action — a Google Maps *directions* request to the business.
+ * Destination is the readable street address by default (a named place routes better than a raw point),
+ * and the exact coordinates only when the owner hand-placed the pin (`is_pinned`). With no `origin`,
+ * Maps routes from the user's current location, so it opens straight into turn-by-turn.
+ */
 function directionsHref(business: PublicBusiness): string | null {
   const main =
     business.addresses.find((address) => address.is_main) ??
@@ -23,11 +28,26 @@ function directionsHref(business: PublicBusiness): string | null {
   if (!main) {
     return null;
   }
-  const query =
+  const coordinates =
     main.latitude !== null && main.longitude !== null
       ? `${main.latitude},${main.longitude}`
-      : [main.address_1, main.city, main.country].filter(Boolean).join(", ");
-  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+      : null;
+  const addressText = [
+    main.address_1,
+    main.city,
+    main.state_province,
+    main.postal_code,
+    main.country,
+  ]
+    .filter(Boolean)
+    .join(", ");
+  // Pinned → the exact point; otherwise the address text, falling back to coordinates if it's empty.
+  const destination =
+    main.is_pinned && coordinates ? coordinates : addressText || coordinates;
+  if (!destination) {
+    return null;
+  }
+  return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}`;
 }
 
 /**

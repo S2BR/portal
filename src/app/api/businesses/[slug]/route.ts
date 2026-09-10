@@ -53,6 +53,7 @@ const addressSchema = z.object({
   notes: z.string().nullish(),
   is_main: z.boolean().optional(),
   is_hidden: z.boolean().optional(),
+  pinned: z.boolean().optional(),
 });
 
 export const updateSchema = z
