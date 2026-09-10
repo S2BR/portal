@@ -897,7 +897,8 @@
         "savedToast": "画像を更新しました",
         "removedToast": "画像を削除しました",
         "error": "問題が発生しました。もう一度お試しください",
-        "reorderImage": "Drag to reorder"
+        "reorderImage": "Drag to reorder",
+        "cropPadding": "余白"
       },
       "loadError": "このビジネスを読み込めませんでした。もう一度お試しください。",
       "retry": "もう一度試す",

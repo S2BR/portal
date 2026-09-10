@@ -897,7 +897,8 @@
         "savedToast": "تم تحديث الصورة",
         "removedToast": "تمت إزالة الصورة",
         "error": "حدث خطأ ما. يُرجى المحاولة مرة أخرى",
-        "reorderImage": "Drag to reorder"
+        "reorderImage": "Drag to reorder",
+        "cropPadding": "التباعد"
       },
       "loadError": "تعذّر تحميل هذا النشاط التجاري. يُرجى المحاولة مرة أخرى.",
       "retry": "حاول مرة أخرى",

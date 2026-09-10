@@ -102,12 +102,15 @@ export async function cropImage(
 /**
  * Fit the WHOLE image inside a square and pad the leftover with `background` (any CSS color, or the
  * literal `"transparent"` to leave it clear — WebP keeps the alpha). Use this for a non-square logo
- * so nothing gets cropped off. Same downscale / EXIF-strip / re-encode path as the others; falls back
- * to the original file when the browser can't decode it here.
+ * so nothing gets cropped off. `padding` is the inset on EACH side as a fraction of the square (0 =
+ * the image touches the edges; 0.1 = a 10% margin all around), so the logo can breathe. Same downscale
+ * / EXIF-strip / re-encode path as the others; falls back to the original file when the browser can't
+ * decode it here.
  */
 export async function fitImage(
   file: File,
   background: string,
+  padding = 0,
   options: NormalizeOptions = {},
 ): Promise<File> {
   const { maxSize, type, quality } = { ...DEFAULTS, ...options };
@@ -123,7 +126,10 @@ export async function fitImage(
       1,
       Math.min(maxSize, Math.max(bitmap.width, bitmap.height)),
     );
-    const scale = Math.min(out / bitmap.width, out / bitmap.height);
+    // Draw into the inner box left after the padding inset; clamp so the image never inverts.
+    const inset = Math.min(0.45, Math.max(0, padding));
+    const inner = out * (1 - 2 * inset);
+    const scale = Math.min(inner / bitmap.width, inner / bitmap.height);
     const width = Math.max(1, Math.round(bitmap.width * scale));
     const height = Math.max(1, Math.round(bitmap.height * scale));
     const dx = Math.round((out - width) / 2);

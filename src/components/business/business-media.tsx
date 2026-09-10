@@ -577,6 +577,7 @@ export function BusinessImageField({
           fit: t("cropFit"),
           background: t("cropBackground"),
           transparent: t("cropTransparent"),
+          padding: t("cropPadding"),
         }}
       />
     </div>

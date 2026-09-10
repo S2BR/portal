@@ -897,7 +897,8 @@
         "savedToast": "Image mise à jour",
         "removedToast": "Image retirée",
         "error": "Une erreur s’est produite. Veuillez réessayer",
-        "reorderImage": "Glisser pour réordonner"
+        "reorderImage": "Glisser pour réordonner",
+        "cropPadding": "Marge"
       },
       "loadError": "Impossible de charger cette entreprise. Veuillez réessayer.",
       "retry": "Réessayer",
