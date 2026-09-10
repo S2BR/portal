@@ -7,7 +7,7 @@ import { LocaleSwitcher } from "@/components/locale-switcher";
 export function AppHeader() {
   return (
     <header
-      className="bg-background/30 sticky top-0 z-10 border-b shadow-[0_10px_28px_-8px_rgba(0,0,0,0.06)]"
+      className="bg-background/30 sticky top-0 z-10 shadow-[0_12px_30px_-8px_rgba(0,0,0,0.11)]"
       // Explicit, un-composed value: Tailwind v4's backdrop-blur builds the filter from chained CSS
       // vars, which Safari invalidates (dropping the blur). A plain blur() with both prefixes works
       // in Safari and Chrome alike.
