@@ -19,6 +19,7 @@ const address = (overrides: Partial<BusinessAddress>): BusinessAddress => ({
   notes: null,
   is_main: true,
   is_hidden: false,
+  is_pinned: false,
   ...overrides,
 });
 

@@ -89,6 +89,8 @@ export interface BusinessAddress {
   notes: string | null;
   is_main: boolean;
   is_hidden: boolean;
+  /** The owner dragged the map pin, so the coordinates are hand-placed rather than just geocoded. */
+  is_pinned: boolean;
 }
 
 export interface BusinessColors {

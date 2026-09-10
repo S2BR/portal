@@ -306,6 +306,7 @@ function toEditState(business: Business, baseline = false): EditState {
       // serialize the same as an explicit false, or toggling it and back would look dirty forever.
       isMain: address.is_main ?? false,
       isHidden: address.is_hidden ?? false,
+      pinned: address.is_pinned ?? false,
     })),
     categoryIds: (business.categories ?? []).map((category) => category.id),
     amenityIds: (business.amenities ?? []).map((amenity) => amenity.id),
@@ -440,6 +441,7 @@ function buildPayload(edit: EditState) {
         notes: trimOrNull(address.notes),
         is_main: address.isMain,
         is_hidden: address.isHidden,
+        pinned: address.pinned,
       })),
     category_ids: edit.categoryIds,
     amenity_ids: edit.amenityIds,
@@ -715,6 +717,7 @@ export function BusinessDetail({
       addresses: payload.addresses.map((row, index) => ({
         ...withId(row, `optimistic-address-${index}`),
         timezone: (row.id ? zoneByAddressId.get(row.id) : null) ?? null,
+        is_pinned: row.pinned,
       })),
       categories: draft.categoryIds
         .map((id) => categoryById.get(id))

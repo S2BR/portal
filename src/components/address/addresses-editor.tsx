@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  ChevronUp,
-  EyeOff,
-  Info,
-  MapPin,
-  Plus,
-  X,
-} from "lucide-react";
+import { ChevronUp, EyeOff, Info, MapPin, Plus, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState, type ChangeEvent, type ReactNode } from "react";
 
@@ -58,9 +51,14 @@ export type AddressEntry = {
   notes: string;
   isMain: boolean;
   isHidden: boolean;
+  /** The coordinates were hand-placed (pin dragged), not just geocoded from the address text. */
+  pinned: boolean;
 };
 
-type AddressStringField = Exclude<keyof AddressEntry, "isMain" | "key">;
+type AddressStringField = Exclude<
+  keyof AddressEntry,
+  "isMain" | "isHidden" | "pinned" | "key"
+>;
 
 /** A fresh, empty address — the starting point for a newly added row. */
 export function blankAddress(): AddressEntry {
@@ -78,6 +76,7 @@ export function blankAddress(): AddressEntry {
     notes: "",
     isMain: false,
     isHidden: false,
+    pinned: false,
   };
 }
 
@@ -144,6 +143,8 @@ export function AddressesEditor({
       country: place.country ?? "",
       latitude: place.latitude?.toString() ?? "",
       longitude: place.longitude?.toString() ?? "",
+      // A fresh geocode from the picked place — the coordinates are no longer hand-placed.
+      pinned: false,
     });
   const set =
     (key: string, field: AddressStringField) =>
@@ -175,7 +176,9 @@ export function AddressesEditor({
   );
 
   /** The coordinate as a finite point, or null when the address has none yet. */
-  const coordinate = (entry: AddressEntry): { lat: number; lng: number } | null => {
+  const coordinate = (
+    entry: AddressEntry,
+  ): { lat: number; lng: number } | null => {
     if (entry.latitude.trim() === "" || entry.longitude.trim() === "") {
       return null;
     }
@@ -185,7 +188,12 @@ export function AddressesEditor({
   };
 
   const setCoordinate = (key: string, lat: number, lng: number) =>
-    update(key, { latitude: lat.toFixed(7), longitude: lng.toFixed(7) });
+    // Dragging the pin hand-places the coordinates, so directions route to this exact point.
+    update(key, {
+      latitude: lat.toFixed(7),
+      longitude: lng.toFixed(7),
+      pinned: true,
+    });
 
   /** The map (with a draggable pin) once the address has coordinates, else a hint to pick one. An
    *  expand button opens the same editable map larger in a dialog for a closer look while relocating. */
@@ -244,7 +252,7 @@ export function AddressesEditor({
           className={cn(
             "flex h-20 w-24 shrink-0 items-center justify-center rounded-lg border",
             entry.isHidden
-              ? "border-dashed text-muted-foreground/70"
+              ? "text-muted-foreground/70 border-dashed"
               : "bg-background text-muted-foreground",
           )}
         >
@@ -374,7 +382,9 @@ export function AddressesEditor({
           <label className="flex items-center gap-2 text-sm font-medium">
             <Checkbox
               checked={entry.isMain}
-              onCheckedChange={(checked) => setMain(entry.key, checked === true)}
+              onCheckedChange={(checked) =>
+                setMain(entry.key, checked === true)
+              }
             />
             {t("mainAddress")}
           </label>
@@ -424,7 +434,9 @@ export function AddressesEditor({
         </span>
         <Switch
           checked={entry.isHidden}
-          onCheckedChange={(checked) => update(entry.key, { isHidden: checked })}
+          onCheckedChange={(checked) =>
+            update(entry.key, { isHidden: checked })
+          }
         />
       </label>
 
@@ -450,7 +462,10 @@ export function AddressesEditor({
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="sm:col-span-2">
           <Field label={fields("line1")}>
-            <Input value={entry.address_1} onChange={set(entry.key, "address_1")} />
+            <Input
+              value={entry.address_1}
+              onChange={set(entry.key, "address_1")}
+            />
           </Field>
         </div>
         <Field label={fields("apartmentSuite")}>
@@ -460,7 +475,10 @@ export function AddressesEditor({
           />
         </Field>
         <Field label={fields("line2")}>
-          <Input value={entry.address_2} onChange={set(entry.key, "address_2")} />
+          <Input
+            value={entry.address_2}
+            onChange={set(entry.key, "address_2")}
+          />
         </Field>
         <Field label={fields("city")}>
           <Input value={entry.city} onChange={set(entry.key, "city")} />
@@ -492,7 +510,6 @@ export function AddressesEditor({
           </Field>
         </div>
       </div>
-
     </>
   );
 
@@ -591,12 +608,7 @@ export function AddressesEditor({
         </div>
       )}
 
-      <Button
-        type="button"
-        variant="outline"
-        size="sm"
-        onClick={addAddress}
-      >
+      <Button type="button" variant="outline" size="sm" onClick={addAddress}>
         <Plus className="size-4" />
         {t("addAddress")}
       </Button>

@@ -33,6 +33,8 @@ export interface PublicBusinessAddress {
   latitude: number | null;
   longitude: number | null;
   is_main: boolean;
+  /** The owner hand-placed the pin, so directions should route to the exact coordinates. */
+  is_pinned: boolean;
 }
 
 /**
