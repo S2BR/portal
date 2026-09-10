@@ -618,6 +618,7 @@
       "closesAt": "يغلق في {time}",
       "opensAt": "يفتح في {time}",
       "opensAtDay": "يفتح {day} في {time}",
+      "opensTomorrow": "يفتح غدًا الساعة {time}",
       "products": "المنتجات",
       "seeAllProducts": "عرض كل المنتجات",
       "browseProducts": "تصفح منتجات هذا النشاط التجاري.",
@@ -630,7 +631,11 @@
       "close": "إغلاق",
       "tabs": {
         "overview": "نظرة عامة"
-      }
+      },
+      "specialThisWeek": "ساعات خاصة هذا الأسبوع",
+      "specialToday": "ساعات خاصة اليوم",
+      "today": "اليوم",
+      "tomorrow": "غدًا"
     },
     "publish": {
       "checklistTitle": "غير منشور بعد",

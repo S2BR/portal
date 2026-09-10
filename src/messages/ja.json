@@ -618,6 +618,7 @@
       "closesAt": "{time}に閉店",
       "opensAt": "{time}に開店",
       "opensAtDay": "{day} {time}に開店",
+      "opensTomorrow": "明日 {time} に開店",
       "products": "商品",
       "seeAllProducts": "すべての商品を見る",
       "browseProducts": "このビジネスの商品を見る。",
@@ -630,7 +631,11 @@
       "close": "閉じる",
       "tabs": {
         "overview": "概要"
-      }
+      },
+      "specialThisWeek": "今週の特別営業時間",
+      "specialToday": "本日は特別営業時間",
+      "today": "今日",
+      "tomorrow": "明日"
     },
     "publish": {
       "checklistTitle": "まだ公開されていません",

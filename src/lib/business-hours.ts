@@ -113,3 +113,24 @@ export function isDifferentDay(
     }).format(date);
   return key(new Date(epochSeconds * 1000)) !== key(now);
 }
+
+/**
+ * Whether the boundary falls on the calendar day AFTER `now`, evaluated in `timeZone` — so a next-day
+ * opening can read "tomorrow" instead of a weekday. Near a DST change the ±1h drift can't move a whole
+ * day, so this stays correct; worst case it simply reads the weekday.
+ */
+export function isTomorrow(
+  epochSeconds: number,
+  now: Date,
+  timeZone?: string,
+): boolean {
+  const key = (date: Date) =>
+    new Intl.DateTimeFormat("en-CA", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      timeZone,
+    }).format(date);
+  const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+  return key(new Date(epochSeconds * 1000)) === key(tomorrow);
+}
