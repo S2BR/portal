@@ -2,7 +2,7 @@
 
 import { Sparkles } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import type {
   BusinessClosure,
@@ -55,90 +55,107 @@ export function HoursDisclosure({
   const days = useTranslations("businesses.detail.days");
   const locale = useLocale();
   const [open, setOpen] = useState(false);
-  // Today's weekday + upcoming special dates, resolved in the BUSINESS's zone (client-only, to avoid
-  // an SSR/now mismatch). `today` is the lowercased weekday; `special` is the coming week's overrides.
-  const [today, setToday] = useState<string | null>(null);
-  const [special, setSpecial] = useState<SpecialDay[]>([]);
+  // The current time, re-read each minute so today's weekday and the special-dates section stay live
+  // — a special window ending, or a day rolling over, updates without a refresh. Null until mounted
+  // (client-only) so there's no SSR/now hydration mismatch.
+  const [now, setNow] = useState<Date | null>(null);
 
   useEffect(() => {
-    // Deferred (client-only) so there's no SSR/now hydration mismatch.
-    const frame = requestAnimationFrame(() => {
-      const zone = timezone ?? undefined;
-      const now = new Date();
+    let timeout: ReturnType<typeof setTimeout>;
+    // First value after mount, then re-read right after each minute BOUNDARY so a special window
+    // lapsing (or midnight) lands on the minute (≈1s), matching the status badge's own tick.
+    const tick = () => {
+      setNow(new Date());
+      timeout = setTimeout(tick, 60_000 - (Date.now() % 60_000) + 100);
+    };
+    const frame = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(frame);
+      clearTimeout(timeout);
+    };
+  }, []);
 
-      setToday(
-        new Intl.DateTimeFormat("en-US", { timeZone: zone, weekday: "long" })
-          .format(now)
-          .toLowerCase(),
-      );
+  // Today's weekday + the coming week's special dates, resolved in the BUSINESS's zone from `now`.
+  const { today, special } = useMemo<{
+    today: string | null;
+    special: SpecialDay[];
+  }>(() => {
+    if (now === null) {
+      return { today: null, special: [] };
+    }
+    const zone = timezone ?? undefined;
 
-      // The calendar day "keys" (YYYY-MM-DD, in the business's zone) for today and tomorrow, so a
-      // special date can read "Today"/"Tomorrow" instead of a bare weekday.
-      const dayKey = new Intl.DateTimeFormat("en-CA", {
-        timeZone: zone,
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      });
-      const todayIso = dayKey.format(now);
-      // Anchor at noon UTC so adding whole days never trips over a DST hour and slips a date.
-      const anchor = new Date(`${todayIso}T12:00:00Z`);
+    const today = new Intl.DateTimeFormat("en-US", {
+      timeZone: zone,
+      weekday: "long",
+    })
+      .format(now)
+      .toLowerCase();
 
-      // Current minutes-since-midnight in the business's zone, to tell whether today's special hours
-      // are still ahead/ongoing or already over.
-      const [hour = 0, minute = 0] = new Intl.DateTimeFormat("en-GB", {
-        timeZone: zone,
-        hour12: false,
-        hour: "2-digit",
-        minute: "2-digit",
-      })
-        .format(now)
-        .split(":")
-        .map(Number);
-      const nowMinutes = (hour % 24) * 60 + minute;
+    // The calendar day "key" (YYYY-MM-DD, in the business's zone) for today, so a special date can
+    // read "Today"/"Tomorrow" instead of a bare weekday.
+    const todayIso = new Intl.DateTimeFormat("en-CA", {
+      timeZone: zone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(now);
+    // Anchor at noon UTC so adding whole days never trips over a DST hour and slips a date.
+    const anchor = new Date(`${todayIso}T12:00:00Z`);
 
-      const upcoming: SpecialDay[] = [];
-      for (let offset = 0; offset < SPECIAL_LOOKAHEAD_DAYS; offset++) {
-        const date = new Date(anchor.getTime() + offset * 86_400_000);
-        const iso = date.toISOString().slice(0, 10);
-        const closure = closures.find((entry) => closureCovers(entry, iso));
-        if (!closure) {
-          continue;
-        }
-        // Today with special OPEN hours all in the past is no longer "today's special" — drop it so the
-        // badge falls back to the normal "opens tomorrow". A closed-all-day today stays (still relevant).
-        if (
-          offset === 0 &&
-          closure.hours.length > 0 &&
-          !closure.hours.some((window) => windowEndMinutes(window) > nowMinutes)
-        ) {
-          continue;
-        }
-        upcoming.push({
-          iso,
-          label:
-            offset === 0
-              ? t("today")
-              : offset === 1
-                ? t("tomorrow")
-                : new Intl.DateTimeFormat(locale, {
-                    weekday: "short",
-                    month: "short",
-                    day: "numeric",
-                    timeZone: "UTC",
-                  }).format(date),
-          name: closure.name,
-          windows: closure.hours.map(
-            (window) =>
-              `${formatTime(window.open, locale)} – ${formatTime(window.close, locale)}`,
-          ),
-          isToday: offset === 0,
-        });
+    // Current minutes-since-midnight in the business's zone, to tell whether today's special hours
+    // are still ahead/ongoing or already over.
+    const [hour = 0, minute = 0] = new Intl.DateTimeFormat("en-GB", {
+      timeZone: zone,
+      hour12: false,
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+      .format(now)
+      .split(":")
+      .map(Number);
+    const nowMinutes = (hour % 24) * 60 + minute;
+
+    const special: SpecialDay[] = [];
+    for (let offset = 0; offset < SPECIAL_LOOKAHEAD_DAYS; offset++) {
+      const date = new Date(anchor.getTime() + offset * 86_400_000);
+      const iso = date.toISOString().slice(0, 10);
+      const closure = closures.find((entry) => closureCovers(entry, iso));
+      if (!closure) {
+        continue;
       }
-      setSpecial(upcoming);
-    });
-    return () => cancelAnimationFrame(frame);
-  }, [timezone, closures, locale, t]);
+      // Today with special OPEN hours all in the past is no longer "today's special" — drop it so the
+      // badge falls back to the normal "opens tomorrow". A closed-all-day today stays (still relevant).
+      if (
+        offset === 0 &&
+        closure.hours.length > 0 &&
+        !closure.hours.some((window) => windowEndMinutes(window) > nowMinutes)
+      ) {
+        continue;
+      }
+      special.push({
+        iso,
+        label:
+          offset === 0
+            ? t("today")
+            : offset === 1
+              ? t("tomorrow")
+              : new Intl.DateTimeFormat(locale, {
+                  weekday: "short",
+                  month: "short",
+                  day: "numeric",
+                  timeZone: "UTC",
+                }).format(date),
+        name: closure.name,
+        windows: closure.hours.map(
+          (window) =>
+            `${formatTime(window.open, locale)} – ${formatTime(window.close, locale)}`,
+        ),
+        isToday: offset === 0,
+      });
+    }
+    return { today, special };
+  }, [now, timezone, closures, locale, t]);
 
   const todayIsSpecial = special.some((entry) => entry.isToday);
 
