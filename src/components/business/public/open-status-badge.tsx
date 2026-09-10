@@ -9,6 +9,7 @@ import {
   formatBoundaryDay,
   formatBoundaryTime,
   isDifferentDay,
+  isTomorrow,
   type OpenStatus,
 } from "@/lib/business-hours";
 import { cn } from "@/lib/utils";
@@ -47,13 +48,18 @@ export function OpenStatusBadge({
   const [now, setNow] = useState<Date | null>(null);
 
   useEffect(() => {
-    const update = () => setNow(new Date());
-    // First value after mount (client-only, so no SSR/now hydration mismatch), then tick each minute.
-    const frame = requestAnimationFrame(update);
-    const timer = setInterval(update, 60_000);
+    let timeout: ReturnType<typeof setTimeout>;
+    // First value after mount (client-only, so no SSR/now hydration mismatch), then re-evaluate right
+    // after each minute BOUNDARY — so an open/close/soon transition lands on the minute (≈1s), not up
+    // to a minute late as a fixed interval from mount would.
+    const tick = () => {
+      setNow(new Date());
+      timeout = setTimeout(tick, 60_000 - (Date.now() % 60_000) + 100);
+    };
+    const frame = requestAnimationFrame(tick);
     return () => {
       cancelAnimationFrame(frame);
-      clearInterval(timer);
+      clearTimeout(timeout);
     };
   }, []);
 
@@ -76,6 +82,8 @@ export function OpenStatusBadge({
     const time = formatBoundaryTime(changeAt, locale, zone);
     if (status === "open" || status === "closing_soon") {
       detail = t("closesAt", { time });
+    } else if (isTomorrow(changeAt, now, zone)) {
+      detail = t("opensTomorrow", { time });
     } else if (isDifferentDay(changeAt, now, zone)) {
       detail = t("opensAtDay", {
         time,

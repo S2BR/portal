@@ -618,6 +618,7 @@
       "closesAt": "Chiude alle {time}",
       "opensAt": "Apre alle {time}",
       "opensAtDay": "Apre {day} alle {time}",
+      "opensTomorrow": "Apre domani alle {time}",
       "products": "Prodotti",
       "seeAllProducts": "Vedi tutti i prodotti",
       "browseProducts": "Sfoglia i prodotti di questa attività.",
@@ -630,7 +631,11 @@
       "close": "Chiudi",
       "tabs": {
         "overview": "Panoramica"
-      }
+      },
+      "specialThisWeek": "Orari speciali questa settimana",
+      "specialToday": "Orari speciali oggi",
+      "today": "Oggi",
+      "tomorrow": "Domani"
     },
     "publish": {
       "checklistTitle": "Non ancora online",

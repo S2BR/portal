@@ -178,6 +178,7 @@ export async function BusinessHeader({
                   openSlots={business.open_slots}
                   timezone={business.timezone}
                   openingHours={business.opening_hours}
+                  closures={business.closures}
                 />
               ) : null}
             </div>

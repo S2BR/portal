@@ -618,6 +618,7 @@
       "closesAt": "Closes {time}",
       "opensAt": "Opens {time}",
       "opensAtDay": "Opens {time} {day}",
+      "opensTomorrow": "Opens tomorrow at {time}",
       "products": "Products",
       "seeAllProducts": "See all products",
       "browseProducts": "Browse this business's products.",
@@ -630,7 +631,11 @@
       "close": "Close",
       "tabs": {
         "overview": "Overview"
-      }
+      },
+      "specialThisWeek": "Special hours this week",
+      "specialToday": "Special hours today",
+      "today": "Today",
+      "tomorrow": "Tomorrow"
     },
     "publish": {
       "checklistTitle": "Not live yet",

@@ -618,6 +618,7 @@
       "closesAt": "Cierra a las {time}",
       "opensAt": "Abre a las {time}",
       "opensAtDay": "Abre {day} a las {time}",
+      "opensTomorrow": "Abre mañana a las {time}",
       "products": "Productos",
       "seeAllProducts": "Ver todos los productos",
       "browseProducts": "Explora los productos de esta empresa.",
@@ -630,7 +631,11 @@
       "close": "Cerrar",
       "tabs": {
         "overview": "Resumen"
-      }
+      },
+      "specialThisWeek": "Horario especial esta semana",
+      "specialToday": "Horario especial hoy",
+      "today": "Hoy",
+      "tomorrow": "Mañana"
     },
     "publish": {
       "checklistTitle": "Aún no está publicado",
