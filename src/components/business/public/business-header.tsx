@@ -12,43 +12,9 @@ import { StarRating } from "@/components/business/public/star-rating";
 import { SocialIcon } from "@/components/business/social-icon";
 import { Badge } from "@/components/ui/badge";
 import { focalObjectPosition } from "@/lib/banner-focal";
+import { directionsHref } from "@/lib/directions";
 import type { PublicBusiness } from "@/lib/public-business";
 import { externalHref } from "@/lib/url";
-
-/**
- * The maps deep-link for the "Directions" action — a Google Maps *directions* request to the business.
- * Destination is the readable street address by default (a named place routes better than a raw point),
- * and the exact coordinates only when the owner hand-placed the pin (`is_pinned`). With no `origin`,
- * Maps routes from the user's current location, so it opens straight into turn-by-turn.
- */
-function directionsHref(business: PublicBusiness): string | null {
-  const main =
-    business.addresses.find((address) => address.is_main) ??
-    business.addresses[0];
-  if (!main) {
-    return null;
-  }
-  const coordinates =
-    main.latitude !== null && main.longitude !== null
-      ? `${main.latitude},${main.longitude}`
-      : null;
-  const addressText = [
-    main.address_1,
-    main.city,
-    main.state_province,
-    main.postal_code,
-    main.country,
-  ]
-    .filter(Boolean)
-    .join(", ");
-  // Pinned → the exact point; otherwise the address text, falling back to coordinates if it's empty.
-  const destination =
-    main.is_pinned && coordinates ? coordinates : addressText || coordinates;
-  if (!destination) {
-    return null;
-  }
-  return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}`;
-}
 
 /**
  * The shared header for every business surface (profile, products, reviews) — banner, logo, identity

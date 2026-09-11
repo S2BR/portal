@@ -15,6 +15,7 @@ import { ProfileReviews } from "@/components/business/public/profile-reviews";
 import { SocialIcon } from "@/components/business/social-icon";
 import { ReportDialog } from "@/components/moderation/report-dialog";
 import { PreviewRail } from "@/components/ui/preview-rail";
+import { directionsHref } from "@/lib/directions";
 import { formatBusinessAddress } from "@/lib/format-address";
 import { externalHref } from "@/lib/url";
 
@@ -47,6 +48,7 @@ export async function BusinessProfile({
   const main =
     business.addresses.find((address) => address.is_main) ??
     business.addresses[0];
+  const directions = directionsHref(business);
   const phones = business.contacts.filter((c) => c.type === "phone");
   const emails = business.contacts.filter((c) => c.type === "email");
   const websites = business.contacts.filter((c) => c.type === "website");
@@ -159,7 +161,18 @@ export async function BusinessProfile({
                   />
                 </div>
               ) : null}
-              <AddressLines lines={formatBusinessAddress(main, locale)} />
+              {directions ? (
+                <a
+                  href={directions}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-foreground focus-visible:ring-ring block rounded-md transition-colors hover:underline focus-visible:ring-2 focus-visible:outline-none"
+                >
+                  <AddressLines lines={formatBusinessAddress(main, locale)} />
+                </a>
+              ) : (
+                <AddressLines lines={formatBusinessAddress(main, locale)} />
+              )}
             </div>
           ) : null}
 
