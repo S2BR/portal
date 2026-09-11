@@ -635,7 +635,9 @@
       "specialThisWeek": "ساعات خاصة هذا الأسبوع",
       "specialToday": "ساعات خاصة اليوم",
       "today": "اليوم",
-      "tomorrow": "غدًا"
+      "tomorrow": "غدًا",
+      "allCategories": "كل الفئات",
+      "moreCount": "+{count} أخرى"
     },
     "publish": {
       "checklistTitle": "غير منشور بعد",

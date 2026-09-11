@@ -635,7 +635,9 @@
       "specialThisWeek": "Sonderöffnungszeiten diese Woche",
       "specialToday": "Heute Sonderöffnungszeiten",
       "today": "Heute",
-      "tomorrow": "Morgen"
+      "tomorrow": "Morgen",
+      "allCategories": "Alle Kategorien",
+      "moreCount": "+{count} weitere"
     },
     "publish": {
       "checklistTitle": "Noch nicht live",

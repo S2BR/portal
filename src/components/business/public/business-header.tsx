@@ -7,10 +7,10 @@ import { socialDisplay } from "@/components/business/business-constants";
 import { BusinessBannerPlaceholder } from "@/components/business/public/business-banner-placeholder";
 import { ClaimBusinessButton } from "@/components/business/public/claim-business-button";
 import { HoursDisclosure } from "@/components/business/public/hours-disclosure";
+import { ProfileCategories } from "@/components/business/public/profile-categories";
 import { ShareButton } from "@/components/business/public/share-button";
 import { StarRating } from "@/components/business/public/star-rating";
 import { SocialIcon } from "@/components/business/social-icon";
-import { Badge } from "@/components/ui/badge";
 import { focalObjectPosition } from "@/lib/banner-focal";
 import { directionsHref } from "@/lib/directions";
 import type { PublicBusiness } from "@/lib/public-business";
@@ -173,13 +173,7 @@ export async function BusinessHeader({
 
         <div className="mt-5 flex flex-col gap-4 px-1 sm:flex-row sm:items-center sm:justify-between">
           {business.categories.length > 0 ? (
-            <div className="flex flex-wrap items-center gap-2">
-              {business.categories.map((category) => (
-                <Badge key={category.id} variant="neutral">
-                  {category.name}
-                </Badge>
-              ))}
-            </div>
+            <ProfileCategories categories={business.categories} />
           ) : null}
 
           <div className="flex flex-wrap items-center gap-2 sm:ms-auto sm:shrink-0 sm:justify-end">
