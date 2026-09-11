@@ -635,7 +635,9 @@
       "specialThisWeek": "Special hours this week",
       "specialToday": "Special hours today",
       "today": "Today",
-      "tomorrow": "Tomorrow"
+      "tomorrow": "Tomorrow",
+      "allCategories": "All categories",
+      "moreCount": "+{count} more"
     },
     "publish": {
       "checklistTitle": "Not live yet",

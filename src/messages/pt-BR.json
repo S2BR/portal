@@ -635,7 +635,9 @@
       "specialThisWeek": "Horários especiais nesta semana",
       "specialToday": "Horários especiais hoje",
       "today": "Hoje",
-      "tomorrow": "Amanhã"
+      "tomorrow": "Amanhã",
+      "allCategories": "Todas as categorias",
+      "moreCount": "+{count} mais"
     },
     "publish": {
       "checklistTitle": "Ainda não está no ar",

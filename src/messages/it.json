@@ -635,7 +635,9 @@
       "specialThisWeek": "Orari speciali questa settimana",
       "specialToday": "Orari speciali oggi",
       "today": "Oggi",
-      "tomorrow": "Domani"
+      "tomorrow": "Domani",
+      "allCategories": "Tutte le categorie",
+      "moreCount": "+{count} in più"
     },
     "publish": {
       "checklistTitle": "Non ancora online",

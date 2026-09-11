@@ -635,7 +635,9 @@
       "specialThisWeek": "今週の特別営業時間",
       "specialToday": "本日は特別営業時間",
       "today": "今日",
-      "tomorrow": "明日"
+      "tomorrow": "明日",
+      "allCategories": "すべてのカテゴリ",
+      "moreCount": "他{count}件"
     },
     "publish": {
       "checklistTitle": "まだ公開されていません",
