@@ -4,11 +4,26 @@ import { callWithAuth } from "@/lib/api/authed";
 import { rateLimitedResponse } from "@/lib/api/rate-limit";
 
 interface LifecycleBody {
-  action?: "lock" | "unlock" | "publish" | "unpublish" | "restore";
+  action?:
+    | "lock"
+    | "unlock"
+    | "publish"
+    | "unpublish"
+    | "restore"
+    | "enable-commerce"
+    | "disable-commerce";
   reason?: string | null;
 }
 
-const ACTIONS = new Set(["lock", "unlock", "publish", "unpublish", "restore"]);
+const ACTIONS = new Set([
+  "lock",
+  "unlock",
+  "publish",
+  "unpublish",
+  "restore",
+  "enable-commerce",
+  "disable-commerce",
+]);
 
 /**
  * BFF: operator lifecycle overrides on a business the form can't do — lock/unlock, force

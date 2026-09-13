@@ -7,7 +7,7 @@ import type { Dispatch, SetStateAction } from "react";
 import { toast } from "sonner";
 
 import type { ProductSection } from "@/app/api/businesses/[slug]/product-sections/route";
-import type { CatalogSighting } from "@/app/api/businesses/[slug]/products/route";
+import type { CatalogProduct } from "@/app/api/businesses/[slug]/products/route";
 import { LocaleFlag } from "@/components/locale-flag";
 import { localeNames, locales } from "@/i18n/config";
 import { useSectionPersist } from "@/lib/products/use-section-persist";
@@ -43,12 +43,12 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 const apiKey = (locale: string) => locale.replace("-", "_");
 
 /** A product's label for the picker: its name + quantity. */
-function productLabel(sighting: CatalogSighting): string {
-  const name = sighting.variant?.product?.name ?? "—";
-  const quantity = sighting.variant?.size
-    ? ` · ${sighting.variant.size}${sighting.variant.unit ? ` ${sighting.variant.unit}` : ""}`
-    : sighting.variant?.label
-      ? ` · ${sighting.variant.label}`
+function productLabel(product: CatalogProduct): string {
+  const name = product.variant?.product?.name ?? "—";
+  const quantity = product.variant?.size
+    ? ` · ${product.variant.size}${product.variant.unit ? ` ${product.variant.unit}` : ""}`
+    : product.variant?.label
+      ? ` · ${product.variant.label}`
       : "";
   return `${name}${quantity}`;
 }
@@ -67,7 +67,7 @@ export function SectionManager({
   onReload,
 }: {
   slug: string;
-  products: CatalogSighting[];
+  products: CatalogProduct[];
   sections: ProductSection[];
   onSectionsChange: Dispatch<SetStateAction<ProductSection[]>>;
   onReload: () => void;
@@ -279,7 +279,7 @@ function ProductPicker({
   emptyLabel,
 }: {
   label: string;
-  products: CatalogSighting[];
+  products: CatalogProduct[];
   selected: string[];
   onChange: (ids: string[]) => void;
   searchLabel: string;
@@ -307,13 +307,13 @@ function ProductPicker({
           <CommandInput placeholder={searchLabel} />
           <CommandList>
             <CommandEmpty>{emptyLabel}</CommandEmpty>
-            {products.map((sighting) => {
-              const active = selected.includes(sighting.id);
+            {products.map((product) => {
+              const active = selected.includes(product.id);
               return (
                 <CommandItem
-                  key={sighting.id}
-                  value={productLabel(sighting)}
-                  onSelect={() => toggle(sighting.id)}
+                  key={product.id}
+                  value={productLabel(product)}
+                  onSelect={() => toggle(product.id)}
                   className="gap-2"
                 >
                   <span
@@ -327,7 +327,7 @@ function ProductPicker({
                       <span className="bg-primary-foreground size-2 rounded-sm" />
                     ) : null}
                   </span>
-                  <span className="truncate">{productLabel(sighting)}</span>
+                  <span className="truncate">{productLabel(product)}</span>
                 </CommandItem>
               );
             })}

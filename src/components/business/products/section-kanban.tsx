@@ -21,7 +21,7 @@ import type { Dispatch, SetStateAction } from "react";
 import { toast } from "sonner";
 
 import type { ProductSection } from "@/app/api/businesses/[slug]/product-sections/route";
-import type { CatalogSighting } from "@/app/api/businesses/[slug]/products/route";
+import type { CatalogProduct } from "@/app/api/businesses/[slug]/products/route";
 import { useSectionPersist } from "@/lib/products/use-section-persist";
 import { unitFor } from "@/lib/products/units";
 import { displayName, type LocaleText } from "@/lib/taxonomy/admin";
@@ -41,21 +41,21 @@ function parseCardId(id: string): { columnId: string; productId: string } {
 }
 
 /** A product's short quantity label (size + unit, or the variant label). */
-function quantityLabel(sighting: CatalogSighting): string {
-  const size = sighting.variant?.size;
-  const unit = unitFor(sighting.variant?.unit)?.symbol;
+function quantityLabel(product: CatalogProduct): string {
+  const size = product.variant?.size;
+  const unit = unitFor(product.variant?.unit)?.symbol;
   return (
     [size, unit].filter((part): part is string => Boolean(part)).join(" ") ||
-    sighting.variant?.label ||
+    product.variant?.label ||
     ""
   );
 }
 
 /** The visual of a product card — cover thumb, name, quantity. Shared by the columns and the overlay. */
-function CardBody({ sighting }: { sighting: CatalogSighting }) {
-  const product = sighting.variant?.product ?? null;
-  const image = sighting.cover_image ?? product?.image ?? null;
-  const quantity = quantityLabel(sighting);
+function CardBody({ item }: { item: CatalogProduct }) {
+  const product = item.variant?.product ?? null;
+  const image = item.cover_image ?? product?.image ?? null;
+  const quantity = quantityLabel(item);
   return (
     <div className="bg-card flex items-center gap-2.5 rounded-lg border p-2 shadow-sm">
       {image ? (
@@ -85,17 +85,17 @@ function CardBody({ sighting }: { sighting: CatalogSighting }) {
 /** A draggable product card within a column, with a hover ✕ to remove it from that section. */
 function KanbanCard({
   columnId,
-  sighting,
+  product,
   onRemove,
   removeLabel,
 }: {
   columnId: string;
-  sighting: CatalogSighting;
+  product: CatalogProduct;
   onRemove?: () => void;
   removeLabel: string;
 }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
-    useDraggable({ id: cardDndId(columnId, sighting.id) });
+    useDraggable({ id: cardDndId(columnId, product.id) });
   return (
     <div
       ref={setNodeRef}
@@ -111,7 +111,7 @@ function KanbanCard({
         {...listeners}
         className="cursor-grab active:cursor-grabbing"
       >
-        <CardBody sighting={sighting} />
+        <CardBody item={product} />
       </div>
       {onRemove ? (
         <button
@@ -133,14 +133,14 @@ function KanbanCard({
 function KanbanColumn({
   id,
   label,
-  sightings,
+  products,
   emptyHint,
   onRemove,
   removeLabel,
 }: {
   id: string;
   label: string;
-  sightings: CatalogSighting[];
+  products: CatalogProduct[];
   emptyHint: string;
   onRemove?: (productId: string) => void;
   removeLabel: string;
@@ -151,7 +151,7 @@ function KanbanColumn({
       <div className="mb-2 flex items-center justify-between gap-2 px-1">
         <span className="truncate text-sm font-semibold">{label}</span>
         <span className="text-muted-foreground text-xs tabular-nums">
-          {sightings.length}
+          {products.length}
         </span>
       </div>
       <div
@@ -161,17 +161,17 @@ function KanbanColumn({
           isOver && "border-primary/60 bg-primary/5",
         )}
       >
-        {sightings.length === 0 ? (
+        {products.length === 0 ? (
           <p className="text-muted-foreground px-1 py-6 text-center text-xs">
             {emptyHint}
           </p>
         ) : (
-          sightings.map((sighting) => (
+          products.map((product) => (
             <KanbanCard
-              key={sighting.id}
+              key={product.id}
               columnId={id}
-              sighting={sighting}
-              onRemove={onRemove ? () => onRemove(sighting.id) : undefined}
+              product={product}
+              onRemove={onRemove ? () => onRemove(product.id) : undefined}
               removeLabel={removeLabel}
             />
           ))
@@ -194,7 +194,7 @@ export function SectionKanban({
   onSectionsChange,
 }: {
   slug: string;
-  products: CatalogSighting[];
+  products: CatalogProduct[];
   sections: ProductSection[];
   onSectionsChange: Dispatch<SetStateAction<ProductSection[]>>;
 }) {
@@ -237,26 +237,24 @@ export function SectionKanban({
     useSensor(KeyboardSensor),
   );
 
-  const productById = new Map(
-    products.map((sighting) => [sighting.id, sighting]),
-  );
+  const productById = new Map(products.map((product) => [product.id, product]));
   const assigned = new Set(
     sections.flatMap((section) => section.product_ids ?? []),
   );
-  const unassigned = products.filter((sighting) => !assigned.has(sighting.id));
+  const unassigned = products.filter((product) => !assigned.has(product.id));
 
   const columns = [
-    { id: UNASSIGNED, label: t("kanban.unassigned"), sightings: unassigned },
+    { id: UNASSIGNED, label: t("kanban.unassigned"), products: unassigned },
     ...sections.map((section) => ({
       id: section.id,
       label: displayName(section.name as LocaleText, locale),
-      sightings: (section.product_ids ?? [])
+      products: (section.product_ids ?? [])
         .map((id) => productById.get(id))
-        .filter((sighting): sighting is CatalogSighting => Boolean(sighting)),
+        .filter((product): product is CatalogProduct => Boolean(product)),
     })),
   ];
 
-  const activeSighting = activeId
+  const activeProduct = activeId
     ? (productById.get(parseCardId(activeId).productId) ?? null)
     : null;
 
@@ -345,7 +343,7 @@ export function SectionKanban({
               key={column.id}
               id={column.id}
               label={column.label}
-              sightings={column.sightings}
+              products={column.products}
               emptyHint={
                 column.id === UNASSIGNED
                   ? t("kanban.allAssigned")
@@ -361,14 +359,14 @@ export function SectionKanban({
           ))}
         </div>
         <DragOverlay>
-          {activeSighting ? (
+          {activeProduct ? (
             <div
               className={cn(
                 "relative w-60 rotate-1",
                 copyMode ? "cursor-copy" : "cursor-grabbing",
               )}
             >
-              <CardBody sighting={activeSighting} />
+              <CardBody item={activeProduct} />
               {copyMode ? (
                 <span className="bg-primary text-primary-foreground absolute -top-2 -right-2 flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold shadow">
                   <Copy className="size-3" aria-hidden />

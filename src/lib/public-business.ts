@@ -66,6 +66,8 @@ export interface PublicBusiness {
   rating_avg: number;
   rating_count: number;
   is_claimed: boolean;
+  /** Whether the storefront can take a cart/orders — gates the public add-to-cart affordances. */
+  is_commerce_enabled: boolean;
   /**
    * Absolute UTC 15-minute "open" epoch slots over a rolling window — drives the live open/closed
    * status badge (see `computeOpenState`). Empty when the business has no usable hours.
@@ -168,9 +170,11 @@ export interface PublicSection {
   order: number;
 }
 
-/** One product in a business's PUBLIC catalog (a sighting), for the profile / catalog page. */
+/** One product in a business's PUBLIC catalog, for the profile / catalog page. */
 export interface PublicCatalogItem {
   id: string;
+  /** Self-healing `product-name-<code>` url identifier for the product page. */
+  slug: string;
   price: number | null;
   currency: string | null;
   location_label: string | null;
@@ -200,6 +204,51 @@ export interface PublicCatalogItem {
 export interface PublicCatalog {
   products: PublicCatalogItem[];
   sections: PublicSection[];
+}
+
+/**
+ * Fetch a single product on a business's storefront by its public listing id — for the
+ * public product detail page. Returns null when the business or product isn't publicly visible.
+ */
+export async function getPublicBusinessProduct(
+  slug: string,
+  product: string,
+): Promise<PublicCatalogItem | null> {
+  const response = await portalFetch<{ product?: PublicCatalogItem }>({
+    method: "GET",
+    path: `/public/businesses/${encodeURIComponent(slug)}/products/${encodeURIComponent(product)}`,
+  });
+
+  return response.ok ? (response.data.product ?? null) : null;
+}
+
+/** One line in a shopper's cart, as the storefront renders it. */
+export interface PublicCartItem {
+  id: string;
+  quantity: number;
+  /** Unit price × quantity in minor units; null when the product has no price set. */
+  line_total: number | null;
+  product: {
+    id: string | null;
+    name: string | null;
+    price: number | null;
+    currency: string | null;
+    cover_image: string | null;
+    variant: {
+      label: string | null;
+      size: string | null;
+      unit: string | null;
+    } | null;
+  };
+}
+
+/** A shopper's cart for one store. */
+export interface PublicCart {
+  item_count: number;
+  /** Sum of the priced lines, in minor units. */
+  subtotal: number;
+  currency: string | null;
+  items: PublicCartItem[];
 }
 
 const EMPTY_CATALOG: PublicCatalog = { products: [], sections: [] };

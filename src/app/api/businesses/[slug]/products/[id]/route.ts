@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { callWithAuth } from "@/lib/api/authed";
 import { rateLimitedResponse } from "@/lib/api/rate-limit";
 
-import type { CatalogSighting } from "../route";
+import type { CatalogProduct } from "../route";
 
 /**
  * Editing a catalog entry — the price/offering status the owner controls, plus (for a handmade product
@@ -28,7 +28,7 @@ interface UpdateBody {
 }
 
 /**
- * BFF: read one product in a business's catalog (a sighting) — backs the owner product detail page.
+ * BFF: read one product in a business's catalog — backs the owner product detail page.
  * Scoped by the owner API to a business the caller owns (a foreign one 404s).
  */
 export async function GET(
@@ -38,7 +38,7 @@ export async function GET(
   const { slug, id } = await params;
 
   const response = await callWithAuth<
-    { product: CatalogSighting } & { retry_after?: number | null }
+    { product: CatalogProduct } & { retry_after?: number | null }
   >({
     method: "GET",
     path: `/businesses/${encodeURIComponent(slug)}/products/${encodeURIComponent(id)}`,
@@ -57,8 +57,8 @@ export async function GET(
 }
 
 /**
- * BFF: update or remove one product in a business's catalog (a sighting). Forwards to the owner API,
- * which scopes the sighting to the business the caller owns (a foreign one 404s).
+ * BFF: update or remove one product in a business's catalog. Forwards to the owner API,
+ * which scopes the product to the business the caller owns (a foreign one 404s).
  */
 export async function PATCH(
   request: Request,
@@ -68,7 +68,7 @@ export async function PATCH(
   const body = (await request.json().catch(() => ({}))) as UpdateBody;
 
   const response = await callWithAuth<
-    { product: CatalogSighting } & {
+    { product: CatalogProduct } & {
       errors?: Record<string, string[]>;
       retry_after?: number | null;
     }

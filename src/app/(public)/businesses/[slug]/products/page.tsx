@@ -65,6 +65,8 @@ export default async function BusinessProductsPage({
           products={catalog.products}
           sections={catalog.sections}
           locale={locale}
+          slug={business.slug}
+          commerceEnabled={business.is_commerce_enabled}
         />
       )}
     </section>

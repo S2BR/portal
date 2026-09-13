@@ -8,7 +8,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t("products") };
 }
 
-/** The business's product catalog — its sightings (products it carries, with prices). */
+/** The business's product catalog — the products it carries, with prices. */
 export default async function BusinessProductsPage({
   params,
 }: {

@@ -10,7 +10,7 @@ interface SyncBody {
 }
 
 /**
- * BFF: set (and order) the products in a section (owner) — forwards the ordered sighting ids to the
+ * BFF: set (and order) the products in a section (owner) — forwards the ordered product ids to the
  * owner API, scoped to the business the caller owns.
  */
 export async function PUT(

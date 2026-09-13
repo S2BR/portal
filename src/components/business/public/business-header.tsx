@@ -5,6 +5,7 @@ import Link from "next/link";
 import { BusinessLogo } from "@/components/business/business-logo";
 import { socialDisplay } from "@/components/business/business-constants";
 import { BusinessBannerPlaceholder } from "@/components/business/public/business-banner-placeholder";
+import { CartDrawer } from "@/components/business/public/cart-drawer";
 import { ClaimBusinessButton } from "@/components/business/public/claim-business-button";
 import { HoursDisclosure } from "@/components/business/public/hours-disclosure";
 import { ProfileCategories } from "@/components/business/public/profile-categories";
@@ -177,6 +178,7 @@ export async function BusinessHeader({
           ) : null}
 
           <div className="flex flex-wrap items-center gap-2 sm:ms-auto sm:shrink-0 sm:justify-end">
+            <CartDrawer />
             {directions ? (
               <a
                 href={directions}

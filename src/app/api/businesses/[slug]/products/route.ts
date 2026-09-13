@@ -5,9 +5,11 @@ import { rateLimitedResponse } from "@/lib/api/rate-limit";
 
 import type { ProductSection } from "../product-sections/route";
 
-/** A product in a business's catalog — a sighting (price + availability) plus the SKU variant it points at. */
-export interface CatalogSighting {
+/** A product in a business's catalog — the offer (price + availability) plus the SKU variant it points at. */
+export interface CatalogProduct {
   id: string;
+  /** Self-healing `product-name-<code>` url identifier for the public product page. */
+  slug: string;
   price: number | null;
   currency: string | null;
   location_label: string | null;
@@ -65,7 +67,7 @@ export interface AddCatalogBody {
 }
 
 /**
- * BFF: a business's own product catalog (its sightings). GET lists them; POST adds one. Forwards to the
+ * BFF: a business’s own product catalog. GET lists them; POST adds one. Forwards to the
  * owner API, which resolves the business for the caller (a non-owned slug 404s).
  */
 export async function GET(
@@ -75,7 +77,7 @@ export async function GET(
   const { slug } = await params;
 
   const response = await callWithAuth<{
-    products: CatalogSighting[];
+    products: CatalogProduct[];
     sections: ProductSection[];
     retry_after?: number | null;
   }>({
@@ -106,7 +108,7 @@ export async function POST(
   const body = (await request.json().catch(() => ({}))) as AddCatalogBody;
 
   const response = await callWithAuth<
-    { product: CatalogSighting } & {
+    { product: CatalogProduct } & {
       message?: string;
       errors?: Record<string, string[]>;
       retry_after?: number | null;

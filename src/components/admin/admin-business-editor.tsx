@@ -8,6 +8,7 @@ import {
   Lock,
   LockOpen,
   RotateCcw,
+  ShoppingCart,
 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import Link from "next/link";
@@ -42,7 +43,14 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 
-type LifecycleAction = "lock" | "unlock" | "publish" | "unpublish" | "restore";
+type LifecycleAction =
+  | "lock"
+  | "unlock"
+  | "publish"
+  | "unpublish"
+  | "restore"
+  | "enable-commerce"
+  | "disable-commerce";
 
 /**
  * The admin editor for one business: an operator header (state, owners, lifecycle overrides + audit)
@@ -214,6 +222,29 @@ export function AdminBusinessEditor({ id }: { id: string }) {
                 {t("publish")}
               </Button>
             )}
+            {business.is_deleted ? null : business.is_commerce_enabled ? (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={busy}
+                onClick={() => void runLifecycle("disable-commerce")}
+              >
+                <ShoppingCart className="size-4" />
+                {t("disableCommerce")}
+              </Button>
+            ) : (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={busy}
+                onClick={() => void runLifecycle("enable-commerce")}
+              >
+                <ShoppingCart className="size-4" />
+                {t("enableCommerce")}
+              </Button>
+            )}
           </div>
         </div>
       </div>
@@ -267,9 +298,7 @@ export function AdminBusinessEditor({ id }: { id: string }) {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{t("lockDialog.title")}</DialogTitle>
-            <DialogDescription>
-              {t("lockDialog.description")}
-            </DialogDescription>
+            <DialogDescription>{t("lockDialog.description")}</DialogDescription>
           </DialogHeader>
           <div className="space-y-2">
             <Label htmlFor="lock-reason">{t("lockDialog.reasonLabel")}</Label>
