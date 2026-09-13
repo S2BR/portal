@@ -1042,7 +1042,8 @@
         "detailsDescription": "お客様に表示される名前、ブランド、数量、説明。",
         "sharedNote": "これは共有カタログの商品です。詳細は一元管理されています。変更するには削除して、自分のバージョンを追加してください。",
         "photosTitle": "写真",
-        "photosDescription": "この商品のあなた自身の写真。最初の写真がカバーになり、プロフィールに表示されます。"
+        "photosDescription": "この商品のあなた自身の写真。最初の写真がカバーになり、プロフィールに表示されます。",
+        "viewPublic": "公開ページを見る"
       },
       "searchProducts": "製品を検索",
       "allStatuses": "すべてのステータス",
@@ -1106,6 +1107,30 @@
       "ownBarcodeLabel": "バーコード",
       "ownBarcodeHint": "バーコードがある場合は入力してください。共有カタログにリンクされます。自分で作る商品の場合は空欄のまま。",
       "ownBarcodePlaceholder": "例：7891234567890"
+    },
+    "cart": {
+      "cart": "カート",
+      "title": "カート",
+      "subtitle": "この店舗で追加した商品。",
+      "openCart": "カートを開く",
+      "add": "カートに追加",
+      "added": "カートに追加しました",
+      "signInToAdd": "追加するにはログイン",
+      "unavailable": "この商品は購入できません。",
+      "error": "問題が発生しました。もう一度お試しください。",
+      "empty": "カートは空です。",
+      "signIn": "ログイン",
+      "signInBody": "この店舗でカートを利用するにはログインしてください。",
+      "subtotal": "小計",
+      "checkoutSoon": "チェックアウトは近日公開",
+      "decrease": "数量を減らす",
+      "increase": "数量を増やす",
+      "remove": "削除",
+      "viewCart": "カートを見る",
+      "continueShopping": "買い物を続ける",
+      "summary": "注文の概要",
+      "itemCount": "{count, plural, other {#点}}",
+      "checkoutNote": "まもなく、ここで情報を入力して購入手続きができるようになります。"
     }
   },
   "admin": {
@@ -1343,7 +1368,9 @@
           "unlock": "ビジネスのロックを解除しました。",
           "publish": "ビジネスを公開しました。",
           "unpublish": "ビジネスを非公開にしました。",
-          "restore": "ビジネスを復元しました。"
+          "restore": "ビジネスを復元しました。",
+          "enable-commerce": "EC を有効にしました。",
+          "disable-commerce": "EC を無効にしました。"
         },
         "auditTitle": "監査ログ",
         "auditSubtitle": "このビジネスに対する運営者の操作。新しい順。",
@@ -1359,9 +1386,13 @@
             "restored": "復元",
             "owner_added": "オーナー追加",
             "owner_removed": "オーナー削除",
-            "claimed": "登録"
+            "claimed": "登録",
+            "commerce_enabled": "EC 有効化",
+            "commerce_disabled": "EC 無効化"
           }
-        }
+        },
+        "enableCommerce": "EC を有効化",
+        "disableCommerce": "EC を無効化"
       },
       "owners": {
         "title": "オーナー",

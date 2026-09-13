@@ -9,7 +9,7 @@ export interface ProductSection {
   /** Locale-keyed translatable name (API locale keys, e.g. `en`, `pt_BR`). */
   name: Record<string, string>;
   order: number;
-  /** The sighting ids in this section, in order (present on the owner list). */
+  /** The product ids in this section, in order (present on the owner list). */
   product_ids?: string[];
 }
 

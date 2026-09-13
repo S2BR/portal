@@ -1042,7 +1042,8 @@
         "detailsDescription": "O nome, a marca, a quantidade e a descrição que os clientes veem.",
         "sharedNote": "Este é um produto do catálogo compartilhado — seus detalhes são gerenciados centralmente. Remova-o e adicione sua própria versão para alterá-los.",
         "photosTitle": "Fotos",
-        "photosDescription": "Suas próprias fotos deste produto. A primeira é a capa; elas aparecem no seu perfil."
+        "photosDescription": "Suas próprias fotos deste produto. A primeira é a capa; elas aparecem no seu perfil.",
+        "viewPublic": "Ver página pública"
       },
       "searchProducts": "Buscar produtos",
       "allStatuses": "Todos os status",
@@ -1106,6 +1107,30 @@
       "ownBarcodeLabel": "Código de barras",
       "ownBarcodeHint": "Se tiver código de barras, insira — ele conecta ao catálogo compartilhado. Deixe vazio para um produto que você mesmo faz.",
       "ownBarcodePlaceholder": "ex.: 7891234567890"
+    },
+    "cart": {
+      "cart": "Carrinho",
+      "title": "Seu carrinho",
+      "subtitle": "Produtos que você adicionou nesta loja.",
+      "openCart": "Abrir carrinho",
+      "add": "Adicionar ao carrinho",
+      "added": "Adicionado ao carrinho",
+      "signInToAdd": "Entre para adicionar",
+      "unavailable": "Este produto não está disponível.",
+      "error": "Algo deu errado. Tente novamente.",
+      "empty": "Seu carrinho está vazio.",
+      "signIn": "Entrar",
+      "signInBody": "Entre para iniciar um carrinho nesta loja.",
+      "subtotal": "Subtotal",
+      "checkoutSoon": "Checkout em breve",
+      "decrease": "Diminuir quantidade",
+      "increase": "Aumentar quantidade",
+      "remove": "Remover",
+      "viewCart": "Ver carrinho",
+      "continueShopping": "Continuar comprando",
+      "summary": "Resumo do pedido",
+      "itemCount": "{count, plural, one {# item} other {# itens}}",
+      "checkoutNote": "Em breve você poderá informar seus dados e finalizar a compra aqui."
     }
   },
   "admin": {
@@ -1343,7 +1368,9 @@
           "unlock": "Negócio desbloqueado.",
           "publish": "Negócio publicado.",
           "unpublish": "Negócio despublicado.",
-          "restore": "Negócio restaurado."
+          "restore": "Negócio restaurado.",
+          "enable-commerce": "E-commerce ativado.",
+          "disable-commerce": "E-commerce desativado."
         },
         "auditTitle": "Trilha de auditoria",
         "auditSubtitle": "Ações do operador neste negócio, mais recentes primeiro.",
@@ -1359,9 +1386,13 @@
             "restored": "Restaurado",
             "owner_added": "Proprietário adicionado",
             "owner_removed": "Proprietário removido",
-            "claimed": "Reivindicado"
+            "claimed": "Reivindicado",
+            "commerce_enabled": "E-commerce ativado",
+            "commerce_disabled": "E-commerce desativado"
           }
-        }
+        },
+        "enableCommerce": "Ativar e-commerce",
+        "disableCommerce": "Desativar e-commerce"
       },
       "owners": {
         "title": "Proprietários",

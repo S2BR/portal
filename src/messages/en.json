@@ -1042,7 +1042,8 @@
         "detailsDescription": "The name, brand, quantity, and description customers see.",
         "sharedNote": "This is a shared catalog product — its details are managed centrally. Remove it and add your own version to change them.",
         "photosTitle": "Photos",
-        "photosDescription": "Your own photos of this product. The first is the cover; they show on your profile."
+        "photosDescription": "Your own photos of this product. The first is the cover; they show on your profile.",
+        "viewPublic": "View public page"
       },
       "searchProducts": "Search products",
       "allStatuses": "All statuses",
@@ -1106,6 +1107,30 @@
       "ownBarcodeLabel": "Barcode",
       "ownBarcodeHint": "If it has a barcode, enter it — it links to the shared catalog. Leave empty for a product you make yourself.",
       "ownBarcodePlaceholder": "e.g. 7891234567890"
+    },
+    "cart": {
+      "cart": "Cart",
+      "title": "Your cart",
+      "subtitle": "Products you have added at this store.",
+      "openCart": "Open cart",
+      "add": "Add to cart",
+      "added": "Added to cart",
+      "signInToAdd": "Sign in to add",
+      "unavailable": "This product isn’t available.",
+      "error": "Something went wrong. Please try again.",
+      "empty": "Your cart is empty.",
+      "signIn": "Sign in",
+      "signInBody": "Sign in to start a cart at this store.",
+      "subtotal": "Subtotal",
+      "checkoutSoon": "Checkout coming soon",
+      "decrease": "Decrease quantity",
+      "increase": "Increase quantity",
+      "remove": "Remove",
+      "viewCart": "View cart",
+      "continueShopping": "Continue shopping",
+      "summary": "Order summary",
+      "itemCount": "{count, plural, one {# item} other {# items}}",
+      "checkoutNote": "You’ll be able to enter your details and check out here soon."
     }
   },
   "admin": {
@@ -1343,7 +1368,9 @@
           "unlock": "Business unlocked.",
           "publish": "Business published.",
           "unpublish": "Business unpublished.",
-          "restore": "Business restored."
+          "restore": "Business restored.",
+          "enable-commerce": "E-commerce enabled.",
+          "disable-commerce": "E-commerce disabled."
         },
         "auditTitle": "Audit trail",
         "auditSubtitle": "Operator actions on this business, newest first.",
@@ -1359,9 +1386,13 @@
             "restored": "Restored",
             "owner_added": "Owner added",
             "owner_removed": "Owner removed",
-            "claimed": "Claimed"
+            "claimed": "Claimed",
+            "commerce_enabled": "E-commerce enabled",
+            "commerce_disabled": "E-commerce disabled"
           }
-        }
+        },
+        "enableCommerce": "Enable e-commerce",
+        "disableCommerce": "Disable e-commerce"
       },
       "owners": {
         "title": "Owners",

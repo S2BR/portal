@@ -20,7 +20,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
-import type { CatalogSighting } from "@/app/api/businesses/[slug]/products/route";
+import type { CatalogProduct } from "@/app/api/businesses/[slug]/products/route";
 import type { ProductSection } from "@/app/api/businesses/[slug]/product-sections/route";
 import { SectionManager } from "@/components/business/products/section-manager";
 import { SectionKanban } from "@/components/business/products/section-kanban";
@@ -234,7 +234,7 @@ export function ProductThumb({
 }
 
 /**
- * The owner "Products" tab: a business's catalog as sightings. Add an existing catalog product (search
+ * The owner "Products" tab: a business’s catalog. Add an existing catalog product (search
  * by name/barcode) or a handmade item via a dialog, each with a price; edit the price/availability or
  * remove it. Money is entered in the currency's main unit and sent as integer minor units (cents).
  * Shares the workspace shell (header + card list) with the other business tabs.
@@ -250,14 +250,14 @@ export function OwnerProducts({ businessSlug }: { businessSlug: string }) {
   const detailHref = (id: string) =>
     `/portal/businesses/${encodeURIComponent(businessSlug)}/products/${id}`;
 
-  const [items, setItems] = useState<CatalogSighting[]>([]);
+  const [items, setItems] = useState<CatalogProduct[]>([]);
   const [sections, setSections] = useState<ProductSection[]>([]);
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
   const [tab, setTab] = useState("products");
   const [page, setPage] = useState(1);
   const [filterValues, setFilterValues] = useState<FilterValue[]>([]);
-  const [pendingDelete, setPendingDelete] = useState<CatalogSighting | null>(
+  const [pendingDelete, setPendingDelete] = useState<CatalogProduct | null>(
     null,
   );
   const [deleting, setDeleting] = useState(false);
@@ -368,7 +368,7 @@ export function OwnerProducts({ businessSlug }: { businessSlug: string }) {
           return;
         }
         const data = (await response.json()) as {
-          products: CatalogSighting[];
+          products: CatalogProduct[];
           sections?: ProductSection[];
         };
         setItems(data.products ?? []);
@@ -389,8 +389,8 @@ export function OwnerProducts({ businessSlug }: { businessSlug: string }) {
     void load();
   }, [load]);
 
-  // Re-adding an existing SKU updates its sighting rather than duplicating, so upsert by id.
-  const upsert = (saved: CatalogSighting) => {
+  // Re-adding an existing SKU updates its listing rather than duplicating, so upsert by id.
+  const upsert = (saved: CatalogProduct) => {
     setItems((current) =>
       current.some((item) => item.id === saved.id)
         ? current.map((item) => (item.id === saved.id ? saved : item))
@@ -682,7 +682,7 @@ export function OwnerProducts({ businessSlug }: { businessSlug: string }) {
  * The add-product dialog, search-first: the owner searches the catalog (Typesense direct) and picks a
  * SKU. If it isn't there, an "add as your own product" button creates a non-catalog item — no upfront
  * catalog-vs-handmade choice. While creating, matching catalog products still surface so the owner
- * carries the existing one instead of a duplicate. Sets a price, then hands the created sighting back.
+ * carries the existing one instead of a duplicate. Sets a price, then hands the created product back.
  */
 function AddProductDialog({
   base,
@@ -693,7 +693,7 @@ function AddProductDialog({
   base: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAdded: (saved: CatalogSighting) => void;
+  onAdded: (saved: CatalogProduct) => void;
 }) {
   const t = useTranslations("businesses.products");
   // Search-first: the owner always searches the catalog; `creating` switches to the "your own
@@ -825,7 +825,7 @@ function AddProductDialog({
         toast.error(t("addError"));
         return;
       }
-      const data = (await response.json()) as { product: CatalogSighting };
+      const data = (await response.json()) as { product: CatalogProduct };
       onAdded(data.product);
       toast.success(t("added"));
       reset();

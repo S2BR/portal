@@ -1,13 +1,13 @@
 "use client";
 
-import { ArrowLeft, Loader2, Star, Trash2 } from "lucide-react";
+import { ArrowLeft, ExternalLink, Loader2, Star, Trash2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type ChangeEvent, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
-import type { CatalogSighting } from "@/app/api/businesses/[slug]/products/route";
+import type { CatalogProduct } from "@/app/api/businesses/[slug]/products/route";
 import type { ProductSection } from "@/app/api/businesses/[slug]/product-sections/route";
 import { displayName, type LocaleText } from "@/lib/taxonomy/admin";
 import { cn } from "@/lib/utils";
@@ -62,7 +62,7 @@ import {
 import { normalizeImage } from "@/lib/uploads/image";
 
 /**
- * The owner's page for one product in a business's catalog (a sighting). Everyone controls the offer
+ * The owner's page for one product in a business's catalog (a product). Everyone controls the offer
  * (price, currency, availability) and can add their OWN photos of it. For a HANDMADE product the
  * business created, its details (name, brand, quantity, description) are editable too; a shared
  * catalog SKU's details are global, so they're shown read-only.
@@ -82,7 +82,7 @@ export function OwnerProductDetail({
   const base = `/api/businesses/${encodeURIComponent(businessSlug)}/products`;
   const listHref = `/portal/businesses/${encodeURIComponent(businessSlug)}/products`;
 
-  const [item, setItem] = useState<CatalogSighting | null>(null);
+  const [item, setItem] = useState<CatalogProduct | null>(null);
   const [loading, setLoading] = useState(true);
   const [price, setPrice] = useState<number | null>(null);
   const [currency, setCurrency] = useState<string>(CURRENCIES[0]);
@@ -100,15 +100,15 @@ export function OwnerProductDetail({
   const [pendingDelete, setPendingDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
-  // Fill the editable fields from a freshly-loaded sighting (leaves unsaved edits alone otherwise).
-  const hydrate = (sighting: CatalogSighting) => {
-    setName(sighting.variant?.product?.name ?? "");
-    setBrand(sighting.variant?.product?.brand ?? "");
-    setAmount(sighting.variant?.size ?? "");
-    setUnit((sighting.variant?.unit as UnitCode | null) ?? null);
-    setDescription(sighting.variant?.product?.description ?? "");
-    setFeatured(sighting.is_featured);
-    setSectionIds(sighting.section_ids);
+  // Fill the editable fields from a freshly-loaded product (leaves unsaved edits alone otherwise).
+  const hydrate = (product: CatalogProduct) => {
+    setName(product.variant?.product?.name ?? "");
+    setBrand(product.variant?.product?.brand ?? "");
+    setAmount(product.variant?.size ?? "");
+    setUnit((product.variant?.unit as UnitCode | null) ?? null);
+    setDescription(product.variant?.product?.description ?? "");
+    setFeatured(product.is_featured);
+    setSectionIds(product.section_ids);
   };
 
   // The business's sections — options for the multi-select below.
@@ -146,7 +146,7 @@ export function OwnerProductDetail({
         setLoading(false);
         return;
       }
-      const data = (await response.json()) as { product: CatalogSighting };
+      const data = (await response.json()) as { product: CatalogProduct };
       setItem(data.product);
       setPrice(data.product.price);
       setCurrency(data.product.currency ?? CURRENCIES[0]);
@@ -191,7 +191,7 @@ export function OwnerProductDetail({
         toast.error(t("actionError"));
         return;
       }
-      const data = (await response.json()) as { product: CatalogSighting };
+      const data = (await response.json()) as { product: CatalogProduct };
       setItem(data.product);
       toast.success(t("updated"));
     } finally {
@@ -259,6 +259,15 @@ export function OwnerProductDetail({
             {t("detail.back")}
           </Link>
         </Button>
+        <a
+          href={`/businesses/${encodeURIComponent(businessSlug)}/products/${encodeURIComponent(item?.slug ?? id)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-muted-foreground hover:text-foreground ms-2 mb-2 inline-flex items-center gap-1.5 text-sm"
+        >
+          <ExternalLink className="size-4" aria-hidden />
+          {t("detail.viewPublic")}
+        </a>
         {loading ? (
           <Skeleton className="h-9 w-64" />
         ) : (
@@ -301,7 +310,7 @@ export function OwnerProductDetail({
             title={t("detail.photosTitle")}
             description={t("detail.photosDescription")}
           >
-            <SightingPhotos
+            <ProductPhotos
               slug={businessSlug}
               id={id}
               images={item.images}
@@ -523,15 +532,15 @@ export function OwnerProductDetail({
   );
 }
 
-type SightingPayload = { sighting: CatalogSighting };
+type ProductPayload = { product: CatalogProduct };
 
 /**
- * The business's own photos of one product (its sighting) — a small gallery. Files are downscaled +
- * re-encoded to WebP in the browser, then streamed straight to S3 via the `sighting-image` upload
- * type; each save returns the fresh sighting. The first photo is the cover; these show on the public
+ * The business's own photos of one product (its product) — a small gallery. Files are downscaled +
+ * re-encoded to WebP in the browser, then streamed straight to S3 via the `store-product-image` upload
+ * type; each save returns the fresh product. The first photo is the cover; these show on the public
  * profile (the global product search keeps the admin image).
  */
-function SightingPhotos({
+function ProductPhotos({
   slug,
   id,
   images,
@@ -539,8 +548,8 @@ function SightingPhotos({
 }: {
   slug: string;
   id: string;
-  images: CatalogSighting["images"];
-  onUpdated: (sighting: CatalogSighting) => void;
+  images: CatalogProduct["images"];
+  onUpdated: (product: CatalogProduct) => void;
 }) {
   const t = useTranslations("businesses.products");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -551,7 +560,7 @@ function SightingPhotos({
   const [config, setConfig] = useState<UploadConfig | null>(null);
 
   useEffect(() => {
-    void fetchUploadConfig("sighting-image").then(setConfig);
+    void fetchUploadConfig("store-product-image").then(setConfig);
   }, []);
 
   const busy = phase !== "idle" || removingId !== null;
@@ -584,14 +593,18 @@ function SightingPhotos({
       });
       setPhase("uploading");
       setProgress(0);
-      const result = await upload<SightingPayload>("sighting-image", prepared, {
-        onProgress: setProgress,
-        onPhase: setPhase,
-        context: { business: slug, sighting: id },
-      });
+      const result = await upload<ProductPayload>(
+        "store-product-image",
+        prepared,
+        {
+          onProgress: setProgress,
+          onPhase: setPhase,
+          context: { business: slug, product_id: id },
+        },
+      );
       setPhase("idle");
       if (result.ok && result.data) {
-        onUpdated(result.data.sighting);
+        onUpdated(result.data.product);
         uploaded += 1;
       } else {
         toast.error(t("photos.error"));
@@ -605,14 +618,14 @@ function SightingPhotos({
 
   async function remove(imageId: string) {
     setRemovingId(imageId);
-    const result = await removeUpload<SightingPayload>("sighting-image", {
+    const result = await removeUpload<ProductPayload>("store-product-image", {
       business: slug,
-      sighting: id,
+      product_id: id,
       image: imageId,
     });
     setRemovingId(null);
     if (result.ok && result.data) {
-      onUpdated(result.data.sighting);
+      onUpdated(result.data.product);
     } else {
       toast.error(t("photos.error"));
     }

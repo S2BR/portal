@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 
 import { BusinessHeader } from "@/components/business/public/business-header";
 import { BusinessTabs } from "@/components/business/public/business-tabs";
+import { CartProvider } from "@/components/business/public/cart-provider";
 import { getCachedPublicBusiness } from "@/lib/public-business";
 
 /**
@@ -31,18 +32,20 @@ export default async function BusinessLayout({
   return (
     // `overflow-x-clip` (not `hidden`, which would break the sticky bars) contains the edge-to-edge
     // bars' full-bleed width so it never spills into a horizontal scrollbar.
-    <div className="overflow-x-clip">
-      <BusinessHeader business={business} />
-      {/* Full-width, edge-to-edge sticky bar; its inner content aligns to the content container. */}
-      <BusinessTabs
-        slug={business.slug}
-        name={business.name}
-        logo={business.logo}
-      />
-      {/* Extra bottom space on mobile clears the header's fixed action bar. */}
-      <div className="mx-auto w-full max-w-[90rem] px-4 pt-8 pb-24 sm:px-6 sm:pb-16">
-        {children}
+    <CartProvider slug={business.slug} enabled={business.is_commerce_enabled}>
+      <div className="overflow-x-clip">
+        <BusinessHeader business={business} />
+        {/* Full-width, edge-to-edge sticky bar; its inner content aligns to the content container. */}
+        <BusinessTabs
+          slug={business.slug}
+          name={business.name}
+          logo={business.logo}
+        />
+        {/* Extra bottom space on mobile clears the header's fixed action bar. */}
+        <div className="mx-auto w-full max-w-[90rem] px-4 pt-8 pb-24 sm:px-6 sm:pb-16">
+          {children}
+        </div>
       </div>
-    </div>
+    </CartProvider>
   );
 }

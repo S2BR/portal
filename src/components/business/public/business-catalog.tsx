@@ -1,17 +1,28 @@
 import { Package } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import Link from "next/link";
 
+import { AddToCartButton } from "@/components/business/public/add-to-cart-button";
 import { CatalogSectionNav } from "@/components/business/public/catalog-section-nav";
 import type { PublicCatalogItem, PublicSection } from "@/lib/public-business";
+import { formatMoney } from "@/lib/money";
 import { unitFor } from "@/lib/products/units";
 
-/** One product tile — cover (or placeholder), name, brand · size, price. Locale-agnostic markup. */
+/**
+ * One product tile — cover (or placeholder), name, brand · size, price. When `slug` is given the tile
+ * links to the product's public page; when `commerceEnabled` is given it also carries an add-to-cart
+ * button (which itself gates on the shopper being signed in).
+ */
 export function PublicProductCard({
   product,
   locale,
+  slug,
+  commerceEnabled = false,
 }: {
   product: PublicCatalogItem;
   locale: string;
+  slug?: string;
+  commerceEnabled?: boolean;
 }) {
   const info = product.variant?.product;
   const quantity =
@@ -22,14 +33,11 @@ export function PublicProductCard({
     null;
   const price =
     product.price !== null
-      ? new Intl.NumberFormat(locale, {
-          style: "currency",
-          currency: product.currency ?? "BRL",
-        }).format(product.price / 100)
+      ? formatMoney(product.price, product.currency, locale)
       : null;
 
-  return (
-    <div className="overflow-hidden rounded-xl border">
+  const body = (
+    <>
       <div className="bg-muted text-muted-foreground flex aspect-square w-full items-center justify-center">
         {product.cover_image ? (
           // eslint-disable-next-line @next/next/no-img-element -- presigned S3 url, not a bundled asset
@@ -52,6 +60,26 @@ export function PublicProductCard({
         ) : null}
         {price ? <p className="text-sm tabular-nums">{price}</p> : null}
       </div>
+    </>
+  );
+
+  return (
+    <div className="flex flex-col overflow-hidden rounded-xl border">
+      {slug ? (
+        <Link
+          href={`/businesses/${slug}/products/${product.slug}`}
+          className="hover:bg-muted/30 block transition-colors"
+        >
+          {body}
+        </Link>
+      ) : (
+        body
+      )}
+      {commerceEnabled ? (
+        <div className="mt-auto px-3 pb-3">
+          <AddToCartButton productId={product.id} full />
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -65,10 +93,14 @@ export async function BusinessCatalog({
   products,
   sections,
   locale,
+  slug,
+  commerceEnabled = false,
 }: {
   products: PublicCatalogItem[];
   sections: PublicSection[];
   locale: string;
+  slug: string;
+  commerceEnabled?: boolean;
 }) {
   const t = await getTranslations("businesses.public");
 
@@ -80,6 +112,8 @@ export async function BusinessCatalog({
             key={product.id}
             product={product}
             locale={locale}
+            slug={slug}
+            commerceEnabled={commerceEnabled}
           />
         ))}
       </div>
@@ -122,6 +156,8 @@ export async function BusinessCatalog({
                   key={`${section.id}-${product.id}`}
                   product={product}
                   locale={locale}
+                  slug={slug}
+                  commerceEnabled={commerceEnabled}
                 />
               ))}
             </div>
@@ -139,6 +175,8 @@ export async function BusinessCatalog({
                   key={product.id}
                   product={product}
                   locale={locale}
+                  slug={slug}
+                  commerceEnabled={commerceEnabled}
                 />
               ))}
             </div>

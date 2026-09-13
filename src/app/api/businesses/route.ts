@@ -144,6 +144,8 @@ export interface Business {
   is_published: boolean;
   /** Operator lock (moderation override): frozen for the owner + hidden from public. */
   is_locked: boolean;
+  /** Admin-controlled paid e-commerce feature; the owner sees the status but can't change it. */
+  is_commerce_enabled: boolean;
   /** Aggregate rating from publicly-visible reviews; `rating_avg` is 0 when there are none. */
   rating_avg: number;
   rating_count: number;

@@ -123,6 +123,8 @@ export async function BusinessProfile({
                     key={product.id}
                     product={product}
                     locale={locale}
+                    slug={business.slug}
+                    commerceEnabled={business.is_commerce_enabled}
                   />
                 ))}
               </div>

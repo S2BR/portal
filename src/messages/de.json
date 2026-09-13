@@ -1042,7 +1042,8 @@
         "detailsDescription": "Name, Marke, Menge und Beschreibung, die Kunden sehen.",
         "sharedNote": "Dies ist ein Produkt aus dem gemeinsamen Katalog – seine Details werden zentral verwaltet. Entferne es und füge deine eigene Version hinzu, um sie zu ändern.",
         "photosTitle": "Fotos",
-        "photosDescription": "Deine eigenen Fotos dieses Produkts. Das erste ist das Titelbild; sie erscheinen in deinem Profil."
+        "photosDescription": "Deine eigenen Fotos dieses Produkts. Das erste ist das Titelbild; sie erscheinen in deinem Profil.",
+        "viewPublic": "Öffentliche Seite ansehen"
       },
       "searchProducts": "Produkte suchen",
       "allStatuses": "Alle Status",
@@ -1106,6 +1107,30 @@
       "ownBarcodeLabel": "Barcode",
       "ownBarcodeHint": "Falls vorhanden, den Barcode eingeben — er verknüpft mit dem gemeinsamen Katalog. Leer lassen für ein Produkt, das du selbst herstellst.",
       "ownBarcodePlaceholder": "z. B. 7891234567890"
+    },
+    "cart": {
+      "cart": "Warenkorb",
+      "title": "Dein Warenkorb",
+      "subtitle": "Produkte, die du in diesem Geschäft hinzugefügt hast.",
+      "openCart": "Warenkorb öffnen",
+      "add": "In den Warenkorb",
+      "added": "Zum Warenkorb hinzugefügt",
+      "signInToAdd": "Zum Hinzufügen anmelden",
+      "unavailable": "Dieses Produkt ist nicht verfügbar.",
+      "error": "Etwas ist schiefgelaufen. Bitte erneut versuchen.",
+      "empty": "Dein Warenkorb ist leer.",
+      "signIn": "Anmelden",
+      "signInBody": "Melde dich an, um in diesem Geschäft einen Warenkorb zu starten.",
+      "subtotal": "Zwischensumme",
+      "checkoutSoon": "Kasse folgt in Kürze",
+      "decrease": "Menge verringern",
+      "increase": "Menge erhöhen",
+      "remove": "Entfernen",
+      "viewCart": "Warenkorb ansehen",
+      "continueShopping": "Weiter einkaufen",
+      "summary": "Bestellübersicht",
+      "itemCount": "{count, plural, one {# Artikel} other {# Artikel}}",
+      "checkoutNote": "Bald kannst du hier deine Daten eingeben und zur Kasse gehen."
     }
   },
   "admin": {
@@ -1343,7 +1368,9 @@
           "unlock": "Unternehmen entsperrt.",
           "publish": "Unternehmen veröffentlicht.",
           "unpublish": "Veröffentlichung des Unternehmens aufgehoben.",
-          "restore": "Unternehmen wiederhergestellt."
+          "restore": "Unternehmen wiederhergestellt.",
+          "enable-commerce": "E-Commerce aktiviert.",
+          "disable-commerce": "E-Commerce deaktiviert."
         },
         "auditTitle": "Prüfprotokoll",
         "auditSubtitle": "Betreiberaktionen zu diesem Unternehmen, neueste zuerst.",
@@ -1359,9 +1386,13 @@
             "restored": "Wiederhergestellt",
             "owner_added": "Inhaber hinzugefügt",
             "owner_removed": "Inhaber entfernt",
-            "claimed": "Beansprucht"
+            "claimed": "Beansprucht",
+            "commerce_enabled": "E-Commerce aktiviert",
+            "commerce_disabled": "E-Commerce deaktiviert"
           }
-        }
+        },
+        "enableCommerce": "E-Commerce aktivieren",
+        "disableCommerce": "E-Commerce deaktivieren"
       },
       "owners": {
         "title": "Inhaber",
