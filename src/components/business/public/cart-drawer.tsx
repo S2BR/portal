@@ -45,7 +45,7 @@ export function CartDrawer() {
           <ShoppingCart className="size-4" />
           {t("cart")}
           {count > 0 ? (
-            <span className="bg-primary text-primary-foreground absolute -top-2 -right-2 flex size-5 items-center justify-center rounded-full text-xs font-bold tabular-nums">
+            <span className="bg-primary text-primary-foreground absolute -top-2 -right-2 flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] leading-none font-semibold tabular-nums">
               {count}
             </span>
           ) : null}
