@@ -637,7 +637,9 @@
       "today": "Heute",
       "tomorrow": "Morgen",
       "allCategories": "Alle Kategorien",
-      "moreCount": "+{count} weitere"
+      "moreCount": "+{count} weitere",
+      "openPhoto": "Foto {number} öffnen",
+      "goToPhoto": "Zu Foto {number} springen"
     },
     "publish": {
       "checklistTitle": "Noch nicht live",
@@ -900,7 +902,9 @@
         "removedToast": "Bild entfernt",
         "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut",
         "reorderImage": "Drag to reorder",
-        "cropPadding": "Abstand"
+        "cropPadding": "Abstand",
+        "captionPlaceholder": "Bildunterschrift hinzufügen…",
+        "captionLabel": "Bildunterschrift"
       },
       "loadError": "Dieses Unternehmen konnte nicht geladen werden. Bitte versuchen Sie es erneut.",
       "retry": "Erneut versuchen",

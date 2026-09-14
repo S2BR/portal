@@ -637,7 +637,9 @@
       "today": "اليوم",
       "tomorrow": "غدًا",
       "allCategories": "كل الفئات",
-      "moreCount": "+{count} أخرى"
+      "moreCount": "+{count} أخرى",
+      "openPhoto": "افتح الصورة {number}",
+      "goToPhoto": "انتقل إلى الصورة {number}"
     },
     "publish": {
       "checklistTitle": "غير منشور بعد",
@@ -900,7 +902,9 @@
         "removedToast": "تمت إزالة الصورة",
         "error": "حدث خطأ ما. يُرجى المحاولة مرة أخرى",
         "reorderImage": "Drag to reorder",
-        "cropPadding": "التباعد"
+        "cropPadding": "التباعد",
+        "captionPlaceholder": "أضف تعليقًا…",
+        "captionLabel": "تعليق الصورة"
       },
       "loadError": "تعذّر تحميل هذا النشاط التجاري. يُرجى المحاولة مرة أخرى.",
       "retry": "حاول مرة أخرى",

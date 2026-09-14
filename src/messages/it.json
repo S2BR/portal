@@ -637,7 +637,9 @@
       "today": "Oggi",
       "tomorrow": "Domani",
       "allCategories": "Tutte le categorie",
-      "moreCount": "+{count} in più"
+      "moreCount": "+{count} in più",
+      "openPhoto": "Apri la foto {number}",
+      "goToPhoto": "Vai alla foto {number}"
     },
     "publish": {
       "checklistTitle": "Non ancora online",
@@ -900,7 +902,9 @@
         "removedToast": "Immagine rimossa",
         "error": "Qualcosa è andato storto. Riprova",
         "reorderImage": "Drag to reorder",
-        "cropPadding": "Spaziatura"
+        "cropPadding": "Spaziatura",
+        "captionPlaceholder": "Aggiungi una didascalia…",
+        "captionLabel": "Didascalia dell’immagine"
       },
       "loadError": "Non è stato possibile caricare questa attività. Riprova.",
       "retry": "Riprova",
