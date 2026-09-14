@@ -3,7 +3,7 @@
 import { Minus, Package, Plus, ShoppingCart, Trash2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useCart } from "@/components/business/public/cart-provider";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { formatMoney } from "@/lib/money";
+import { cn } from "@/lib/utils";
 
 /**
  * The store's cart: a header trigger (cart icon + item-count badge) opening a side sheet with the lines
@@ -27,12 +28,23 @@ export function CartDrawer() {
   const locale = useLocale();
   const [open, setOpen] = useState(false);
 
+  const count = cart?.item_count ?? 0;
+  const items = cart?.items ?? [];
+
+  // Replay the badge "pop" whenever the count goes UP (a product was added). A changing key remounts
+  // the badge so the CSS animation restarts each time; `pop === 0` (initial load) stays un-animated.
+  const [pop, setPop] = useState(0);
+  const previousCount = useRef(count);
+  useEffect(() => {
+    if (count > previousCount.current) {
+      setPop((n) => n + 1);
+    }
+    previousCount.current = count;
+  }, [count]);
+
   if (!enabled) {
     return null;
   }
-
-  const count = cart?.item_count ?? 0;
-  const items = cart?.items ?? [];
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -45,7 +57,13 @@ export function CartDrawer() {
           <ShoppingCart className="size-4" />
           {t("cart")}
           {count > 0 ? (
-            <span className="bg-primary text-primary-foreground absolute -top-2 -right-2 flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] leading-none font-semibold tabular-nums">
+            <span
+              key={pop}
+              className={cn(
+                "bg-primary text-primary-foreground absolute -top-2 -right-2 flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] leading-none font-semibold tabular-nums",
+                pop > 0 && "cart-badge-pop",
+              )}
+            >
               {count}
             </span>
           ) : null}

@@ -1134,7 +1134,8 @@
       "continueShopping": "Continue shopping",
       "summary": "Order summary",
       "itemCount": "{count, plural, one {# item} other {# items}}",
-      "checkoutNote": "You’ll be able to enter your details and check out here soon."
+      "checkoutNote": "You’ll be able to enter your details and check out here soon.",
+      "quantity": "Quantity"
     }
   },
   "admin": {

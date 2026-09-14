@@ -1134,7 +1134,8 @@
       "continueShopping": "買い物を続ける",
       "summary": "注文の概要",
       "itemCount": "{count, plural, other {#点}}",
-      "checkoutNote": "まもなく、ここで情報を入力して購入手続きができるようになります。"
+      "checkoutNote": "まもなく、ここで情報を入力して購入手続きができるようになります。",
+      "quantity": "数量"
     }
   },
   "admin": {
