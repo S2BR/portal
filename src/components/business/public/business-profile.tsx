@@ -170,10 +170,16 @@ export async function BusinessProfile({
                   rel="noopener noreferrer"
                   className="hover:text-foreground focus-visible:ring-ring block rounded-md transition-colors hover:underline focus-visible:ring-2 focus-visible:outline-none"
                 >
-                  <AddressLines lines={formatBusinessAddress(main, locale)} />
+                  <AddressLines
+                    lines={formatBusinessAddress(main, locale)}
+                    className="space-y-0 leading-snug"
+                  />
                 </a>
               ) : (
-                <AddressLines lines={formatBusinessAddress(main, locale)} />
+                <AddressLines
+                  lines={formatBusinessAddress(main, locale)}
+                  className="space-y-0 leading-snug"
+                />
               )}
             </div>
           ) : null}
