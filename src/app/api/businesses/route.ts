@@ -106,6 +106,8 @@ export interface BannerFocal {
 export interface BusinessImage {
   id: string;
   url: string;
+  /** Optional owner-written caption, shown under the image on the profile. */
+  caption: string | null;
 }
 
 /**

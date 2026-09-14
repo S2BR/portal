@@ -637,7 +637,9 @@
       "today": "Today",
       "tomorrow": "Tomorrow",
       "allCategories": "All categories",
-      "moreCount": "+{count} more"
+      "moreCount": "+{count} more",
+      "openPhoto": "Open photo {number}",
+      "goToPhoto": "Go to photo {number}"
     },
     "publish": {
       "checklistTitle": "Not live yet",
@@ -900,7 +902,9 @@
         "removedToast": "Image removed",
         "error": "Something went wrong. Please try again",
         "reorderImage": "Drag to reorder",
-        "cropPadding": "Padding"
+        "cropPadding": "Padding",
+        "captionPlaceholder": "Add a caption…",
+        "captionLabel": "Image caption"
       },
       "loadError": "Couldn't load this business. Please try again.",
       "retry": "Try again",

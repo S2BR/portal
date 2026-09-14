@@ -637,7 +637,9 @@
       "today": "今日",
       "tomorrow": "明日",
       "allCategories": "すべてのカテゴリ",
-      "moreCount": "他{count}件"
+      "moreCount": "他{count}件",
+      "openPhoto": "写真{number}を開く",
+      "goToPhoto": "写真{number}へ移動"
     },
     "publish": {
       "checklistTitle": "まだ公開されていません",
@@ -900,7 +902,9 @@
         "removedToast": "画像を削除しました",
         "error": "問題が発生しました。もう一度お試しください",
         "reorderImage": "Drag to reorder",
-        "cropPadding": "余白"
+        "cropPadding": "余白",
+        "captionPlaceholder": "キャプションを追加…",
+        "captionLabel": "画像のキャプション"
       },
       "loadError": "このビジネスを読み込めませんでした。もう一度お試しください。",
       "retry": "もう一度試す",

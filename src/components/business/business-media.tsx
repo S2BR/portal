@@ -22,6 +22,7 @@ import {
 } from "@/components/media/media-tiles";
 import { Button } from "@/components/ui/button";
 import { overlayClass } from "@/components/ui/drag-handle";
+import { Input } from "@/components/ui/input";
 import { ImageCropDialog } from "@/components/ui/image-crop-dialog";
 import { SortableList } from "@/components/ui/sortable-list";
 import {
@@ -682,6 +683,41 @@ export function BusinessGallery({
     }
   }
 
+  // Save one image's caption (on blur), optimistically. No-op when unchanged so a plain focus/blur
+  // never fires a request. An empty value clears the caption.
+  async function saveCaption(imageId: string, raw: string) {
+    const caption = raw.trim();
+    const current = gallery.find((image) => image.id === imageId);
+    if (!current || (current.caption ?? "") === caption) {
+      return;
+    }
+    const previous = gallery;
+    setGallery((list) =>
+      list.map((image) =>
+        image.id === imageId ? { ...image, caption: caption || null } : image,
+      ),
+    );
+    const response = await fetch(
+      `/api/businesses/${encodeURIComponent(slug)}/images/${encodeURIComponent(imageId)}`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ caption: caption || null }),
+      },
+    );
+    if (!response.ok) {
+      setGallery(previous); // rollback
+      toast.error(t("error"));
+      return;
+    }
+    const data = (await response.json().catch(() => null)) as {
+      business?: Business;
+    } | null;
+    if (data?.business) {
+      onUpdated(data.business);
+    }
+  }
+
   async function reorder(next: NonNullable<Business["images"]>) {
     const previous = gallery;
     setGallery(next); // optimistic
@@ -760,6 +796,18 @@ export function BusinessGallery({
                   <GripVertical className="size-4" aria-hidden />
                 </Button>
               ) : null}
+              <Input
+                key={image.id}
+                defaultValue={image.caption ?? ""}
+                maxLength={280}
+                placeholder={t("captionPlaceholder")}
+                aria-label={t("captionLabel")}
+                disabled={busy}
+                onBlur={(event) =>
+                  void saveCaption(image.id, event.target.value)
+                }
+                className="mt-1.5 h-8 text-xs"
+              />
             </div>
           )}
         />

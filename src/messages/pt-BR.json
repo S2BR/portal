@@ -637,7 +637,9 @@
       "today": "Hoje",
       "tomorrow": "Amanhã",
       "allCategories": "Todas as categorias",
-      "moreCount": "+{count} mais"
+      "moreCount": "+{count} mais",
+      "openPhoto": "Abrir foto {number}",
+      "goToPhoto": "Ir para a foto {number}"
     },
     "publish": {
       "checklistTitle": "Ainda não está no ar",
@@ -900,7 +902,9 @@
         "removedToast": "Imagem removida",
         "error": "Algo deu errado. Tente novamente",
         "reorderImage": "Arraste para reordenar",
-        "cropPadding": "Espaçamento"
+        "cropPadding": "Espaçamento",
+        "captionPlaceholder": "Adicionar uma legenda…",
+        "captionLabel": "Legenda da imagem"
       },
       "loadError": "Não foi possível carregar esta empresa. Tente novamente.",
       "retry": "Tentar de novo",
