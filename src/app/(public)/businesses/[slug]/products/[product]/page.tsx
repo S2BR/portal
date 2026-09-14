@@ -128,7 +128,12 @@ export default async function BusinessProductPage({
           ) : null}
 
           <div className="pt-2">
-            <AddToCartButton productId={product.id} size="lg" full />
+            <AddToCartButton
+              productId={product.id}
+              size="lg"
+              full
+              withQuantity
+            />
           </div>
         </div>
       </div>

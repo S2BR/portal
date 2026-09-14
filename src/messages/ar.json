@@ -1134,7 +1134,8 @@
       "continueShopping": "متابعة التسوق",
       "summary": "ملخص الطلب",
       "itemCount": "{count, plural, zero {# منتج} one {منتج واحد} two {منتجان} few {# منتجات} many {# منتجًا} other {# منتج}}",
-      "checkoutNote": "ستتمكن قريبًا من إدخال بياناتك وإتمام الشراء هنا."
+      "checkoutNote": "ستتمكن قريبًا من إدخال بياناتك وإتمام الشراء هنا.",
+      "quantity": "الكمية"
     }
   },
   "admin": {

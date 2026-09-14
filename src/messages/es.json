@@ -1134,7 +1134,8 @@
       "continueShopping": "Seguir comprando",
       "summary": "Resumen del pedido",
       "itemCount": "{count, plural, one {# artículo} other {# artículos}}",
-      "checkoutNote": "Pronto podrás ingresar tus datos y finalizar la compra aquí."
+      "checkoutNote": "Pronto podrás ingresar tus datos y finalizar la compra aquí.",
+      "quantity": "Cantidad"
     }
   },
   "admin": {
