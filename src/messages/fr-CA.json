@@ -1114,7 +1114,17 @@
       "ownBarcodePlaceholder": "p. ex. 7891234567890",
       "displayNameLabel": "Nom affiché",
       "displayNamePlaceholder": "Nom du produit",
-      "displayNameHint": "Affiché aux clients pour cette annonce. Laissez vide pour utiliser le nom du catalogue."
+      "displayNameHint": "Affiché aux clients pour cette annonce. Laissez vide pour utiliser le nom du catalogue.",
+      "highlights": {
+        "title": "En vedette",
+        "hint": "Choisissez les produits à mettre en vedette sur votre profil public et glissez pour définir leur ordre d'affichage.",
+        "empty": "Aucun produit en vedette pour l'instant. Ajoutez-en pour les mettre en avant sur votre profil.",
+        "add": "Ajouter un produit",
+        "addSearch": "Rechercher des produits…",
+        "addEmpty": "Aucun produit à ajouter.",
+        "remove": "Retirer des vedettes",
+        "reorder": "Réordonner"
+      }
     },
     "cart": {
       "cart": "Panier",

@@ -1114,7 +1114,17 @@
       "ownBarcodePlaceholder": "ex.: 7891234567890",
       "displayNameLabel": "Nome de exibição",
       "displayNamePlaceholder": "Nome do produto",
-      "displayNameHint": "Exibido aos clientes neste anúncio. Deixe em branco para usar o nome do catálogo."
+      "displayNameHint": "Exibido aos clientes neste anúncio. Deixe em branco para usar o nome do catálogo.",
+      "highlights": {
+        "title": "Em destaque",
+        "hint": "Escolha quais produtos destacar no seu perfil público e arraste para definir a ordem em que aparecem.",
+        "empty": "Nenhum produto em destaque ainda. Adicione alguns para destacá-los no seu perfil.",
+        "add": "Adicionar produto",
+        "addSearch": "Buscar produtos…",
+        "addEmpty": "Nenhum produto para adicionar.",
+        "remove": "Remover dos destaques",
+        "reorder": "Reordenar"
+      }
     },
     "cart": {
       "cart": "Carrinho",

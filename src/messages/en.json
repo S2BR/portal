@@ -1114,7 +1114,17 @@
       "ownBarcodePlaceholder": "e.g. 7891234567890",
       "displayNameLabel": "Display name",
       "displayNamePlaceholder": "Product name",
-      "displayNameHint": "Shown to shoppers on this listing. Leave blank to use the catalog name."
+      "displayNameHint": "Shown to shoppers on this listing. Leave blank to use the catalog name.",
+      "highlights": {
+        "title": "Highlighted",
+        "hint": "Choose which products to feature on your public profile, and drag to set the order they appear in.",
+        "empty": "No highlighted products yet. Add some to feature them on your profile.",
+        "add": "Add product",
+        "addSearch": "Search products…",
+        "addEmpty": "No products to add.",
+        "remove": "Remove from highlights",
+        "reorder": "Reorder"
+      }
     },
     "cart": {
       "cart": "Cart",

@@ -26,6 +26,8 @@ export interface CatalogProduct {
   images: { id: string; url: string | null }[];
   /** Whether the owner has highlighted this product (shown on the public profile). */
   is_featured: boolean;
+  /** Position among the business's highlighted products (profile strip order); null if not featured. */
+  featured_order: number | null;
   /** The owner sections (their ids) this product belongs to. */
   section_ids: string[];
   variant: {

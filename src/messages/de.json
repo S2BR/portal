@@ -1114,7 +1114,17 @@
       "ownBarcodePlaceholder": "z. B. 7891234567890",
       "displayNameLabel": "Anzeigename",
       "displayNamePlaceholder": "Produktname",
-      "displayNameHint": "Wird Kunden bei diesem Eintrag angezeigt. Leer lassen, um den Katalognamen zu verwenden."
+      "displayNameHint": "Wird Kunden bei diesem Eintrag angezeigt. Leer lassen, um den Katalognamen zu verwenden.",
+      "highlights": {
+        "title": "Hervorgehoben",
+        "hint": "Wähle, welche Produkte auf deinem öffentlichen Profil hervorgehoben werden, und ziehe sie in die gewünschte Reihenfolge.",
+        "empty": "Noch keine hervorgehobenen Produkte. Füge welche hinzu, um sie auf deinem Profil zu zeigen.",
+        "add": "Produkt hinzufügen",
+        "addSearch": "Produkte suchen…",
+        "addEmpty": "Keine Produkte zum Hinzufügen.",
+        "remove": "Aus Hervorhebungen entfernen",
+        "reorder": "Neu anordnen"
+      }
     },
     "cart": {
       "cart": "Warenkorb",
