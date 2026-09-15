@@ -7,13 +7,14 @@ import { CatalogSectionNav } from "@/components/business/public/catalog-section-
 import type { PublicCatalogItem, PublicSection } from "@/lib/public-business";
 import { formatMoney } from "@/lib/money";
 import { unitFor } from "@/lib/products/units";
+import { cn } from "@/lib/utils";
 
 /**
  * One product tile — cover (or placeholder), name, brand · size, price. When `slug` is given the tile
  * links to the product's public page; when `commerceEnabled` is given it also carries an add-to-cart
  * button (which itself gates on the shopper being signed in).
  */
-export function PublicProductCard({
+export async function PublicProductCard({
   product,
   locale,
   slug,
@@ -24,7 +25,9 @@ export function PublicProductCard({
   slug?: string;
   commerceEnabled?: boolean;
 }) {
+  const t = await getTranslations("businesses.public");
   const info = product.variant?.product;
+  const outOfStock = !product.is_available;
   const quantity =
     [product.variant?.size, unitFor(product.variant?.unit)?.symbol]
       .filter((part): part is string => Boolean(part))
@@ -38,21 +41,39 @@ export function PublicProductCard({
 
   const body = (
     <>
-      <div className="bg-muted text-muted-foreground flex aspect-square w-full items-center justify-center">
+      <div className="bg-muted text-muted-foreground relative flex aspect-square w-full items-center justify-center">
         {product.cover_image ? (
           // eslint-disable-next-line @next/next/no-img-element -- presigned S3 url, not a bundled asset
           <img
             src={product.cover_image}
             alt={info?.name ?? ""}
-            className="size-full object-cover"
+            className={cn(
+              "size-full object-cover",
+              outOfStock && "opacity-60 grayscale",
+            )}
             loading="lazy"
           />
         ) : (
-          <Package className="size-6" aria-hidden />
+          <Package
+            className={cn("size-6", outOfStock && "opacity-60")}
+            aria-hidden
+          />
         )}
+        {outOfStock ? (
+          <span className="bg-background/90 text-foreground absolute top-2 left-2 rounded-full px-2 py-0.5 text-xs font-medium shadow-sm backdrop-blur">
+            {t("outOfStock")}
+          </span>
+        ) : null}
       </div>
       <div className="space-y-0.5 p-3">
-        <p className="truncate text-sm font-medium">{info?.name ?? "—"}</p>
+        <p
+          className={cn(
+            "truncate text-sm font-medium",
+            outOfStock && "text-muted-foreground",
+          )}
+        >
+          {info?.name ?? "—"}
+        </p>
         {info?.brand || quantity ? (
           <p className="text-muted-foreground truncate text-xs">
             {[info?.brand, quantity].filter(Boolean).join(" · ")}
@@ -77,7 +98,11 @@ export function PublicProductCard({
       )}
       {commerceEnabled ? (
         <div className="mt-auto px-3 pb-3">
-          <AddToCartButton productId={product.id} full />
+          <AddToCartButton
+            productId={product.id}
+            available={product.is_available}
+            full
+          />
         </div>
       ) : null}
     </div>

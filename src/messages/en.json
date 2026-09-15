@@ -639,7 +639,8 @@
       "allCategories": "All categories",
       "moreCount": "+{count} more",
       "openPhoto": "Open photo {number}",
-      "goToPhoto": "Go to photo {number}"
+      "goToPhoto": "Go to photo {number}",
+      "outOfStock": "Out of stock"
     },
     "publish": {
       "checklistTitle": "Not live yet",
@@ -1110,7 +1111,10 @@
       },
       "ownBarcodeLabel": "Barcode",
       "ownBarcodeHint": "If it has a barcode, enter it — it links to the shared catalog. Leave empty for a product you make yourself.",
-      "ownBarcodePlaceholder": "e.g. 7891234567890"
+      "ownBarcodePlaceholder": "e.g. 7891234567890",
+      "displayNameLabel": "Display name",
+      "displayNamePlaceholder": "Product name",
+      "displayNameHint": "Shown to shoppers on this listing. Leave blank to use the catalog name."
     },
     "cart": {
       "cart": "Cart",
@@ -1135,7 +1139,8 @@
       "summary": "Order summary",
       "itemCount": "{count, plural, one {# item} other {# items}}",
       "checkoutNote": "You’ll be able to enter your details and check out here soon.",
-      "quantity": "Quantity"
+      "quantity": "Quantity",
+      "outOfStock": "Out of stock"
     }
   },
   "admin": {
@@ -1870,7 +1875,7 @@
       },
       "actions": {
         "review_written": "Write a review",
-        "sighting_added": "Add a product sighting",
+        "listing_added": "Add a product listing",
         "business_created": "Create a business",
         "product_approved": "Product approved",
         "claim_approved": "Claim approved",

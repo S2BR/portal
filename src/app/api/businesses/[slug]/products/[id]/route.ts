@@ -11,6 +11,8 @@ import type { CatalogProduct } from "../route";
  * rejected by the API (422).
  */
 interface UpdateBody {
+  /** The business's display-name override for this listing (null/empty clears it). */
+  name?: string | null;
   price?: number | null;
   currency?: string | null;
   location_label?: string | null;

@@ -15,13 +15,21 @@ import { toast } from "sonner";
 import { useCurrentUser } from "@/components/auth/current-user";
 import type { PublicCart, PublicCartItem } from "@/lib/public-business";
 
-/** Re-roll the item count + subtotal after an optimistic line change, so the UI stays consistent. */
+/**
+ * Re-roll the item count + subtotal after an optimistic line change, so the UI stays consistent.
+ * Only available lines count toward the totals — unavailable ones are shown but excluded (matches
+ * the server's CartResource).
+ */
 function withTotals(cart: PublicCart, items: PublicCartItem[]): PublicCart {
+  const available = items.filter((item) => item.is_available);
   return {
     ...cart,
     items,
-    item_count: items.reduce((total, item) => total + item.quantity, 0),
-    subtotal: items.reduce((total, item) => total + (item.line_total ?? 0), 0),
+    item_count: available.reduce((total, item) => total + item.quantity, 0),
+    subtotal: available.reduce(
+      (total, item) => total + (item.line_total ?? 0),
+      0,
+    ),
   };
 }
 

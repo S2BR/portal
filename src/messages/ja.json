@@ -639,7 +639,8 @@
       "allCategories": "すべてのカテゴリ",
       "moreCount": "他{count}件",
       "openPhoto": "写真{number}を開く",
-      "goToPhoto": "写真{number}へ移動"
+      "goToPhoto": "写真{number}へ移動",
+      "outOfStock": "在庫切れ"
     },
     "publish": {
       "checklistTitle": "まだ公開されていません",
@@ -1110,7 +1111,10 @@
       },
       "ownBarcodeLabel": "バーコード",
       "ownBarcodeHint": "バーコードがある場合は入力してください。共有カタログにリンクされます。自分で作る商品の場合は空欄のまま。",
-      "ownBarcodePlaceholder": "例：7891234567890"
+      "ownBarcodePlaceholder": "例：7891234567890",
+      "displayNameLabel": "表示名",
+      "displayNamePlaceholder": "商品名",
+      "displayNameHint": "この出品で買い手に表示されます。空欄の場合はカタログ名を使用します。"
     },
     "cart": {
       "cart": "カート",
@@ -1135,7 +1139,8 @@
       "summary": "注文の概要",
       "itemCount": "{count, plural, other {#点}}",
       "checkoutNote": "まもなく、ここで情報を入力して購入手続きができるようになります。",
-      "quantity": "数量"
+      "quantity": "数量",
+      "outOfStock": "在庫切れ"
     }
   },
   "admin": {
@@ -1870,7 +1875,7 @@
       },
       "actions": {
         "review_written": "レビューを書く",
-        "sighting_added": "製品を追加",
+        "listing_added": "製品を追加",
         "business_created": "ビジネスを作成",
         "product_approved": "製品が承認された",
         "claim_approved": "申請が承認された",

@@ -98,17 +98,22 @@ export default async function BusinessProductPage({
       </Link>
 
       <div className="grid gap-8 sm:grid-cols-2">
-        <div className="bg-muted text-muted-foreground flex aspect-square items-center justify-center overflow-hidden rounded-2xl">
+        <div className="bg-muted text-muted-foreground relative flex aspect-square items-center justify-center overflow-hidden rounded-2xl">
           {product.cover_image ? (
             // eslint-disable-next-line @next/next/no-img-element -- presigned S3 url, not a bundled asset
             <img
               src={product.cover_image}
               alt={info?.name ?? ""}
-              className="size-full object-cover"
+              className={`size-full object-cover${product.is_available ? "" : " opacity-60 grayscale"}`}
             />
           ) : (
             <Package className="size-10" aria-hidden />
           )}
+          {!product.is_available ? (
+            <span className="bg-background/90 text-foreground absolute top-3 left-3 rounded-full px-3 py-1 text-sm font-medium shadow-sm backdrop-blur">
+              {t("outOfStock")}
+            </span>
+          ) : null}
         </div>
 
         <div className="flex flex-col gap-4">
@@ -130,6 +135,7 @@ export default async function BusinessProductPage({
           <div className="pt-2">
             <AddToCartButton
               productId={product.id}
+              available={product.is_available}
               size="lg"
               full
               withQuantity
