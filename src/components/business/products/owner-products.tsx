@@ -23,6 +23,7 @@ import { toast } from "sonner";
 import type { CatalogProduct } from "@/app/api/businesses/[slug]/products/route";
 import type { ProductSection } from "@/app/api/businesses/[slug]/product-sections/route";
 import { SectionManager } from "@/components/business/products/section-manager";
+import { HighlightedProducts } from "@/components/business/products/highlighted-products";
 import { SectionKanban } from "@/components/business/products/section-kanban";
 import {
   searchCatalog,
@@ -457,6 +458,11 @@ export function OwnerProducts({ businessSlug }: { businessSlug: string }) {
           className="gap-6"
           items={[
             { value: "products", label: t("title"), icon: Package },
+            {
+              value: "highlighted",
+              label: t("highlights.title"),
+              icon: Star,
+            },
             { value: "sections", label: t("sections.title"), icon: FolderTree },
             { value: "board", label: t("kanban.title"), icon: Columns3 },
           ]}
@@ -619,6 +625,14 @@ export function OwnerProducts({ businessSlug }: { businessSlug: string }) {
                 ) : null}
               </div>
             )}
+          </TabsContent>
+
+          <TabsContent value="highlighted">
+            <HighlightedProducts
+              slug={businessSlug}
+              products={items}
+              setProducts={setItems}
+            />
           </TabsContent>
 
           <TabsContent value="sections">

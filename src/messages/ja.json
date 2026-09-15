@@ -1114,7 +1114,17 @@
       "ownBarcodePlaceholder": "例：7891234567890",
       "displayNameLabel": "表示名",
       "displayNamePlaceholder": "商品名",
-      "displayNameHint": "この出品で買い手に表示されます。空欄の場合はカタログ名を使用します。"
+      "displayNameHint": "この出品で買い手に表示されます。空欄の場合はカタログ名を使用します。",
+      "highlights": {
+        "title": "おすすめ",
+        "hint": "公開プロフィールで目立たせる商品を選び、ドラッグして表示順を設定します。",
+        "empty": "おすすめ商品はまだありません。追加してプロフィールで目立たせましょう。",
+        "add": "商品を追加",
+        "addSearch": "商品を検索…",
+        "addEmpty": "追加できる商品がありません。",
+        "remove": "おすすめから削除",
+        "reorder": "並べ替え"
+      }
     },
     "cart": {
       "cart": "カート",
