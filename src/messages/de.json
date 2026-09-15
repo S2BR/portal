@@ -639,7 +639,8 @@
       "allCategories": "Alle Kategorien",
       "moreCount": "+{count} weitere",
       "openPhoto": "Foto {number} öffnen",
-      "goToPhoto": "Zu Foto {number} springen"
+      "goToPhoto": "Zu Foto {number} springen",
+      "outOfStock": "Nicht auf Lager"
     },
     "publish": {
       "checklistTitle": "Noch nicht live",
@@ -1110,7 +1111,10 @@
       },
       "ownBarcodeLabel": "Barcode",
       "ownBarcodeHint": "Falls vorhanden, den Barcode eingeben — er verknüpft mit dem gemeinsamen Katalog. Leer lassen für ein Produkt, das du selbst herstellst.",
-      "ownBarcodePlaceholder": "z. B. 7891234567890"
+      "ownBarcodePlaceholder": "z. B. 7891234567890",
+      "displayNameLabel": "Anzeigename",
+      "displayNamePlaceholder": "Produktname",
+      "displayNameHint": "Wird Kunden bei diesem Eintrag angezeigt. Leer lassen, um den Katalognamen zu verwenden."
     },
     "cart": {
       "cart": "Warenkorb",
@@ -1135,7 +1139,8 @@
       "summary": "Bestellübersicht",
       "itemCount": "{count, plural, one {# Artikel} other {# Artikel}}",
       "checkoutNote": "Bald kannst du hier deine Daten eingeben und zur Kasse gehen.",
-      "quantity": "Menge"
+      "quantity": "Menge",
+      "outOfStock": "Nicht auf Lager"
     }
   },
   "admin": {
@@ -1870,7 +1875,7 @@
       },
       "actions": {
         "review_written": "Bewertung schreiben",
-        "sighting_added": "Produkt hinzufügen",
+        "listing_added": "Produkt hinzufügen",
         "business_created": "Unternehmen erstellen",
         "product_approved": "Produkt genehmigt",
         "claim_approved": "Anspruch genehmigt",

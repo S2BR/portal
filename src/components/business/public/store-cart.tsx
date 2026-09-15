@@ -16,6 +16,7 @@ import type { PublicCartItem } from "@/lib/public-business";
 import { Button } from "@/components/ui/button";
 import { formatMoney } from "@/lib/money";
 import { unitFor } from "@/lib/products/units";
+import { cn } from "@/lib/utils";
 
 /** A cart line's short quantity label (size + unit, or the variant label). */
 function variantLabel(item: PublicCartItem): string | null {
@@ -49,7 +50,10 @@ function CartRow({
           <img
             src={item.product.cover_image}
             alt=""
-            className="size-full object-cover"
+            className={cn(
+              "size-full object-cover",
+              !item.is_available && "opacity-60 grayscale",
+            )}
           />
         ) : (
           <Package className="text-muted-foreground size-7" />
@@ -59,17 +63,28 @@ function CartRow({
       <div className="flex min-w-0 flex-1 flex-col gap-2">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="truncate font-medium">{item.product.name}</p>
+            <p
+              className={cn(
+                "truncate font-medium",
+                !item.is_available && "text-muted-foreground",
+              )}
+            >
+              {item.product.name}
+            </p>
             {label ? (
               <p className="text-muted-foreground text-sm">{label}</p>
             ) : null}
-            {item.product.price !== null ? (
+            {!item.is_available ? (
+              <p className="text-muted-foreground text-sm font-medium">
+                {t("outOfStock")}
+              </p>
+            ) : item.product.price !== null ? (
               <p className="text-muted-foreground text-sm tabular-nums">
                 {formatMoney(item.product.price, item.product.currency, locale)}
               </p>
             ) : null}
           </div>
-          {item.line_total !== null ? (
+          {item.is_available && item.line_total !== null ? (
             <p className="shrink-0 font-semibold tabular-nums">
               {formatMoney(item.line_total, item.product.currency, locale)}
             </p>
@@ -82,7 +97,7 @@ function CartRow({
               type="button"
               aria-label={t("decrease")}
               className="hover:bg-accent flex size-8 items-center justify-center rounded-l-md disabled:opacity-40"
-              disabled={item.quantity <= 1}
+              disabled={item.quantity <= 1 || !item.is_available}
               onClick={() => void setQuantity(item.id, item.quantity - 1)}
             >
               <Minus className="size-3.5" />
@@ -93,7 +108,8 @@ function CartRow({
             <button
               type="button"
               aria-label={t("increase")}
-              className="hover:bg-accent flex size-8 items-center justify-center rounded-r-md"
+              className="hover:bg-accent flex size-8 items-center justify-center rounded-r-md disabled:opacity-40"
+              disabled={!item.is_available}
               onClick={() => void setQuantity(item.id, item.quantity + 1)}
             >
               <Plus className="size-3.5" />

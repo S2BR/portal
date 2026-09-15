@@ -97,17 +97,30 @@ export function CartDrawer() {
                       <img
                         src={item.product.cover_image}
                         alt=""
-                        className="size-full object-cover"
+                        className={cn(
+                          "size-full object-cover",
+                          !item.is_available && "opacity-60 grayscale",
+                        )}
                       />
                     ) : (
                       <Package className="text-muted-foreground size-6" />
                     )}
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium">
+                    <p
+                      className={cn(
+                        "truncate text-sm font-medium",
+                        !item.is_available && "text-muted-foreground",
+                      )}
+                    >
                       {item.product.name}
                     </p>
-                    {item.line_total !== null ? (
+                    {!item.is_available ? (
+                      <p className="text-muted-foreground text-xs font-medium">
+                        {t("outOfStock")}
+                      </p>
+                    ) : null}
+                    {item.is_available && item.line_total !== null ? (
                       <p className="text-muted-foreground text-sm tabular-nums">
                         {formatMoney(
                           item.line_total,
@@ -122,7 +135,7 @@ export function CartDrawer() {
                           type="button"
                           aria-label={t("decrease")}
                           className="hover:bg-accent flex size-7 items-center justify-center rounded-l-md disabled:opacity-40"
-                          disabled={item.quantity <= 1}
+                          disabled={item.quantity <= 1 || !item.is_available}
                           onClick={() =>
                             void setQuantity(item.id, item.quantity - 1)
                           }
@@ -135,7 +148,8 @@ export function CartDrawer() {
                         <button
                           type="button"
                           aria-label={t("increase")}
-                          className="hover:bg-accent flex size-7 items-center justify-center rounded-r-md"
+                          className="hover:bg-accent flex size-7 items-center justify-center rounded-r-md disabled:opacity-40"
+                          disabled={!item.is_available}
                           onClick={() =>
                             void setQuantity(item.id, item.quantity + 1)
                           }

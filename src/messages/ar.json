@@ -639,7 +639,8 @@
       "allCategories": "كل الفئات",
       "moreCount": "+{count} أخرى",
       "openPhoto": "افتح الصورة {number}",
-      "goToPhoto": "انتقل إلى الصورة {number}"
+      "goToPhoto": "انتقل إلى الصورة {number}",
+      "outOfStock": "نفدت الكمية"
     },
     "publish": {
       "checklistTitle": "غير منشور بعد",
@@ -1110,7 +1111,10 @@
       },
       "ownBarcodeLabel": "الباركود",
       "ownBarcodeHint": "إذا كان له باركود، أدخله — فهو يرتبط بالكتالوج المشترك. اتركه فارغًا لمنتج تصنعه بنفسك.",
-      "ownBarcodePlaceholder": "مثال: 7891234567890"
+      "ownBarcodePlaceholder": "مثال: 7891234567890",
+      "displayNameLabel": "الاسم المعروض",
+      "displayNamePlaceholder": "اسم المنتج",
+      "displayNameHint": "يظهر للمتسوقين في هذا العرض. اتركه فارغًا لاستخدام اسم الكتالوج."
     },
     "cart": {
       "cart": "السلة",
@@ -1135,7 +1139,8 @@
       "summary": "ملخص الطلب",
       "itemCount": "{count, plural, zero {# منتج} one {منتج واحد} two {منتجان} few {# منتجات} many {# منتجًا} other {# منتج}}",
       "checkoutNote": "ستتمكن قريبًا من إدخال بياناتك وإتمام الشراء هنا.",
-      "quantity": "الكمية"
+      "quantity": "الكمية",
+      "outOfStock": "نفدت الكمية"
     }
   },
   "admin": {
@@ -1870,7 +1875,7 @@
       },
       "actions": {
         "review_written": "كتابة مراجعة",
-        "sighting_added": "إضافة منتج",
+        "listing_added": "إضافة منتج",
         "business_created": "إنشاء نشاط تجاري",
         "product_approved": "تمت الموافقة على المنتج",
         "claim_approved": "تمت الموافقة على المطالبة",

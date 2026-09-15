@@ -180,6 +180,8 @@ export interface PublicCatalogItem {
   location_label: string | null;
   /** The business's own photo if it uploaded one, else the catalog product's admin cover. */
   cover_image: string | null;
+  /** Purchasable now; false = shown greyed with an "out of stock" tag. */
+  is_available: boolean;
   /** Whether the owner highlighted this product (shown on the profile). */
   is_featured: boolean;
   /** The sections this product is in (their ids). */
@@ -226,6 +228,8 @@ export async function getPublicBusinessProduct(
 export interface PublicCartItem {
   id: string;
   quantity: number;
+  /** Still purchasable? false → shown greyed + "out of stock", excluded from the cart totals. */
+  is_available: boolean;
   /** Unit price × quantity in minor units; null when the product has no price set. */
   line_total: number | null;
   product: {

@@ -24,12 +24,14 @@ export function AddToCartButton({
   size = "sm",
   full = false,
   withQuantity = false,
+  available = true,
 }: {
   productId: string;
   className?: string;
   size?: "sm" | "default" | "lg";
   full?: boolean;
   withQuantity?: boolean;
+  available?: boolean;
 }) {
   const { enabled, signedIn, add } = useCart();
   const t = useTranslations("businesses.cart");
@@ -38,6 +40,22 @@ export function AddToCartButton({
 
   if (!enabled) {
     return null;
+  }
+
+  // Out of stock: shown but not purchasable (matches the greyed catalog tile).
+  if (!available) {
+    return (
+      <Button
+        type="button"
+        variant="outline"
+        size={size}
+        disabled
+        className={cn(full && "w-full", className)}
+      >
+        <ShoppingCart className="size-4" />
+        {t("outOfStock")}
+      </Button>
+    );
   }
 
   if (!signedIn) {

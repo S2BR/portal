@@ -89,6 +89,7 @@ export function OwnerProductDetail({
   const [status, setStatus] = useState<OfferingStatus>("available");
   // Handmade product fields (edited only when the product is the business's own).
   const [name, setName] = useState("");
+  const [overrideName, setOverrideName] = useState("");
   const [brand, setBrand] = useState("");
   const [amount, setAmount] = useState("");
   const [unit, setUnit] = useState<UnitCode | null>(null);
@@ -103,6 +104,7 @@ export function OwnerProductDetail({
   // Fill the editable fields from a freshly-loaded product (leaves unsaved edits alone otherwise).
   const hydrate = (product: CatalogProduct) => {
     setName(product.variant?.product?.name ?? "");
+    setOverrideName(product.name ?? "");
     setBrand(product.variant?.product?.brand ?? "");
     setAmount(product.variant?.size ?? "");
     setUnit((product.variant?.unit as UnitCode | null) ?? null);
@@ -171,6 +173,8 @@ export function OwnerProductDetail({
         offering_status: status,
         featured,
         section_ids: sectionIds,
+        // The listing's display-name override (empty clears it → falls back to the catalog name).
+        name: overrideName.trim() || null,
       };
       // Only a handmade product's own fields are editable; a shared SKU is global (API also guards it).
       if (isHomemade) {
@@ -324,6 +328,17 @@ export function OwnerProductDetail({
             title={t("detail.detailsTitle")}
             description={t("detail.detailsDescription")}
           >
+            <Field label={t("displayNameLabel")}>
+              <Input
+                value={overrideName}
+                onChange={(event) => setOverrideName(event.target.value)}
+                placeholder={product?.name ?? t("displayNamePlaceholder")}
+              />
+              <p className="text-muted-foreground mt-1.5 text-xs">
+                {t("displayNameHint")}
+              </p>
+            </Field>
+
             {isHomemade ? (
               <>
                 <Field label={t("handmadeName")}>

@@ -639,7 +639,8 @@
       "allCategories": "Todas las categorías",
       "moreCount": "+{count} más",
       "openPhoto": "Abrir foto {number}",
-      "goToPhoto": "Ir a la foto {number}"
+      "goToPhoto": "Ir a la foto {number}",
+      "outOfStock": "Agotado"
     },
     "publish": {
       "checklistTitle": "Aún no está publicado",
@@ -1110,7 +1111,10 @@
       },
       "ownBarcodeLabel": "Código de barras",
       "ownBarcodeHint": "Si tiene código de barras, ingrésalo: se vincula al catálogo compartido. Déjalo vacío para un producto que tú mismo haces.",
-      "ownBarcodePlaceholder": "p. ej. 7891234567890"
+      "ownBarcodePlaceholder": "p. ej. 7891234567890",
+      "displayNameLabel": "Nombre para mostrar",
+      "displayNamePlaceholder": "Nombre del producto",
+      "displayNameHint": "Se muestra a los clientes en este anuncio. Déjalo en blanco para usar el nombre del catálogo."
     },
     "cart": {
       "cart": "Carrito",
@@ -1135,7 +1139,8 @@
       "summary": "Resumen del pedido",
       "itemCount": "{count, plural, one {# artículo} other {# artículos}}",
       "checkoutNote": "Pronto podrás ingresar tus datos y finalizar la compra aquí.",
-      "quantity": "Cantidad"
+      "quantity": "Cantidad",
+      "outOfStock": "Agotado"
     }
   },
   "admin": {
@@ -1870,7 +1875,7 @@
       },
       "actions": {
         "review_written": "Escribir una reseña",
-        "sighting_added": "Agregar un producto",
+        "listing_added": "Agregar un producto",
         "business_created": "Crear un negocio",
         "product_approved": "Producto aprobado",
         "claim_approved": "Reclamación aprobada",

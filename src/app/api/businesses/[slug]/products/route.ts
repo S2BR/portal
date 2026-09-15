@@ -10,6 +10,8 @@ export interface CatalogProduct {
   id: string;
   /** Self-healing `product-name-<code>` url identifier for the public product page. */
   slug: string;
+  /** The business's display-name override for this listing (null = using the catalog product name). */
+  name: string | null;
   price: number | null;
   currency: string | null;
   location_label: string | null;

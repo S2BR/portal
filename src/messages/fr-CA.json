@@ -639,7 +639,8 @@
       "allCategories": "Toutes les catégories",
       "moreCount": "+{count} de plus",
       "openPhoto": "Ouvrir la photo {number}",
-      "goToPhoto": "Aller à la photo {number}"
+      "goToPhoto": "Aller à la photo {number}",
+      "outOfStock": "En rupture de stock"
     },
     "publish": {
       "checklistTitle": "Pas encore en ligne",
@@ -1110,7 +1111,10 @@
       },
       "ownBarcodeLabel": "Code-barres",
       "ownBarcodeHint": "S’il a un code-barres, saisissez-le — il se rattache au catalogue partagé. Laissez vide pour un produit que vous fabriquez vous-même.",
-      "ownBarcodePlaceholder": "p. ex. 7891234567890"
+      "ownBarcodePlaceholder": "p. ex. 7891234567890",
+      "displayNameLabel": "Nom affiché",
+      "displayNamePlaceholder": "Nom du produit",
+      "displayNameHint": "Affiché aux clients pour cette annonce. Laissez vide pour utiliser le nom du catalogue."
     },
     "cart": {
       "cart": "Panier",
@@ -1135,7 +1139,8 @@
       "summary": "Résumé de la commande",
       "itemCount": "{count, plural, one {# article} other {# articles}}",
       "checkoutNote": "Vous pourrez bientôt saisir vos renseignements et payer ici.",
-      "quantity": "Quantité"
+      "quantity": "Quantité",
+      "outOfStock": "En rupture de stock"
     }
   },
   "admin": {
@@ -1870,7 +1875,7 @@
       },
       "actions": {
         "review_written": "Écrire un avis",
-        "sighting_added": "Ajouter un produit",
+        "listing_added": "Ajouter un produit",
         "business_created": "Créer une entreprise",
         "product_approved": "Produit approuvé",
         "claim_approved": "Réclamation approuvée",
