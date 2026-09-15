@@ -395,7 +395,12 @@ export function OwnerProductDetail({
             title={t("placement.title")}
             description={t("placement.description")}
           >
-            <div className="flex items-start justify-between gap-4">
+            <div className="flex items-start gap-3">
+              <Switch
+                checked={featured}
+                onCheckedChange={setFeatured}
+                className="mt-0.5"
+              />
               <div className="flex items-center gap-2">
                 <Star
                   className={cn(
@@ -415,7 +420,6 @@ export function OwnerProductDetail({
                   </p>
                 </div>
               </div>
-              <Switch checked={featured} onCheckedChange={setFeatured} />
             </div>
 
             <Field
