@@ -117,7 +117,7 @@ export async function BusinessProfile({
                   {t("browseProducts")}
                 </p>
               ) : null}
-              <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
+              <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
                 {featured.map((product) => (
                   <PublicProductCard
                     key={product.id}

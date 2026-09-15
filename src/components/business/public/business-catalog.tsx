@@ -131,7 +131,7 @@ export async function BusinessCatalog({
 
   if (sections.length === 0) {
     return (
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-5">
         {products.map((product) => (
           <PublicProductCard
             key={product.id}
@@ -175,7 +175,7 @@ export async function BusinessCatalog({
             <h2 className="font-heading text-lg font-semibold tracking-tight">
               {section.name}
             </h2>
-            <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-5">
               {items.map((product) => (
                 <PublicProductCard
                   key={`${section.id}-${product.id}`}
@@ -194,7 +194,7 @@ export async function BusinessCatalog({
             <h2 className="font-heading text-lg font-semibold tracking-tight">
               {t("otherProducts")}
             </h2>
-            <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-5">
               {other.map((product) => (
                 <PublicProductCard
                   key={product.id}
