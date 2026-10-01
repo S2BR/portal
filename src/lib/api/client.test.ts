@@ -26,7 +26,7 @@ describe("portalFetch", () => {
     expect(res.ok).toBe(true);
     expect(res.status).toBe(200);
     const [url, init] = fetchMock.mock.calls[0]!;
-    expect(url).toBe("https://portal.s2br.com/api/v1/app/config");
+    expect(url).toBe("https://s2br.laravel.cloud/api/v1/app/config");
     expect(init.method).toBe("GET");
     expect(init.headers.Accept).toBe("application/json");
     expect(init.body).toBeUndefined();

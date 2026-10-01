@@ -12,7 +12,7 @@ const schema = z.object({
     .enum(["development", "test", "production"])
     .default("development"),
   /** Portal API base URL, including the `/v1` version segment. */
-  PORTAL_API_URL: z.url().default("https://portal.s2br.com/api/v1"),
+  PORTAL_API_URL: z.url().default("https://s2br.laravel.cloud/api/v1"),
   /** Secret used to sign/encrypt session cookies. Required in production. */
   SESSION_COOKIE_SECRET: z.string().min(32).optional(),
   /**
