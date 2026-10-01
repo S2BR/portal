@@ -144,7 +144,7 @@ export function PhotoGallery({
 
                 {/* Caption below the image, when the owner set one. */}
                 {current.caption ? (
-                  <p className="bg-background/80 max-w-[92vw] rounded-full px-3 py-1 text-center text-sm backdrop-blur">
+                  <p className="max-w-[92vw] text-center text-sm text-white">
                     {current.caption}
                   </p>
                 ) : null}
