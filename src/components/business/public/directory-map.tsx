@@ -2,17 +2,24 @@
 
 import dynamic from "next/dynamic";
 
+import { MAP_ENGINE } from "@/lib/map/engine";
+
 import type { PublicBusinessCard } from "@/lib/public-business";
 
 /**
- * The directory results map, rendered CLIENT-ONLY (Leaflet touches `window`, so it must not SSR). A
- * `"use client"` wrapper so we can use `ssr: false`, which a Server Component can't.
+ * The directory results map, rendered CLIENT-ONLY (the map libs touch `window`, so it must not SSR). A
+ * `"use client"` wrapper so we can use `ssr: false`, which a Server Component can't. The engine is chosen
+ * by the `NEXT_PUBLIC_MAP_ENGINE` flag: MapLibre + OpenFreeMap by default, Leaflet + CARTO when reverted.
  */
 const DirectoryMapCanvas = dynamic(
   () =>
-    import("@/components/business/public/directory-map-canvas").then(
-      (module) => module.DirectoryMapCanvas,
-    ),
+    MAP_ENGINE === "leaflet"
+      ? import("@/components/business/public/directory-map-canvas").then(
+          (module) => module.DirectoryMapCanvas,
+        )
+      : import("@/components/business/public/directory-map-canvas-maplibre").then(
+          (module) => module.DirectoryMapCanvas,
+        ),
   {
     ssr: false,
     loading: () => (

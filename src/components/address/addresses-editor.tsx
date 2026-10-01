@@ -7,7 +7,7 @@ import { useState, type ChangeEvent, type ReactNode } from "react";
 import type { PlaceAddress } from "@/app/api/addresses/place/[id]/route";
 import { AddressLines } from "@/components/address/address-lines";
 import { AddressMapPreview } from "@/components/address/address-map-preview";
-import { LocationMap } from "@/components/address/location-map";
+import { LocationMap } from "@/components/address/location-map-engine";
 import { AddressAutocomplete } from "@/components/business/address-autocomplete";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";

@@ -16,6 +16,8 @@ const eslintConfig = defineConfig([
     "playwright-report/**",
     "test-results/**",
     "next-env.d.ts",
+    // Vendored MapLibre worker + shared chunk served statically (see src/lib/map/engine.ts).
+    "public/maplibre/**",
   ]),
 ]);
 

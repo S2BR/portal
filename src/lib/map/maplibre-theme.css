@@ -1,0 +1,41 @@
+/*
+ * Theme the MapLibre controls for the app's light/dark modes. Imported AFTER maplibre-gl.css in the map
+ * components so these rules win. The default MapLibre chrome is a white control box with a dark icon —
+ * right for the light `positron` basemap, but it reads as a bright patch on the dark basemap. In dark
+ * mode we flip the icons (a black SVG → white via `invert`) and darken the control backgrounds so the
+ * zoom (+/−) buttons and the attribution info (i) icon match the basemap under them.
+ *
+ * `.dark` is the class next-themes puts on <html> in dark mode; the map lives under it, so these
+ * descendant selectors only apply in dark mode and leave the light defaults untouched.
+ */
+
+/* The compact attribution pill (both the collapsed (i) circle and the expanded panel) is a solid white
+ * box by default — darken it so it sits on the dark basemap. */
+.dark .maplibregl-ctrl-attrib.maplibregl-compact,
+.dark .maplibregl-ctrl-attrib.maplibregl-compact-show {
+  background-color: rgba(0, 0, 0, 0.55);
+}
+
+/* The (i) glyph is a black SVG; invert flips it to light (its own pill background goes dark to match). */
+.dark .maplibregl-ctrl-attrib-button {
+  filter: invert(1);
+}
+
+/* Credit text + links in the expanded panel. */
+.dark .maplibregl-ctrl-attrib,
+.dark .maplibregl-ctrl-attrib a {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Zoom (+/−) control group: dark box, light glyphs, legible divider. */
+.dark .maplibregl-ctrl-group {
+  background-color: rgba(0, 0, 0, 0.55);
+}
+
+.dark .maplibregl-ctrl-group button + button {
+  border-top-color: rgba(255, 255, 255, 0.2);
+}
+
+.dark .maplibregl-ctrl-group button .maplibregl-ctrl-icon {
+  filter: invert(1);
+}

@@ -4,7 +4,7 @@ import { ZoomIn } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-import { LocationMap } from "@/components/address/location-map";
+import { LocationMap } from "@/components/address/location-map-engine";
 import {
   Dialog,
   DialogContent,
