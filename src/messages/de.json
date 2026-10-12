@@ -1165,7 +1165,8 @@
       "brands": "Marken",
       "families": "Familien",
       "dashboard": "Dashboard",
-      "gamification": "Gamification"
+      "gamification": "Gamification",
+      "search": "Suche"
     },
     "reports": {
       "title": "Meldungen",
@@ -1817,7 +1818,8 @@
       "directory": "Verzeichnis",
       "media": "Medien",
       "dashboard": "Dashboard",
-      "gamification": "Gamification"
+      "gamification": "Gamification",
+      "search": "Suche"
     },
     "dashboard": {
       "title": "Dashboard",
@@ -1838,6 +1840,10 @@
         "uploads": {
           "label": "Uploads",
           "description": "Über die Plattform hochgeladene Medien."
+        },
+        "search": {
+          "label": "Suche",
+          "description": "Typesense-Status und Neusynchronisierung"
         }
       }
     },
@@ -1942,6 +1948,58 @@
         "adjusted": "Fertig — neuer Punktestand: {points}.",
         "adjustError": "Anpassung fehlgeschlagen.",
         "userNotFound": "Kein Nutzer mit dieser ID."
+      }
+    },
+    "search": {
+      "title": "Suchindex",
+      "subtitle": "Typesense-Status und Neuindizierung.",
+      "forbidden": "Sie haben keinen Zugriff auf diese Seite.",
+      "loadError": "Suchstatus konnte nicht geladen werden.",
+      "refresh": "Aktualisieren",
+      "server": {
+        "title": "Typesense",
+        "healthy": "Verbunden",
+        "down": "Nicht erreichbar",
+        "notConfigured": "Nicht konfiguriert",
+        "host": "Host",
+        "version": "Version",
+        "unknown": "—"
+      },
+      "collections": {
+        "businesses": "Unternehmen",
+        "products": "Produkte",
+        "categories": "Kategorien",
+        "amenities": "Ausstattung"
+      },
+      "metrics": {
+        "indexed": "Indiziert",
+        "database": "In der Datenbank",
+        "missing": "Sammlung nicht erstellt"
+      },
+      "resync": {
+        "one": "Neu synchronisieren",
+        "all": "Alle neu synchronisieren",
+        "rebuild": "Vollständiger Neuaufbau",
+        "rebuildHint": "Baut jede Sammlung aus einer frischen Kopie neu auf und tauscht sie aus – keine Suchausfallzeit.",
+        "queued": "Neusynchronisierung in Warteschlange.",
+        "error": "Neusynchronisierung konnte nicht eingereiht werden."
+      },
+      "workerNote": "Die Neusynchronisierung läuft im Hintergrund; die Zahlen oben werden aktualisiert, sobald der Worker die Warteschlange abarbeitet.",
+      "resources": {
+        "memory": "Arbeitsspeicher",
+        "disk": "Festplatte",
+        "cpu": "CPU"
+      },
+      "collection": {
+        "needsResync": "Neu synchronisieren",
+        "lastSynced": "Zuletzt synchronisiert",
+        "never": "Nie"
+      },
+      "confirm": {
+        "title": "Vollständiger Neuaufbau?",
+        "body": "Dadurch wird die gesamte Sammlung aus einer frischen Kopie neu aufgebaut und bei Fertigstellung ausgetauscht – keine Suchausfallzeit, kann aber bei großen Sammlungen eine Weile dauern.",
+        "confirm": "Neu aufbauen",
+        "cancel": "Abbrechen"
       }
     }
   },
