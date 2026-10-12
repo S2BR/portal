@@ -1165,7 +1165,8 @@
       "brands": "ブランド",
       "families": "ファミリー",
       "dashboard": "ダッシュボード",
-      "gamification": "ゲーミフィケーション"
+      "gamification": "ゲーミフィケーション",
+      "search": "検索"
     },
     "reports": {
       "title": "報告",
@@ -1817,7 +1818,8 @@
       "directory": "ディレクトリ",
       "media": "メディア",
       "dashboard": "ダッシュボード",
-      "gamification": "ゲーミフィケーション"
+      "gamification": "ゲーミフィケーション",
+      "search": "検索"
     },
     "dashboard": {
       "title": "ダッシュボード",
@@ -1838,6 +1840,10 @@
         "uploads": {
           "label": "アップロード",
           "description": "プラットフォーム全体でアップロードされたメディア。"
+        },
+        "search": {
+          "label": "検索",
+          "description": "Typesense のステータスと再同期"
         }
       }
     },
@@ -1942,6 +1948,58 @@
         "adjusted": "完了 — 新しいスコア: {points}。",
         "adjustError": "調整できませんでした。",
         "userNotFound": "そのIDのユーザーはいません。"
+      }
+    },
+    "search": {
+      "title": "検索インデックス",
+      "subtitle": "Typesense のステータスと再インデックス。",
+      "forbidden": "このページにアクセスする権限がありません。",
+      "loadError": "検索ステータスを読み込めませんでした。",
+      "refresh": "更新",
+      "server": {
+        "title": "Typesense",
+        "healthy": "接続済み",
+        "down": "接続不可",
+        "notConfigured": "未設定",
+        "host": "ホスト",
+        "version": "バージョン",
+        "unknown": "—"
+      },
+      "collections": {
+        "businesses": "ビジネス",
+        "products": "商品",
+        "categories": "カテゴリ",
+        "amenities": "設備"
+      },
+      "metrics": {
+        "indexed": "インデックス済み",
+        "database": "データベース内",
+        "missing": "コレクション未作成"
+      },
+      "resync": {
+        "one": "再同期",
+        "all": "すべて再同期",
+        "rebuild": "完全再構築",
+        "rebuildHint": "各コレクションを新しいコピーから再構築して入れ替えます。検索の停止はありません。",
+        "queued": "再同期をキューに追加しました。",
+        "error": "再同期をキューに追加できませんでした。"
+      },
+      "workerNote": "再同期はバックグラウンドで実行されます。ワーカーが処理するにつれて上記の件数が更新されます。",
+      "resources": {
+        "memory": "メモリ",
+        "disk": "ディスク",
+        "cpu": "CPU"
+      },
+      "collection": {
+        "needsResync": "再同期が必要",
+        "lastSynced": "最終同期",
+        "never": "未実行"
+      },
+      "confirm": {
+        "title": "完全再構築しますか？",
+        "body": "コレクション全体を新しいコピーから再構築し、準備ができたら入れ替えます。検索の停止はありませんが、大きなコレクションでは時間がかかることがあります。",
+        "confirm": "再構築",
+        "cancel": "キャンセル"
       }
     }
   },

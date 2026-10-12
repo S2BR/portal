@@ -2,6 +2,7 @@ import {
   Building2,
   ImageIcon,
   LayoutGrid,
+  Search,
   ShieldCheck,
   type LucideIcon,
 } from "lucide-react";
@@ -25,6 +26,7 @@ const SHORTCUTS: Shortcut[] = [
   { key: "catalog", href: "/portal/admin/products", icon: LayoutGrid },
   { key: "moderation", href: "/portal/admin/reports", icon: ShieldCheck },
   { key: "uploads", href: "/portal/admin/uploads", icon: ImageIcon },
+  { key: "search", href: "/portal/admin/search", icon: Search },
 ];
 
 /**

@@ -1165,7 +1165,8 @@
       "brands": "Brands",
       "families": "Families",
       "dashboard": "Dashboard",
-      "gamification": "Gamification"
+      "gamification": "Gamification",
+      "search": "Search"
     },
     "reports": {
       "title": "Reports",
@@ -1817,7 +1818,8 @@
       "directory": "Directory",
       "media": "Media",
       "dashboard": "Dashboard",
-      "gamification": "Gamification"
+      "gamification": "Gamification",
+      "search": "Search"
     },
     "dashboard": {
       "title": "Dashboard",
@@ -1838,6 +1840,10 @@
         "uploads": {
           "label": "Uploads",
           "description": "Media uploaded across the platform."
+        },
+        "search": {
+          "label": "Search",
+          "description": "Typesense status and re-sync"
         }
       }
     },
@@ -1942,6 +1948,58 @@
         "adjusted": "Done — new score: {points}.",
         "adjustError": "Couldn't adjust.",
         "userNotFound": "No user with that ID."
+      }
+    },
+    "search": {
+      "title": "Search index",
+      "subtitle": "Typesense status and reindexing.",
+      "forbidden": "You don't have access to this page.",
+      "loadError": "Couldn't load search status.",
+      "refresh": "Refresh",
+      "server": {
+        "title": "Typesense",
+        "healthy": "Connected",
+        "down": "Unreachable",
+        "notConfigured": "Not configured",
+        "host": "Host",
+        "version": "Version",
+        "unknown": "—"
+      },
+      "collections": {
+        "businesses": "Businesses",
+        "products": "Products",
+        "categories": "Categories",
+        "amenities": "Amenities"
+      },
+      "metrics": {
+        "indexed": "Indexed",
+        "database": "In database",
+        "missing": "Collection not created"
+      },
+      "resync": {
+        "one": "Re-sync",
+        "all": "Re-sync all",
+        "rebuild": "Full rebuild",
+        "rebuildHint": "Rebuild each collection from a fresh copy and swap it in — no search downtime.",
+        "queued": "Re-sync queued.",
+        "error": "Couldn't queue the re-sync."
+      },
+      "workerNote": "Re-syncing runs in the background; the counts above update as the queue worker processes it.",
+      "resources": {
+        "memory": "Memory",
+        "disk": "Disk",
+        "cpu": "CPU"
+      },
+      "collection": {
+        "needsResync": "Needs re-sync",
+        "lastSynced": "Last synced",
+        "never": "Never"
+      },
+      "confirm": {
+        "title": "Full rebuild?",
+        "body": "This rebuilds the whole collection from a fresh copy and swaps it in when ready — no search downtime, but it can take a while for large collections.",
+        "confirm": "Rebuild",
+        "cancel": "Cancel"
       }
     }
   },

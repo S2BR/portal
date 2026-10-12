@@ -1165,7 +1165,8 @@
       "brands": "Marcas",
       "families": "Familias",
       "dashboard": "Panel",
-      "gamification": "Gamificación"
+      "gamification": "Gamificación",
+      "search": "Búsqueda"
     },
     "reports": {
       "title": "Denuncias",
@@ -1817,7 +1818,8 @@
       "directory": "Directorio",
       "media": "Medios",
       "dashboard": "Panel",
-      "gamification": "Gamificación"
+      "gamification": "Gamificación",
+      "search": "Búsqueda"
     },
     "dashboard": {
       "title": "Panel",
@@ -1838,6 +1840,10 @@
         "uploads": {
           "label": "Subidas",
           "description": "Archivos multimedia subidos en toda la plataforma."
+        },
+        "search": {
+          "label": "Búsqueda",
+          "description": "Estado de Typesense y resincronización"
         }
       }
     },
@@ -1942,6 +1948,58 @@
         "adjusted": "Listo — nueva puntuación: {points}.",
         "adjustError": "No se pudo ajustar.",
         "userNotFound": "Ningún usuario con ese ID."
+      }
+    },
+    "search": {
+      "title": "Índice de búsqueda",
+      "subtitle": "Estado de Typesense y reindexación.",
+      "forbidden": "No tienes acceso a esta página.",
+      "loadError": "No se pudo cargar el estado de búsqueda.",
+      "refresh": "Actualizar",
+      "server": {
+        "title": "Typesense",
+        "healthy": "Conectado",
+        "down": "Inaccesible",
+        "notConfigured": "Sin configurar",
+        "host": "Host",
+        "version": "Versión",
+        "unknown": "—"
+      },
+      "collections": {
+        "businesses": "Negocios",
+        "products": "Productos",
+        "categories": "Categorías",
+        "amenities": "Comodidades"
+      },
+      "metrics": {
+        "indexed": "Indexados",
+        "database": "En la base de datos",
+        "missing": "Colección no creada"
+      },
+      "resync": {
+        "one": "Resincronizar",
+        "all": "Resincronizar todo",
+        "rebuild": "Reconstrucción completa",
+        "rebuildHint": "Reconstruye cada colección a partir de una copia nueva y la intercambia: sin interrupción de la búsqueda.",
+        "queued": "Resincronización en cola.",
+        "error": "No se pudo poner en cola la resincronización."
+      },
+      "workerNote": "La resincronización se ejecuta en segundo plano; los recuentos de arriba se actualizan a medida que el worker procesa la cola.",
+      "resources": {
+        "memory": "Memoria",
+        "disk": "Disco",
+        "cpu": "CPU"
+      },
+      "collection": {
+        "needsResync": "Necesita resincronizar",
+        "lastSynced": "Última sincronización",
+        "never": "Nunca"
+      },
+      "confirm": {
+        "title": "¿Reconstrucción completa?",
+        "body": "Esto reconstruye toda la colección a partir de una copia nueva y la intercambia cuando esté lista: sin interrupción de la búsqueda, pero puede tardar un poco en colecciones grandes.",
+        "confirm": "Reconstruir",
+        "cancel": "Cancelar"
       }
     }
   },

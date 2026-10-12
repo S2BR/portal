@@ -1165,7 +1165,8 @@
       "brands": "Marques",
       "families": "Familles",
       "dashboard": "Tableau de bord",
-      "gamification": "Ludification"
+      "gamification": "Ludification",
+      "search": "Recherche"
     },
     "reports": {
       "title": "Signalements",
@@ -1817,7 +1818,8 @@
       "directory": "Répertoire",
       "media": "Médias",
       "dashboard": "Tableau de bord",
-      "gamification": "Ludification"
+      "gamification": "Ludification",
+      "search": "Recherche"
     },
     "dashboard": {
       "title": "Tableau de bord",
@@ -1838,6 +1840,10 @@
         "uploads": {
           "label": "Téléversements",
           "description": "Médias téléversés sur l'ensemble de la plateforme."
+        },
+        "search": {
+          "label": "Recherche",
+          "description": "État de Typesense et resynchronisation"
         }
       }
     },
@@ -1942,6 +1948,58 @@
         "adjusted": "Fait — nouveau score : {points}.",
         "adjustError": "Ajustement impossible.",
         "userNotFound": "Aucun utilisateur avec cet ID."
+      }
+    },
+    "search": {
+      "title": "Index de recherche",
+      "subtitle": "État de Typesense et réindexation.",
+      "forbidden": "Vous n'avez pas accès à cette page.",
+      "loadError": "Impossible de charger l'état de la recherche.",
+      "refresh": "Actualiser",
+      "server": {
+        "title": "Typesense",
+        "healthy": "Connecté",
+        "down": "Inaccessible",
+        "notConfigured": "Non configuré",
+        "host": "Hôte",
+        "version": "Version",
+        "unknown": "—"
+      },
+      "collections": {
+        "businesses": "Entreprises",
+        "products": "Produits",
+        "categories": "Catégories",
+        "amenities": "Commodités"
+      },
+      "metrics": {
+        "indexed": "Indexés",
+        "database": "Dans la base de données",
+        "missing": "Collection non créée"
+      },
+      "resync": {
+        "one": "Resynchroniser",
+        "all": "Tout resynchroniser",
+        "rebuild": "Reconstruction complète",
+        "rebuildHint": "Reconstruit chaque collection à partir d’une copie neuve et l’échange — aucune interruption de la recherche.",
+        "queued": "Resynchronisation en file d'attente.",
+        "error": "Impossible de mettre la resynchronisation en file d'attente."
+      },
+      "workerNote": "La resynchronisation s'exécute en arrière-plan; les totaux ci-dessus se mettent à jour à mesure que le worker traite la file.",
+      "resources": {
+        "memory": "Mémoire",
+        "disk": "Disque",
+        "cpu": "Processeur"
+      },
+      "collection": {
+        "needsResync": "À resynchroniser",
+        "lastSynced": "Dernière synchro",
+        "never": "Jamais"
+      },
+      "confirm": {
+        "title": "Reconstruction complète ?",
+        "body": "Cela reconstruit toute la collection à partir d’une copie neuve et l’échange une fois prête — aucune interruption de la recherche, mais cela peut prendre un moment pour les grandes collections.",
+        "confirm": "Reconstruire",
+        "cancel": "Annuler"
       }
     }
   },

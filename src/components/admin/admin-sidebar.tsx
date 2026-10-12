@@ -9,6 +9,7 @@ import {
   LayoutDashboard,
   LayoutGrid,
   Package,
+  Search,
   ShieldCheck,
   Tag,
   Tags,
@@ -33,7 +34,8 @@ type LeafKey =
   | "families"
   | "taxonomy"
   | "uploads"
-  | "gamification";
+  | "gamification"
+  | "search";
 
 type GroupKey =
   | "dashboard"
@@ -41,7 +43,8 @@ type GroupKey =
   | "moderation"
   | "directory"
   | "media"
-  | "gamification";
+  | "gamification"
+  | "search";
 
 type LeafDef = {
   key: LeafKey;
@@ -101,6 +104,11 @@ const GROUPS: GroupDef[] = [
     items: [
       { key: "gamification", href: "/portal/admin/gamification", icon: Trophy },
     ],
+  },
+  {
+    key: "search",
+    icon: Search,
+    items: [{ key: "search", href: "/portal/admin/search", icon: Search }],
   },
 ];
 
