@@ -6,6 +6,7 @@ import {
   LogOut,
   Settings,
   ShieldCheck,
+  Store,
   UserPlus,
   Users,
 } from "lucide-react";
@@ -40,6 +41,7 @@ interface AccountSummary {
 export function UserMenu() {
   const t = useTranslations("nav");
   const themeT = useTranslations("theme");
+  const marketplaceT = useTranslations("marketplace");
   const { user, loading, refresh } = useCurrentUser();
   const { open: openSettings } = useSettingsDialog();
   const router = useRouter();
@@ -215,6 +217,12 @@ export function UserMenu() {
           <Link href="/portal/businesses">
             <Building2 className="size-4" />
             {t("businesses")}
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/portal/marketplace">
+            <Store className="size-4" />
+            {marketplaceT("myAds.title")}
           </Link>
         </DropdownMenuItem>
         {hasAdminPanelAccess(user) ? (
