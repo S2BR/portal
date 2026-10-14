@@ -11,6 +11,7 @@ import {
   Package,
   Search,
   ShieldCheck,
+  Store,
   Tag,
   Tags,
   Trophy,
@@ -33,6 +34,7 @@ type LeafKey =
   | "brands"
   | "families"
   | "taxonomy"
+  | "marketplace"
   | "uploads"
   | "gamification"
   | "search";
@@ -40,6 +42,7 @@ type LeafKey =
 type GroupKey =
   | "dashboard"
   | "catalog"
+  | "marketplace"
   | "moderation"
   | "directory"
   | "media"
@@ -83,6 +86,13 @@ const GROUPS: GroupDef[] = [
       { key: "brands", href: "/portal/admin/brands", icon: Tag },
       { key: "families", href: "/portal/admin/families", icon: Boxes },
       { key: "taxonomy", href: "/portal/admin/taxonomy", icon: Tags },
+    ],
+  },
+  {
+    key: "marketplace",
+    icon: Store,
+    items: [
+      { key: "marketplace", href: "/portal/admin/marketplace", icon: Store },
     ],
   },
   {

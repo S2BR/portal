@@ -1166,7 +1166,8 @@
       "families": "Famiglie",
       "dashboard": "Dashboard",
       "gamification": "Gamification",
-      "search": "Ricerca"
+      "search": "Ricerca",
+      "marketplace": "Mercato"
     },
     "reports": {
       "title": "Segnalazioni",
@@ -1819,7 +1820,8 @@
       "media": "Media",
       "dashboard": "Dashboard",
       "gamification": "Gamification",
-      "search": "Ricerca"
+      "search": "Ricerca",
+      "marketplace": "Mercato"
     },
     "dashboard": {
       "title": "Dashboard",
@@ -2000,6 +2002,75 @@
         "body": "Ricostruisce l’intera collezione da una copia nuova e la sostituisce quando è pronta: nessuna interruzione della ricerca, ma può richiedere un po’ di tempo per le collezioni grandi.",
         "confirm": "Ricostruisci",
         "cancel": "Annulla"
+      }
+    },
+    "marketplace": {
+      "title": "Marketplace",
+      "subtitle": "Manage ad types and the fields each one shows.",
+      "error": "Something went wrong. Please try again.",
+      "categories": {
+        "heading": "Ad types",
+        "new": "New type",
+        "empty": "No ad types yet.",
+        "active": "Active",
+        "hidden": "Hidden",
+        "special": "Has custom fields",
+        "fieldsCount": "{count, plural, one {# field} other {# fields}}",
+        "manageFields": "Fields",
+        "activate": "Activate",
+        "deactivate": "Hide",
+        "edit": "Edit",
+        "delete": "Delete",
+        "deleteConfirm": "Delete this type and its fields? Existing ads keep their values.",
+        "deleted": "Type deleted.",
+        "created": "Type created.",
+        "saved": "Saved.",
+        "name": "Name",
+        "namePlaceholder": "e.g. Vehicles",
+        "icon": "Icon",
+        "iconHint": "A Lucide icon name (e.g. car, house, laptop).",
+        "iconPlaceholder": "e.g. car",
+        "slug": "Slug",
+        "slugPlaceholder": "Leave blank to derive from the name",
+        "save": "Save",
+        "cancel": "Cancel"
+      },
+      "fields": {
+        "back": "‹ Back to types",
+        "heading": "Fields — {type}",
+        "subtitle": "The inputs shown when posting an ad of this type.",
+        "new": "Add field",
+        "empty": "No fields yet.",
+        "required": "Required",
+        "filterable": "Filterable",
+        "deprecated": "Removed",
+        "optionCount": "{count, plural, one {# option} other {# options}}",
+        "edit": "Edit",
+        "deprecate": "Remove",
+        "deprecateConfirm": "Remove this field? Existing ads keep their values; it just stops being offered.",
+        "removed": "Field removed.",
+        "label": "Label",
+        "labelPlaceholder": "e.g. Mileage",
+        "type": "Type",
+        "unit": "Unit",
+        "unitPlaceholder": "e.g. km",
+        "options": "Options",
+        "optionValue": "Value",
+        "optionLabel": "Label",
+        "removeOption": "Remove option",
+        "addOption": "Add option",
+        "save": "Save",
+        "cancel": "Cancel",
+        "created": "Field added.",
+        "saved": "Saved."
+      },
+      "type": {
+        "text": "Text",
+        "number": "Number",
+        "boolean": "Yes / No",
+        "select": "Single choice",
+        "multiselect": "Multiple choice",
+        "date": "Date"
       }
     }
   },
