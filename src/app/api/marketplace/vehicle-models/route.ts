@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { portalFetch } from "@/lib/api/client";
+import { callWithAuth } from "@/lib/api/authed";
 import type { AttributeOption } from "@/lib/marketplace/types";
 
 /** BFF: vehicle models for a make + year (unauthenticated), lazy-loaded server-side. */
@@ -15,7 +15,7 @@ export async function GET(request: Request): Promise<NextResponse> {
   }
   const suffix = forwarded.toString();
 
-  const response = await portalFetch<{ data?: AttributeOption[] }>({
+  const response = await callWithAuth<{ data?: AttributeOption[] }>({
     method: "GET",
     path: `/marketplace/vehicle-models${suffix ? `?${suffix}` : ""}`,
   });

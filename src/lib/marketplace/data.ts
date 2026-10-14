@@ -2,6 +2,7 @@ import "server-only";
 
 import { cache } from "react";
 
+import { callWithAuth } from "@/lib/api/authed";
 import { portalFetch } from "@/lib/api/client";
 
 import type {
@@ -57,13 +58,14 @@ export async function getPublicAd(slug: string): Promise<MarketplaceAd | null> {
 export const getCachedPublicAd = cache(getPublicAd);
 
 /**
- * The ad types shown in the post flow's picker — unauthenticated, server-side. Degrades to an empty
- * list if the API is unreachable (the post page then shows its "no types" fallback).
+ * The ad types shown in the post flow's picker — authenticated (this endpoint backs the signed-in
+ * post flow, not a public page). Degrades to an empty list if the API is unreachable (the post page
+ * then shows its "no types" fallback).
  */
 export async function getMarketplaceCategories(): Promise<
   MarketplaceCategory[]
 > {
-  const response = await portalFetch<{ data?: MarketplaceCategory[] }>({
+  const response = await callWithAuth<{ data?: MarketplaceCategory[] }>({
     method: "GET",
     path: "/marketplace/categories",
   });

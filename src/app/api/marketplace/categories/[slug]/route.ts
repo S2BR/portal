@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { portalFetch } from "@/lib/api/client";
+import { callWithAuth } from "@/lib/api/authed";
 import type { MarketplaceCategory } from "@/lib/marketplace/types";
 
 /**
@@ -13,7 +13,7 @@ export async function GET(
 ): Promise<NextResponse> {
   const { slug } = await params;
 
-  const response = await portalFetch<{ data?: MarketplaceCategory }>({
+  const response = await callWithAuth<{ data?: MarketplaceCategory }>({
     method: "GET",
     path: `/marketplace/categories/${encodeURIComponent(slug)}`,
   });
