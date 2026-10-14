@@ -350,11 +350,15 @@ function ReferenceSelect({
         : "";
 
   // Always render an item for the current value — even before the (lazy, cascading) options arrive —
-  // so a value set programmatically (e.g. from a VIN) shows immediately instead of an empty trigger.
+  // so a value set programmatically (e.g. from a VIN) is selectable immediately.
   const items =
     current !== "" && !options.some((option) => option.value === current)
       ? [{ value: current, label: current }, ...options]
       : options;
+  // Render the trigger label ourselves: Radix can't resolve a value whose option hasn't loaded yet
+  // (the model's options lazy-load for the chosen make+year), which otherwise shows an empty trigger.
+  const currentLabel =
+    items.find((option) => option.value === current)?.label ?? current;
 
   return (
     <Field
@@ -370,7 +374,14 @@ function ReferenceSelect({
         }
       >
         <SelectTrigger>
-          <SelectValue placeholder={t("form.selectPlaceholder")} />
+          <span
+            className={cn(
+              "truncate",
+              current === "" && "text-muted-foreground",
+            )}
+          >
+            {current !== "" ? currentLabel : t("form.selectPlaceholder")}
+          </span>
         </SelectTrigger>
         <SelectContent>
           {!field.required ? (
