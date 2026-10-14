@@ -2130,5 +2130,119 @@
       "noneOf": "is none of",
       "between": "between"
     }
+  },
+  "marketplace": {
+    "browse": {
+      "title": "Marketplace",
+      "subtitle": "Buy, sell, give away, and find things in your community.",
+      "searchPlaceholder": "Search the marketplace…",
+      "empty": "No ads found.",
+      "count": "{count} results",
+      "loadMore": "Show more"
+    },
+    "price": {
+      "free": "Free",
+      "trade": "For trade",
+      "contact": "Contact for price",
+      "negotiableSuffix": "or best offer"
+    },
+    "status": {
+      "available": "Available",
+      "reserved": "Reserved",
+      "sold": "Sold",
+      "given": "Given away",
+      "expired": "Expired"
+    },
+    "condition": {
+      "new": "New",
+      "like_new": "Like new",
+      "good": "Good",
+      "fair": "Fair",
+      "for_parts": "For parts"
+    },
+    "priceType": {
+      "fixed": "Fixed price",
+      "negotiable": "Negotiable",
+      "free": "Free (giveaway)",
+      "trade": "Trade",
+      "contact": "Contact for price"
+    },
+    "contactMethod": {
+      "in_app": "In-app",
+      "phone": "Phone",
+      "whatsapp": "WhatsApp",
+      "email": "Email"
+    },
+    "detail": {
+      "posted": "Posted {when}",
+      "description": "Description",
+      "contactInApp": "Contact the seller through the app.",
+      "contactVia": {
+        "phone": "Call",
+        "whatsapp": "Message on WhatsApp",
+        "email": "Email"
+      }
+    },
+    "form": {
+      "title": "Title",
+      "description": "Description",
+      "priceType": "Price type",
+      "price": "Price",
+      "condition": "Condition",
+      "conditionNone": "Not specified",
+      "location": "Location",
+      "locationPlaceholder": "Approximate area (city/neighborhood)",
+      "contactMethod": "How buyers reach you",
+      "contactValue": "Contact details",
+      "queue": "Manage a waiting line",
+      "queueHint": "For giveaways: interested people line up; if the first doesn't take it, the next does.",
+      "status": "Status",
+      "save": "Save changes",
+      "post": "Post ad",
+      "photosAfter": "You can add photos after posting.",
+      "savedToast": "Ad updated.",
+      "postedToast": "Ad posted — now add photos.",
+      "error": "Something went wrong. Please try again."
+    },
+    "photos": {
+      "cover": "Cover",
+      "makeCover": "Make cover",
+      "remove": "Remove",
+      "add": "Add photo",
+      "hint": "The first photo is the cover. Images are resized automatically.",
+      "added": "Photo added.",
+      "error": "Couldn't update the photo.",
+      "invalidType": "That file type isn't supported.",
+      "uploading": "Uploading {percent}%",
+      "finalizing": "Finishing…"
+    },
+    "myAds": {
+      "title": "My ads",
+      "subtitle": "Your marketplace listings.",
+      "new": "Post ad",
+      "empty": "You haven't posted any ads yet.",
+      "edit": "Edit",
+      "delete": "Delete",
+      "renew": "Renew",
+      "deleteConfirm": "Delete this ad? This can't be undone.",
+      "deleted": "Ad deleted.",
+      "renewed": "Ad renewed.",
+      "error": "Something went wrong. Please try again."
+    },
+    "new": {
+      "title": "Post an ad",
+      "subtitle": "List something for your community."
+    },
+    "edit": {
+      "title": "Edit ad",
+      "subtitle": "Update your ad's details and photos.",
+      "photos": "Photos",
+      "details": "Details",
+      "notFound": "This ad couldn't be found.",
+      "back": "Back to my ads"
+    },
+    "nav": {
+      "marketplace": "Marketplace"
+    }
   }
 }

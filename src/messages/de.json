@@ -2130,5 +2130,119 @@
       "noneOf": "ist keines von",
       "between": "zwischen"
     }
+  },
+  "marketplace": {
+    "browse": {
+      "title": "Marktplatz",
+      "subtitle": "Kaufen, verkaufen, verschenken und finden in deiner Community.",
+      "searchPlaceholder": "Marktplatz durchsuchen…",
+      "empty": "Keine Anzeigen gefunden.",
+      "count": "{count} Ergebnisse",
+      "loadMore": "Mehr anzeigen"
+    },
+    "price": {
+      "free": "Gratis",
+      "trade": "Zum Tausch",
+      "contact": "Preis auf Anfrage",
+      "negotiableSuffix": "oder bestes Angebot"
+    },
+    "status": {
+      "available": "Verfügbar",
+      "reserved": "Reserviert",
+      "sold": "Verkauft",
+      "given": "Verschenkt",
+      "expired": "Abgelaufen"
+    },
+    "condition": {
+      "new": "Neu",
+      "like_new": "Wie neu",
+      "good": "Gut",
+      "fair": "Akzeptabel",
+      "for_parts": "Als Ersatzteile"
+    },
+    "priceType": {
+      "fixed": "Festpreis",
+      "negotiable": "Verhandelbar",
+      "free": "Gratis (Geschenk)",
+      "trade": "Tausch",
+      "contact": "Preis auf Anfrage"
+    },
+    "contactMethod": {
+      "in_app": "In der App",
+      "phone": "Telefon",
+      "whatsapp": "WhatsApp",
+      "email": "E-Mail"
+    },
+    "detail": {
+      "posted": "Veröffentlicht {when}",
+      "description": "Beschreibung",
+      "contactInApp": "Kontaktiere den Verkäufer über die App.",
+      "contactVia": {
+        "phone": "Anrufen",
+        "whatsapp": "Auf WhatsApp schreiben",
+        "email": "E-Mail senden"
+      }
+    },
+    "form": {
+      "title": "Titel",
+      "description": "Beschreibung",
+      "priceType": "Preistyp",
+      "price": "Preis",
+      "condition": "Zustand",
+      "conditionNone": "Nicht angegeben",
+      "location": "Standort",
+      "locationPlaceholder": "Ungefähre Gegend (Stadt/Viertel)",
+      "contactMethod": "Wie Käufer dich erreichen",
+      "contactValue": "Kontaktdaten",
+      "queue": "Warteliste verwalten",
+      "queueHint": "Für Geschenke: Interessenten stellen sich an; nimmt der Erste es nicht, kommt der Nächste dran.",
+      "status": "Status",
+      "save": "Änderungen speichern",
+      "post": "Anzeige aufgeben",
+      "photosAfter": "Fotos kannst du nach dem Aufgeben hinzufügen.",
+      "savedToast": "Anzeige aktualisiert.",
+      "postedToast": "Anzeige aufgegeben – jetzt Fotos hinzufügen.",
+      "error": "Etwas ist schiefgelaufen. Bitte erneut versuchen."
+    },
+    "photos": {
+      "cover": "Titelbild",
+      "makeCover": "Als Titelbild festlegen",
+      "remove": "Entfernen",
+      "add": "Foto hinzufügen",
+      "hint": "Das erste Foto ist das Titelbild. Bilder werden automatisch skaliert.",
+      "added": "Foto hinzugefügt.",
+      "error": "Foto konnte nicht aktualisiert werden.",
+      "invalidType": "Dieser Dateityp wird nicht unterstützt.",
+      "uploading": "Hochladen {percent}%",
+      "finalizing": "Abschließen…"
+    },
+    "myAds": {
+      "title": "Meine Anzeigen",
+      "subtitle": "Deine Marktplatz-Anzeigen.",
+      "new": "Anzeige aufgeben",
+      "empty": "Du hast noch keine Anzeigen aufgegeben.",
+      "edit": "Bearbeiten",
+      "delete": "Löschen",
+      "renew": "Erneuern",
+      "deleteConfirm": "Diese Anzeige löschen? Das kann nicht rückgängig gemacht werden.",
+      "deleted": "Anzeige gelöscht.",
+      "renewed": "Anzeige erneuert.",
+      "error": "Etwas ist schiefgelaufen. Bitte erneut versuchen."
+    },
+    "new": {
+      "title": "Anzeige aufgeben",
+      "subtitle": "Biete etwas für deine Community an."
+    },
+    "edit": {
+      "title": "Anzeige bearbeiten",
+      "subtitle": "Aktualisiere Details und Fotos deiner Anzeige.",
+      "photos": "Fotos",
+      "details": "Details",
+      "notFound": "Diese Anzeige wurde nicht gefunden.",
+      "back": "Zurück zu meinen Anzeigen"
+    },
+    "nav": {
+      "marketplace": "Marktplatz"
+    }
   }
 }

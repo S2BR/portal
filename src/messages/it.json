@@ -2130,5 +2130,119 @@
       "noneOf": "non è nessuno di",
       "between": "tra"
     }
+  },
+  "marketplace": {
+    "browse": {
+      "title": "Marketplace",
+      "subtitle": "Compra, vendi, regala e trova cose nella tua comunità.",
+      "searchPlaceholder": "Cerca nel marketplace…",
+      "empty": "Nessun annuncio trovato.",
+      "count": "{count} risultati",
+      "loadMore": "Mostra altri"
+    },
+    "price": {
+      "free": "Gratis",
+      "trade": "Da scambiare",
+      "contact": "Prezzo su richiesta",
+      "negotiableSuffix": "o migliore offerta"
+    },
+    "status": {
+      "available": "Disponibile",
+      "reserved": "Riservato",
+      "sold": "Venduto",
+      "given": "Regalato",
+      "expired": "Scaduto"
+    },
+    "condition": {
+      "new": "Nuovo",
+      "like_new": "Come nuovo",
+      "good": "Buono",
+      "fair": "Discreto",
+      "for_parts": "Per ricambi"
+    },
+    "priceType": {
+      "fixed": "Prezzo fisso",
+      "negotiable": "Trattabile",
+      "free": "Gratis (regalo)",
+      "trade": "Scambio",
+      "contact": "Prezzo su richiesta"
+    },
+    "contactMethod": {
+      "in_app": "Nell'app",
+      "phone": "Telefono",
+      "whatsapp": "WhatsApp",
+      "email": "Email"
+    },
+    "detail": {
+      "posted": "Pubblicato {when}",
+      "description": "Descrizione",
+      "contactInApp": "Contatta il venditore tramite l'app.",
+      "contactVia": {
+        "phone": "Chiama",
+        "whatsapp": "Scrivi su WhatsApp",
+        "email": "Invia email"
+      }
+    },
+    "form": {
+      "title": "Titolo",
+      "description": "Descrizione",
+      "priceType": "Tipo di prezzo",
+      "price": "Prezzo",
+      "condition": "Condizione",
+      "conditionNone": "Non specificato",
+      "location": "Posizione",
+      "locationPlaceholder": "Zona approssimativa (città/quartiere)",
+      "contactMethod": "Come ti contattano gli acquirenti",
+      "contactValue": "Recapiti",
+      "queue": "Gestisci una lista d'attesa",
+      "queueHint": "Per i regali: gli interessati si mettono in fila; se il primo non lo prende, tocca al successivo.",
+      "status": "Stato",
+      "save": "Salva modifiche",
+      "post": "Pubblica annuncio",
+      "photosAfter": "Puoi aggiungere foto dopo la pubblicazione.",
+      "savedToast": "Annuncio aggiornato.",
+      "postedToast": "Annuncio pubblicato — ora aggiungi le foto.",
+      "error": "Qualcosa è andato storto. Riprova."
+    },
+    "photos": {
+      "cover": "Copertina",
+      "makeCover": "Imposta come copertina",
+      "remove": "Rimuovi",
+      "add": "Aggiungi foto",
+      "hint": "La prima foto è la copertina. Le immagini vengono ridimensionate automaticamente.",
+      "added": "Foto aggiunta.",
+      "error": "Impossibile aggiornare la foto.",
+      "invalidType": "Questo tipo di file non è supportato.",
+      "uploading": "Caricamento {percent}%",
+      "finalizing": "Completamento…"
+    },
+    "myAds": {
+      "title": "I miei annunci",
+      "subtitle": "I tuoi annunci sul marketplace.",
+      "new": "Pubblica annuncio",
+      "empty": "Non hai ancora pubblicato annunci.",
+      "edit": "Modifica",
+      "delete": "Elimina",
+      "renew": "Rinnova",
+      "deleteConfirm": "Eliminare questo annuncio? Non è reversibile.",
+      "deleted": "Annuncio eliminato.",
+      "renewed": "Annuncio rinnovato.",
+      "error": "Qualcosa è andato storto. Riprova."
+    },
+    "new": {
+      "title": "Pubblica un annuncio",
+      "subtitle": "Metti in vendita qualcosa per la tua comunità."
+    },
+    "edit": {
+      "title": "Modifica annuncio",
+      "subtitle": "Aggiorna i dettagli e le foto del tuo annuncio.",
+      "photos": "Foto",
+      "details": "Dettagli",
+      "notFound": "Annuncio non trovato.",
+      "back": "Torna ai miei annunci"
+    },
+    "nav": {
+      "marketplace": "Marketplace"
+    }
   }
 }

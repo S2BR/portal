@@ -2130,5 +2130,119 @@
       "noneOf": "のいずれでもない",
       "between": "の間"
     }
+  },
+  "marketplace": {
+    "browse": {
+      "title": "マーケットプレイス",
+      "subtitle": "地域で売買・譲渡・検索。",
+      "searchPlaceholder": "マーケットプレイスを検索…",
+      "empty": "広告が見つかりません。",
+      "count": "{count} 件",
+      "loadMore": "もっと見る"
+    },
+    "price": {
+      "free": "無料",
+      "trade": "交換希望",
+      "contact": "価格は問い合わせ",
+      "negotiableSuffix": "応相談"
+    },
+    "status": {
+      "available": "販売中",
+      "reserved": "予約済み",
+      "sold": "売約済み",
+      "given": "譲渡済み",
+      "expired": "期限切れ"
+    },
+    "condition": {
+      "new": "新品",
+      "like_new": "ほぼ新品",
+      "good": "良い",
+      "fair": "並",
+      "for_parts": "部品取り"
+    },
+    "priceType": {
+      "fixed": "固定価格",
+      "negotiable": "応相談",
+      "free": "無料（譲渡）",
+      "trade": "交換",
+      "contact": "価格は問い合わせ"
+    },
+    "contactMethod": {
+      "in_app": "アプリ内",
+      "phone": "電話",
+      "whatsapp": "WhatsApp",
+      "email": "メール"
+    },
+    "detail": {
+      "posted": "{when}に投稿",
+      "description": "説明",
+      "contactInApp": "アプリから出品者に連絡してください。",
+      "contactVia": {
+        "phone": "電話する",
+        "whatsapp": "WhatsAppで連絡",
+        "email": "メールを送る"
+      }
+    },
+    "form": {
+      "title": "タイトル",
+      "description": "説明",
+      "priceType": "価格タイプ",
+      "price": "価格",
+      "condition": "状態",
+      "conditionNone": "指定なし",
+      "location": "場所",
+      "locationPlaceholder": "おおよその地域（市区町村）",
+      "contactMethod": "購入者の連絡方法",
+      "contactValue": "連絡先",
+      "queue": "順番待ちリストを管理",
+      "queueHint": "譲渡用：希望者が順番に並び、最初の人が受け取らなければ次の人へ。",
+      "status": "ステータス",
+      "save": "変更を保存",
+      "post": "広告を投稿",
+      "photosAfter": "投稿後に写真を追加できます。",
+      "savedToast": "広告を更新しました。",
+      "postedToast": "広告を投稿しました。写真を追加してください。",
+      "error": "問題が発生しました。もう一度お試しください。"
+    },
+    "photos": {
+      "cover": "カバー",
+      "makeCover": "カバーに設定",
+      "remove": "削除",
+      "add": "写真を追加",
+      "hint": "最初の写真がカバーです。画像は自動的にリサイズされます。",
+      "added": "写真を追加しました。",
+      "error": "写真を更新できませんでした。",
+      "invalidType": "このファイル形式は対応していません。",
+      "uploading": "アップロード中 {percent}%",
+      "finalizing": "処理中…"
+    },
+    "myAds": {
+      "title": "マイ広告",
+      "subtitle": "あなたのマーケットプレイス広告。",
+      "new": "広告を投稿",
+      "empty": "まだ広告を投稿していません。",
+      "edit": "編集",
+      "delete": "削除",
+      "renew": "更新",
+      "deleteConfirm": "この広告を削除しますか？元に戻せません。",
+      "deleted": "広告を削除しました。",
+      "renewed": "広告を更新しました。",
+      "error": "問題が発生しました。もう一度お試しください。"
+    },
+    "new": {
+      "title": "広告を投稿",
+      "subtitle": "地域に向けて出品しましょう。"
+    },
+    "edit": {
+      "title": "広告を編集",
+      "subtitle": "広告の詳細と写真を更新します。",
+      "photos": "写真",
+      "details": "詳細",
+      "notFound": "この広告は見つかりませんでした。",
+      "back": "マイ広告に戻る"
+    },
+    "nav": {
+      "marketplace": "マーケットプレイス"
+    }
   }
 }

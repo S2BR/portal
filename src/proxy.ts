@@ -31,6 +31,7 @@ function isPublicPath(pathname: string): boolean {
 const OPEN_PATHS = [
   "/",
   "/businesses",
+  "/marketplace",
   "/terms",
   "/privacy",
   "/opengraph-image",

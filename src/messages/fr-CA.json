@@ -2130,5 +2130,119 @@
       "noneOf": "n'est aucun de",
       "between": "entre"
     }
+  },
+  "marketplace": {
+    "browse": {
+      "title": "Marketplace",
+      "subtitle": "Achetez, vendez, donnez et trouvez des choses dans votre communauté.",
+      "searchPlaceholder": "Rechercher dans le marketplace…",
+      "empty": "Aucune annonce trouvée.",
+      "count": "{count} résultats",
+      "loadMore": "Voir plus"
+    },
+    "price": {
+      "free": "Gratuit",
+      "trade": "À échanger",
+      "contact": "Prix sur demande",
+      "negotiableSuffix": "ou meilleure offre"
+    },
+    "status": {
+      "available": "Disponible",
+      "reserved": "Réservé",
+      "sold": "Vendu",
+      "given": "Donné",
+      "expired": "Expiré"
+    },
+    "condition": {
+      "new": "Neuf",
+      "like_new": "Comme neuf",
+      "good": "Bon",
+      "fair": "Correct",
+      "for_parts": "Pour pièces"
+    },
+    "priceType": {
+      "fixed": "Prix fixe",
+      "negotiable": "Négociable",
+      "free": "Gratuit (don)",
+      "trade": "Échange",
+      "contact": "Prix sur demande"
+    },
+    "contactMethod": {
+      "in_app": "Dans l'appli",
+      "phone": "Téléphone",
+      "whatsapp": "WhatsApp",
+      "email": "Courriel"
+    },
+    "detail": {
+      "posted": "Publié {when}",
+      "description": "Description",
+      "contactInApp": "Contactez le vendeur via l'appli.",
+      "contactVia": {
+        "phone": "Appeler",
+        "whatsapp": "Écrire sur WhatsApp",
+        "email": "Envoyer un courriel"
+      }
+    },
+    "form": {
+      "title": "Titre",
+      "description": "Description",
+      "priceType": "Type de prix",
+      "price": "Prix",
+      "condition": "État",
+      "conditionNone": "Non précisé",
+      "location": "Emplacement",
+      "locationPlaceholder": "Secteur approximatif (ville/quartier)",
+      "contactMethod": "Comment les acheteurs vous joignent",
+      "contactValue": "Coordonnées",
+      "queue": "Gérer une liste d'attente",
+      "queueHint": "Pour les dons : les intéressés font la file; si le premier ne le prend pas, le suivant l'obtient.",
+      "status": "Statut",
+      "save": "Enregistrer",
+      "post": "Publier l'annonce",
+      "photosAfter": "Vous pourrez ajouter des photos après la publication.",
+      "savedToast": "Annonce mise à jour.",
+      "postedToast": "Annonce publiée — ajoutez des photos.",
+      "error": "Une erreur s'est produite. Réessayez."
+    },
+    "photos": {
+      "cover": "Couverture",
+      "makeCover": "Définir comme couverture",
+      "remove": "Retirer",
+      "add": "Ajouter une photo",
+      "hint": "La première photo est la couverture. Les images sont redimensionnées automatiquement.",
+      "added": "Photo ajoutée.",
+      "error": "Impossible de mettre à jour la photo.",
+      "invalidType": "Ce type de fichier n'est pas pris en charge.",
+      "uploading": "Téléversement {percent}%",
+      "finalizing": "Finalisation…"
+    },
+    "myAds": {
+      "title": "Mes annonces",
+      "subtitle": "Vos annonces sur le marketplace.",
+      "new": "Publier une annonce",
+      "empty": "Vous n'avez pas encore publié d'annonce.",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "renew": "Renouveler",
+      "deleteConfirm": "Supprimer cette annonce? Action irréversible.",
+      "deleted": "Annonce supprimée.",
+      "renewed": "Annonce renouvelée.",
+      "error": "Une erreur s'est produite. Réessayez."
+    },
+    "new": {
+      "title": "Publier une annonce",
+      "subtitle": "Annoncez quelque chose pour votre communauté."
+    },
+    "edit": {
+      "title": "Modifier l'annonce",
+      "subtitle": "Mettez à jour les détails et les photos de votre annonce.",
+      "photos": "Photos",
+      "details": "Détails",
+      "notFound": "Cette annonce est introuvable.",
+      "back": "Retour à mes annonces"
+    },
+    "nav": {
+      "marketplace": "Marketplace"
+    }
   }
 }
