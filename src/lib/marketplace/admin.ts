@@ -6,8 +6,34 @@
 
 export const DEFAULT_LOCALE = "en";
 
+/**
+ * The locales the API stores translations for, in editing order. Keys are the API's locale codes
+ * (underscored, e.g. `pt_BR`); the short label is what the editor's locale switcher shows.
+ */
+export const LOCALES: { key: string; label: string }[] = [
+  { key: "en", label: "EN" },
+  { key: "es", label: "ES" },
+  { key: "fr_CA", label: "FR" },
+  { key: "pt_BR", label: "PT" },
+  { key: "ja", label: "JA" },
+  { key: "it", label: "IT" },
+  { key: "de", label: "DE" },
+  { key: "ar", label: "AR" },
+];
+
 /** A locale-keyed translatable value. */
 export type LocaleMap = Record<string, string>;
+
+/** Strip empty/whitespace values from a locale map (the API keeps only supported, non-empty keys). */
+export function cleanLocaleMap(map: LocaleMap): LocaleMap {
+  const out: LocaleMap = {};
+  for (const [locale, value] of Object.entries(map)) {
+    if (value.trim() !== "") {
+      out[locale] = value.trim();
+    }
+  }
+  return out;
+}
 
 export type AttributeType =
   "select" | "multiselect" | "number" | "boolean" | "date" | "text";

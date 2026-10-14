@@ -2062,7 +2062,9 @@
         "save": "Save",
         "cancel": "Cancel",
         "created": "Field added.",
-        "saved": "Saved."
+        "saved": "Saved.",
+        "addYmm": "Add Year-Make-Model",
+        "ymmAdded": "Year-Make-Model fields added."
       },
       "type": {
         "text": "Text",
@@ -2276,7 +2278,17 @@
       "error": "Algo deu errado. Tente novamente.",
       "detailsHeading": "Detalhes",
       "selectPlaceholder": "Selecionar…",
-      "selectNone": "Qualquer"
+      "selectNone": "Qualquer",
+      "referenceLocked": "Escolha primeiro os campos dos quais depende.",
+      "vinPrompt": "Tem o chassi (VIN)? Preencher automaticamente",
+      "vin": "Chassi (VIN)",
+      "vinHint": "17 caracteres",
+      "vinPlaceholder": "ex. 1HGCM82633A004352",
+      "vinFill": "Preencher",
+      "vinCancel": "Cancelar",
+      "vinInvalid": "Informe um VIN válido.",
+      "vinNotFound": "Não conseguimos ler esse VIN.",
+      "vinFilled": "Dados preenchidos pelo VIN."
     },
     "photos": {
       "cover": "Capa",

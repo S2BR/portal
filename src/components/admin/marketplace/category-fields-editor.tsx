@@ -1,6 +1,6 @@
 "use client";
 
-import { Pencil, Plus, Trash2, X } from "lucide-react";
+import { Car, Pencil, Plus, Trash2, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -18,24 +18,27 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
+import { LocaleTextField } from "@/components/admin/marketplace/locale-text-field";
 import { apiErrorText } from "@/lib/api/error-text";
 import {
   ATTRIBUTE_TYPES,
-  localeText,
+  cleanLocaleMap,
+  DEFAULT_LOCALE,
   readText,
   typeHasOptions,
   type AdminCategory,
   type AdminField,
   type AttributeType,
+  type LocaleMap,
 } from "@/lib/marketplace/admin";
 
 interface OptionDraft {
   value: string;
-  label: string;
+  label: LocaleMap;
 }
 
 interface FieldForm {
-  label: string;
+  label: LocaleMap;
   type: AttributeType;
   unit: string;
   required: boolean;
@@ -44,7 +47,7 @@ interface FieldForm {
 }
 
 const EMPTY_FIELD: FieldForm = {
-  label: "",
+  label: {},
   type: "text",
   unit: "",
   required: false,
@@ -64,6 +67,7 @@ export function CategoryFieldsEditor({
   const [fields, setFields] = useState<AdminField[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
+  const [ymmBusy, setYmmBusy] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -88,6 +92,24 @@ export function CategoryFieldsEditor({
     onChanged();
   }
 
+  async function addYmm() {
+    setYmmBusy(true);
+    try {
+      const res = await fetch(
+        `/api/admin/marketplace/categories/${category.id}/attributes/vehicle-ymm`,
+        { method: "POST" },
+      );
+      if (!res.ok) {
+        toast.error(t("error"));
+        return;
+      }
+      toast.success(t("fields.ymmAdded"));
+      refresh();
+    } finally {
+      setYmmBusy(false);
+    }
+  }
+
   return (
     <div className="space-y-5">
       <header className="space-y-1">
@@ -109,10 +131,21 @@ export function CategoryFieldsEditor({
           />
         </div>
       ) : (
-        <Button variant="outline" size="sm" onClick={() => setCreating(true)}>
-          <Plus className="size-4" />
-          {t("fields.new")}
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" size="sm" onClick={() => setCreating(true)}>
+            <Plus className="size-4" />
+            {t("fields.new")}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => void addYmm()}
+            disabled={ymmBusy}
+          >
+            <Car className="size-4" />
+            {t("fields.addYmm")}
+          </Button>
+        </div>
       )}
 
       {loading ? (
@@ -248,14 +281,14 @@ function FieldFormView({
   const [form, setForm] = useState<FieldForm>(
     field
       ? {
-          label: readText(field.label),
+          label: { ...field.label },
           type: field.type,
           unit: field.unit ?? "",
           required: field.required,
           filterable: field.filterable,
           options: field.options.map((option) => ({
             value: option.value,
-            label: readText(option.label),
+            label: { ...option.label },
           })),
         }
       : EMPTY_FIELD,
@@ -271,7 +304,7 @@ function FieldFormView({
     setPending(true);
     try {
       const body = {
-        label: localeText(form.label.trim()),
+        label: cleanLocaleMap(form.label),
         type: form.type,
         unit: showUnit ? form.unit.trim() || null : null,
         required: form.required,
@@ -280,10 +313,16 @@ function FieldFormView({
           ? {
               options: form.options
                 .filter((option) => option.value.trim() !== "")
-                .map((option) => ({
-                  value: option.value.trim(),
-                  label: localeText(option.label.trim() || option.value.trim()),
-                })),
+                .map((option) => {
+                  const label = cleanLocaleMap(option.label);
+                  return {
+                    value: option.value.trim(),
+                    label:
+                      Object.keys(label).length > 0
+                        ? label
+                        : { [DEFAULT_LOCALE]: option.value.trim() },
+                  };
+                }),
             }
           : {}),
       };
@@ -324,16 +363,13 @@ function FieldFormView({
   return (
     <div className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label={t("fields.label")}>
-          <Input
-            value={form.label}
-            onChange={(event) =>
-              setForm((f) => ({ ...f, label: event.target.value }))
-            }
-            placeholder={t("fields.labelPlaceholder")}
-            autoFocus
-          />
-        </Field>
+        <LocaleTextField
+          label={t("fields.label")}
+          value={form.label}
+          onChange={(label) => setForm((f) => ({ ...f, label }))}
+          placeholder={t("fields.labelPlaceholder")}
+          autoFocus
+        />
         <Field label={t("fields.type")}>
           <Select
             value={form.type}
@@ -382,9 +418,14 @@ function FieldFormView({
                   className="flex-1"
                 />
                 <Input
-                  value={option.label}
+                  value={option.label[DEFAULT_LOCALE] ?? ""}
                   onChange={(event) =>
-                    setOption(index, { label: event.target.value })
+                    setOption(index, {
+                      label: {
+                        ...option.label,
+                        [DEFAULT_LOCALE]: event.target.value,
+                      },
+                    })
                   }
                   placeholder={t("fields.optionLabel")}
                   className="flex-1"
@@ -412,7 +453,7 @@ function FieldFormView({
               onClick={() =>
                 setForm((f) => ({
                   ...f,
-                  options: [...f.options, { value: "", label: "" }],
+                  options: [...f.options, { value: "", label: {} }],
                 }))
               }
             >
@@ -453,7 +494,7 @@ function FieldFormView({
       <div className="flex items-center gap-2">
         <Button
           onClick={() => void save()}
-          disabled={pending || form.label.trim() === ""}
+          disabled={pending || (form.label[DEFAULT_LOCALE] ?? "").trim() === ""}
         >
           {t("fields.save")}
         </Button>

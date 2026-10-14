@@ -2062,7 +2062,9 @@
         "save": "Save",
         "cancel": "Cancel",
         "created": "Field added.",
-        "saved": "Saved."
+        "saved": "Saved.",
+        "addYmm": "Add Year-Make-Model",
+        "ymmAdded": "Year-Make-Model fields added."
       },
       "type": {
         "text": "Text",
@@ -2276,7 +2278,17 @@
       "error": "حدث خطأ ما. حاول مرة أخرى.",
       "detailsHeading": "التفاصيل",
       "selectPlaceholder": "اختر…",
-      "selectNone": "أي"
+      "selectNone": "أي",
+      "referenceLocked": "اختر أولاً الحقول التي يعتمد عليها.",
+      "vinPrompt": "لديك رقم الهيكل (VIN)؟ ملء تلقائي",
+      "vin": "رقم الهيكل",
+      "vinHint": "17 حرفًا",
+      "vinPlaceholder": "مثال: 1HGCM82633A004352",
+      "vinFill": "ملء",
+      "vinCancel": "إلغاء",
+      "vinInvalid": "أدخل رقم هيكل صالحًا.",
+      "vinNotFound": "تعذّر قراءة رقم الهيكل.",
+      "vinFilled": "تم ملء التفاصيل من رقم الهيكل."
     },
     "photos": {
       "cover": "الغلاف",

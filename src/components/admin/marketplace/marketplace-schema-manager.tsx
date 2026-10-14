@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { CategoryFieldsEditor } from "@/components/admin/marketplace/category-fields-editor";
+import { LocaleTextField } from "@/components/admin/marketplace/locale-text-field";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
@@ -14,20 +15,22 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { apiErrorText } from "@/lib/api/error-text";
 import {
-  localeText,
+  cleanLocaleMap,
+  DEFAULT_LOCALE,
   readText,
   type AdminCategory,
+  type LocaleMap,
 } from "@/lib/marketplace/admin";
 
 interface CategoryForm {
-  name: string;
+  name: LocaleMap;
   icon: string;
   slug: string;
   is_special: boolean;
 }
 
 const EMPTY_FORM: CategoryForm = {
-  name: "",
+  name: {},
   icon: "",
   slug: "",
   is_special: false,
@@ -287,7 +290,7 @@ function CategoryEditForm({
   const [form, setForm] = useState<CategoryForm>(
     category
       ? {
-          name: readText(category.name),
+          name: { ...category.name },
           icon: category.icon ?? "",
           slug: category.slug,
           is_special: category.is_special,
@@ -302,7 +305,7 @@ function CategoryEditForm({
     setPending(true);
     try {
       const body = {
-        name: localeText(form.name.trim()),
+        name: cleanLocaleMap(form.name),
         icon: form.icon.trim() || null,
         is_special: form.is_special,
         ...(editing ? { slug: form.slug.trim() || undefined } : {}),
@@ -337,16 +340,13 @@ function CategoryEditForm({
   return (
     <div className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label={t("categories.name")}>
-          <Input
-            value={form.name}
-            onChange={(event) =>
-              setForm((f) => ({ ...f, name: event.target.value }))
-            }
-            placeholder={t("categories.namePlaceholder")}
-            autoFocus
-          />
-        </Field>
+        <LocaleTextField
+          label={t("categories.name")}
+          value={form.name}
+          onChange={(name) => setForm((f) => ({ ...f, name }))}
+          placeholder={t("categories.namePlaceholder")}
+          autoFocus
+        />
         <Field label={t("categories.icon")} hint={t("categories.iconHint")}>
           <Input
             value={form.icon}
@@ -387,7 +387,7 @@ function CategoryEditForm({
       <div className="flex items-center gap-2">
         <Button
           onClick={() => void save()}
-          disabled={pending || form.name.trim() === ""}
+          disabled={pending || (form.name[DEFAULT_LOCALE] ?? "").trim() === ""}
         >
           {t("categories.save")}
         </Button>

@@ -95,6 +95,10 @@ export interface AttributeField {
   unit: string | null;
   required: boolean;
   options: AttributeOption[] | null;
+  /** A reference data source for the choices (e.g. "vehicle_make"), instead of static options. */
+  source?: string | null;
+  /** Field keys whose values this field's choices depend on (cascading, e.g. model → [make, year]). */
+  depends_on?: string[];
   group: string | null;
 }
 
