@@ -369,9 +369,15 @@ function ReferenceSelect({
       <Select
         value={current !== "" ? current : NONE}
         disabled={disabled}
-        onValueChange={(next) =>
-          onChange(field.key, next === NONE ? null : next)
-        }
+        onValueChange={(next) => {
+          // Radix fires onValueChange("") spuriously when the controlled value's option hasn't
+          // mounted yet (the model's options lazy-load for the make+year), which would wipe a
+          // just-set value (e.g. from a VIN). A real clear uses the NONE sentinel, never "".
+          if (!next) {
+            return;
+          }
+          onChange(field.key, next === NONE ? null : next);
+        }}
       >
         <SelectTrigger>
           <span
