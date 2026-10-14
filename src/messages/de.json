@@ -2202,7 +2202,10 @@
       "photosAfter": "Fotos kannst du nach dem Aufgeben hinzufügen.",
       "savedToast": "Anzeige aktualisiert.",
       "postedToast": "Anzeige aufgegeben – jetzt Fotos hinzufügen.",
-      "error": "Etwas ist schiefgelaufen. Bitte erneut versuchen."
+      "error": "Etwas ist schiefgelaufen. Bitte erneut versuchen.",
+      "detailsHeading": "Details",
+      "selectPlaceholder": "Auswählen…",
+      "selectNone": "Beliebig"
     },
     "photos": {
       "cover": "Titelbild",
@@ -2231,7 +2234,11 @@
     },
     "new": {
       "title": "Anzeige aufgeben",
-      "subtitle": "Biete etwas für deine Community an."
+      "subtitle": "Biete etwas für deine Community an.",
+      "chooseType": "Typ wählen",
+      "pickPrompt": "Wähle einen Typ",
+      "changeType": "Typ ändern ({type})",
+      "typesEmpty": "Derzeit sind keine Anzeigentypen verfügbar."
     },
     "edit": {
       "title": "Anzeige bearbeiten",

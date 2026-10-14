@@ -1,16 +1,18 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
-import { AdForm } from "@/components/marketplace/ad-form";
+import { NewAdFlow } from "@/components/marketplace/new-ad-flow";
+import { getMarketplaceCategories } from "@/lib/marketplace/data";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("marketplace");
   return { title: t("new.title") };
 }
 
-/** Post a new marketplace ad. */
+/** Post a new marketplace ad — pick a type (the bloom picker), then fill its form. */
 export default async function NewAdPage() {
   const t = await getTranslations("marketplace");
+  const categories = await getMarketplaceCategories();
 
   return (
     <div className="space-y-6">
@@ -20,7 +22,7 @@ export default async function NewAdPage() {
         </h1>
         <p className="text-muted-foreground">{t("new.subtitle")}</p>
       </div>
-      <AdForm />
+      <NewAdFlow categories={categories} />
     </div>
   );
 }

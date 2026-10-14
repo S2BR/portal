@@ -3,9 +3,10 @@
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
+import { DynamicFields } from "@/components/marketplace/dynamic-fields";
 import { apiErrorText } from "@/lib/api/error-text";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
@@ -27,23 +28,38 @@ import {
   SETTABLE_AD_STATUSES,
   contactMethodNeedsValue,
   priceTypeHasAmount,
+  type AdAttributes,
   type AdCondition,
   type AdStatus,
+  type AttributeField,
   type ContactMethod,
   type MarketplaceAd,
+  type MarketplaceCategory,
   type PriceType,
 } from "@/lib/marketplace/types";
 
 type Errors = Partial<Record<string, string>>;
 
+type FieldValue = string | number | boolean | string[] | null;
+
 /**
  * The post / edit form for a marketplace ad (base fields). Photos are added separately (after the ad
  * exists) on the edit screen. On create it redirects to the edit page so photos can be attached.
+ *
+ * The ad type is chosen before the form (the post flow's picker) and passed as `categorySlug`; when
+ * editing, it comes from the ad itself. Either way it is submitted so the ad stays filed under its type.
  */
-export function AdForm({ ad }: { ad?: MarketplaceAd }) {
+export function AdForm({
+  ad,
+  categorySlug,
+}: {
+  ad?: MarketplaceAd;
+  categorySlug?: string;
+}) {
   const t = useTranslations("marketplace");
   const router = useRouter();
   const editing = ad !== undefined;
+  const category = ad?.category?.slug ?? categorySlug;
 
   const [title, setTitle] = useState(ad?.title ?? "");
   const [description, setDescription] = useState(ad?.description ?? "");
@@ -64,9 +80,32 @@ export function AdForm({ ad }: { ad?: MarketplaceAd }) {
   const [contactValue, setContactValue] = useState(ad?.contact_value ?? "");
   const [queueEnabled, setQueueEnabled] = useState(ad?.queue_enabled ?? false);
   const [status, setStatus] = useState<AdStatus>(ad?.status ?? "available");
+  const [fields, setFields] = useState<AttributeField[]>([]);
+  const [attrValues, setAttrValues] = useState<AdAttributes>(
+    ad?.attributes ?? {},
+  );
   const [errors, setErrors] = useState<Errors>({});
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+
+  // Load the chosen type's field schema so the right inputs render under the base fields.
+  useEffect(() => {
+    if (!category) {
+      return;
+    }
+    let cancelled = false;
+    void fetch(`/api/marketplace/categories/${encodeURIComponent(category)}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data: { category?: MarketplaceCategory } | null) => {
+        if (!cancelled) {
+          setFields(data?.category?.fields ?? []);
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [category]);
 
   const hasAmount = priceTypeHasAmount(priceType);
   const needsContactValue = contactMethodNeedsValue(contactMethod);
@@ -79,6 +118,7 @@ export function AdForm({ ad }: { ad?: MarketplaceAd }) {
     setPending(true);
 
     const body = {
+      category,
       title,
       description,
       price_type: priceType,
@@ -89,6 +129,7 @@ export function AdForm({ ad }: { ad?: MarketplaceAd }) {
       contact_method: contactMethod,
       contact_value: needsContactValue ? contactValue : null,
       queue_enabled: isFree ? queueEnabled : false,
+      attributes: attrValues,
       ...(editing ? { status } : {}),
     };
 
@@ -147,6 +188,20 @@ export function AdForm({ ad }: { ad?: MarketplaceAd }) {
           required
         />
       </Field>
+
+      {fields.length > 0 ? (
+        <div className="space-y-5 border-t pt-5">
+          <h2 className="text-sm font-semibold">{t("form.detailsHeading")}</h2>
+          <DynamicFields
+            fields={fields}
+            values={attrValues}
+            errors={errors}
+            onChange={(key: string, value: FieldValue) =>
+              setAttrValues((current) => ({ ...current, [key]: value }))
+            }
+          />
+        </div>
+      ) : null}
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label={t("form.priceType")} error={errors.price_type}>

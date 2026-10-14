@@ -2202,7 +2202,10 @@
       "photosAfter": "You can add photos after posting.",
       "savedToast": "Ad updated.",
       "postedToast": "Ad posted — now add photos.",
-      "error": "Something went wrong. Please try again."
+      "error": "Something went wrong. Please try again.",
+      "detailsHeading": "Details",
+      "selectPlaceholder": "Select…",
+      "selectNone": "Any"
     },
     "photos": {
       "cover": "Cover",
@@ -2231,7 +2234,11 @@
     },
     "new": {
       "title": "Post an ad",
-      "subtitle": "List something for your community."
+      "subtitle": "List something for your community.",
+      "chooseType": "Choose a type",
+      "pickPrompt": "Pick a type",
+      "changeType": "Change type ({type})",
+      "typesEmpty": "No ad types available right now."
     },
     "edit": {
       "title": "Edit ad",

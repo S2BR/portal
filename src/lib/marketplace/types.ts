@@ -77,6 +77,50 @@ export interface AdImage {
   url: string | null;
 }
 
+/** The kind of a category field — drives which input the form renders. */
+export type AttributeType =
+  "select" | "multiselect" | "number" | "boolean" | "date" | "text";
+
+/** A choice for a select/multiselect field, label localized by the API. */
+export interface AttributeOption {
+  value: string;
+  label: string;
+}
+
+/** A category field definition (`MarketplaceAttributeResource`) — how the form renders one input. */
+export interface AttributeField {
+  key: string;
+  label: string;
+  type: AttributeType;
+  unit: string | null;
+  required: boolean;
+  options: AttributeOption[] | null;
+  group: string | null;
+}
+
+/** An ad's category field values, keyed by field `key`. */
+export type AdAttributes = Record<
+  string,
+  string | number | boolean | string[] | null
+>;
+
+/** An ad type shown in the post flow's picker (`MarketplaceCategoryResource`). */
+export interface MarketplaceCategory {
+  slug: string;
+  name: string;
+  icon: string | null;
+  is_special: boolean;
+  /** Present on the category *detail* (schema) endpoint; omitted from the list. */
+  fields?: AttributeField[];
+}
+
+/** The category an ad belongs to, as embedded on an ad (`MarketplaceAdResource.category`). */
+export interface AdCategory {
+  slug: string;
+  name: string;
+  icon: string | null;
+}
+
 /** An ad's location — approximate only (no exact address). */
 export interface AdLocation {
   label: string | null;
@@ -95,6 +139,8 @@ export interface MarketplaceAd {
   price_type: PriceType;
   condition: AdCondition | null;
   status: AdStatus;
+  category?: AdCategory | null;
+  attributes?: AdAttributes;
   location: AdLocation;
   contact_method: ContactMethod;
   contact_value?: string | null;
