@@ -2254,7 +2254,13 @@
         "phone": "Chiama",
         "whatsapp": "Scrivi su WhatsApp",
         "email": "Invia email"
-      }
+      },
+      "signInToContact": "Accedi per vedere il contatto",
+      "revealContact": "Mostra contatto",
+      "revealingContact": "Caricamento…",
+      "contactRateLimited": "Troppe visualizzazioni del contatto. Riprova tra poco.",
+      "contactSignedOut": "La sessione è scaduta. Accedi di nuovo per vedere il contatto.",
+      "contactError": "Impossibile caricare il contatto. Riprova."
     },
     "form": {
       "title": "Titolo",

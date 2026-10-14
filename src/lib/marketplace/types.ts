@@ -147,6 +147,9 @@ export interface MarketplaceAd {
   attributes?: AdAttributes;
   location: AdLocation;
   contact_method: ContactMethod;
+  /** Whether a number/email exists to reveal — the value itself is only returned to the owner. */
+  has_contact_value?: boolean;
+  /** Present only for the owner's own ad (to edit it); revealed to others via the contact endpoint. */
   contact_value?: string | null;
   queue_enabled: boolean;
   images: AdImage[];

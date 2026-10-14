@@ -2254,7 +2254,13 @@
         "phone": "Ligar",
         "whatsapp": "Chamar no WhatsApp",
         "email": "Enviar e-mail"
-      }
+      },
+      "signInToContact": "Entre para ver o contato",
+      "revealContact": "Ver contato",
+      "revealingContact": "Mostrando…",
+      "contactRateLimited": "Muitas visualizações de contato. Tente novamente em instantes.",
+      "contactSignedOut": "Sua sessão expirou. Entre novamente para ver o contato.",
+      "contactError": "Não foi possível carregar o contato. Tente novamente."
     },
     "form": {
       "title": "Título",

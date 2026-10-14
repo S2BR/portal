@@ -2254,7 +2254,13 @@
         "phone": "電話する",
         "whatsapp": "WhatsAppで連絡",
         "email": "メールを送る"
-      }
+      },
+      "signInToContact": "連絡先を表示するにはログインしてください",
+      "revealContact": "連絡先を表示",
+      "revealingContact": "表示中…",
+      "contactRateLimited": "連絡先の表示回数が多すぎます。しばらくしてからもう一度お試しください。",
+      "contactSignedOut": "セッションの有効期限が切れました。もう一度ログインして連絡先を表示してください。",
+      "contactError": "連絡先を読み込めませんでした。もう一度お試しください。"
     },
     "form": {
       "title": "タイトル",
