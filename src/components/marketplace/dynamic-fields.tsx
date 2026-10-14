@@ -342,7 +342,19 @@ function ReferenceSelect({
   }, [endpoint, depKey, depsReady]);
 
   const disabled = deps.length > 0 && !depsReady;
-  const current = typeof value === "number" ? String(value) : (value ?? "");
+  const current =
+    typeof value === "number"
+      ? String(value)
+      : typeof value === "string"
+        ? value
+        : "";
+
+  // Always render an item for the current value — even before the (lazy, cascading) options arrive —
+  // so a value set programmatically (e.g. from a VIN) shows immediately instead of an empty trigger.
+  const items =
+    current !== "" && !options.some((option) => option.value === current)
+      ? [{ value: current, label: current }, ...options]
+      : options;
 
   return (
     <Field
@@ -351,7 +363,7 @@ function ReferenceSelect({
       error={error}
     >
       <Select
-        value={typeof current === "string" && current ? current : NONE}
+        value={current !== "" ? current : NONE}
         disabled={disabled}
         onValueChange={(next) =>
           onChange(field.key, next === NONE ? null : next)
@@ -364,7 +376,7 @@ function ReferenceSelect({
           {!field.required ? (
             <SelectItem value={NONE}>{t("form.selectNone")}</SelectItem>
           ) : null}
-          {options.map((option) => (
+          {items.map((option) => (
             <SelectItem key={option.value} value={option.value}>
               {option.label}
             </SelectItem>
