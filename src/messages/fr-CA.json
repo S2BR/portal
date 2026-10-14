@@ -2202,7 +2202,10 @@
       "photosAfter": "Vous pourrez ajouter des photos après la publication.",
       "savedToast": "Annonce mise à jour.",
       "postedToast": "Annonce publiée — ajoutez des photos.",
-      "error": "Une erreur s'est produite. Réessayez."
+      "error": "Une erreur s'est produite. Réessayez.",
+      "detailsHeading": "Détails",
+      "selectPlaceholder": "Sélectionner…",
+      "selectNone": "Indifférent"
     },
     "photos": {
       "cover": "Couverture",
@@ -2231,7 +2234,11 @@
     },
     "new": {
       "title": "Publier une annonce",
-      "subtitle": "Annoncez quelque chose pour votre communauté."
+      "subtitle": "Annoncez quelque chose pour votre communauté.",
+      "chooseType": "Choisir un type",
+      "pickPrompt": "Choisissez un type",
+      "changeType": "Changer de type ({type})",
+      "typesEmpty": "Aucun type d’annonce disponible pour le moment."
     },
     "edit": {
       "title": "Modifier l'annonce",

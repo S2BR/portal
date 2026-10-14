@@ -4,7 +4,11 @@ import { cache } from "react";
 
 import { portalFetch } from "@/lib/api/client";
 
-import type { AdsPage, MarketplaceAd } from "@/lib/marketplace/types";
+import type {
+  AdsPage,
+  MarketplaceAd,
+  MarketplaceCategory,
+} from "@/lib/marketplace/types";
 
 const EMPTY_PAGE: AdsPage = {
   data: [],
@@ -51,3 +55,18 @@ export async function getPublicAd(slug: string): Promise<MarketplaceAd | null> {
 
 /** Per-request-memoized `getPublicAd` — shared by the ad page + its `generateMetadata`. */
 export const getCachedPublicAd = cache(getPublicAd);
+
+/**
+ * The ad types shown in the post flow's picker — unauthenticated, server-side. Degrades to an empty
+ * list if the API is unreachable (the post page then shows its "no types" fallback).
+ */
+export async function getMarketplaceCategories(): Promise<
+  MarketplaceCategory[]
+> {
+  const response = await portalFetch<{ data?: MarketplaceCategory[] }>({
+    method: "GET",
+    path: "/marketplace/categories",
+  });
+
+  return response.ok ? (response.data.data ?? []) : [];
+}

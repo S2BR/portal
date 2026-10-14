@@ -2202,7 +2202,10 @@
       "photosAfter": "Puedes añadir fotos después de publicar.",
       "savedToast": "Anuncio actualizado.",
       "postedToast": "Anuncio publicado: ahora añade fotos.",
-      "error": "Algo salió mal. Inténtalo de nuevo."
+      "error": "Algo salió mal. Inténtalo de nuevo.",
+      "detailsHeading": "Detalles",
+      "selectPlaceholder": "Seleccionar…",
+      "selectNone": "Cualquiera"
     },
     "photos": {
       "cover": "Portada",
@@ -2231,7 +2234,11 @@
     },
     "new": {
       "title": "Publicar un anuncio",
-      "subtitle": "Anuncia algo para tu comunidad."
+      "subtitle": "Anuncia algo para tu comunidad.",
+      "chooseType": "Elige un tipo",
+      "pickPrompt": "Selecciona un tipo",
+      "changeType": "Cambiar tipo ({type})",
+      "typesEmpty": "No hay tipos de anuncio disponibles por ahora."
     },
     "edit": {
       "title": "Editar anuncio",

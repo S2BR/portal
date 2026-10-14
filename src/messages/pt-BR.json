@@ -2202,7 +2202,10 @@
       "photosAfter": "Você pode adicionar fotos depois de publicar.",
       "savedToast": "Anúncio atualizado.",
       "postedToast": "Anúncio publicado — agora adicione fotos.",
-      "error": "Algo deu errado. Tente novamente."
+      "error": "Algo deu errado. Tente novamente.",
+      "detailsHeading": "Detalhes",
+      "selectPlaceholder": "Selecionar…",
+      "selectNone": "Qualquer"
     },
     "photos": {
       "cover": "Capa",
@@ -2231,7 +2234,11 @@
     },
     "new": {
       "title": "Publicar anúncio",
-      "subtitle": "Anuncie algo para a sua comunidade."
+      "subtitle": "Anuncie algo para a sua comunidade.",
+      "chooseType": "Escolha um tipo",
+      "pickPrompt": "Selecione um tipo",
+      "changeType": "Mudar tipo ({type})",
+      "typesEmpty": "Nenhum tipo de anúncio disponível no momento."
     },
     "edit": {
       "title": "Editar anúncio",

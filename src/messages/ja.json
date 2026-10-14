@@ -2202,7 +2202,10 @@
       "photosAfter": "投稿後に写真を追加できます。",
       "savedToast": "広告を更新しました。",
       "postedToast": "広告を投稿しました。写真を追加してください。",
-      "error": "問題が発生しました。もう一度お試しください。"
+      "error": "問題が発生しました。もう一度お試しください。",
+      "detailsHeading": "詳細",
+      "selectPlaceholder": "選択…",
+      "selectNone": "指定なし"
     },
     "photos": {
       "cover": "カバー",
@@ -2231,7 +2234,11 @@
     },
     "new": {
       "title": "広告を投稿",
-      "subtitle": "地域に向けて出品しましょう。"
+      "subtitle": "地域に向けて出品しましょう。",
+      "chooseType": "タイプを選択",
+      "pickPrompt": "タイプを選んでください",
+      "changeType": "タイプを変更（{type}）",
+      "typesEmpty": "現在、利用できる広告タイプはありません。"
     },
     "edit": {
       "title": "広告を編集",

@@ -2202,7 +2202,10 @@
       "photosAfter": "Puoi aggiungere foto dopo la pubblicazione.",
       "savedToast": "Annuncio aggiornato.",
       "postedToast": "Annuncio pubblicato — ora aggiungi le foto.",
-      "error": "Qualcosa è andato storto. Riprova."
+      "error": "Qualcosa è andato storto. Riprova.",
+      "detailsHeading": "Dettagli",
+      "selectPlaceholder": "Seleziona…",
+      "selectNone": "Qualsiasi"
     },
     "photos": {
       "cover": "Copertina",
@@ -2231,7 +2234,11 @@
     },
     "new": {
       "title": "Pubblica un annuncio",
-      "subtitle": "Metti in vendita qualcosa per la tua comunità."
+      "subtitle": "Metti in vendita qualcosa per la tua comunità.",
+      "chooseType": "Scegli un tipo",
+      "pickPrompt": "Seleziona un tipo",
+      "changeType": "Cambia tipo ({type})",
+      "typesEmpty": "Nessun tipo di annuncio disponibile al momento."
     },
     "edit": {
       "title": "Modifica annuncio",
