@@ -2062,7 +2062,9 @@
         "save": "Save",
         "cancel": "Cancel",
         "created": "Field added.",
-        "saved": "Saved."
+        "saved": "Saved.",
+        "addYmm": "Add Year-Make-Model",
+        "ymmAdded": "Year-Make-Model fields added."
       },
       "type": {
         "text": "Text",
@@ -2276,7 +2278,17 @@
       "error": "問題が発生しました。もう一度お試しください。",
       "detailsHeading": "詳細",
       "selectPlaceholder": "選択…",
-      "selectNone": "指定なし"
+      "selectNone": "指定なし",
+      "referenceLocked": "先に依存する項目を選択してください。",
+      "vinPrompt": "VINで自動入力",
+      "vin": "VIN",
+      "vinHint": "17文字",
+      "vinPlaceholder": "例: 1HGCM82633A004352",
+      "vinFill": "入力",
+      "vinCancel": "キャンセル",
+      "vinInvalid": "有効なVINを入力してください。",
+      "vinNotFound": "そのVINを読み取れませんでした。",
+      "vinFilled": "VINから入力しました。"
     },
     "photos": {
       "cover": "カバー",

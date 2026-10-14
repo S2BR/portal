@@ -2062,7 +2062,9 @@
         "save": "Save",
         "cancel": "Cancel",
         "created": "Field added.",
-        "saved": "Saved."
+        "saved": "Saved.",
+        "addYmm": "Add Year-Make-Model",
+        "ymmAdded": "Year-Make-Model fields added."
       },
       "type": {
         "text": "Text",
@@ -2276,7 +2278,17 @@
       "error": "Une erreur s'est produite. Réessayez.",
       "detailsHeading": "Détails",
       "selectPlaceholder": "Sélectionner…",
-      "selectNone": "Indifférent"
+      "selectNone": "Indifférent",
+      "referenceLocked": "Choisissez d’abord les champs requis.",
+      "vinPrompt": "Vous avez le NIV? Remplir automatiquement",
+      "vin": "NIV",
+      "vinHint": "17 caractères",
+      "vinPlaceholder": "ex. 1HGCM82633A004352",
+      "vinFill": "Remplir",
+      "vinCancel": "Annuler",
+      "vinInvalid": "Entrez un NIV valide.",
+      "vinNotFound": "Impossible de lire ce NIV.",
+      "vinFilled": "Détails remplis à partir du NIV."
     },
     "photos": {
       "cover": "Couverture",

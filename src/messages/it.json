@@ -2062,7 +2062,9 @@
         "save": "Save",
         "cancel": "Cancel",
         "created": "Field added.",
-        "saved": "Saved."
+        "saved": "Saved.",
+        "addYmm": "Add Year-Make-Model",
+        "ymmAdded": "Year-Make-Model fields added."
       },
       "type": {
         "text": "Text",
@@ -2276,7 +2278,17 @@
       "error": "Qualcosa è andato storto. Riprova.",
       "detailsHeading": "Dettagli",
       "selectPlaceholder": "Seleziona…",
-      "selectNone": "Qualsiasi"
+      "selectNone": "Qualsiasi",
+      "referenceLocked": "Seleziona prima i campi da cui dipende.",
+      "vinPrompt": "Hai il VIN? Compila automaticamente",
+      "vin": "VIN",
+      "vinHint": "17 caratteri",
+      "vinPlaceholder": "es. 1HGCM82633A004352",
+      "vinFill": "Compila",
+      "vinCancel": "Annulla",
+      "vinInvalid": "Inserisci un VIN valido.",
+      "vinNotFound": "Non siamo riusciti a leggere il VIN.",
+      "vinFilled": "Dettagli compilati dal VIN."
     },
     "photos": {
       "cover": "Copertina",
