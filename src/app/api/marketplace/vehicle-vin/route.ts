@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { portalFetch } from "@/lib/api/client";
+import { callWithAuth } from "@/lib/api/authed";
 
 /** BFF: decode a VIN to vehicle field values (unauthenticated). Relays the API's 422 for a bad VIN. */
 export async function GET(request: Request): Promise<NextResponse> {
@@ -9,7 +9,7 @@ export async function GET(request: Request): Promise<NextResponse> {
     return NextResponse.json({ status: "invalid" }, { status: 422 });
   }
 
-  const response = await portalFetch<{ data?: Record<string, string> }>({
+  const response = await callWithAuth<{ data?: Record<string, string> }>({
     method: "GET",
     path: `/marketplace/vehicle-vin?vin=${encodeURIComponent(vin)}`,
   });
