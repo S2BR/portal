@@ -10,6 +10,7 @@ describe("buildRenderPlan", () => {
     const plan = buildRenderPlan(null, ["mileage", "make"]);
     expect(plan).toHaveLength(1);
     const flat = tokens(plan);
+    expect(flat).toContain("special:vin");
     expect(flat).toContain("core:title");
     expect(flat).toContain("core:images");
     expect(flat).toContain("attribute:mileage");
@@ -95,8 +96,9 @@ describe("buildRenderPlan", () => {
     // Unplaced dynamic fields are preserved.
     expect(flat).toContain("attribute:mileage");
     expect(flat).toContain("attribute:make");
-    // Optional core fields that weren't placed stay out.
+    // Optional core fields that weren't placed stay out (VIN included — it is never auto-appended).
     expect(flat).not.toContain("core:condition");
     expect(flat).not.toContain("core:location");
+    expect(flat).not.toContain("special:vin");
   });
 });
