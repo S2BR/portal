@@ -2303,7 +2303,16 @@
       "revealingContact": "Mostrando…",
       "contactRateLimited": "Demasiadas consultas de contacto. Inténtalo de nuevo en breve.",
       "contactSignedOut": "Tu sesión ha expirado. Inicia sesión de nuevo para ver el contacto.",
-      "contactError": "No se pudo cargar el contacto. Inténtalo de nuevo."
+      "contactError": "No se pudo cargar el contacto. Inténtalo de nuevo.",
+      "specs": "Detalles",
+      "yes": "Sí",
+      "no": "No",
+      "backToMarketplace": "Marketplace",
+      "photo": "Foto",
+      "close": "Cerrar",
+      "prevPhoto": "Foto anterior",
+      "nextPhoto": "Foto siguiente",
+      "openGallery": "Ver fotos"
     },
     "form": {
       "title": "Título",
