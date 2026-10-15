@@ -36,171 +36,153 @@ const REFERENCE_ENDPOINT: Record<string, string> = {
 };
 
 /**
- * Renders a category's dynamic fields (the schema fetched for the chosen type) as the right input per
- * type, with the value held by the parent form. Labels/options are already localized by the API.
- * Reference-backed fields (e.g. vehicle make/model) fetch their choices and cascade on their
- * dependencies; changing a field clears any field that depends on it.
+ * Clear any field that depends on `changedKey` (so a stale dependent — e.g. a model after its make
+ * changes — can't survive). The caller still sets the changed field itself.
  */
-export function DynamicFields({
-  fields,
+export function clearDependents(
+  fields: AttributeField[],
+  changedKey: string,
+  onChange: (key: string, value: FieldValue) => void,
+): void {
+  for (const field of fields) {
+    if (field.key !== changedKey && (field.depends_on ?? []).includes(changedKey)) {
+      onChange(field.key, null);
+    }
+  }
+}
+
+/**
+ * Renders ONE dynamic field as the right input for its type, with the value held by the parent form.
+ * Labels/options are already localized by the API. Reference-backed fields (e.g. vehicle make/model)
+ * fetch their choices and cascade on their dependencies. `onChange` should already apply any dependent
+ * clearing (see {@link clearDependents}); this component just reports the one field's new value.
+ */
+export function AttributeInput({
+  field,
+  value,
+  error,
   values,
-  errors,
   onChange,
 }: {
-  fields: AttributeField[];
+  field: AttributeField;
+  value: FieldValue;
+  error?: string;
   values: AdAttributes;
-  errors: Record<string, string | undefined>;
   onChange: (key: string, value: FieldValue) => void;
 }) {
   const t = useTranslations("marketplace");
+  const label = field.unit ? `${field.label} (${field.unit})` : field.label;
 
-  const labelOf = (field: AttributeField) =>
-    field.unit ? `${field.label} (${field.unit})` : field.label;
-
-  // Changing a field also clears any field that depends on it (so a stale model can't survive a make
-  // change).
-  function change(key: string, value: FieldValue) {
-    onChange(key, value);
-    for (const field of fields) {
-      if (field.key !== key && (field.depends_on ?? []).includes(key)) {
-        onChange(field.key, null);
-      }
-    }
+  if (field.source) {
+    return (
+      <ReferenceSelect
+        field={field}
+        label={label}
+        value={value ?? null}
+        error={error}
+        values={values}
+        onChange={onChange}
+      />
+    );
   }
 
-  const hasVehicleReference = fields.some((field) =>
-    field.source?.startsWith("vehicle_"),
-  );
+  if (field.type === "boolean") {
+    return (
+      <div className="space-y-1.5">
+        <label className="flex items-center gap-3">
+          <Switch
+            checked={value === true}
+            onCheckedChange={(checked) => onChange(field.key, checked)}
+          />
+          <span className="text-sm font-medium">{field.label}</span>
+        </label>
+        {error ? <p className="text-destructive text-sm">{error}</p> : null}
+      </div>
+    );
+  }
 
-  return (
-    <div className="space-y-5">
-      {hasVehicleReference ? (
-        <VinAutofill
-          fieldKeys={new Set(fields.map((field) => field.key))}
-          onChange={onChange}
-        />
-      ) : null}
-
-      {fields.map((field) => {
-        const value = values[field.key];
-        const error = errors[`attributes.${field.key}`];
-
-        if (field.source) {
-          return (
-            <ReferenceSelect
-              key={field.key}
-              field={field}
-              label={labelOf(field)}
-              value={value ?? null}
-              error={error}
-              values={values}
-              onChange={change}
-            />
-          );
-        }
-
-        if (field.type === "boolean") {
-          return (
-            <div key={field.key} className="space-y-1.5">
-              <label className="flex items-center gap-3">
-                <Switch
-                  checked={value === true}
-                  onCheckedChange={(checked) => change(field.key, checked)}
-                />
-                <span className="text-sm font-medium">{field.label}</span>
-              </label>
-              {error ? (
-                <p className="text-destructive text-sm">{error}</p>
-              ) : null}
-            </div>
-          );
-        }
-
-        if (field.type === "multiselect") {
-          const selected = Array.isArray(value) ? value : [];
-          return (
-            <Field key={field.key} label={labelOf(field)} error={error}>
-              <div className="flex flex-wrap gap-2">
-                {(field.options ?? []).map((option) => {
-                  const on = selected.includes(option.value);
-                  return (
-                    <Button
-                      key={option.value}
-                      type="button"
-                      variant={on ? "secondary" : "outline"}
-                      size="sm"
-                      aria-pressed={on}
-                      onClick={() =>
-                        change(
-                          field.key,
-                          on
-                            ? selected.filter((v) => v !== option.value)
-                            : [...selected, option.value],
-                        )
-                      }
-                      className={cn(on && "ring-primary ring-1")}
-                    >
-                      {option.label}
-                    </Button>
-                  );
-                })}
-              </div>
-            </Field>
-          );
-        }
-
-        if (field.type === "select") {
-          const options: AttributeOption[] = field.options ?? [];
-          return (
-            <Field key={field.key} label={labelOf(field)} error={error}>
-              <Select
-                value={typeof value === "string" && value ? value : NONE}
-                onValueChange={(next) =>
-                  change(field.key, next === NONE ? null : next)
+  if (field.type === "multiselect") {
+    const selected = Array.isArray(value) ? value : [];
+    return (
+      <Field label={label} error={error}>
+        <div className="flex flex-wrap gap-2">
+          {(field.options ?? []).map((option) => {
+            const on = selected.includes(option.value);
+            return (
+              <Button
+                key={option.value}
+                type="button"
+                variant={on ? "secondary" : "outline"}
+                size="sm"
+                aria-pressed={on}
+                onClick={() =>
+                  onChange(
+                    field.key,
+                    on
+                      ? selected.filter((v) => v !== option.value)
+                      : [...selected, option.value],
+                  )
                 }
+                className={cn(on && "ring-primary ring-1")}
               >
-                <SelectTrigger>
-                  <SelectValue placeholder={t("form.selectPlaceholder")} />
-                </SelectTrigger>
-                <SelectContent>
-                  {!field.required ? (
-                    <SelectItem value={NONE}>{t("form.selectNone")}</SelectItem>
-                  ) : null}
-                  {options.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </Field>
-          );
-        }
+                {option.label}
+              </Button>
+            );
+          })}
+        </div>
+      </Field>
+    );
+  }
 
-        // text, number, date
-        return (
-          <Field key={field.key} label={labelOf(field)} error={error}>
-            <Input
-              type={
-                field.type === "number"
-                  ? "number"
-                  : field.type === "date"
-                    ? "date"
-                    : "text"
-              }
-              value={value === null || value === undefined ? "" : String(value)}
-              required={field.required}
-              onChange={(event) => change(field.key, event.target.value)}
-            />
-          </Field>
-        );
-      })}
-    </div>
+  if (field.type === "select") {
+    const options: AttributeOption[] = field.options ?? [];
+    return (
+      <Field label={label} error={error}>
+        <Select
+          value={typeof value === "string" && value ? value : NONE}
+          onValueChange={(next) =>
+            onChange(field.key, next === NONE ? null : next)
+          }
+        >
+          <SelectTrigger>
+            <SelectValue placeholder={t("form.selectPlaceholder")} />
+          </SelectTrigger>
+          <SelectContent>
+            {!field.required ? (
+              <SelectItem value={NONE}>{t("form.selectNone")}</SelectItem>
+            ) : null}
+            {options.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </Field>
+    );
+  }
+
+  // text, number, date
+  return (
+    <Field label={label} error={error}>
+      <Input
+        type={
+          field.type === "number"
+            ? "number"
+            : field.type === "date"
+              ? "date"
+              : "text"
+        }
+        value={value === null || value === undefined ? "" : String(value)}
+        required={field.required}
+        onChange={(event) => onChange(field.key, event.target.value)}
+      />
+    </Field>
   );
 }
 
 /** VIN shortcut: decode a VIN and auto-fill the vehicle fields (year/make/model/body/fuel/transmission). */
-function VinAutofill({
+export function VinAutofill({
   fieldKeys,
   onChange,
 }: {

@@ -2073,6 +2073,45 @@
         "select": "Single choice",
         "multiselect": "Multiple choice",
         "date": "Date"
+      },
+      "layout": {
+        "customize": "Customize form layout",
+        "heading": "{type} — form layout",
+        "subtitle": "Drag fields into sections and set each one's width. Everything stacks on mobile.",
+        "cancel": "Cancel",
+        "clear": "Clear layout",
+        "save": "Save layout",
+        "saved": "Form layout saved",
+        "cleared": "Form layout cleared",
+        "addSection": "Add section",
+        "palette": "Available fields",
+        "paletteEmpty": "All fields are placed.",
+        "sectionName": "Section name",
+        "sectionNamePlaceholder": "e.g. Basics",
+        "sectionEmpty": "Drag fields here.",
+        "moveSectionUp": "Move section up",
+        "moveSectionDown": "Move section down",
+        "removeSection": "Remove section",
+        "removeField": "Remove field",
+        "drag": "Drag to reorder",
+        "coreTag": "Built-in",
+        "preview": "Preview",
+        "previewHint": "Required fields and any unplaced fields are added automatically at the end.",
+        "width": {
+          "full": "Full",
+          "two_thirds": "Two thirds",
+          "half": "Half",
+          "third": "Third"
+        },
+        "core": {
+          "title": "Title",
+          "description": "Description",
+          "price": "Price",
+          "condition": "Condition",
+          "location": "Location",
+          "contact": "Contact",
+          "images": "Photos"
+        }
       }
     }
   },
@@ -2294,7 +2333,8 @@
       "vinCancel": "Cancel",
       "vinInvalid": "Enter a valid VIN.",
       "vinNotFound": "We couldn’t read that VIN.",
-      "vinFilled": "Details filled from the VIN."
+      "vinFilled": "Details filled from the VIN.",
+      "photos": "Photos"
     },
     "photos": {
       "cover": "Cover",

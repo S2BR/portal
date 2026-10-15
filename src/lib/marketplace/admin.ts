@@ -4,6 +4,8 @@
  * (`en`); the stored map keeps any other languages the API already holds.
  */
 
+import type { FieldWidth } from "@/lib/marketplace/layout";
+
 export const DEFAULT_LOCALE = "en";
 
 /**
@@ -52,12 +54,31 @@ export function typeHasOptions(type: AttributeType): boolean {
   return type === "select" || type === "multiselect";
 }
 
+/** One placed field in the admin form-layout builder (section name is a full locale map, unlike the public shape). */
+export interface AdminLayoutItem {
+  kind: "core" | "attribute";
+  key: string;
+  width: FieldWidth;
+}
+
+export interface AdminLayoutSection {
+  id: string;
+  name: LocaleMap;
+  items: AdminLayoutItem[];
+}
+
+export interface AdminFormLayout {
+  sections: AdminLayoutSection[];
+}
+
 export interface AdminCategory {
   id: number;
   name: LocaleMap;
   slug: string;
   icon: string | null;
   is_special: boolean;
+  /** The admin-defined form arrangement, raw (full locale maps). Null when using the default order. */
+  form_layout?: AdminFormLayout | null;
   order_column: number;
   activated_at: string | null;
   is_active: boolean;
