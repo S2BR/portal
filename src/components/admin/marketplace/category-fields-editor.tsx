@@ -1,6 +1,6 @@
 "use client";
 
-import { Car, Pencil, Plus, Trash2, X } from "lucide-react";
+import { Car, LayoutGrid, Pencil, Plus, Trash2, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
+import { FormLayoutBuilder } from "@/components/admin/marketplace/form-layout-builder";
 import { LocaleTextField } from "@/components/admin/marketplace/locale-text-field";
 import { apiErrorText } from "@/lib/api/error-text";
 import {
@@ -68,6 +69,7 @@ export function CategoryFieldsEditor({
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [ymmBusy, setYmmBusy] = useState(false);
+  const [showLayout, setShowLayout] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -110,6 +112,19 @@ export function CategoryFieldsEditor({
     }
   }
 
+  if (showLayout) {
+    return (
+      <FormLayoutBuilder
+        category={category}
+        fields={fields}
+        onClose={() => {
+          setShowLayout(false);
+          refresh();
+        }}
+      />
+    );
+  }
+
   return (
     <div className="space-y-5">
       <header className="space-y-1">
@@ -144,6 +159,14 @@ export function CategoryFieldsEditor({
           >
             <Car className="size-4" />
             {t("fields.addYmm")}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowLayout(true)}
+          >
+            <LayoutGrid className="size-4" />
+            {t("layout.customize")}
           </Button>
         </div>
       )}

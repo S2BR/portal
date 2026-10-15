@@ -3,6 +3,8 @@
  * and client-safe (no server-only imports), so both the server data lib and client components use it.
  */
 
+import type { PublicFormLayout } from "@/lib/marketplace/layout";
+
 export type AdStatus = "available" | "reserved" | "sold" | "given" | "expired";
 
 export type PriceType = "fixed" | "negotiable" | "free" | "trade" | "contact";
@@ -116,6 +118,8 @@ export interface MarketplaceCategory {
   is_special: boolean;
   /** Present on the category *detail* (schema) endpoint; omitted from the list. */
   fields?: AttributeField[];
+  /** The admin-defined form arrangement (detail endpoint only); null when using the default order. */
+  layout?: PublicFormLayout | null;
 }
 
 /** The category an ad belongs to, as embedded on an ad (`MarketplaceAdResource.category`). */

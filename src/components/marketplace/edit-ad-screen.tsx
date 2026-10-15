@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { AdForm } from "@/components/marketplace/ad-form";
-import { AdPhotos } from "@/components/marketplace/ad-photos";
 import { buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { MarketplaceAd } from "@/lib/marketplace/types";
@@ -74,16 +73,5 @@ export function EditAdScreen({ slug }: { slug: string }) {
     );
   }
 
-  return (
-    <div className="space-y-10">
-      <section>
-        <h2 className="mb-3 font-semibold">{t("edit.photos")}</h2>
-        <AdPhotos ad={state.ad} />
-      </section>
-      <section>
-        <h2 className="mb-3 font-semibold">{t("edit.details")}</h2>
-        <AdForm ad={state.ad} />
-      </section>
-    </div>
-  );
+  return <AdForm ad={state.ad} />;
 }
