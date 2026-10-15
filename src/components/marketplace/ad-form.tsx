@@ -23,6 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { MoneyInput } from "@/components/ui/money-input";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { CURRENCIES } from "@/lib/products/currencies";
@@ -86,8 +87,8 @@ export function AdForm({
   const [priceType, setPriceType] = useState<PriceType>(
     ad?.price_type ?? "fixed",
   );
-  const [price, setPrice] = useState(
-    ad?.price != null ? (ad.price / 100).toString() : "",
+  const [priceCents, setPriceCents] = useState<number | null>(
+    ad?.price ?? null,
   );
   const [currency, setCurrency] = useState(ad?.currency ?? "CAD");
   const [condition, setCondition] = useState<AdCondition | "none">(
@@ -141,14 +142,25 @@ export function AdForm({
     return map;
   }, [fields]);
 
-  const plan = useMemo(
-    () => buildRenderPlan(layout, Array.from(fieldByKey.keys())),
-    [layout, fieldByKey],
-  );
-
   const hasVehicleReference = fields.some((field) =>
     field.source?.startsWith("vehicle_"),
   );
+
+  const plan = useMemo(() => {
+    const raw = buildRenderPlan(layout, Array.from(fieldByKey.keys()));
+    if (hasVehicleReference) {
+      return raw;
+    }
+    // No vehicle fields → the VIN shortcut is meaningless; drop it (and any section it leaves empty).
+    return raw
+      .map((section) => ({
+        ...section,
+        items: section.items.filter(
+          (item) => !(item.kind === "special" && item.key === "vin"),
+        ),
+      }))
+      .filter((section) => section.items.length > 0);
+  }, [layout, fieldByKey, hasVehicleReference]);
 
   function setAttr(key: string, value: FieldValue) {
     setAttrValues((current) => ({ ...current, [key]: value }));
@@ -171,7 +183,7 @@ export function AdForm({
       title,
       description,
       price_type: priceType,
-      price: hasAmount && price !== "" ? Math.round(Number(price) * 100) : null,
+      price: hasAmount ? priceCents : null,
       currency: hasAmount ? currency : null,
       condition: condition === "none" ? null : condition,
       location_label: locationLabel || null,
@@ -267,12 +279,9 @@ export function AdForm({
             {hasAmount ? (
               <Field label={t("form.price")} error={errors.price}>
                 <div className="flex gap-2">
-                  <Input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
+                  <MoneyInput
+                    value={priceCents}
+                    onChange={setPriceCents}
                     className="flex-1"
                   />
                   <Select value={currency} onValueChange={setCurrency}>
@@ -389,6 +398,19 @@ export function AdForm({
     }
   }
 
+  /** Render a special (shortcut/helper) widget by its key. */
+  function renderSpecial(key: string) {
+    if (key === "vin") {
+      return (
+        <VinAutofill
+          fieldKeys={new Set(fields.map((field) => field.key))}
+          onChange={setAttr}
+        />
+      );
+    }
+    return null;
+  }
+
   function renderItem(item: LayoutItem) {
     if (item.kind === "attribute") {
       const field = fieldByKey.get(item.key);
@@ -405,22 +427,18 @@ export function AdForm({
         />
       );
     }
+    if (item.kind === "special") {
+      return renderSpecial(item.key);
+    }
     return renderCore(item.key);
   }
 
   return (
     <form onSubmit={submit} className="space-y-8">
-      {hasVehicleReference ? (
-        <VinAutofill
-          fieldKeys={new Set(fields.map((field) => field.key))}
-          onChange={setAttr}
-        />
-      ) : null}
-
       {plan.map((section) => (
         <section key={section.id} className="space-y-4">
           {section.name ? (
-            <h2 className="border-b pb-2 text-sm font-semibold">
+            <h2 className="text-foreground border-b-2 pb-2 text-lg font-semibold tracking-tight">
               {section.name}
             </h2>
           ) : null}

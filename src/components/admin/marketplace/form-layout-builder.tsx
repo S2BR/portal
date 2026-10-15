@@ -56,6 +56,7 @@ import {
   buildRenderPlan,
   CORE_FIELDS,
   FIELD_WIDTHS,
+  SPECIAL_FIELDS,
   WIDTH_COLS,
   type FieldWidth,
 } from "@/lib/marketplace/layout";
@@ -77,10 +78,17 @@ function initialState(
   fields: AdminField[],
 ): { sections: SectionMeta[]; itemsBy: ItemsBy } {
   const validAttr = new Set(fields.map((f) => f.key));
+  // Special shortcuts (e.g. VIN decode) are only offered for categories with vehicle fields.
+  const hasVehicle = fields.some((f) => f.source?.startsWith("vehicle_"));
+  const specialKeys = hasVehicle ? SPECIAL_FIELDS : [];
+  const coreSet = new Set<string>(CORE_FIELDS);
+  const specialSet = new Set<string>(specialKeys);
   const isValid = (item: Item) =>
     item.kind === "core"
-      ? (CORE_FIELDS as string[]).includes(item.key)
-      : validAttr.has(item.key);
+      ? coreSet.has(item.key)
+      : item.kind === "special"
+        ? specialSet.has(item.key)
+        : validAttr.has(item.key);
 
   const sections: SectionMeta[] = [];
   const itemsBy: ItemsBy = { [PALETTE]: [] };
@@ -112,6 +120,7 @@ function initialState(
 
   const all: Item[] = [
     ...CORE_FIELDS.map((key): Item => ({ kind: "core", key, width: "full" })),
+    ...specialKeys.map((key): Item => ({ kind: "special", key, width: "full" })),
     ...fields.map((f): Item => ({ kind: "attribute", key: f.key, width: "full" })),
   ];
   itemsBy[PALETTE] = all.filter((item) => !placed.has(itemId(item)));
@@ -148,6 +157,9 @@ export function FormLayoutBuilder({
     const map = new Map<string, string>();
     for (const key of CORE_FIELDS) {
       map.set(`core:${key}`, t(`layout.core.${key}`));
+    }
+    for (const key of SPECIAL_FIELDS) {
+      map.set(`special:${key}`, t(`layout.special.${key}`));
     }
     for (const field of fields) {
       map.set(`attribute:${field.key}`, readText(field.label) || field.key);
@@ -456,7 +468,7 @@ function Palette({
                 key={itemId(item)}
                 id={itemId(item)}
                 label={labelFor.get(itemId(item)) ?? item.key}
-                isCore={item.kind === "core"}
+                kind={item.kind}
                 t={t}
               />
             ))
@@ -555,7 +567,7 @@ function SectionCard({
                 key={itemId(item)}
                 id={itemId(item)}
                 label={labelFor.get(itemId(item)) ?? item.key}
-                isCore={item.kind === "core"}
+                kind={item.kind}
                 width={item.width}
                 onWidth={(width) => onWidth(itemId(item), width)}
                 onRemove={() => onRemoveItem(itemId(item))}
@@ -573,7 +585,7 @@ function SectionCard({
 function FieldChip({
   id,
   label,
-  isCore,
+  kind,
   width,
   onWidth,
   onRemove,
@@ -581,12 +593,18 @@ function FieldChip({
 }: {
   id: string;
   label: string;
-  isCore: boolean;
+  kind: Item["kind"];
   width?: FieldWidth;
   onWidth?: (width: FieldWidth) => void;
   onRemove?: () => void;
   t: ReturnType<typeof useTranslations>;
 }) {
+  const tag =
+    kind === "core"
+      ? t("layout.coreTag")
+      : kind === "special"
+        ? t("layout.specialTag")
+        : null;
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id });
   const style = {
@@ -614,9 +632,9 @@ function FieldChip({
       </button>
       <span className="flex-1 truncate text-sm">
         {label}
-        {isCore ? (
+        {tag ? (
           <span className="text-muted-foreground ml-1.5 text-[10px] tracking-wide uppercase">
-            {t("layout.coreTag")}
+            {tag}
           </span>
         ) : null}
       </span>

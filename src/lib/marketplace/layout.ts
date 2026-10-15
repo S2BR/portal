@@ -28,6 +28,14 @@ export const CORE_FIELDS: CoreFieldKey[] = [
 ];
 
 /**
+ * Special fields: shortcuts/helpers that aren't a plain input and only apply to some categories. The
+ * VIN decoder (fills the vehicle fields) is one, offered only for categories with vehicle fields.
+ */
+export type SpecialFieldKey = "vin";
+
+export const SPECIAL_FIELDS: SpecialFieldKey[] = ["vin"];
+
+/**
  * Core fields the renderer always shows even when a custom layout omits them — the required inputs plus
  * the photo widget (so an owner can always add photos). Optional core fields (condition, location) show
  * only where placed.
@@ -41,7 +49,7 @@ export const AUTO_APPEND_CORE: CoreFieldKey[] = [
 ];
 
 export interface LayoutItem {
-  kind: "core" | "attribute";
+  kind: "core" | "attribute" | "special";
   key: string;
   width: FieldWidth;
 }
@@ -74,9 +82,14 @@ export interface RenderSection {
 const isCoreKey = (key: string): key is CoreFieldKey =>
   (CORE_FIELDS as string[]).includes(key);
 
+const isSpecialKey = (key: string): key is SpecialFieldKey =>
+  (SPECIAL_FIELDS as string[]).includes(key);
+
 /** The built-in default arrangement when a category has no custom layout. */
 function defaultPlan(attributeKeys: string[]): RenderSection[] {
   const items: LayoutItem[] = [
+    // The VIN shortcut leads for a vehicle category; AdForm drops it when there are no vehicle fields.
+    { kind: "special", key: "vin", width: "full" },
     { kind: "core", key: "title", width: "full" },
     { kind: "core", key: "description", width: "full" },
     ...attributeKeys.map(
@@ -111,7 +124,11 @@ export function buildRenderPlan(
   const sections: RenderSection[] = layout.sections.map((section) => {
     const items = section.items.filter((item) => {
       const valid =
-        item.kind === "core" ? isCoreKey(item.key) : attrSet.has(item.key);
+        item.kind === "core"
+          ? isCoreKey(item.key)
+          : item.kind === "special"
+            ? isSpecialKey(item.key)
+            : attrSet.has(item.key);
       if (!valid) {
         return false;
       }

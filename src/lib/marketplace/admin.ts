@@ -56,7 +56,7 @@ export function typeHasOptions(type: AttributeType): boolean {
 
 /** One placed field in the admin form-layout builder (section name is a full locale map, unlike the public shape). */
 export interface AdminLayoutItem {
-  kind: "core" | "attribute";
+  kind: "core" | "attribute" | "special";
   key: string;
   width: FieldWidth;
 }
@@ -96,6 +96,8 @@ export interface AdminField {
   label: LocaleMap;
   type: AttributeType;
   options: AdminFieldOption[];
+  /** Reference data source (e.g. "vehicle_make"); set for the Year-Make-Model fields. */
+  source?: string | null;
   unit: string | null;
   required: boolean;
   filterable: boolean;

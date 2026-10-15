@@ -11,10 +11,8 @@ import type { CatalogProduct } from "@/app/api/businesses/[slug]/products/route"
 import type { ProductSection } from "@/app/api/businesses/[slug]/product-sections/route";
 import { displayName, type LocaleText } from "@/lib/taxonomy/admin";
 import { cn } from "@/lib/utils";
-import {
-  MoneyInput,
-  ProductThumb,
-} from "@/components/business/products/owner-products";
+import { ProductThumb } from "@/components/business/products/owner-products";
+import { MoneyInput } from "@/components/ui/money-input";
 import { FormSection } from "@/components/business/form-section";
 import {
   AddImageTile,

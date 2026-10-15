@@ -2111,6 +2111,10 @@
           "location": "Location",
           "contact": "Contact",
           "images": "Photos"
+        },
+        "specialTag": "Shortcut",
+        "special": {
+          "vin": "VIN auto-fill"
         }
       }
     }
