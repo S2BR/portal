@@ -2303,7 +2303,16 @@
       "revealingContact": "Wird angezeigt…",
       "contactRateLimited": "Zu viele Kontaktaufrufe. Bitte versuchen Sie es bald erneut.",
       "contactSignedOut": "Ihre Sitzung ist abgelaufen. Melden Sie sich erneut an, um den Kontakt zu sehen.",
-      "contactError": "Kontakt konnte nicht geladen werden. Bitte erneut versuchen."
+      "contactError": "Kontakt konnte nicht geladen werden. Bitte erneut versuchen.",
+      "specs": "Details",
+      "yes": "Ja",
+      "no": "Nein",
+      "backToMarketplace": "Marketplace",
+      "photo": "Foto",
+      "close": "Schließen",
+      "prevPhoto": "Vorheriges Foto",
+      "nextPhoto": "Nächstes Foto",
+      "openGallery": "Fotos ansehen"
     },
     "form": {
       "title": "Titel",

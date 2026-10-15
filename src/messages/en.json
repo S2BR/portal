@@ -2303,7 +2303,16 @@
       "revealingContact": "Showing…",
       "contactRateLimited": "Too many contact views. Try again shortly.",
       "contactSignedOut": "Your session expired. Sign in again to view contact.",
-      "contactError": "Couldn’t load the contact. Try again."
+      "contactError": "Couldn’t load the contact. Try again.",
+      "specs": "Details",
+      "yes": "Yes",
+      "no": "No",
+      "backToMarketplace": "Marketplace",
+      "photo": "Photo",
+      "close": "Close",
+      "prevPhoto": "Previous photo",
+      "nextPhoto": "Next photo",
+      "openGallery": "View photos"
     },
     "form": {
       "title": "Title",

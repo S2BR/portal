@@ -2303,7 +2303,16 @@
       "revealingContact": "Affichage…",
       "contactRateLimited": "Trop de consultations de contacts. Réessayez bientôt.",
       "contactSignedOut": "Votre session a expiré. Reconnectez-vous pour voir le contact.",
-      "contactError": "Impossible de charger le contact. Réessayez."
+      "contactError": "Impossible de charger le contact. Réessayez.",
+      "specs": "Détails",
+      "yes": "Oui",
+      "no": "Non",
+      "backToMarketplace": "Marketplace",
+      "photo": "Photo",
+      "close": "Fermer",
+      "prevPhoto": "Photo précédente",
+      "nextPhoto": "Photo suivante",
+      "openGallery": "Voir les photos"
     },
     "form": {
       "title": "Titre",

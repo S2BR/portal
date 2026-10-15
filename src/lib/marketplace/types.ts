@@ -110,6 +110,15 @@ export type AdAttributes = Record<
   string | number | boolean | string[] | null
 >;
 
+/** A display-ready field value for the public ad page (label + resolved value), from the API. */
+export interface AdAttributeDisplay {
+  key: string;
+  label: string;
+  type: AttributeType;
+  unit: string | null;
+  value: string | number | boolean | string[] | null;
+}
+
 /** An ad type shown in the post flow's picker (`MarketplaceCategoryResource`). */
 export interface MarketplaceCategory {
   slug: string;
@@ -149,6 +158,8 @@ export interface MarketplaceAd {
   status: AdStatus;
   category?: AdCategory | null;
   attributes?: AdAttributes;
+  /** Display-ready field values (label + resolved value), present on the detail endpoint. */
+  attributes_display?: AdAttributeDisplay[];
   location: AdLocation;
   contact_method: ContactMethod;
   /** Whether a number/email exists to reveal — the value itself is only returned to the owner. */

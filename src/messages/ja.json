@@ -2303,7 +2303,16 @@
       "revealingContact": "表示中…",
       "contactRateLimited": "連絡先の表示回数が多すぎます。しばらくしてからもう一度お試しください。",
       "contactSignedOut": "セッションの有効期限が切れました。もう一度ログインして連絡先を表示してください。",
-      "contactError": "連絡先を読み込めませんでした。もう一度お試しください。"
+      "contactError": "連絡先を読み込めませんでした。もう一度お試しください。",
+      "specs": "詳細",
+      "yes": "はい",
+      "no": "いいえ",
+      "backToMarketplace": "マーケットプレイス",
+      "photo": "写真",
+      "close": "閉じる",
+      "prevPhoto": "前の写真",
+      "nextPhoto": "次の写真",
+      "openGallery": "写真を見る"
     },
     "form": {
       "title": "タイトル",

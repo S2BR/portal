@@ -2303,7 +2303,16 @@
       "revealingContact": "Caricamento…",
       "contactRateLimited": "Troppe visualizzazioni del contatto. Riprova tra poco.",
       "contactSignedOut": "La sessione è scaduta. Accedi di nuovo per vedere il contatto.",
-      "contactError": "Impossibile caricare il contatto. Riprova."
+      "contactError": "Impossibile caricare il contatto. Riprova.",
+      "specs": "Dettagli",
+      "yes": "Sì",
+      "no": "No",
+      "backToMarketplace": "Marketplace",
+      "photo": "Foto",
+      "close": "Chiudi",
+      "prevPhoto": "Foto precedente",
+      "nextPhoto": "Foto successiva",
+      "openGallery": "Vedi le foto"
     },
     "form": {
       "title": "Titolo",

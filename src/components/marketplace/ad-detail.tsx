@@ -1,6 +1,6 @@
 "use client";
 
-import { Lock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import { ChevronLeft, Lock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
@@ -8,11 +8,13 @@ import { useState } from "react";
 import { useAdPriceLabel } from "@/components/marketplace/ad-card";
 import { useCurrentUser } from "@/components/auth/current-user";
 import { ImageBox } from "@/components/media/media-tiles";
+import { PhotoLightbox } from "@/components/media/photo-lightbox";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   AD_STATUS_VARIANT,
   contactMethodNeedsValue,
+  type AdAttributeDisplay,
   type MarketplaceAd,
 } from "@/lib/marketplace/types";
 import { cn } from "@/lib/utils";
@@ -45,80 +47,209 @@ export function AdDetail({ ad }: { ad: MarketplaceAd }) {
   const locale = useLocale();
   const priceLabel = useAdPriceLabel();
   const [active, setActive] = useState(0);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const cover = ad.images[active]?.url ?? ad.images[0]?.url ?? null;
   const posted = relativeTime(ad.created_at, locale);
+  const specs = ad.attributes_display ?? [];
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[1.4fr_1fr]">
-      {/* Gallery */}
-      <div className="space-y-3">
-        <ImageBox
-          src={cover}
-          alt={ad.title}
-          className="aspect-[4/3] w-full rounded-2xl object-contain"
-        />
-        {ad.images.length > 1 ? (
-          <div className="flex gap-2 overflow-x-auto pb-1">
-            {ad.images.map((image, index) => (
-              <Button
-                key={image.id}
-                type="button"
-                variant="ghost"
-                size="icon"
-                onClick={() => setActive(index)}
-                className={cn(
-                  "size-16 shrink-0 overflow-hidden rounded-lg p-0",
-                  index === active && "ring-primary ring-2",
-                )}
-              >
-                <ImageBox
-                  src={image.url}
-                  alt=""
-                  className="size-full rounded-lg"
-                />
-              </Button>
-            ))}
+    <div className="space-y-10">
+      {/* Breadcrumb */}
+      <nav className="text-muted-foreground flex items-center gap-2 text-sm">
+        <Link
+          href="/marketplace"
+          className="hover:text-foreground inline-flex items-center gap-1 font-medium transition-colors"
+        >
+          <ChevronLeft className="size-4" aria-hidden />
+          {t("detail.backToMarketplace")}
+        </Link>
+        {ad.category ? (
+          <>
+            <span aria-hidden>·</span>
+            <span className="text-foreground">{ad.category.name}</span>
+          </>
+        ) : null}
+      </nav>
+
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] lg:items-start">
+        {/* Gallery — the hero. Click to open the full-screen carousel. */}
+        <div className="space-y-3">
+          <button
+            type="button"
+            onClick={() => setOpenIndex(active)}
+            aria-label={t("detail.openGallery")}
+            className="focus-visible:ring-ring bg-muted block w-full overflow-hidden rounded-3xl border outline-none focus-visible:ring-2"
+          >
+            <ImageBox
+              src={cover}
+              alt={ad.title}
+              className="aspect-square w-full object-cover"
+            />
+          </button>
+          {ad.images.length > 1 ? (
+            <div className="flex gap-2 overflow-x-auto pb-1">
+              {ad.images.map((image, index) => (
+                <button
+                  key={image.id}
+                  type="button"
+                  onClick={() => setActive(index)}
+                  onDoubleClick={() => setOpenIndex(index)}
+                  aria-label={`${t("detail.photo")} ${index + 1}`}
+                  aria-current={index === active}
+                  className={cn(
+                    "focus-visible:ring-ring size-18 shrink-0 overflow-hidden rounded-xl border transition focus-visible:ring-2 focus-visible:outline-none",
+                    index === active
+                      ? "ring-primary ring-2"
+                      : "opacity-70 hover:opacity-100",
+                  )}
+                >
+                  <ImageBox
+                    src={image.url}
+                    alt=""
+                    className="size-full object-cover"
+                  />
+                </button>
+              ))}
+            </div>
+          ) : null}
+        </div>
+
+        {/* Sticky action card */}
+        <aside className="lg:sticky lg:top-24">
+          <div className="bg-card space-y-5 rounded-3xl p-6 shadow-sm">
+            <div className="space-y-3">
+              <div className="flex flex-wrap items-center gap-2">
+                {ad.category ? (
+                  <Badge variant="outline">{ad.category.name}</Badge>
+                ) : null}
+                {ad.status !== "available" ? (
+                  <Badge variant={AD_STATUS_VARIANT[ad.status]}>
+                    {t(`status.${ad.status}`)}
+                  </Badge>
+                ) : null}
+                {ad.condition ? (
+                  <Badge variant="neutral">
+                    {t(`condition.${ad.condition}`)}
+                  </Badge>
+                ) : null}
+              </div>
+
+              <h1 className="font-heading text-2xl leading-tight font-bold tracking-tight text-balance sm:text-3xl">
+                {ad.title}
+              </h1>
+              <div className="text-2xl font-semibold">{priceLabel(ad)}</div>
+            </div>
+
+            {ad.location.label || posted ? (
+              <div className="text-muted-foreground space-y-1.5 border-t pt-4 text-sm">
+                {ad.location.label ? (
+                  <div className="flex items-center gap-1.5">
+                    <MapPin className="size-4 shrink-0" aria-hidden />
+                    {ad.location.label}
+                  </div>
+                ) : null}
+                {posted ? (
+                  <div>{t("detail.posted", { when: posted })}</div>
+                ) : null}
+              </div>
+            ) : null}
+
+            <AdContact ad={ad} />
           </div>
+        </aside>
+      </div>
+
+      {/* Description + details — full width below the hero */}
+      <div className="space-y-10">
+        <section>
+          <h2 className="font-heading mb-3 text-lg font-semibold tracking-tight">
+            {t("detail.description")}
+          </h2>
+          <p className="max-w-2xl text-[0.9375rem] leading-relaxed whitespace-pre-wrap">
+            {ad.description}
+          </p>
+        </section>
+
+        {specs.length > 0 ? (
+          <section>
+            <h2 className="font-heading mb-4 text-lg font-semibold tracking-tight">
+              {t("detail.specs")}
+            </h2>
+            <AdSpecs items={specs} />
+          </section>
         ) : null}
       </div>
 
-      {/* Info */}
-      <div className="space-y-5">
-        <div className="space-y-2">
-          <div className="flex flex-wrap items-center gap-2">
-            {ad.status !== "available" ? (
-              <Badge variant={AD_STATUS_VARIANT[ad.status]}>
-                {t(`status.${ad.status}`)}
-              </Badge>
-            ) : null}
-            {ad.condition ? (
-              <Badge variant="neutral">{t(`condition.${ad.condition}`)}</Badge>
-            ) : null}
-          </div>
-          <div className="text-2xl font-semibold">{priceLabel(ad)}</div>
-          <h1 className="font-heading text-xl font-bold tracking-tight">
-            {ad.title}
-          </h1>
-        </div>
+      <PhotoLightbox
+        images={ad.images}
+        openIndex={openIndex}
+        onOpenChange={setOpenIndex}
+        alt={(index) => `${ad.title} · ${t("detail.photo")} ${index + 1}`}
+        labels={{
+          close: t("detail.close"),
+          prev: t("detail.prevPhoto"),
+          next: t("detail.nextPhoto"),
+          goTo: (position) => `${t("detail.photo")} ${position}`,
+        }}
+      />
+    </div>
+  );
+}
 
-        <div className="text-muted-foreground space-y-1 text-sm">
-          {ad.location.label ? (
-            <div className="flex items-center gap-1.5">
-              <MapPin className="size-4" />
-              {ad.location.label}
-            </div>
-          ) : null}
-          {posted ? <div>{t("detail.posted", { when: posted })}</div> : null}
-        </div>
+/** The ad's type-specific fields as a labelled spec grid (two columns on wider screens). */
+function AdSpecs({ items }: { items: AdAttributeDisplay[] }) {
+  const t = useTranslations("marketplace");
+  const locale = useLocale();
 
-        <AdContact ad={ad} />
-      </div>
+  function format(item: AdAttributeDisplay): string {
+    const value = item.value;
+    if (value === null || value === "") {
+      return "—";
+    }
+    if (typeof value === "boolean") {
+      return value ? t("detail.yes") : t("detail.no");
+    }
+    if (Array.isArray(value)) {
+      return value.join(", ");
+    }
+    if (item.type === "number" && typeof value === "number") {
+      const formatted = new Intl.NumberFormat(locale).format(value);
+      return item.unit ? `${formatted} ${item.unit}` : formatted;
+    }
+    if (item.type === "date" && typeof value === "string") {
+      const date = new Date(value);
+      return Number.isNaN(date.getTime())
+        ? value
+        : new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(date);
+    }
+    const text = String(value);
+    return item.unit ? `${text} ${item.unit}` : text;
+  }
 
-      {/* Description — full width under both columns */}
-      <div className="lg:col-span-2">
-        <h2 className="mb-2 font-semibold">{t("detail.description")}</h2>
-        <p className="text-sm whitespace-pre-wrap">{ad.description}</p>
+  const mid = Math.ceil(items.length / 2);
+  const twoColumns = items.length > 6;
+  const columns = twoColumns ? [items.slice(0, mid), items.slice(mid)] : [items];
+
+  return (
+    <div className="bg-card rounded-2xl border px-4 sm:px-5">
+      <div className={cn("grid gap-x-12", twoColumns && "sm:grid-cols-2")}>
+        {columns.map((column, index) => (
+          <dl
+            key={index}
+            className={cn("divide-y", index > 0 && "border-t sm:border-t-0")}
+          >
+            {column.map((item) => (
+              <div
+                key={item.key}
+                className="flex items-baseline justify-between gap-4 py-3 text-sm"
+              >
+                <dt className="text-muted-foreground">{item.label}</dt>
+                <dd className="text-right font-medium">{format(item)}</dd>
+              </div>
+            ))}
+          </dl>
+        ))}
       </div>
     </div>
   );
